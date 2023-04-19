@@ -1,0 +1,15 @@
+TestNoParameters
+
+TestOneParameter
+competitionId
+
+TestTwoParameters
+competitionId
+seasonId
+
+TestFiveParameters
+competitionId
+seasonId
+sportId
+sportEventId
+compSeasonEventPartId

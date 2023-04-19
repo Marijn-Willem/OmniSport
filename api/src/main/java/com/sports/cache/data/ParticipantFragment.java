@@ -1,0 +1,64 @@
+package com.sports.cache.data;
+
+import com.sports.cache.key.CacheKey;
+import com.sports.cache.key.ParticipantKey;
+import com.sports.cache.util.DataFragmentUtil;
+import com.sports.cache.util.JsonUtil;
+import com.sports.cache.util.XmlUtil;
+import com.sports.logic.calculation.DbCalculation;
+import com.sports.logic.factory.CompSeasonParticipantFactory;
+
+import java.sql.SQLException;
+import java.sql.Statement;
+
+public class ParticipantFragment extends WritableFragment {
+    private final int competitionId;
+    private final int seasonId;
+    private final int participantId;
+    private final int clientId;
+
+    private PersonSportFragment personSportFragment;
+    private DoubleFragment doubleFragment;
+    private CompSeasonTeamWithDivisionFragment teamFragment;
+
+    public ParticipantFragment(int competitionId, int seasonId, int participantId, int clientId) {
+        this.competitionId = competitionId;
+        this.seasonId = seasonId;
+        this.participantId = participantId;
+        this.clientId = clientId;
+    }
+
+    @Override
+    public CacheKey getCacheKey() {
+        return new ParticipantKey(competitionId, seasonId, participantId);
+    }
+
+    @Override
+    void fill(Statement stat) throws SQLException {
+        CompSeasonParticipantFactory factory = new DbCalculation(stat).getCompSeasonParticipantFactory(competitionId);
+
+        switch (factory.getParticipantType()) {
+            case PERSON_SPORT -> personSportFragment = DataFragmentUtil.getFilledDataFragment(
+                    new PersonSportFragment(competitionId, seasonId, participantId, clientId), getCacheDataKey(), stat);
+            case DOUBLE -> doubleFragment = DataFragmentUtil.getFilledDataFragment(
+                    new DoubleFragment(competitionId, seasonId, participantId, clientId), getCacheDataKey(), stat);
+            case TEAM -> teamFragment = DataFragmentUtil.getFilledDataFragment(
+                    new CompSeasonTeamWithDivisionFragment(competitionId, seasonId, participantId, clientId),
+                    getCacheDataKey(), stat);
+        }
+    }
+
+    @Override
+    public String toXML() {
+        return XmlUtil.getNullableFragmentAsTag("personSport", personSportFragment) +
+                XmlUtil.getNullableFragmentAsTag("double", doubleFragment) +
+                XmlUtil.getNullableFragmentAsTag("team", teamFragment);
+    }
+
+    @Override
+    public String toJson() {
+        return JsonUtil.getNullableFragmentAsEntry("personSport", personSportFragment) + "," +
+                JsonUtil.getNullableFragmentAsEntry("double", doubleFragment) + "," +
+                JsonUtil.getNullableFragmentAsEntry("team", teamFragment);
+    }
+}

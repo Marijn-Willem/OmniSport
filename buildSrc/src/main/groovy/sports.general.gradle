@@ -1,0 +1,8 @@
+plugins {
+	id 'sports.base'
+	id 'java-library'
+}
+
+dependencies {
+	api project(':general')
+}

@@ -1,0 +1,9 @@
+.idea/
+.gradle/
+gradle/
+gradlew
+gradlew.bat
+out/
+build/
+*/src/main/webapp/js/*.js
+!servlet/src/main/webapp/js/*.js

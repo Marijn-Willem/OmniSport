@@ -1,0 +1,7 @@
+plugins {
+	id 'sports.general'
+}
+
+dependencies {
+	api project(':h2hcalc')
+}

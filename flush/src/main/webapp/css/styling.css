@@ -1,0 +1,3 @@
+body {background-color: lavender}
+span, a, div, select, input, table {margin-left: 40%}
+span input {margin-left: 0}

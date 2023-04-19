@@ -1,0 +1,4 @@
+body {background-color: palegreen; color: lightcoral}
+div, input, select, span, table {margin-left: 40%}
+span input, span select, div select {margin-left: 0%}
+input.ntf {width: 25px}

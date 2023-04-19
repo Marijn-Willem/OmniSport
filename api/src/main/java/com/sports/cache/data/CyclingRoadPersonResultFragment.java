@@ -1,0 +1,99 @@
+package com.sports.cache.data;
+
+import com.sports.cache.key.CacheKey;
+import com.sports.cache.key.CyclingRoadPersonResultKey;
+import com.sports.cache.util.*;
+import com.sports.entity.CompSeasonEventPart;
+import com.sports.entity.Competition;
+import com.sports.entity.Sport;
+import com.sports.entity.key.CompSeasonEventKey;
+import com.sports.entity.key.CompSeasonEventPartKey;
+import com.sports.entity.key.CompSeasonKey;
+import com.sports.entity.manager.CompSeasonEventPartManager;
+import com.sports.entity.manager.CompetitionManager;
+
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.time.LocalDateTime;
+
+public class CyclingRoadPersonResultFragment extends WritableFragment {
+    private final int competitionId;
+    private final int seasonId;
+    private final int sportEventId;
+    private final int compSeasonEventPartId;
+    private final int personSportId;
+    private final Integer rank;
+    private final Integer noCountResultId;
+    private final LocalDateTime date;
+    private final int clientId;
+
+    private String competitionName;
+    private String eventPartName;
+    private NoCountResultFragment noCountResultFragment;
+
+    public CyclingRoadPersonResultFragment(int competitionId, int seasonId, int sportEventId, int compSeasonEventPartId,
+                                           int personSportId, Integer rank, Integer noCountResultId, LocalDateTime date,
+                                           int clientId) {
+        this.competitionId = competitionId;
+        this.seasonId = seasonId;
+        this.sportEventId = sportEventId;
+        this.compSeasonEventPartId = compSeasonEventPartId;
+        this.personSportId = personSportId;
+        this.rank = rank;
+        this.noCountResultId = noCountResultId;
+        this.date = date;
+        this.clientId = clientId;
+    }
+
+    @Override
+    public CacheKey getCacheKey() {
+        return new CyclingRoadPersonResultKey(competitionId, seasonId, sportEventId, compSeasonEventPartId, personSportId);
+    }
+
+    @Override
+    void fill(Statement stat) throws SQLException {
+        Competition competition = new CompetitionManager(stat).getCompetition(competitionId);
+        CompSeasonKey compSeasonKey = new CompSeasonKey(competitionId, seasonId);
+        CompSeasonEventPartKey csepKey = new CompSeasonEventPartKey(
+                new CompSeasonEventKey(compSeasonKey, Sport.sportIdCyclingRoad, sportEventId),
+                compSeasonEventPartId
+        );
+
+        CompSeasonEventPart compSeasonEventPart = new CompSeasonEventPartManager(stat).getCompSeasonEventPart(csepKey);
+
+        competitionName = new AliasUtil(clientId, getCacheDataKey(), stat)
+                .getAliasableAsClientSpecificString(competition);
+        eventPartName = new DescribedEntityUtil(clientId, getCacheDataKey(), stat)
+                .getCompSeasonEventPartString(compSeasonEventPart);
+
+        if (noCountResultId != null)
+            noCountResultFragment = DataFragmentUtil.getFilledDataFragment(new NoCountResultFragment(noCountResultId),
+                    getCacheDataKey(), stat);
+    }
+
+    @Override
+    public String toXML() {
+        return XmlUtil.getTag("competitionId", competitionId) +
+                XmlUtil.getTag("competition", competitionName) +
+                XmlUtil.getTag("sportEventId", sportEventId) +
+                XmlUtil.getTag("compSeasonEventPart", eventPartName) +
+                XmlUtil.getTag("date", date) +
+                XmlUtil.getTag("rank", rank) +
+                XmlUtil.getNullableFragmentAsTag("noCountResult", noCountResultFragment);
+    }
+
+    @Override
+    public String toJson() {
+        return JsonUtil.getEntry("competitionId", competitionId) + "," +
+                JsonUtil.getEntry("competition", competitionName) + "," +
+                JsonUtil.getEntry("sportEventId", sportEventId) + "," +
+                JsonUtil.getEntry("compSeasonEventPart", eventPartName) + "," +
+                JsonUtil.getEntry("date", date) + "," +
+                JsonUtil.getEntry("rank", rank) + "," +
+                JsonUtil.getNullableFragmentAsEntry("noCountResult", noCountResultFragment);
+    }
+
+    public CompSeasonKey getCompSeasonKey() {
+        return new CompSeasonKey(competitionId, seasonId);
+    }
+}

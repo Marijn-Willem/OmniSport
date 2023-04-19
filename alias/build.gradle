@@ -1,0 +1,7 @@
+plugins {
+    id 'sports.servlet'
+}
+
+war {
+    archiveFileName = 'alias.war'
+}

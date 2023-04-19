@@ -1,0 +1,3 @@
+rootProject.name = 'omnisport'
+include 'general', 'cachemanagement', 'alcifocalc', 'h2hcalc', 'teamcalc', 'cyclingroadcalc', 'dartscalc', 'speedskatingcalc', 'web', 'servlet', 
+'alcifosports', 'alias', 'api', 'cyclingroad', 'darts', 'flush', 'h2hsports', 'speedskating', 'management', 'teamsports'

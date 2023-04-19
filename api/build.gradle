@@ -1,0 +1,18 @@
+plugins {
+    id 'sports.web'
+	id 'war'
+}
+
+dependencies {
+    implementation 'org.glassfish.jersey.containers:jersey-container-servlet:3.1.1'
+    implementation 'org.glassfish.jersey.inject:jersey-hk2:3.1.1'
+    implementation 'javax.xml.bind:jaxb-api:2.4.0-b180830.0359'
+	implementation project(':teamcalc')
+	implementation project(':cyclingroadcalc')
+	implementation project(':dartscalc')
+	implementation project(':speedskatingcalc')
+}
+
+war {
+    archiveFileName = 'api.war'
+}

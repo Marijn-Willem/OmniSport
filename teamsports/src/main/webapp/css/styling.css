@@ -1,0 +1,9 @@
+body {background-color: gainsboro; color: black}
+table {background-color: red; color: lightgoldenrodyellow; margin: auto}
+th {background-color: orange; color: green}
+input {background-color: greenyellow}
+h1, h2, input, div, select, span, a {margin-left: 40%}
+input.cb, span input, div.text {margin-right: 0}
+table a, span input, span select, div input, div select, div a {margin-left: 0}
+input.ntf {width: 25px}
+td.matchWinner {font-weight: bold}

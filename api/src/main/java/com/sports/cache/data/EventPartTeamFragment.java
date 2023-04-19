@@ -1,0 +1,36 @@
+package com.sports.cache.data;
+
+import com.sports.cache.key.CacheKey;
+import com.sports.cache.key.EventPartParticipantKey;
+import com.sports.entity.Team;
+
+import java.sql.SQLException;
+import java.sql.Statement;
+
+public class EventPartTeamFragment extends AlcifoParticipantFragment {
+    private final int sportEventId;
+    private final int compSeasonEventPartId;
+    private final Integer clubId;
+    private final Integer nocId;
+    private final Integer equipeId;
+
+    public EventPartTeamFragment(int competitionId, int seasonId, int sportEventId, int compSeasonEventPartId,
+                                 Team participant, int resultTypeId, Integer resultTypePrecisionId, int clientId) {
+        super(competitionId, seasonId, participant, resultTypeId, resultTypePrecisionId, clientId);
+        this.sportEventId = sportEventId;
+        this.compSeasonEventPartId = compSeasonEventPartId;
+        this.clubId = participant.getClubId();
+        this.nocId = participant.getNocId();
+        this.equipeId = participant.getEquipeId();
+    }
+
+    @Override
+    public CacheKey getCacheKey() {
+        return new EventPartParticipantKey(competitionId, seasonId, sportEventId, compSeasonEventPartId, participantId);
+    }
+
+    @Override
+    String getDescription(Statement stat) throws SQLException {
+        return getDescriptionTeam(clubId, nocId, equipeId, stat);
+    }
+}

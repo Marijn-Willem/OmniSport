@@ -1,0 +1,8 @@
+plugins {
+    id 'sports.web'
+}
+
+dependencies {
+	api project(':alcifocalc')
+	api project(':h2hcalc')
+}

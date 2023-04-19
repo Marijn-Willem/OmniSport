@@ -1,0 +1,11 @@
+plugins {
+    id 'sports.servlet'
+}
+
+dependencies {
+    implementation project(':speedskatingcalc')
+}
+
+war {
+    archiveFileName = 'speedskating.war'
+}

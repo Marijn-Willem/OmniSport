@@ -1,0 +1,10 @@
+body {background-color: skyblue}
+input {background-color: gold}
+tr {background-color: lightcoral}
+th {background-color: red}
+h3, h1, div, input, table, span, select {margin-left: 40%}
+table input, span input, div table, div div, div input, span select, div select, th select {margin-left: 0}
+table.click_through {font-size: 18px}
+table.overview {margin-left: 20%}
+.matchWinner {font-weight: bold}
+input.ntf {width: 25px}

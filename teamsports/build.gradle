@@ -1,0 +1,11 @@
+plugins {
+	id 'sports.servlet'
+}
+
+dependencies {
+    implementation project(':teamcalc')
+}
+
+war {
+    archiveFileName = 'teamsports.war'
+}

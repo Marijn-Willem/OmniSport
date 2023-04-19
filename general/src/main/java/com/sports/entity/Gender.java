@@ -1,0 +1,40 @@
+package com.sports.entity;
+
+import java.util.LinkedHashMap;
+
+public class Gender extends IntEntity {
+    public static final int genderIdMale = 1;
+    public static final int genderIdFemale = 2;
+    public static final int genderIdMixed = 3;
+    public static final int genderIdOpen = 4;
+
+    @Override
+    public int getId() {
+        return 0;
+    }
+
+    public String[] getPropertiesInSQLStrings() {
+        return new String[0];
+    }
+
+    public static String getGenderNameFromId(int id) {
+        switch (id) {
+            case genderIdMale: return "Male";
+            case genderIdFemale: return "Female";
+            case genderIdMixed: return "Mixed";
+            case genderIdOpen: return "Open";
+            default: return null;
+        }
+    }
+
+    public static LinkedHashMap<Integer, String> getGenderLinkedHashMap() {
+        LinkedHashMap<Integer, String> map = new LinkedHashMap<Integer, String>();
+
+        map.put(genderIdMale, getGenderNameFromId(genderIdMale));
+        map.put(genderIdFemale, getGenderNameFromId(genderIdFemale));
+        map.put(genderIdMixed, getGenderNameFromId(genderIdMixed));
+        map.put(genderIdOpen, getGenderNameFromId(genderIdOpen));
+
+        return map;
+    }
+}

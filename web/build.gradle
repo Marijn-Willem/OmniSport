@@ -1,0 +1,8 @@
+plugins {
+    id 'sports.general'
+}
+
+dependencies {
+    api 'jakarta.servlet:jakarta.servlet-api:6.0.0'
+    api project(':cachemanagement')
+}
