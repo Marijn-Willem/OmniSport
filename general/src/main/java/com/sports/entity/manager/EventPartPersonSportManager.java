@@ -120,11 +120,6 @@ public class EventPartPersonSportManager extends AlcifoPartParticipantManager<Ev
         return getEntityList(Util.concatStringsWithDelimiter(csepk.getWhereClause(), whereClause, " AND "));
     }
 
-    public List<EventPartPersonSport> getEventPartPersonSportList(List<CompSeasonEventPartKey> csepKeys)
-            throws SQLException {
-        return getEntityList(getConditionsKeyList(csepKeys));
-    }
-
     public Map<EventPartPersonSportKey, EventPartPersonSport> getEventPartPersonSportMap(List<EventPersonSportKey> eventPersonSportKeys)
         throws SQLException {
         return getPartParticipantMap(eventPersonSportKeys);

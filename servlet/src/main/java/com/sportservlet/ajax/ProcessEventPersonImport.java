@@ -3,10 +3,7 @@ package com.sportservlet.ajax;
 import com.sports.calc.alcifo.Calculation;
 import com.sports.entity.*;
 import com.sports.entity.key.*;
-import com.sports.entity.manager.CompSeasonEventPartManager;
-import com.sports.entity.manager.CompetitionManager;
-import com.sports.entity.manager.EventPartPersonSportManager;
-import com.sports.entity.manager.EventPersonSportManager;
+import com.sports.entity.manager.*;
 import com.sports.logic.calculation.DbCalculation;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -17,6 +14,7 @@ import java.util.Map;
 
 public class ProcessEventPersonImport extends ProcessPersonImport {
     private CompSeasonEventKey csek;
+    private SportEventKey sek;
     private EventPersonSportManager eventPersonSportManager;
     private boolean insertEventPartPersonSportWithRank;
     private boolean insertEventPartPersonSportForSinglePartEvent;
@@ -28,7 +26,9 @@ public class ProcessEventPersonImport extends ProcessPersonImport {
         int sportId = new CompetitionManager(stat).getCompetition(competitionId).getSportId();
         int eventId = Integer.parseInt(req.getParameter("eid"));
 
-        csek = new CompSeasonEventKey(new CompSeasonKey(competitionId, seasonId), sportId, eventId);
+        csek = new CompSeasonEventKey(new CompSeasonKey(competitionId, seasonId), eventId);
+        CompSeasonEvent compSeasonEvent = new CompSeasonEventManager(stat).getEntityFromSuperKey(csek);
+        sek = compSeasonEvent.getSportEventKey();
 
         eventPersonSportManager = new EventPersonSportManager(stat);
 
@@ -61,7 +61,7 @@ public class ProcessEventPersonImport extends ProcessPersonImport {
     }
 
     protected Map<String, Person> getPersonNameMap(Statement stat, List<String> names) throws SQLException {
-        return new DbCalculation(stat).getPersonNameMapWithNewPersons(names, csek.getSportEventKey());
+        return new DbCalculation(stat).getPersonNameMapWithNewPersons(names, sek);
     }
 
     private void insertEventPartPersonSport(int personSportId, int nameIndX) throws SQLException {

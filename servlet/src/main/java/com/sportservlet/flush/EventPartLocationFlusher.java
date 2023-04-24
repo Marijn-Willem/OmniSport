@@ -20,7 +20,7 @@ public class EventPartLocationFlusher extends CacheFlusher {
         return Collections.singletonList(new com.sports.cache.key.EventPartLocationKey(
                 eventPartLocationKey.getSuperKey().getSuperKey().getSuperKey().getCompetitionId(),
                 eventPartLocationKey.getSuperKey().getSuperKey().getSuperKey().getSeasonId(),
-                eventPartLocationKey.getSuperKey().getSuperKey().getSportEventId(),
+                eventPartLocationKey.getSuperKey().getSuperKey().getCompSeasonEventId(),
                 eventPartLocationKey.getSuperKey().getCompSeasonEventPartId(),
                 eventPartLocationKey.getEventPartLocationId()
         ));

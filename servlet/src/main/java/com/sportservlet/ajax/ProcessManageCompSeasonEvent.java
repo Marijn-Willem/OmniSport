@@ -35,14 +35,13 @@ public class ProcessManageCompSeasonEvent extends ProcessManageSuperKeyEntity<Co
 
     @Override
     protected String getUpdateIdStr(CompSeasonEventKey superKey) {
-        return Integer.toString(superKey.getSportEventId());
+        return Integer.toString(superKey.getCompSeasonEventId());
     }
 
     @Override
     protected CompSeasonEventKey getSuperKeyFromRequest(HttpServletRequest req) {
-        int spid = getIntValuedParameterValue(req, "spid");
         int eid = getIntValuedParameterValue(req, "eid");
 
-        return new CompSeasonEventKey(compSeasonKey, spid, eid);
+        return new CompSeasonEventKey(compSeasonKey, eid);
     }
 }

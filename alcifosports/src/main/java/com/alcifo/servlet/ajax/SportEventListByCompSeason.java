@@ -1,9 +1,9 @@
 package com.alcifo.servlet.ajax;
 
+import com.sports.entity.CompSeasonEvent;
 import com.sports.entity.Gender;
 import com.sports.entity.SportEvent;
 import com.sports.entity.comparator.AliasableName;
-import com.sports.entity.key.CompSeasonEventKey;
 import com.sports.entity.key.SportEventKey;
 import com.sports.entity.manager.CompSeasonEventManager;
 import com.sports.entity.manager.SportEventManager;
@@ -23,8 +23,8 @@ public class SportEventListByCompSeason extends SuperResponseServlet {
     @Override
     protected void processBody(Statement stat, HttpServletRequest req, HttpServletResponse resp)
             throws IOException, SQLException {
-        List<CompSeasonEventKey> cseKeys = new CompSeasonEventManager(stat).getCompSeasonEventKeys(compSeasonKey);
-        List<SportEventKey> seKeys = cseKeys.stream().map(CompSeasonEventKey::getSportEventKey)
+        List<CompSeasonEvent> compSeasonEvents = new CompSeasonEventManager(stat).getCompSeasonEvents(compSeasonKey);
+        List<SportEventKey> seKeys = compSeasonEvents.stream().map(CompSeasonEvent::getSportEventKey)
                 .collect(Collectors.toList());
 
         List<SportEvent> sportEvents = new SportEventManager(stat).getSportEventListByKeys(seKeys);

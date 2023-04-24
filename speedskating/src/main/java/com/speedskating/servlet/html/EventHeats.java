@@ -48,8 +48,7 @@ public class EventHeats extends SuperHtmlServlet {
         int seasonId = Integer.parseInt(req.getParameter("sid"));
         int eventId = Integer.parseInt(req.getParameter("eid"));
 
-        CompSeasonEventKey csek = new CompSeasonEventKey(new CompSeasonKey(competitionId, seasonId),
-                Sport.sportIdSpeedSkating, eventId);
+        CompSeasonEventKey csek = new CompSeasonEventKey(new CompSeasonKey(competitionId, seasonId), eventId);
         SportEventKey sek = new SportEventKey(Sport.sportIdSpeedSkating, eventId);
 
         List<SportEventPart> sportEventParts = new SportEventPartManager(stat).getSportEventParts(sek);

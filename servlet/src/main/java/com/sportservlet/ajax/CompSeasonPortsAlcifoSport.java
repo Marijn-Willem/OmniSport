@@ -1,16 +1,16 @@
 package com.sportservlet.ajax;
 
+import com.sports.entity.CompSeasonEvent;
 import com.sports.entity.Gender;
 import com.sports.entity.SportEvent;
-import com.sports.entity.key.CompSeasonEventKey;
 import com.sports.entity.key.SportEventKey;
 import com.sports.entity.manager.CompSeasonEventManager;
 import com.sports.entity.manager.SportEventManager;
 import com.sports.logic.util.Util;
 import com.sportservlet.SuperResponseServlet;
-
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+
 import java.io.IOException;
 import java.io.Writer;
 import java.sql.SQLException;
@@ -28,15 +28,10 @@ public abstract class CompSeasonPortsAlcifoSport extends SuperResponseServlet {
     @Override
     protected void processBody(Statement stat, HttpServletRequest req, HttpServletResponse resp)
             throws IOException, SQLException {
-        List<CompSeasonEventKey> compSeasonEventKeys = new CompSeasonEventManager(stat).getCompSeasonEventKeys(compSeasonKey);
-        List<SportEventKey> sportEventKeys = new ArrayList<>();
-
-        for (CompSeasonEventKey compSeasonEventKey : compSeasonEventKeys) {
-            int sportId = compSeasonEventKey.getSportId();
-            int sportEventId = compSeasonEventKey.getSportEventId();
-
-            sportEventKeys.add(new SportEventKey(sportId, sportEventId));
-        }
+        List<CompSeasonEvent> compSeasonEvents = new CompSeasonEventManager(stat).getCompSeasonEvents(compSeasonKey);
+        List<SportEventKey> sportEventKeys = new ArrayList<>() {{
+            addAll(compSeasonEvents.stream().map(CompSeasonEvent::getSportEventKey).toList());
+        }};
 
         sportEventList = new SportEventManager(stat).getSportEventListByKeys(sportEventKeys);
 

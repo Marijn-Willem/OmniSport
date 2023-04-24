@@ -5,7 +5,6 @@ import com.sports.cache.key.CyclingRoadPersonResultKey;
 import com.sports.cache.util.*;
 import com.sports.entity.CompSeasonEventPart;
 import com.sports.entity.Competition;
-import com.sports.entity.Sport;
 import com.sports.entity.key.CompSeasonEventKey;
 import com.sports.entity.key.CompSeasonEventPartKey;
 import com.sports.entity.key.CompSeasonKey;
@@ -55,7 +54,7 @@ public class CyclingRoadPersonResultFragment extends WritableFragment {
         Competition competition = new CompetitionManager(stat).getCompetition(competitionId);
         CompSeasonKey compSeasonKey = new CompSeasonKey(competitionId, seasonId);
         CompSeasonEventPartKey csepKey = new CompSeasonEventPartKey(
-                new CompSeasonEventKey(compSeasonKey, Sport.sportIdCyclingRoad, sportEventId),
+                new CompSeasonEventKey(compSeasonKey, sportEventId),
                 compSeasonEventPartId
         );
 

@@ -15,8 +15,6 @@ import java.util.Map;
 public abstract class TeamSelectServlet extends SuperHtmlServlet implements AbstractHtmlServlet {
     protected abstract void processSpecific(HttpServletRequest req, HttpServletResponse res) throws IOException;
 
-    protected void preProcessSpecific(HttpServletRequest req, HttpServletResponse res) throws IOException { }
-
     protected void initAbstractProperties() { }
 
     @Override
@@ -35,8 +33,6 @@ public abstract class TeamSelectServlet extends SuperHtmlServlet implements Abst
     @Override
     protected void processHtmlBody(Statement stat, HttpServletRequest req, HttpServletResponse res)
             throws IOException, SQLException {
-        preProcessSpecific(req, res);
-
         Writer w = res.getWriter();
 
         w.append("<select id=\"spid\" onchange=\"teamListLoader.loadElement();\">\n</select><br/>\n");

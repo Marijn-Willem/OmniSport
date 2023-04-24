@@ -4,7 +4,6 @@ import com.sports.calc.alcifo.DbCalculation;
 import com.sports.entity.DisciplinePart;
 import com.sports.entity.EventDisciplinePart;
 import com.sports.entity.PersonSport;
-import com.sports.entity.Sport;
 import com.sports.entity.comparator.DisciplinePartOrder;
 import com.sports.entity.key.CompSeasonEventKey;
 import com.sports.entity.key.CompSeasonEventPartKey;
@@ -14,9 +13,9 @@ import com.sports.entity.manager.DisciplinePartManager;
 import com.sports.entity.manager.EventDisciplinePartManager;
 import com.sports.entity.manager.EventPartPersonSportManager;
 import com.sports.entity.manager.PersonSportManager;
-
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+
 import java.io.IOException;
 import java.io.Writer;
 import java.sql.SQLException;
@@ -50,7 +49,7 @@ public class TimeHeat extends SuperHtmlServlet {
         int eventPartId = Integer.parseInt(req.getParameter("epid"));
 
         CompSeasonEventKey csek =
-                new CompSeasonEventKey(new CompSeasonKey(competitionId, seasonId), Sport.sportIdSpeedSkating, eventId);
+                new CompSeasonEventKey(new CompSeasonKey(competitionId, seasonId), eventId);
         CompSeasonEventPartKey csepk = new CompSeasonEventPartKey(csek, eventPartId);
 
         EventPartPersonSportManager eppm = new EventPartPersonSportManager(stat);

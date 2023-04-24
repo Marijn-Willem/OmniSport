@@ -5,12 +5,10 @@ import com.sports.cache.key.EventPersonSportListKey;
 import com.sports.cache.util.DataFragmentUtil;
 import com.sports.cache.util.JsonUtil;
 import com.sports.cache.util.XmlUtil;
-import com.sports.entity.Competition;
 import com.sports.entity.PersonSport;
 import com.sports.entity.comparator.DescribedEntityDescription;
 import com.sports.entity.key.CompSeasonEventKey;
 import com.sports.entity.key.CompSeasonKey;
-import com.sports.entity.manager.CompetitionManager;
 import com.sports.entity.manager.EventPersonSportManager;
 import com.sports.entity.manager.PersonSportManager;
 
@@ -41,21 +39,17 @@ public class EventPersonSportListData extends OutputData {
 
 	@Override
 	public void fill(Statement stat) throws SQLException {
-		Competition competition = new CompetitionManager(stat).getCompetition(competitionId);
+		CompSeasonEventKey cseKey = new CompSeasonEventKey(new CompSeasonKey(competitionId, seasonId),
+				sportEventId);
 
-		if (competition != null) {
-			CompSeasonEventKey cseKey = new CompSeasonEventKey(new CompSeasonKey(competitionId, seasonId),
-					competition.getSportId(), sportEventId);
+		List<Integer> personSportIds = new EventPersonSportManager(stat).getPersonSportIdsCompSeasonEvent(cseKey);
+		List<PersonSport> personSports = new PersonSportManager(stat).getParticipantList(personSportIds);
+		personSports.sort(new DescribedEntityDescription());
 
-			List<Integer> personSportIds = new EventPersonSportManager(stat).getPersonSportIdsCompSeasonEvent(cseKey);
-			List<PersonSport> personSports = new PersonSportManager(stat).getParticipantList(personSportIds);
-			personSports.sort(new DescribedEntityDescription());
+		eventPersonSportFragments.addAll(personSports.stream().map(x ->
+				new EventPersonSportFragment(competitionId, seasonId, sportEventId, x.getId(), clientId)).toList());
 
-			eventPersonSportFragments.addAll(personSports.stream().map(x ->
-					new EventPersonSportFragment(competitionId, seasonId, sportEventId, x.getId(), clientId)).toList());
-
-			DataFragmentUtil.fillDataFragments(eventPersonSportFragments, getCacheKey());
-		}
+		DataFragmentUtil.fillDataFragments(eventPersonSportFragments, getCacheKey());
 	}
 
 	@Override

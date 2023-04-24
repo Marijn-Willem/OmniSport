@@ -428,17 +428,23 @@ public record DbCalculation(Statement stat) {
         CompSeasonEventPartManager csepm = new CompSeasonEventPartManager(stat);
         EventDisciplinePartManager edpm = new EventDisciplinePartManager(stat);
 
-        List<CompSeasonEventKey> compSeasonEventKeys = csem.getCompSeasonEventKeys(csk);
+        Map<CompSeasonEventKey, CompSeasonEvent> compSeasonEventMap = new HashMap<>() {{
+            csem.getCompSeasonEvents(csk).forEach(x -> {
+                CompSeasonEventKey cseKey = new CompSeasonEventKey(csk, x.getCompSeasonEventId());
+                put(cseKey, x);
+            });
+        }};
+        List<CompSeasonEventKey> compSeasonEventKeys = compSeasonEventMap.keySet().stream().toList();
+
         List<CompSeasonEventPart> compSeasonEventParts = csepm.getCompSeasonEventPartsFromEvents(compSeasonEventKeys);
         Map<EventDisciplinePartKey, EventDisciplinePart> eventDisciplinePartMap = edpm.getEventDisciplineMapFromEvents(compSeasonEventKeys);
 
         Map<EventDisciplinePartKey, EventDisciplinePart> newDisciplinesParts = new HashMap<>() {{
             eventDisciplinePartMap.forEach((k, v) -> {
-                int sportId = k.getSuperKey().getSuperKey().getSportId();
-                int sportEventId = k.getSuperKey().getSuperKey().getSportEventId();
+                int compSeasonEventId = k.getSuperKey().getSuperKey().getCompSeasonEventId();
                 int eventPartId = k.getSuperKey().getCompSeasonEventPartId();
 
-                CompSeasonEventKey newEventKey = new CompSeasonEventKey(newCsk, sportId, sportEventId);
+                CompSeasonEventKey newEventKey = new CompSeasonEventKey(newCsk, compSeasonEventId);
                 CompSeasonEventPartKey newEventPartKey = new CompSeasonEventPartKey(newEventKey, eventPartId);
                 EventDisciplinePartKey newKey = new EventDisciplinePartKey(newEventPartKey, k.getEventDisciplinePartId());
 
@@ -448,7 +454,8 @@ public record DbCalculation(Statement stat) {
 
         Map<CompSeasonEventPartKey, CompSeasonEventPart> newEventParts = new HashMap<>() {{
             compSeasonEventParts.forEach(compSeasonEventPart -> {
-                CompSeasonEventKey newEventKey = new CompSeasonEventKey(newCsk, compSeasonEventPart.getSportId(), compSeasonEventPart.getSportEventId());
+                int compSeasonEventId = compSeasonEventPart.getCompSeasonEventPartKey().getSuperKey().getCompSeasonEventId();
+                CompSeasonEventKey newEventKey = new CompSeasonEventKey(newCsk, compSeasonEventId);
                 CompSeasonEventPartKey newEventPartKey = new CompSeasonEventPartKey(newEventKey, compSeasonEventPart.getCompSeasonEventPartId());
 
                 put(newEventPartKey, compSeasonEventPart);
@@ -456,8 +463,8 @@ public record DbCalculation(Statement stat) {
         }};
 
         Map<CompSeasonEventKey, CompSeasonEvent> newEventMap = new HashMap<>() {{
-            compSeasonEventKeys.forEach(key -> {
-                CompSeasonEventKey newKey = new CompSeasonEventKey(newCsk, key.getSportId(), key.getSportEventId());
+            compSeasonEventMap.forEach((k, v) -> {
+                CompSeasonEventKey newKey = new CompSeasonEventKey(newCsk, k.getCompSeasonEventId());
                 put(newKey, new CompSeasonEvent());
             });
         }};

@@ -5,22 +5,19 @@ import com.sports.entity.key.CompSeasonEventKey;
 import com.sports.entity.key.CompSeasonEventPartKey;
 import com.sports.entity.key.CompSeasonKey;
 import com.sports.logic.async.ThreadUtil;
-import com.sports.logic.calculation.DbCalculation;
 import com.sports.logic.util.Util;
 import com.sportservlet.flush.CacheFlusher;
-
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+
 import java.io.IOException;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Collections;
 
 public abstract class SuperServlet extends HttpServlet {
-    private Integer sportId;
-
     protected Integer competitionId;
     protected Integer seasonId;
     protected CompSeasonKey compSeasonKey;
@@ -44,22 +41,19 @@ public abstract class SuperServlet extends HttpServlet {
         return Integer.parseInt(req.getParameter(parameter));
     }
 
-    protected CompSeasonEventKey getCompSeasonEventKey(Statement stat, HttpServletRequest req) throws SQLException {
+    protected CompSeasonEventKey getCompSeasonEventKey(HttpServletRequest req) {
         int eid = getIntValuedParameterValue(req, "eid");
 
-        return new CompSeasonEventKey(compSeasonKey, getSportId(stat), eid);
+        return new CompSeasonEventKey(compSeasonKey, eid);
     }
 
-    protected CompSeasonEventPartKey getCompSeasonEventPartKey(Statement stat, HttpServletRequest req)
-            throws SQLException {
+    protected CompSeasonEventPartKey getCompSeasonEventPartKey(HttpServletRequest req) {
         int csepid = getIntValuedParameterValue(req, "csepid");
 
-        return new CompSeasonEventPartKey(getCompSeasonEventKey(stat, req), csepid);
+        return new CompSeasonEventPartKey(getCompSeasonEventKey(req), csepid);
     }
 
     private void setCommonParameters(HttpServletRequest req) {
-        sportId = null;
-
         competitionId = Util.convertStringToInteger(req.getParameter("cid"));
         seasonId = Util.convertStringToInteger(req.getParameter("sid"));
 
@@ -70,13 +64,6 @@ public abstract class SuperServlet extends HttpServlet {
             compSeasonKey = null;
             compSeasonUrlParameters = null;
         }
-    }
-
-    private int getSportId(Statement stat) throws SQLException {
-        if (sportId == null)
-            sportId = new DbCalculation(stat).getSportId(competitionId);
-
-        return sportId;
     }
 
     private class RequestHandler extends DatabaseExecutor {

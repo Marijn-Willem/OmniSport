@@ -2,8 +2,10 @@ package com.sportservlet.ajax;
 
 import com.sports.calc.alcifo.Calculation;
 import com.sports.calc.alcifo.DbCalculation;
+import com.sports.entity.CompSeasonEvent;
 import com.sports.entity.SportEvent;
 import com.sports.entity.key.CompSeasonEventKey;
+import com.sports.entity.manager.CompSeasonEventManager;
 import com.sports.entity.manager.SportEventManager;
 import com.sportservlet.SuperResponseServlet;
 import jakarta.servlet.http.HttpServletRequest;
@@ -18,8 +20,9 @@ public class ProcessInsertEventParticipantsFromCompSeason extends SuperResponseS
     @Override
     protected void processBody(Statement stat, HttpServletRequest req, HttpServletResponse resp)
             throws IOException, SQLException {
-        CompSeasonEventKey compSeasonEventKey = getCompSeasonEventKey(stat, req);
-        SportEvent sportEvent = new SportEventManager(stat).getEntityFromSuperKey(compSeasonEventKey.getSportEventKey());
+        CompSeasonEventKey compSeasonEventKey = getCompSeasonEventKey(req);
+        CompSeasonEvent compSeasonEvent = new CompSeasonEventManager(stat).getEntityFromSuperKey(compSeasonEventKey);
+        SportEvent sportEvent = new SportEventManager(stat).getEntityFromSuperKey(compSeasonEvent.getSportEventKey());
 
         List<Integer> participantIds = Calculation.getAlcifoParticipantFactory(sportEvent).getManager(stat)
                 .getParticipantIdsInEvent(compSeasonEventKey);
@@ -27,7 +30,7 @@ public class ProcessInsertEventParticipantsFromCompSeason extends SuperResponseS
         String output;
 
         if (participantIds.size() == 0) {
-            new DbCalculation(stat).insertParticipantsFromCompSeason(compSeasonEventKey);
+            new DbCalculation(stat).insertParticipantsFromCompSeason(compSeasonEventKey, compSeasonEvent);
             output = "Participants successfully inserted!";
         }
         else

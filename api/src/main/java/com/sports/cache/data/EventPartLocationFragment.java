@@ -10,7 +10,6 @@ import com.sports.entity.EventPartLocation;
 import com.sports.entity.key.CompSeasonEventKey;
 import com.sports.entity.key.CompSeasonEventPartKey;
 import com.sports.entity.key.CompSeasonKey;
-import com.sports.entity.manager.CompetitionManager;
 import com.sports.entity.manager.EventPartLocationManager;
 
 import java.sql.SQLException;
@@ -44,11 +43,10 @@ public class EventPartLocationFragment extends WritableFragment {
 
     @Override
     void fill(Statement stat) throws SQLException {
-        int sportId = new CompetitionManager(stat).getCompetition(competitionId).getSportId();
         com.sports.entity.key.EventPartLocationKey eplKey = new com.sports.entity.key.EventPartLocationKey(
                 new CompSeasonEventPartKey(
-                        new CompSeasonEventKey(new CompSeasonKey(competitionId, seasonId),
-                                sportId, sportEventId), compSeasonEventPartId),
+                        new CompSeasonEventKey(new CompSeasonKey(competitionId, seasonId), sportEventId),
+                        compSeasonEventPartId),
                 eventPartLocationId
         );
 

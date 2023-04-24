@@ -54,7 +54,7 @@ public class CompSeasonEventPartFragment extends WritableFragment {
         com.sports.entity.key.CompSeasonEventPartKey compSeasonEventPartKey =
                 new com.sports.entity.key.CompSeasonEventPartKey(
                         new CompSeasonEventKey(
-                                new CompSeasonKey(competitionId, seasonId), sportId, sportEventId
+                                new CompSeasonKey(competitionId, seasonId), sportEventId
                         ), compSeasonEventPartId
                 );
 

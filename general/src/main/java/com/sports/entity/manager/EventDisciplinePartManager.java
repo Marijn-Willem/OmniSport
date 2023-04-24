@@ -68,11 +68,6 @@ public class EventDisciplinePartManager extends SuperKeySuperManager<EventDiscip
         return getEntityList(csepk.getWhereClause());
     }
 
-    public Map<EventDisciplinePartKey, EventDisciplinePart> getEventDisciplinePartMap(CompSeasonEventPartKey csepk)
-        throws SQLException {
-        return getSuperKeyEntityMap(csepk.getWhereClause());
-    }
-
     public Map<EventDisciplinePartKey, EventDisciplinePart> getEventDisciplineMapFromEvents(List<CompSeasonEventKey> csekList) throws SQLException {
         return getSuperKeyEntityMapFromSuperKeys(csekList);
     }

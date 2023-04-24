@@ -15,8 +15,8 @@ public class ProcessManageCompSeasonEventPart extends ProcessManageSuperKeyEntit
     private CompSeasonEventKey csek;
 
     @Override
-    protected void initSpecific(Statement stat, HttpServletRequest req) throws SQLException {
-        csek = getCompSeasonEventKey(stat, req);
+    protected void initSpecific(Statement stat, HttpServletRequest req) {
+        csek = getCompSeasonEventKey(req);
     }
 
     protected SuperKeySuperManager<CompSeasonEventPartKey, CompSeasonEventPart> getSuperManager(Statement stat) {
@@ -29,7 +29,7 @@ public class ProcessManageCompSeasonEventPart extends ProcessManageSuperKeyEntit
     }
 
     protected String getUpdateIdStr(CompSeasonEventPartKey superKey) {
-        return "" + superKey.getCompSeasonEventPartId();
+        return String.valueOf(superKey.getCompSeasonEventPartId());
     }
 
     protected CompSeasonEventPartKey getSuperKeyFromRequest(HttpServletRequest req) {

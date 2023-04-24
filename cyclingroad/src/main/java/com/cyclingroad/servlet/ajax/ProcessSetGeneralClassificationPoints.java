@@ -15,7 +15,7 @@ public class ProcessSetGeneralClassificationPoints extends SuperResponseServlet 
     @Override
     protected void processBody(Statement stat, HttpServletRequest req, HttpServletResponse resp)
             throws IOException, SQLException {
-        CompSeasonEventPartKey csepKey = getCompSeasonEventPartKey(stat, req);
+        CompSeasonEventPartKey csepKey = getCompSeasonEventPartKey(req);
         Integer stage = new CompSeasonEventPartManager(stat).getCompSeasonEventPart(csepKey).getStage();
 
         String output;

@@ -25,7 +25,7 @@ public abstract class ManageAlcifoPartParticipants extends SuperHtmlServlet impl
     private final AlcifoPartParticipantFactory factory = getFactory();
     private SuperKey partKey;
 
-    abstract SuperKey getPartKey(Statement stat, HttpServletRequest req) throws SQLException;
+    abstract SuperKey getPartKey(HttpServletRequest req);
     abstract AlcifoPartParticipantFactory getFactory();
     abstract void initSpecificJsProperties();
 
@@ -41,7 +41,7 @@ public abstract class ManageAlcifoPartParticipants extends SuperHtmlServlet impl
 
     @Override
     protected void processScriptTag(Statement stat, HttpServletRequest req, Writer w) throws IOException, SQLException {
-        partKey = getPartKey(stat, req);
+        partKey = getPartKey(req);
 
         SportDisciplineKey sdk = new DbCalculation(stat).getSportDisciplineKey(factory.getCompSeasonEventPartKey(partKey));
         int rtid = new SportDisciplineManager(stat).getEntityFromSuperKey(Objects.requireNonNull(sdk)).getResultTypeId();

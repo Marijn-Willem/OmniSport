@@ -42,7 +42,7 @@ public abstract class ManageEventPartLocation extends ManageEntity {
         if (!"i".equals(mode)) {
             int eplid = getIntValuedParameterValue(req, "eplid");
 
-            EventPartLocationKey eplKey = new EventPartLocationKey(getCompSeasonEventPartKey(stat, req), eplid);
+            EventPartLocationKey eplKey = new EventPartLocationKey(getCompSeasonEventPartKey(req), eplid);
 
             eventPartLocation = new EventPartLocationManager(stat).getEntityFromSuperKey(eplKey);
         }

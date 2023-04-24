@@ -4,7 +4,6 @@ import com.sports.calc.alcifo.DbCalculation;
 import com.sports.entity.DisciplinePartPersonSport;
 import com.sports.entity.EventDisciplinePart;
 import com.sports.entity.EventPartPersonSport;
-import com.sports.entity.Sport;
 import com.sports.entity.comparator.EventDisciplinePartOrder;
 import com.sports.entity.key.*;
 import com.sports.entity.manager.DisciplinePartPersonSportManager;
@@ -12,8 +11,8 @@ import com.sports.entity.manager.EventDisciplinePartManager;
 import com.sports.entity.manager.EventPartPersonSportManager;
 import com.sports.logic.util.Util;
 import com.sportservlet.dispatch.SuperDispatchServlet;
-
 import jakarta.servlet.http.HttpServletRequest;
+
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.List;
@@ -29,8 +28,7 @@ public class AddHeat extends SuperDispatchServlet {
             "&eid=" + eventId + "&epid=" + eventPartId;
 
         CompSeasonEventPartKey csepk = new CompSeasonEventPartKey(
-                new CompSeasonEventKey(compSeasonKey, Sport.sportIdSpeedSkating, eventId),
-                eventPartId);
+                new CompSeasonEventKey(compSeasonKey, eventId), eventPartId);
 
         DbCalculation dbCalc = new DbCalculation(stat);
 

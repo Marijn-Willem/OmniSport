@@ -1,8 +1,8 @@
 package com.sports.entity.key;
 
 public class CompSeasonEventPartKey extends SuperKey {
-    private CompSeasonEventKey compSeasonEventKey;
-    private int compSeasonEventPartId;
+    private final CompSeasonEventKey compSeasonEventKey;
+    private final int compSeasonEventPartId;
 
     public CompSeasonEventPartKey(CompSeasonEventKey csek, int compSeasonEventPartId) {
         this.compSeasonEventKey = csek;

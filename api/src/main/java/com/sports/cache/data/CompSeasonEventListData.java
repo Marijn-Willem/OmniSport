@@ -5,11 +5,10 @@ import com.sports.cache.key.CompSeasonEventListKey;
 import com.sports.cache.util.DataFragmentUtil;
 import com.sports.cache.util.JsonUtil;
 import com.sports.cache.util.XmlUtil;
+import com.sports.entity.CompSeasonEvent;
 import com.sports.entity.SportEvent;
 import com.sports.entity.comparator.NamedEntityName;
-import com.sports.entity.key.CompSeasonEventKey;
 import com.sports.entity.key.CompSeasonKey;
-import com.sports.entity.key.SportEventKey;
 import com.sports.entity.manager.CompSeasonEventManager;
 import com.sports.entity.manager.SportEventManager;
 
@@ -17,7 +16,6 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class CompSeasonEventListData extends OutputData {
 	private final int competitionId;
@@ -40,9 +38,9 @@ public class CompSeasonEventListData extends OutputData {
 	@Override
 	public void fill(Statement stat) throws SQLException {
 		CompSeasonKey compSeasonKey = new CompSeasonKey(competitionId, seasonId);
-		List<CompSeasonEventKey> cseKeys = new CompSeasonEventManager(stat).getCompSeasonEventKeys(compSeasonKey);
-		List<SportEvent> sportEvents = new SportEventManager(stat).getSportEventListByKeys(cseKeys.stream().map(x ->
-				new SportEventKey(x.getSportId(), x.getSportEventId())).collect(Collectors.toList()));
+		List<CompSeasonEvent> cseKeys = new CompSeasonEventManager(stat).getCompSeasonEvents(compSeasonKey);
+		List<SportEvent> sportEvents = new SportEventManager(stat).getSportEventListByKeys(cseKeys.stream().map(
+				CompSeasonEvent::getSportEventKey).toList());
 		sportEvents.sort(new NamedEntityName());
 
 		sportEventFragments.addAll(sportEvents.stream().map(x -> new SportEventFragment(x, clientId)).toList());

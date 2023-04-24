@@ -61,8 +61,8 @@ public class SpSkHeatPersonSportFragment extends WritableFragment {
         EventPartPersonSportKey eventPartPersonSportKey = new EventPartPersonSportKey(
                 new CompSeasonEventPartKey(
                         new CompSeasonEventKey(
-                                new CompSeasonKey(competitionId, seasonId), Sport.sportIdSpeedSkating, sportEventId),
-                        sportEventPartId
+                                new CompSeasonKey(competitionId, seasonId), sportEventId
+                        ), sportEventPartId
                 ), personSportId);
 
         List<DisciplinePartPersonSport> disciplinePartPersonSports = new DisciplinePartPersonSportManager(stat)

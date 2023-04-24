@@ -41,7 +41,7 @@ public abstract class ManageEventDisciplinePart extends ManageEntity {
     @Override
     protected void processSpecific(Statement stat, HttpServletRequest req, HttpServletResponse res)
             throws IOException, SQLException {
-        CompSeasonEventPartKey csepKey = getCompSeasonEventPartKey(stat, req);
+        CompSeasonEventPartKey csepKey = getCompSeasonEventPartKey(req);
 
         EventDisciplinePart eventDisciplinePart = null;
         if (!"i".equals(mode)) {

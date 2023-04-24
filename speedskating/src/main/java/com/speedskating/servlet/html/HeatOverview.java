@@ -5,7 +5,6 @@ import com.sports.calc.alcifo.DbCalculation;
 import com.sports.entity.DisciplinePartPersonSport;
 import com.sports.entity.EventDisciplinePart;
 import com.sports.entity.PersonSport;
-import com.sports.entity.Sport;
 import com.sports.entity.comparator.EventDisciplinePartOrder;
 import com.sports.entity.key.CompSeasonEventKey;
 import com.sports.entity.key.CompSeasonEventPartKey;
@@ -15,14 +14,17 @@ import com.sports.entity.manager.DisciplinePartPersonSportManager;
 import com.sports.entity.manager.EventDisciplinePartManager;
 import com.sports.entity.manager.PersonSportManager;
 import com.sports.logic.util.Util;
-
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+
 import java.io.IOException;
 import java.io.Writer;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
 
 public class HeatOverview extends SuperHtmlServlet {
     @Override
@@ -45,7 +47,7 @@ public class HeatOverview extends SuperHtmlServlet {
         int ps2Id = Integer.parseInt(req.getParameter("p2id"));
 
         CompSeasonEventPartKey csepk = new CompSeasonEventPartKey(
-                new CompSeasonEventKey(compSeasonKey, Sport.sportIdSpeedSkating, eventId),
+                new CompSeasonEventKey(compSeasonKey, eventId),
                 eventPartId);
 
         DbCalculation dbCalc = new DbCalculation(stat);

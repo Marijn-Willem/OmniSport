@@ -20,7 +20,7 @@ public class EventPartLocationList extends SuperResponseServlet {
     @Override
     protected void processBody(Statement stat, HttpServletRequest req, HttpServletResponse resp)
             throws IOException, SQLException {
-        CompSeasonEventPartKey csepKey = getCompSeasonEventPartKey(stat, req);
+        CompSeasonEventPartKey csepKey = getCompSeasonEventPartKey(req);
 
         List<EventPartLocation> eventPartLocations = new EventPartLocationManager(stat).getEventPartLocations(csepKey);
         new DbCalculation(stat).setEventPartLocationStringFields(eventPartLocations);

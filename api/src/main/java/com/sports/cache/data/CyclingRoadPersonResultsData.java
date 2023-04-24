@@ -7,10 +7,10 @@ import com.sports.cache.util.DataFragmentUtil;
 import com.sports.cache.util.JsonUtil;
 import com.sports.cache.util.XmlUtil;
 import com.sports.calc.cyclingroad.DbCalculation;
-import com.sports.entity.key.CompSeasonEventPartKey;
 import com.sports.entity.EventPartPersonSport;
+import com.sports.entity.key.CompSeasonEventKey;
+import com.sports.entity.key.CompSeasonEventPartKey;
 import com.sports.entity.key.CompSeasonKey;
-import com.sports.entity.key.SportEventKey;
 
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -43,11 +43,11 @@ public class CyclingRoadPersonResultsData extends OutputData {
 		cyclingRoadPersonResultFragmentList.addAll(
 			eventPartPersonSports.stream().map(x -> {
 					CompSeasonEventPartKey csepKey = x.getCompSeasonEventPart().getCompSeasonEventPartKey();
+					CompSeasonEventKey cseKey = csepKey.getSuperKey();
 					CompSeasonKey compSeasonKey = csepKey.getSuperKey().getSuperKey();
-					SportEventKey sportEventKey = csepKey.getSuperKey().getSportEventKey();
 
 					return new CyclingRoadPersonResultFragment(
-							compSeasonKey.getCompetitionId(), compSeasonKey.getSeasonId(), sportEventKey.getSportEventId(),
+							compSeasonKey.getCompetitionId(), compSeasonKey.getSeasonId(), cseKey.getCompSeasonEventId(),
 							csepKey.getCompSeasonEventPartId(), personSportId, x.getRank(), x.getNoCountResultId(),
 							x.getEventDate(), clientId);
 				})

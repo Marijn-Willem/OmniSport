@@ -6,12 +6,10 @@ import com.sports.cache.util.DataFragmentUtil;
 import com.sports.cache.util.JsonUtil;
 import com.sports.cache.util.XmlUtil;
 import com.sports.entity.CompSeasonEventPart;
-import com.sports.entity.Competition;
 import com.sports.entity.comparator.OrderableOrder;
 import com.sports.entity.key.CompSeasonEventKey;
 import com.sports.entity.key.CompSeasonKey;
 import com.sports.entity.manager.CompSeasonEventPartManager;
-import com.sports.entity.manager.CompetitionManager;
 
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -41,24 +39,19 @@ public class CompSeasonEventPartListData extends OutputData {
 
 	@Override
 	public void fill(Statement stat) throws SQLException {
-		Competition competition = new CompetitionManager(stat).getCompetition(competitionId);
+		CompSeasonEventKey compSeasonEventKey = new CompSeasonEventKey(
+				new CompSeasonKey(competitionId, seasonId), sportEventId);
 
-		if (competition != null) {
-			int sportId = competition.getSportId();
-			CompSeasonEventKey compSeasonEventKey = new CompSeasonEventKey(
-					new CompSeasonKey(competitionId, seasonId), sportId, sportEventId);
+		List<CompSeasonEventPart> compSeasonEventParts = new CompSeasonEventPartManager(stat)
+				.getCompSeasonEventPartsFromEvents(Collections.singletonList(compSeasonEventKey));
 
-			List<CompSeasonEventPart> compSeasonEventParts = new CompSeasonEventPartManager(stat)
-					.getCompSeasonEventPartsFromEvents(Collections.singletonList(compSeasonEventKey));
+		compSeasonEventParts.sort(new OrderableOrder());
 
-			compSeasonEventParts.sort(new OrderableOrder());
+		fragmentList.addAll(compSeasonEventParts.stream().map(x ->
+				new CompSeasonEventPartFragment(competitionId, seasonId, sportEventId,
+						x.getCompSeasonEventPartId(), clientId)).toList());
 
-			fragmentList.addAll(compSeasonEventParts.stream().map(x ->
-					new CompSeasonEventPartFragment(competitionId, seasonId, sportEventId,
-							x.getCompSeasonEventPartId(), clientId)).toList());
-
-			DataFragmentUtil.fillDataFragments(fragmentList, getCacheKey());
-		}
+		DataFragmentUtil.fillDataFragments(fragmentList, getCacheKey());
 	}
 
 	@Override

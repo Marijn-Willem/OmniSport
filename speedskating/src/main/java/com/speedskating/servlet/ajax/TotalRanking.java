@@ -2,15 +2,14 @@ package com.speedskating.servlet.ajax;
 
 import com.sports.calc.speedskating.DbCalculation;
 import com.sports.entity.EventPartPersonSport;
-import com.sports.entity.Sport;
 import com.sports.entity.key.CompSeasonEventKey;
 import com.sports.entity.key.CompSeasonEventPartKey;
 import com.sports.entity.key.CompSeasonKey;
 import com.sports.logic.util.Util;
 import com.sportservlet.SuperResponseServlet;
-
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+
 import java.io.IOException;
 import java.io.Writer;
 import java.sql.SQLException;
@@ -28,7 +27,7 @@ public class TotalRanking extends SuperResponseServlet {
         CompSeasonEventPartKey csepk =
                 new CompSeasonEventPartKey(
                         new CompSeasonEventKey(
-                                new CompSeasonKey(competitionId, seasonId), Sport.sportIdSpeedSkating, eventId),
+                                new CompSeasonKey(competitionId, seasonId), eventId),
                         eventPartId);
 
         List<EventPartPersonSport> ranking = new DbCalculation(stat).getTotalRanking(csepk);

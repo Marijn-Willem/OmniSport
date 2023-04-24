@@ -5,11 +5,10 @@ import com.sports.entity.key.EntityInstanceKey;
 import com.sports.entity.manager.SuperKeySuperManager;
 import com.sports.logic.calculation.Calculation;
 import com.sports.logic.factory.EntityInstanceFactory;
-import com.sportservlet.ajax.ProcessManageSuperKeyEntity;
 import com.sportservlet.flush.CacheFlusher;
 import com.sportservlet.flush.EntityInstanceFlusher;
-
 import jakarta.servlet.http.HttpServletRequest;
+
 import java.sql.Statement;
 
 public class ProcessManageEntityInstance extends ProcessManageSuperKeyEntity<EntityInstanceKey, EntityInstance> {

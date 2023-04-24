@@ -41,7 +41,7 @@ public class EventDisciplinePartListFragment extends DataFragment {
     @Override
     void fill(Statement stat) throws SQLException {
         CompSeasonEventPartKey compSeasonEventPartKey = new CompSeasonEventPartKey(
-                new CompSeasonEventKey(new CompSeasonKey(competitionId, seasonId), sportId, sportEventId),
+                new CompSeasonEventKey(new CompSeasonKey(competitionId, seasonId), sportEventId),
                 sportEventPartId
         );
 

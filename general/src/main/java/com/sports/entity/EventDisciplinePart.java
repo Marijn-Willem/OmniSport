@@ -12,7 +12,7 @@ public class EventDisciplinePart extends SuperKeyEntity implements NamedEntity {
 
     public String[] getPropertiesInSQLStrings() {
         return new String[] {
-                "" + sportDisciplineId,
+                String.valueOf(sportDisciplineId),
                 QueryUtil.convertIntegerToDbValue(disciplinePartId),
                 QueryUtil.convertStringToDbValue(name)
         };

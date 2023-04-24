@@ -20,12 +20,14 @@ public record DbCalculation(Statement stat) {
         CompSeasonEventPart csep = csepm.getCompSeasonEventPart(csepk);
 
         if (csep != null) {
+            CompSeasonEvent cse = new CompSeasonEventManager(stat).getEntityFromSuperKey(csepk.getSuperKey());
+
             if (csep.getSportEventPartId() != null) {
-                SportEventPartKey sepk = new SportEventPartKey(csepk.getSuperKey().getSportEventKey(),
+                SportEventPartKey sepk = new SportEventPartKey(cse.getSportEventKey(),
                         csep.getSportEventPartId());
                 return getSportDisciplineKey(sepk);
             } else if (csep.getSportDisciplineId() != null)
-                return new SportDisciplineKey(csepk.getSuperKey().getSportId(), csep.getSportDisciplineId());
+                return new SportDisciplineKey(cse.getSportEventKey().getSportId(), csep.getSportDisciplineId());
         }
 
         return null;
@@ -48,13 +50,14 @@ public record DbCalculation(Statement stat) {
         SportEventPartManager sepm = new SportEventPartManager(stat);
         DisciplinePartManager dppm = new DisciplinePartManager(stat);
 
-        List<SportEventPart> sportEventParts = sepm.getSportEventParts(csek.getSportEventKey());
+        List<SportEventPart> sportEventParts = sepm.getSportEventParts(cse.getSportEventKey());
 
         Map<CompSeasonEventPartKey, CompSeasonEventPart> csepMap = new HashMap<>();
         List<SportDisciplineKey> sportDisciplineKeys = new ArrayList<>();
 
         for (SportEventPart sportEventPart : sportEventParts) {
-            sportDisciplineKeys.add(new SportDisciplineKey(csek.getSportId(), sportEventPart.getSportDisciplineId()));
+            sportDisciplineKeys.add(new SportDisciplineKey(cse.getSportEventKey().getSportId(),
+                    sportEventPart.getSportDisciplineId()));
 
             CompSeasonEventPartKey csepKey = new CompSeasonEventPartKey(csek, sportEventPart.getSportEventPartId());
             CompSeasonEventPart csep = new CompSeasonEventPart();
@@ -98,28 +101,27 @@ public record DbCalculation(Statement stat) {
         SportEventManager sem = new SportEventManager(stat);
 
         int sportId = cm.getCompetition(csk.getCompetitionId()).getSportId();
-        List<CompSeasonEventKey> compSeasonEventKeys = csem.getCompSeasonEventKeys(csk);
+        List<CompSeasonEvent> compSeasonEvents = csem.getCompSeasonEvents(csk);
         List<SportEvent> sportEvents = sem.getSportEventList(Collections.singletonList(sportId));
 
-        List<SportEventKey> allSportEventKeys = new ArrayList<>();
-        for (SportEvent sportEvent : sportEvents)
-            allSportEventKeys.add(new SportEventKey(sportId, sportEvent.getSportEventId()));
+        List<SportEventKey> allSportEventKeys = new ArrayList<>() {{
+            addAll(sportEvents.stream().map(x -> new SportEventKey(sportId, x.getSportEventId())).toList());
+        }};
 
-        List<SportEventKey> existingSportEventKeys = new ArrayList<>();
-        for (CompSeasonEventKey compSeasonEventKey : compSeasonEventKeys)
-            existingSportEventKeys.add(compSeasonEventKey.getSportEventKey());
+        List<SportEventKey> existingSportEventKeys = new ArrayList<>() {{
+            addAll(compSeasonEvents.stream().map(CompSeasonEvent::getSportEventKey).toList());
+        }};
 
         List<SportEventKey> sportEventKeysResult = Util.getElementsLeftNotInRight(allSportEventKeys, existingSportEventKeys);
-        List<SportEvent> sportEventsResult = new ArrayList<>();
 
-        for (SportEventKey sportEventKey : sportEventKeysResult)
-            for (SportEvent sportEvent : sportEvents)
-                if (sportEvent.getSportEventId() == sportEventKey.getSportEventId()) {
-                    sportEventsResult.add(sportEvent);
-                    break;
-                }
-
-        return sportEventsResult;
+        return new ArrayList<>() {{
+            for (SportEventKey sportEventKey : sportEventKeysResult)
+                for (SportEvent sportEvent : sportEvents)
+                    if (sportEvent.getSportEventId() == sportEventKey.getSportEventId()) {
+                        add(sportEvent);
+                        break;
+                    }
+        }};
     }
 
     public boolean hasSportEventParts(SportEventKey sek) throws SQLException {
@@ -131,9 +133,9 @@ public record DbCalculation(Statement stat) {
         return sdk != null && new DisciplinePartManager(stat).getDisciplinePartList(Collections.singletonList(sdk)).size() > 0;
     }
 
-    public void insertParticipantsFromCompSeason(CompSeasonEventKey cseKey) throws SQLException {
+    public void insertParticipantsFromCompSeason(CompSeasonEventKey cseKey, CompSeasonEvent cse) throws SQLException {
         CompSeasonKey csKey = cseKey.getSuperKey();
-        SportEvent sportEvent = new SportEventManager(stat).getEntityFromSuperKey(cseKey.getSportEventKey());
+        SportEvent sportEvent = new SportEventManager(stat).getEntityFromSuperKey(cse.getSportEventKey());
 
         if (sportEvent != null) {
             AlcifoParticipantFactory factory = Calculation.getAlcifoParticipantFactory(sportEvent);
@@ -193,6 +195,7 @@ public record DbCalculation(Statement stat) {
         AlcifoPartParticipantManager<?, U, ?> partParticipantManager = (AlcifoPartParticipantManager<?, U, ?>) factory.getManager(stat);
 
         CompSeasonEventKey cseKey = factory.getCompSeasonEventPartKey(partKey).getSuperKey();
+        CompSeasonEvent cse = new CompSeasonEventManager(stat).getEntityFromSuperKey(cseKey);
 
         List<? extends AlcifoPartParticipant> pPartList = partParticipantManager.getPartParticipantList(partKey);
         Map<SuperKey, AlcifoPartParticipant> pPartMap = new HashMap<>() {{
@@ -202,7 +205,7 @@ public record DbCalculation(Statement stat) {
             });
         }};
 
-        SportEvent se = new SportEventManager(stat).getEntityFromSuperKey(cseKey.getSportEventKey());
+        SportEvent se = new SportEventManager(stat).getEntityFromSuperKey(cse.getSportEventKey());
         if (se != null)
             sortAndRankPartParticipantsByPoints(pPartList, se.isPointsSortAsc());
         pPartList.forEach(AlcifoPartParticipant::overrideNullRankWithCalculatedRank);
@@ -238,13 +241,16 @@ public record DbCalculation(Statement stat) {
         List<EventPartNameKey> epnKeys = new ArrayList<>();
         List<SportDisciplineKey> sdKeys = new ArrayList<>();
 
+        CompSeasonEvent compSeasonEvent = new CompSeasonEventManager(stat).getEntityFromSuperKey(compSeasonEventKey);
+        SportEventKey seKey = compSeasonEvent.getSportEventKey();
+
         compSeasonEventParts.forEach(x -> {
             if (x.getSportEventPartId() != null)
-                sepKeys.add(new SportEventPartKey(x.getSportEventKey(), x.getSportEventPartId()));
+                sepKeys.add(new SportEventPartKey(seKey, x.getSportEventPartId()));
             else if (x.getEventPartNameId() != null)
-                epnKeys.add(new EventPartNameKey(x.getSportEventKey(), x.getEventPartNameId()));
+                epnKeys.add(new EventPartNameKey(seKey, x.getEventPartNameId()));
             else if (x.getSportDisciplineId() != null)
-                sdKeys.add(new SportDisciplineKey(x.getSportId(), x.getSportDisciplineId()));
+                sdKeys.add(new SportDisciplineKey(seKey.getSportId(), x.getSportDisciplineId()));
         });
 
         Map<SportEventPartKey, SportEventPart> sepMap = new SportEventPartManager(stat).getSportEventPartMap(sepKeys);
@@ -263,13 +269,13 @@ public record DbCalculation(Statement stat) {
             CompSeasonEventPartKey csepKey = new CompSeasonEventPartKey(compSeasonEventKey, x.getCompSeasonEventPartId());
 
             if (x.getSportEventPartId() != null)
-                name = sepMap.get(new SportEventPartKey(x.getSportEventKey(), x.getSportEventPartId())).getName();
+                name = sepMap.get(new SportEventPartKey(seKey, x.getSportEventPartId())).getName();
             else if (x.getEventPartNameId() != null)
-                name = epnMap.get(new EventPartNameKey(x.getSportEventKey(), x.getEventPartNameId())).getName();
+                name = epnMap.get(new EventPartNameKey(seKey, x.getEventPartNameId())).getName();
             else if (geoMap.containsKey(csepKey))
                 name = geoMap.get(csepKey).getName();
             else
-                name = sdMap.get(new SportDisciplineKey(x.getSportId(), x.getSportDisciplineId())).getName();
+                name = sdMap.get(new SportDisciplineKey(seKey.getSportId(), x.getSportDisciplineId())).getName();
 
             x.setDescription(name);
         });

@@ -50,7 +50,7 @@ public class SpeedSkatingHeatData extends OutputData {
         if (sportId == Sport.sportIdSpeedSkating) {
             CompSeasonEventPartKey csepKey = new CompSeasonEventPartKey(
                     new CompSeasonEventKey(
-                            new CompSeasonKey(competitionId, seasonId), sportId, sportEventId
+                            new CompSeasonKey(competitionId, seasonId), sportEventId
                     ), sportEventPartId
             );
 

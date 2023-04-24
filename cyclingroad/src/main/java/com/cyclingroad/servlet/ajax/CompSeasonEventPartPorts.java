@@ -31,7 +31,7 @@ public class CompSeasonEventPartPorts extends SuperResponseServlet {
         boolean showSetGeneralPoints = Calculation.isGeneralClassification(eid);
 
         CompSeasonEvent compSeasonEvent = new CompSeasonEventManager(stat).getEntityFromSuperKey(
-                getCompSeasonEventKey(stat, req));
+                getCompSeasonEventKey(req));
 
         String partUrl, participantAsString;
 

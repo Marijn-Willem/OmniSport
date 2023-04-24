@@ -1,10 +1,7 @@
 package com.sportservlet.html;
 
 import com.sports.calc.alcifo.DbCalculation;
-import com.sports.entity.CompSeasonEventPart;
-import com.sports.entity.EventPartName;
-import com.sports.entity.SportDiscipline;
-import com.sports.entity.SportEventPart;
+import com.sports.entity.*;
 import com.sports.entity.key.CompSeasonEventKey;
 import com.sports.entity.key.CompSeasonEventPartKey;
 import com.sports.entity.key.SportEventKey;
@@ -37,9 +34,10 @@ public abstract class ManageCompSeasonEventPart extends ManageEntity {
     protected void processScriptTag(Statement stat, HttpServletRequest req, Writer w) throws IOException, SQLException {
         super.processScriptTag(stat, req, w);
 
-        int spid = new CompetitionManager(stat).getCompetition(competitionId).getSportId();
         int eid = getIntValuedParameterValue(req, "eid");
-        sportEventKey = new SportEventKey(spid, eid);
+        CompSeasonEventKey cseKey = new CompSeasonEventKey(compSeasonKey, eid);
+        CompSeasonEvent cse = new CompSeasonEventManager(stat).getEntityFromSuperKey(cseKey);
+        sportEventKey = cse.getSportEventKey();
         hasFixedParts = new DbCalculation(stat).hasSportEventParts(sportEventKey);
 
         writeCompSeasonVarsInScriptTag(w);
@@ -51,14 +49,13 @@ public abstract class ManageCompSeasonEventPart extends ManageEntity {
 
     protected void processSpecific(Statement stat, HttpServletRequest req, HttpServletResponse res)
             throws IOException, SQLException {
-        int spid = sportEventKey.getSportId();
         int eid = sportEventKey.getSportEventId();
 
         CompSeasonEventPart csep = null;
         if (!"i".equals(mode)) {
             int csepid = getIntValuedParameterValue(req, "csepid");
             CompSeasonEventPartKey csepk = new CompSeasonEventPartKey(
-                    new CompSeasonEventKey(compSeasonKey, spid, eid), csepid);
+                    new CompSeasonEventKey(compSeasonKey, eid), csepid);
 
             csep = new CompSeasonEventPartManager(stat).getCompSeasonEventPart(csepk);
         }
@@ -67,7 +64,8 @@ public abstract class ManageCompSeasonEventPart extends ManageEntity {
         LinkedHashMap<Integer, String> sportEventPartMap = getLinkedHashMapFromNamedEntities(sportEventParts, true,
                 SportEventPart::getSportEventPartId);
 
-        List<SportDiscipline> sportDisciplines = new SportDisciplineManager(stat).getSportDisciplinesForSport(spid);
+        List<SportDiscipline> sportDisciplines = new SportDisciplineManager(stat).getSportDisciplinesForSport(
+                sportEventKey.getSportId());
         LinkedHashMap<Integer, String> sportDisciplineMap = getLinkedHashMapFromNamedEntities(sportDisciplines, true,
                 SportDiscipline::getSportDisciplineId);
 

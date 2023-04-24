@@ -1,15 +1,14 @@
 package com.speedskating.servlet.dispatch;
 
 import com.sports.entity.EventPartPersonSport;
-import com.sports.entity.Sport;
 import com.sports.entity.key.CompSeasonEventKey;
 import com.sports.entity.key.CompSeasonEventPartKey;
 import com.sports.entity.key.CompSeasonKey;
 import com.sports.entity.key.EventPartPersonSportKey;
 import com.sports.entity.manager.EventPartPersonSportManager;
 import com.sportservlet.dispatch.SuperDispatchServlet;
-
 import jakarta.servlet.http.HttpServletRequest;
+
 import java.sql.SQLException;
 import java.sql.Statement;
 
@@ -28,9 +27,8 @@ public class ProcessAddEventPartPersonSports extends SuperDispatchServlet {
 
             CompSeasonEventPartKey csepk =
                     new CompSeasonEventPartKey(
-                            new CompSeasonEventKey(new CompSeasonKey(competitionId, seasonId),
-                                    Sport.sportIdSpeedSkating, eventId),
-                    eventPartId);
+                            new CompSeasonEventKey(new CompSeasonKey(competitionId, seasonId), eventId),
+                            eventPartId);
 
             EventPartPersonSportManager eppm = new EventPartPersonSportManager(stat);
 

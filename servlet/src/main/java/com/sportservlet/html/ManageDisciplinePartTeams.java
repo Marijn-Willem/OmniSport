@@ -1,21 +1,19 @@
 package com.sportservlet.html;
 
-import com.sports.entity.key.EventDisciplinePartKey;
 import com.sports.calc.alcifo.AlcifoPartParticipantFactory;
 import com.sports.calc.alcifo.DisciplinePartTeamFactory;
-
+import com.sports.entity.key.EventDisciplinePartKey;
 import jakarta.servlet.http.HttpServletRequest;
+
 import java.io.IOException;
 import java.io.Writer;
-import java.sql.SQLException;
-import java.sql.Statement;
 
 public abstract class ManageDisciplinePartTeams extends ManageAlcifoPartParticipants {
     @Override
-    EventDisciplinePartKey getPartKey(Statement stat, HttpServletRequest req) throws SQLException {
+    EventDisciplinePartKey getPartKey(HttpServletRequest req) {
         int edpid = getIntValuedParameterValue(req, "edpid");
 
-        return new EventDisciplinePartKey(getCompSeasonEventPartKey(stat, req), edpid);
+        return new EventDisciplinePartKey(getCompSeasonEventPartKey(req), edpid);
     }
 
     @Override

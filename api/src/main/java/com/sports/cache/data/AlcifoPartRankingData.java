@@ -63,7 +63,7 @@ public abstract class AlcifoPartRankingData extends OutputData {
 
             CompSeasonEventPartKey csepKey = new CompSeasonEventPartKey(
                     new CompSeasonEventKey(
-                            new CompSeasonKey(competitionId, seasonId), sportId, sportEventId), compSeasonEventPartId);
+                            new CompSeasonKey(competitionId, seasonId), sportEventId), compSeasonEventPartId);
             DbCalculation dbCalculation = new DbCalculation(stat);
             SportDiscipline sportDiscipline = getSportDiscipline(csepKey, dbCalculation, stat);
 
