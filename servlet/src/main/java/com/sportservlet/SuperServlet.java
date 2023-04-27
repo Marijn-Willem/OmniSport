@@ -42,9 +42,9 @@ public abstract class SuperServlet extends HttpServlet {
     }
 
     protected CompSeasonEventKey getCompSeasonEventKey(HttpServletRequest req) {
-        int eid = getIntValuedParameterValue(req, "eid");
+        int cseid = getIntValuedParameterValue(req, "cseid");
 
-        return new CompSeasonEventKey(compSeasonKey, eid);
+        return new CompSeasonEventKey(compSeasonKey, cseid);
     }
 
     protected CompSeasonEventPartKey getCompSeasonEventPartKey(HttpServletRequest req) {

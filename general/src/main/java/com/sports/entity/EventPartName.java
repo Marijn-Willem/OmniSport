@@ -2,11 +2,10 @@ package com.sports.entity;
 
 import com.sports.db.util.QueryUtil;
 
-public class EventPartName extends SuperKeyAliasable {
+public class EventPartName extends IntAliasable {
     private String name;
 
-    private int eventPartNameId;
-
+    private int id;
     @Override
     public int getAliasEntityId() {
         return AliasEntity.aliasEntityIdEventPartName;
@@ -28,11 +27,12 @@ public class EventPartName extends SuperKeyAliasable {
         this.name = name;
     }
 
-    public int getEventPartNameId() {
-        return eventPartNameId;
+    @Override
+    public int getId() {
+        return id;
     }
 
-    public void setEventPartNameId(int eventPartNameId) {
-        this.eventPartNameId = eventPartNameId;
+    public void setId(int id) {
+        this.id = id;
     }
 }

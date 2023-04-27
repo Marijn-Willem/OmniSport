@@ -1,11 +1,9 @@
 package com.cyclingroad.servlet.ajax;
 
+import com.sports.calc.alcifo.DbCalculation;
 import com.sports.calc.cyclingroad.Calculation;
 import com.sports.entity.CompSeasonEvent;
-import com.sports.entity.Sport;
-import com.sports.entity.key.SportEventKey;
 import com.sports.entity.manager.CompSeasonEventManager;
-import com.sports.entity.manager.SportEventManager;
 import com.sportservlet.SuperResponseServlet;
 import com.sportservlet.util.ServletUtil;
 import jakarta.servlet.http.HttpServletRequest;
@@ -20,18 +18,15 @@ public class CompSeasonEventPartPorts extends SuperResponseServlet {
     @Override
     protected void processBody(Statement stat, HttpServletRequest req, HttpServletResponse resp)
             throws IOException, SQLException {
-        int eid = getIntValuedParameterValue(req, "eid");
+        int cseid = getIntValuedParameterValue(req, "cseid");
         int csepid = getIntValuedParameterValue(req, "csepid");
 
-        String parameters = compSeasonUrlParameters + "&eid=" + eid + "&csepid=" + csepid;
+        String parameters = compSeasonUrlParameters + "&cseid=" + cseid + "&csepid=" + csepid;
 
-        boolean isTeam = new SportEventManager(stat).getEntityFromSuperKey(
-                new SportEventKey(Sport.sportIdCyclingRoad, eid)).isTeam();
+        CompSeasonEvent cse = new CompSeasonEventManager(stat).getEntityFromSuperKey(getCompSeasonEventKey(req));
 
-        boolean showSetGeneralPoints = Calculation.isGeneralClassification(eid);
-
-        CompSeasonEvent compSeasonEvent = new CompSeasonEventManager(stat).getEntityFromSuperKey(
-                getCompSeasonEventKey(req));
+        boolean isTeam = new DbCalculation(stat).getSportEvent(getCompSeasonEventKey(req)).isTeam();
+        boolean showSetGeneralPoints = Calculation.isGeneralClassification(cseid);
 
         String partUrl, participantAsString;
 
@@ -55,7 +50,7 @@ public class CompSeasonEventPartPorts extends SuperResponseServlet {
             w.append("<input type=\"button\" onclick=\"setGeneralClassificationPoints();\" ");
             w.append("value=\"Calculate general classification times\" /><br/>\n");
         }
-        if (compSeasonEvent.getExternalSource() != null)
+        if (cse.getExternalSource() != null)
             w.append("<input type=\"button\" onclick=\"scrape();\" value=\"Scrape\" /><br/>\n");
         w.append("<div id=\"divIns\"></div>\n");
     }

@@ -7,10 +7,10 @@ import java.sql.Statement;
 public class ManageEventPartLocation extends com.sportservlet.html.ManageEventPartLocation {
     @Override
     public String getBasicReturnPath(Statement stat, HttpServletRequest req) {
-        int eid = getIntValuedParameterValue(req, "eid");
+        int cseid = getIntValuedParameterValue(req, "cseid");
         int csepid = getIntValuedParameterValue(req, "csepid");
 
-        return "EventPartLocationPortal?" + compSeasonUrlParameters + "&eid=" + eid + "&csepid=" + csepid;
+        return "EventPartLocationPortal?" + compSeasonUrlParameters + "&cseid=" + cseid + "&csepid=" + csepid;
     }
 
     @Override

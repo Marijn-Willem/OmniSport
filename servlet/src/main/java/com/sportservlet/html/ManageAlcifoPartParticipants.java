@@ -47,7 +47,7 @@ public abstract class ManageAlcifoPartParticipants extends SuperHtmlServlet impl
         int rtid = new SportDisciplineManager(stat).getEntityFromSuperKey(Objects.requireNonNull(sdk)).getResultTypeId();
 
         writeCompSeasonVarsInScriptTag(w);
-        writeVarInScriptTag("eid", getIntValuedParameterValue(req, "eid"), w);
+        writeVarInScriptTag("cseid", getIntValuedParameterValue(req, "cseid"), w);
         writeVarInScriptTag("csepid", getIntValuedParameterValue(req, "csepid"), w);
         writeSpecificScriptTagVars(req, w);
         writeVarInScriptTag("rtid", rtid, w);

@@ -25,10 +25,6 @@ function goToSportEventPartPortal() {
     goToSportEventSpecificLink('SportEventPartPortal');
 }
 
-function goToEventPartNamePortal() {
-    goToSportEventSpecificLink('EventPartNamePortal');
-}
-
 function goToSportEventSpecificLink(link) {
     const eid = document.getElementById('eid').value;
 

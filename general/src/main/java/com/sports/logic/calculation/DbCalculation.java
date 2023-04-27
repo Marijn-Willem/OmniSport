@@ -13,7 +13,6 @@ import com.sports.logic.util.Util;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.*;
-import java.util.stream.Collectors;
 
 import static com.sports.logic.calculation.Calculation.*;
 
@@ -144,10 +143,6 @@ public record DbCalculation(Statement stat) {
             doubles.add(me.getValue());
 
         return doubles;
-    }
-
-    public List<PersonSport> getStandingCompSeasonPhase(CompSeasonPhaseKey cspk) throws SQLException {
-        return getParticipantStandingCompSeasonPhase(cspk);
     }
 
     public <T extends Participant> List<T> getParticipantStandingCompSeasonPhase(CompSeasonPhaseKey cspk)
@@ -352,7 +347,7 @@ public record DbCalculation(Statement stat) {
         if (client.getLanguageId() != null) {
             languageIds.add(client.getLanguageId());
             languageIds.addAll(getReferencedLanguages(client.getLanguageId())
-                    .stream().map(Language::getId).collect(Collectors.toList()));
+                    .stream().map(Language::getId).toList());
         }
 
         for (Integer languageId : languageIds)
@@ -361,15 +356,6 @@ public record DbCalculation(Statement stat) {
                     return alias;
 
         return null;
-    }
-
-    public List<Client> getClientsRelatedToLanguage(int languageId) throws SQLException {
-        List<Integer> languageIds = new ArrayList<>() {{
-            add(languageId);
-            addAll(getReferencingLanguages(languageId).stream().map(Language::getId).collect(Collectors.toList()));
-        }};
-
-        return new ClientManager(stat).getClientsFromLanguageIds(languageIds);
     }
 
     public List<CompSeasonPhase> getCompSeasonPhaseSiblings(CompSeasonPhaseKey cspk) throws SQLException {
@@ -585,15 +571,6 @@ public record DbCalculation(Statement stat) {
         return new LinkedHashMap<>() {{
             doubleMap.forEach((k, v) -> put(v.getDescription(), v));
         }};
-    }
-
-    private List<PersonSport> getPersonSportList(List<Participant> participantList) {
-        List<PersonSport> personList = new ArrayList<>();
-
-        for (Participant participant : participantList)
-            personList.add((PersonSport) participant);
-
-        return personList;
     }
 
     private void dedoublePersonSports(int personFromId, int personToId) throws SQLException {

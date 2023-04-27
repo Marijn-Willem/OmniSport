@@ -26,6 +26,6 @@ function scrape() {
 function getUrlWithParameters(url) {
     const csepid = document.getElementById('csepid').value;
 
-    return !isEmptyOrNull(csepid) ? '/' + url + '?cid=' + cid + '&sid=' + sid + '&eid=' + eid +
+    return !isEmptyOrNull(csepid) ? '/' + url + '?cid=' + cid + '&sid=' + sid + '&cseid=' + cseid +
         '&csepid=' + csepid : null;
 }

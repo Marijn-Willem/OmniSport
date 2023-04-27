@@ -1,11 +1,11 @@
 const compSeasonEventPartListLoader = new ElementLoader('csepid', function () {
-    return '/CompSeasonEventPartList?cid=' + cid + '&sid=' + sid + '&eid=' + eid;
+    return '/CompSeasonEventPartList?cid=' + cid + '&sid=' + sid + '&cseid=' + cseid;
 }, loadPorts);
 
 const compSeasonEventPartPortsLoader = new ElementLoader('divPorts', function () {
     const csepid = document.getElementById('csepid').value;
     return !isEmptyOrNull(csepid) ?
-        '/CompSeasonEventPartPorts?cid=' + cid + '&sid=' + sid + '&eid=' + eid + '&csepid=' + csepid : null;
+        '/CompSeasonEventPartPorts?cid=' + cid + '&sid=' + sid + '&cseid=' + cseid + '&csepid=' + csepid : null;
 }, null);
 
 function getProcessUrl() {
@@ -16,7 +16,7 @@ function getProcessUrl() {
     const o = getValueFromElementByName('o');
     const st = getValueFromElementByName('st');
 
-    let params = 'cid=' + cid + '&sid=' + sid + '&eid=' + eid + '&csepid=' + csepid +
+    let params = 'cid=' + cid + '&sid=' + sid + '&cseid=' + cseid + '&csepid=' + csepid +
         '&epid=' + epid + '&did=' + did + '&epnid=' + epnid + '&o=' + o + '&st=' + st;
     params = getUpdateWithNonEmptyParameter(params, 'dt', 'dt');
     params = getUpdateWithNonEmptyParameter(params, 'es', 'es');
@@ -57,5 +57,5 @@ function goToEventPartLocationPortal() {
 function goToCompSeasonEventPartPort(port) {
     const csepid = document.getElementById('csepid').value;
     if (!isEmptyOrNull(csepid))
-        goToUrl(port, 'cid=' + cid + '&sid=' + sid + '&eid=' + eid + '&csepid=' + csepid);
+        goToUrl(port, 'cid=' + cid + '&sid=' + sid + '&cseid=' + cseid + '&csepid=' + csepid);
 }

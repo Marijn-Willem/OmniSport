@@ -69,9 +69,9 @@ public abstract class ManageCompSeasonEventPart extends ManageEntity {
         LinkedHashMap<Integer, String> sportDisciplineMap = getLinkedHashMapFromNamedEntities(sportDisciplines, true,
                 SportDiscipline::getSportDisciplineId);
 
-        List<EventPartName> eventPartNames = new EventPartNameManager(stat).getEventPartNames(sportEventKey);
+        List<EventPartName> eventPartNames = new EventPartNameManager(stat).getEventPartNames();
         LinkedHashMap<Integer, String> eventPartNameMap = getLinkedHashMapFromNamedEntities(eventPartNames, true,
-                EventPartName::getEventPartNameId);
+                EventPartName::getId);
 
         Writer w = res.getWriter();
 

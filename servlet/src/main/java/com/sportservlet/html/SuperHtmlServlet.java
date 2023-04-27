@@ -117,6 +117,18 @@ public abstract class SuperHtmlServlet extends SuperResponseServlet {
         writeVarInScriptTag("pid", phaseId, w);
     }
 
+    protected void writeCompSeasonEventVarsInScriptTag(HttpServletRequest req, Writer w) throws IOException {
+        writeCompSeasonVarsInScriptTag(w);
+        int compSeasonEventId = getIntValuedParameterValue(req, "cseid");
+        writeVarInScriptTag("cseid", compSeasonEventId, w);
+    }
+
+    protected void writeCompSeasonEventPartVarsInScriptTag(HttpServletRequest req, Writer w) throws IOException {
+        writeCompSeasonEventVarsInScriptTag(req, w);
+        int compSeasonEventPartId = getIntValuedParameterValue(req, "csepid");
+        writeVarInScriptTag("csepid", compSeasonEventPartId, w);
+    }
+
     protected void writeVarInScriptTag(String name, int value, Writer w) throws IOException {
         writeVarNameAndValue(name, value, w);
     }

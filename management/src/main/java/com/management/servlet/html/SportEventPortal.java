@@ -36,7 +36,6 @@ public class SportEventPortal extends SuperHtmlServlet {
         w.append("<select id=\"eid\" onchange=\"handleChangeSportEvent();\">\n</select>\n<br/>\n");
         w.append("<input type=\"button\" onclick=\"goToManageSportEvent();\" value=\"Manage Sport Event\" /><br/>\n");
         w.append("<input type=\"button\" onclick=\"goToSportEventPartPortal();\" value=\"Manage Sport Event Parts\" /><br/>\n");
-        w.append("<input id=\"btnEpn\" type=\"button\" onclick=\"goToEventPartNamePortal();\" value=\"Manage Event Part Names\" /><br/>\n");
         w.append("<div>\n<a href=\"");
         w.append(path);
         w.append("/ManageSportEvent?spid=");

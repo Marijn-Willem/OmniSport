@@ -24,7 +24,7 @@ public class SportEvent extends SuperKeyAliasable implements GenderAliasable {
         return new String[] {
                 QueryUtil.convertStringToDbValue(name),
                 QueryUtil.convertBooleanToDbValue(pointsSortAsc),
-                "" + genderId,
+                String.valueOf(genderId),
                 QueryUtil.convertBooleanToDbValue(isTeam)
             };
     }

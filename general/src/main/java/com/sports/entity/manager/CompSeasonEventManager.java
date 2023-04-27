@@ -27,7 +27,7 @@ public class CompSeasonEventManager extends SuperKeySuperManager<CompSeasonEvent
 
     @Override
     String[] getValueColumns() {
-        return new String[] { "sportid", "sporteventid", "externalsource" };
+        return new String[] { "sportid", "sporteventid", "genderid", "externalsource" };
     }
 
     @Override
@@ -37,6 +37,7 @@ public class CompSeasonEventManager extends SuperKeySuperManager<CompSeasonEvent
         compSeasonEvent.setCompSeasonEventId(rs.getInt("compseasoneventid"));
         compSeasonEvent.setSportId(rs.getInt("sportid"));
         compSeasonEvent.setSportEventId(rs.getInt("sporteventid"));
+        compSeasonEvent.setGenderId(rs.getInt("genderid"));
         compSeasonEvent.setExternalSource(rs.getString("externalsource"));
 
         return compSeasonEvent;
@@ -69,5 +70,10 @@ public class CompSeasonEventManager extends SuperKeySuperManager<CompSeasonEvent
 
     public void insertCompSeasonEventMap(Map<CompSeasonEventKey, CompSeasonEvent> cseMap) throws SQLException {
         insert(cseMap);
+    }
+
+    public CompSeasonEventKey getNewCompSeasonEventKey(CompSeasonKey compSeasonKey) throws SQLException {
+        int compSeasonEventId = getNewInt("compseasoneventid", compSeasonKey.getWhereClause());
+        return new CompSeasonEventKey(compSeasonKey, compSeasonEventId);
     }
 }

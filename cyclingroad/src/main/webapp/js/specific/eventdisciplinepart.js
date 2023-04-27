@@ -2,7 +2,7 @@ const insertDisciplinePartParticipantLoader = new ElementLoader('divIns', functi
     const edpid = document.getElementById('edpid').value;
     const url = isTeam ? 'ProcessInsertDisciplinePartTeams' : 'ProcessInsertDisciplinePartPersonSports';
 
-    return !isEmptyOrNull(edpid) ? '/' + url + '?cid=' + cid + '&sid=' + sid + '&eid=' + eid +
+    return !isEmptyOrNull(edpid) ? '/' + url + '?cid=' + cid + '&sid=' + sid + '&cseid=' + cseid +
         '&csepid=' + csepid + '&edpid=' + edpid : null;
 }, null);
 

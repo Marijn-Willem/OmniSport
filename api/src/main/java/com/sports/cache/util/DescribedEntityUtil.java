@@ -71,13 +71,10 @@ public record DescribedEntityUtil(int clientId, CacheDataKey cacheDataKey, State
         }
 
         if (compSeasonEventPart.getEventPartNameId() != null) {
-            CompSeasonEvent compSeasonEvent = getCompSeasonEvent(compSeasonEventPart);
-            EventPartNameKey eventPartNameKey = new EventPartNameKey(compSeasonEvent.getSportEventKey(),
+            EventPartName eventPartName = new EventPartNameManager(stat).getEntityFromId(
                     compSeasonEventPart.getEventPartNameId());
 
-            EventPartName eventPartName = new EventPartNameManager(stat).getEntityFromSuperKey(eventPartNameKey);
-
-            return aliasUtil.getAliasableAsClientSpecificString(eventPartName, eventPartNameKey);
+            return aliasUtil.getAliasableAsClientSpecificString(eventPartName);
         }
 
         CompSeasonEventPartKey compSeasonEventPartKey = compSeasonEventPart.getCompSeasonEventPartKey();

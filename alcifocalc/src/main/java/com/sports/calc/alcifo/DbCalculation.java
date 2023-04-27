@@ -7,7 +7,6 @@ import com.sports.entity.comparator.DisciplinePartSportDisciplineId;
 import com.sports.entity.comparator.ParticipantRank;
 import com.sports.entity.key.*;
 import com.sports.entity.manager.*;
-import com.sports.logic.util.Util;
 
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -46,7 +45,7 @@ public record DbCalculation(Statement stat) {
                 }
     }
 
-    public void insertCompSeasonEvent(CompSeasonEventKey csek, CompSeasonEvent cse) throws SQLException {
+    public void postMortenInsertCompSeasonEvent(CompSeasonEventKey csek, CompSeasonEvent cse) throws SQLException {
         SportEventPartManager sepm = new SportEventPartManager(stat);
         DisciplinePartManager dppm = new DisciplinePartManager(stat);
 
@@ -90,38 +89,8 @@ public record DbCalculation(Statement stat) {
             }
         }
 
-        new CompSeasonEventManager(stat).insertCompSeasonEvent(csek, cse);
         new CompSeasonEventPartManager(stat).insertCompSeasonEventParts(csepMap);
         new EventDisciplinePartManager(stat).insertEventDisciplineParts(edpMap);
-    }
-
-    public List<SportEvent> getSportEventsNotInCompSeason(CompSeasonKey csk) throws SQLException {
-        CompetitionManager cm = new CompetitionManager(stat);
-        CompSeasonEventManager csem = new CompSeasonEventManager(stat);
-        SportEventManager sem = new SportEventManager(stat);
-
-        int sportId = cm.getCompetition(csk.getCompetitionId()).getSportId();
-        List<CompSeasonEvent> compSeasonEvents = csem.getCompSeasonEvents(csk);
-        List<SportEvent> sportEvents = sem.getSportEventList(Collections.singletonList(sportId));
-
-        List<SportEventKey> allSportEventKeys = new ArrayList<>() {{
-            addAll(sportEvents.stream().map(x -> new SportEventKey(sportId, x.getSportEventId())).toList());
-        }};
-
-        List<SportEventKey> existingSportEventKeys = new ArrayList<>() {{
-            addAll(compSeasonEvents.stream().map(CompSeasonEvent::getSportEventKey).toList());
-        }};
-
-        List<SportEventKey> sportEventKeysResult = Util.getElementsLeftNotInRight(allSportEventKeys, existingSportEventKeys);
-
-        return new ArrayList<>() {{
-            for (SportEventKey sportEventKey : sportEventKeysResult)
-                for (SportEvent sportEvent : sportEvents)
-                    if (sportEvent.getSportEventId() == sportEventKey.getSportEventId()) {
-                        add(sportEvent);
-                        break;
-                    }
-        }};
     }
 
     public boolean hasSportEventParts(SportEventKey sek) throws SQLException {
@@ -150,7 +119,7 @@ public record DbCalculation(Statement stat) {
     }
 
     public Map<SportEventKey, Boolean> getSportEventHasFixedPartsMap(List<SportEventKey> seKeys) throws SQLException {
-        Map<SportEventKey, Boolean> resultMap = new HashMap<SportEventKey, Boolean>() {{
+        Map<SportEventKey, Boolean> resultMap = new HashMap<>() {{
             seKeys.forEach(x -> put(x, false));
         }};
 
@@ -238,8 +207,8 @@ public record DbCalculation(Statement stat) {
     public void setCompSeasonEventPartDescriptions(CompSeasonEventKey compSeasonEventKey,
                                                    List<CompSeasonEventPart> compSeasonEventParts) throws SQLException {
         List<SportEventPartKey> sepKeys = new ArrayList<>();
-        List<EventPartNameKey> epnKeys = new ArrayList<>();
         List<SportDisciplineKey> sdKeys = new ArrayList<>();
+        List<Integer> epnIds = new ArrayList<>();
 
         CompSeasonEvent compSeasonEvent = new CompSeasonEventManager(stat).getEntityFromSuperKey(compSeasonEventKey);
         SportEventKey seKey = compSeasonEvent.getSportEventKey();
@@ -248,13 +217,13 @@ public record DbCalculation(Statement stat) {
             if (x.getSportEventPartId() != null)
                 sepKeys.add(new SportEventPartKey(seKey, x.getSportEventPartId()));
             else if (x.getEventPartNameId() != null)
-                epnKeys.add(new EventPartNameKey(seKey, x.getEventPartNameId()));
+                epnIds.add(x.getEventPartNameId());
             else if (x.getSportDisciplineId() != null)
                 sdKeys.add(new SportDisciplineKey(seKey.getSportId(), x.getSportDisciplineId()));
         });
 
         Map<SportEventPartKey, SportEventPart> sepMap = new SportEventPartManager(stat).getSportEventPartMap(sepKeys);
-        Map<EventPartNameKey, EventPartName> epnMap = new EventPartNameManager(stat).getEventPartNameMap(epnKeys);
+        Map<Integer, EventPartName> epnMap = new EventPartNameManager(stat).getEventPartNameMap(epnIds);
 
         boolean searchEventPartLocations = compSeasonEventParts.stream()
                 .anyMatch(x -> x.getSportEventPartId() == null && x.getEventPartNameId() == null);
@@ -271,7 +240,7 @@ public record DbCalculation(Statement stat) {
             if (x.getSportEventPartId() != null)
                 name = sepMap.get(new SportEventPartKey(seKey, x.getSportEventPartId())).getName();
             else if (x.getEventPartNameId() != null)
-                name = epnMap.get(new EventPartNameKey(seKey, x.getEventPartNameId())).getName();
+                name = epnMap.get(x.getEventPartNameId()).getName();
             else if (geoMap.containsKey(csepKey))
                 name = geoMap.get(csepKey).getName();
             else
@@ -310,34 +279,16 @@ public record DbCalculation(Statement stat) {
         });
     }
 
-    public void fillEventPersonSports(CompSeasonEventKey cseKey, List<EventPartPersonSport> eventPartPersonSports)
-            throws SQLException {
-        Map<EventPersonSportKey, EventPersonSport> epsMap =
-                new EventPersonSportManager(stat).getParticipantMapInEvent(cseKey);
-
-        eventPartPersonSports.forEach(x -> x.setEventPersonSport(
-                epsMap.get(new EventPersonSportKey(cseKey, x.getPersonSportId())))
-        );
-
-        fillTeamIds(cseKey.getSuperKey(), eventPartPersonSports.stream().map(EventPartPersonSport::getEventPersonSport)
-                .collect(Collectors.toList()));
-    }
-
-    public void fillCompSeasonEventParts(CompSeasonEventKey cseKey, List<EventPartPersonSport> eventPartPersonSports)
-            throws SQLException {
-        Map<CompSeasonEventPartKey, CompSeasonEventPart> csepMap =
-                new CompSeasonEventPartManager(stat).getCompSeasonEventPartMap(Collections.singletonList(cseKey));
-
-        eventPartPersonSports.forEach(x -> x.setCompSeasonEventPart(
-                csepMap.get(new CompSeasonEventPartKey(cseKey, x.getCompSeasonEventPartId())))
-        );
-    }
-
     public boolean isAlcifo(int competitionId) throws SQLException {
         Competition competition = new CompetitionManager(stat).getCompetition(competitionId);
         Sport sport = competition != null ? new SportManager(stat).getSport(competition.getSportId()) : null;
 
         return sport != null && !sport.isTeam() && !sport.isH2H();
+    }
+
+    public SportEvent getSportEvent(CompSeasonEventKey compSeasonEventKey) throws SQLException {
+        CompSeasonEvent compSeasonEvent = new CompSeasonEventManager(stat).getEntityFromSuperKey(compSeasonEventKey);
+        return new SportEventManager(stat).getEntityFromSuperKey(compSeasonEvent.getSportEventKey());
     }
 
     private SportDisciplineKey getSportDisciplineKey(SportEventPartKey sepk) throws SQLException {
@@ -444,23 +395,6 @@ public record DbCalculation(Statement stat) {
                 int pointsBehind = sortAscending ? points - pointsLeader : pointsLeader - points;
                 p.setPointsBehind(pointsBehind);
             }
-        });
-    }
-
-    private void fillTeamIds(CompSeasonKey compSeasonKey, List<EventPersonSport> eventPersonSports) throws SQLException {
-        List<CompSeasonTeamPersonSportKey> teamPersonSportKeys = new CompSeasonTeamPersonSportManager(stat)
-                .getKeysForCompSeason(compSeasonKey);
-
-        Map<CompSeasonPersonSportKey, Integer> personSportTeamMap = new HashMap<>() {{
-            teamPersonSportKeys.forEach(x -> {
-                CompSeasonPersonSportKey cspsKey = new CompSeasonPersonSportKey(compSeasonKey, x.getPersonSportId());
-                put(cspsKey, x.getSuperKey().getSpecificId());
-            });
-        }};
-
-        eventPersonSports.forEach(x -> {
-            CompSeasonPersonSportKey cspsKey = new CompSeasonPersonSportKey(compSeasonKey, x.getSpecificId());
-            x.addTeamId(personSportTeamMap.get(cspsKey));
         });
     }
 }

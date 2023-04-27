@@ -10,7 +10,6 @@ import com.sports.entity.CompSeasonEventPart;
 import com.sports.entity.key.CompSeasonEventKey;
 import com.sports.entity.key.CompSeasonKey;
 import com.sports.entity.manager.CompSeasonEventPartManager;
-import com.sports.entity.manager.CompetitionManager;
 import com.sports.entity.manager.EventPartLocationManager;
 
 import java.sql.SQLException;
@@ -49,8 +48,6 @@ public class CompSeasonEventPartFragment extends WritableFragment {
 
     @Override
     void fill(Statement stat) throws SQLException {
-        int sportId = new CompetitionManager(stat).getCompetition(competitionId).getSportId();
-
         com.sports.entity.key.CompSeasonEventPartKey compSeasonEventPartKey =
                 new com.sports.entity.key.CompSeasonEventPartKey(
                         new CompSeasonEventKey(
@@ -69,7 +66,7 @@ public class CompSeasonEventPartFragment extends WritableFragment {
 
         if (compSeasonEventPart.getEventPartNameId() != null)
             eventPartNameFragment = DataFragmentUtil.getFilledDataFragment(
-                    new EventPartNameFragment(sportId, sportEventId, compSeasonEventPart.getEventPartNameId(), clientId),
+                    new EventPartNameFragment(compSeasonEventPart.getEventPartNameId(), clientId),
                     getCacheDataKey(), stat);
 
         eventPartLocationFragments.addAll(
