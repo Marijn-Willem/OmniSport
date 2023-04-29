@@ -29,9 +29,8 @@ public class ProcessEventTeamImport extends SuperResponseServlet {
 
         if (teamNames != null) {
             int spid = new CompetitionManager(stat).getCompetition(competitionId).getSportId();
-            int eid = getIntValuedParameterValue(req, "eid");
 
-            CompSeasonEventKey cseKey = new CompSeasonEventKey(compSeasonKey, eid);
+            CompSeasonEventKey cseKey = getCompSeasonEventKey(req);
             EventTeamManager etm = new EventTeamManager(stat);
 
             if (etm.getParticipantIdsInEvent(cseKey).size() == 0) {

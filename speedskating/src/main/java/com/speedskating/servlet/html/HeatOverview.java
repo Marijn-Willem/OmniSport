@@ -6,7 +6,6 @@ import com.sports.entity.DisciplinePartPersonSport;
 import com.sports.entity.EventDisciplinePart;
 import com.sports.entity.PersonSport;
 import com.sports.entity.comparator.EventDisciplinePartOrder;
-import com.sports.entity.key.CompSeasonEventKey;
 import com.sports.entity.key.CompSeasonEventPartKey;
 import com.sports.entity.key.EventPartPersonSportKey;
 import com.sports.entity.key.SportDisciplineKey;
@@ -34,21 +33,17 @@ public class HeatOverview extends SuperHtmlServlet {
 
     @Override
     protected String getReturnPath(Statement stat, HttpServletRequest req) {
-        int eid = getIntValuedParameterValue(req, "eid");
-        return "EventHeats?cid=" + competitionId + "&sid=" + seasonId + "&eid=" + eid;
+        int cseid = getIntValuedParameterValue(req, "cseid");
+        return "EventHeats?cid=" + competitionId + "&sid=" + seasonId + "&cseid=" + cseid;
     }
 
     @Override
     protected void processHtmlBody(Statement stat, HttpServletRequest req, HttpServletResponse res)
             throws SQLException, IOException {
-        int eventId = Integer.parseInt(req.getParameter("eid"));
-        int eventPartId = Integer.parseInt(req.getParameter("epid"));
         int ps1Id = Integer.parseInt(req.getParameter("p1id"));
         int ps2Id = Integer.parseInt(req.getParameter("p2id"));
 
-        CompSeasonEventPartKey csepk = new CompSeasonEventPartKey(
-                new CompSeasonEventKey(compSeasonKey, eventId),
-                eventPartId);
+        CompSeasonEventPartKey csepk = getCompSeasonEventPartKey(req);
 
         DbCalculation dbCalc = new DbCalculation(stat);
 

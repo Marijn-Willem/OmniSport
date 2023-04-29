@@ -23,10 +23,8 @@ public class EventPartRanking extends SuperResponseServlet {
     @Override
     protected void processBody(Statement stat, HttpServletRequest req, HttpServletResponse resp)
             throws IOException, SQLException {
-        int sportEventPartId = Integer.parseInt(req.getParameter("epid"));
-
         CompSeasonEventKey cseKey = getCompSeasonEventKey(req);
-        CompSeasonEventPartKey csepk = new CompSeasonEventPartKey(cseKey, sportEventPartId);
+        CompSeasonEventPartKey csepk = getCompSeasonEventPartKey(req);
 
         CompSeasonEvent cse = new CompSeasonEventManager(stat).getEntityFromSuperKey(cseKey);
         SportEvent sportEvent = new SportEventManager(stat).getEntityFromSuperKey(cse.getSportEventKey());

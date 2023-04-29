@@ -19,16 +19,15 @@ import java.util.List;
 
 public class AddHeat extends SuperDispatchServlet {
     protected void process(Statement stat, HttpServletRequest req) throws SQLException {
-        int eventId = Integer.parseInt(req.getParameter("eid"));
-        int eventPartId = Integer.parseInt(req.getParameter("epid"));
+        int compSeasonEventId = Integer.parseInt(req.getParameter("cseid"));
+        int eventPartId = Integer.parseInt(req.getParameter("csepid"));
         int personSport1Id = Integer.parseInt(req.getParameter("p1id"));
         int personSport2Id = Integer.parseInt(req.getParameter("p2id"));
 
         dispatchURL = "TimeHeat?cid=" + competitionId + "&sid=" + seasonId +
-            "&eid=" + eventId + "&epid=" + eventPartId;
+            "&cseid=" + compSeasonEventId + "&csepid=" + eventPartId;
 
-        CompSeasonEventPartKey csepk = new CompSeasonEventPartKey(
-                new CompSeasonEventKey(compSeasonKey, eventId), eventPartId);
+        CompSeasonEventPartKey csepk = getCompSeasonEventPartKey(req);
 
         DbCalculation dbCalc = new DbCalculation(stat);
 

@@ -23,19 +23,18 @@ public class ProcessEventPersonImport extends ProcessPersonImport {
 
     @Override
     protected void initSpecific(Statement stat, HttpServletRequest req) throws SQLException {
-        int sportId = new CompetitionManager(stat).getCompetition(competitionId).getSportId();
-        int eventId = Integer.parseInt(req.getParameter("eid"));
+        int compSeasonEventId = Integer.parseInt(req.getParameter("cseid"));
 
-        csek = new CompSeasonEventKey(new CompSeasonKey(competitionId, seasonId), eventId);
+        csek = new CompSeasonEventKey(new CompSeasonKey(competitionId, seasonId), compSeasonEventId);
         CompSeasonEvent compSeasonEvent = new CompSeasonEventManager(stat).getEntityFromSuperKey(csek);
         sek = compSeasonEvent.getSportEventKey();
 
         eventPersonSportManager = new EventPersonSportManager(stat);
 
-        insertEventPartPersonSportWithRank = Calculation.isCyclingRoadSingleRace(new SportEventKey(sportId, eventId));
+        insertEventPartPersonSportWithRank = Calculation.isCyclingRoadSingleRace(sek);
 
         insertEventPartPersonSportForSinglePartEvent = insertEventPartPersonSportWithRank ||
-                sportId == Sport.sportIdSpeedSkating;
+                sek.getSportId() == Sport.sportIdSpeedSkating;
 
         csepk = null;
         eventPartPersonSportManager = null;
