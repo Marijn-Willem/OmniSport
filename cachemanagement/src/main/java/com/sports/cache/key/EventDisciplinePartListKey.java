@@ -6,22 +6,22 @@ public class EventDisciplinePartListKey extends CacheKey {
     private final int competitionId;
     private final int seasonId;
     private final int sportId;
-    private final int sportEventId;
-    private final int sportEventPartId;
+    private final int compSeasonEventId;
+    private final int compSeasonEventPartId;
 
-    public EventDisciplinePartListKey(int competitionId, int seasonId, int sportId, int sportEventId, int sportEventPartId) {
+    public EventDisciplinePartListKey(int competitionId, int seasonId, int sportId, int compSeasonEventId, int compSeasonEventPartId) {
         this.competitionId = competitionId;
         this.seasonId = seasonId;
         this.sportId = sportId;
-        this.sportEventId = sportEventId;
-        this.sportEventPartId = sportEventPartId;
+        this.compSeasonEventId = compSeasonEventId;
+        this.compSeasonEventPartId = compSeasonEventPartId;
     }
 
     @Override
     String getSpecificKeyPart() {
         return Util.concatStrings(new String[] {
                 Integer.toString(competitionId), Integer.toString(seasonId),
-                Integer.toString(sportId), Integer.toString(sportEventId), Integer.toString(sportEventPartId)
+                Integer.toString(sportId), Integer.toString(compSeasonEventId), Integer.toString(compSeasonEventPartId)
         }, "|");
     }
 }

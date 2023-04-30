@@ -64,10 +64,6 @@ public class CompSeasonEventManager extends SuperKeySuperManager<CompSeasonEvent
         return getSuperKeyEntityMap(getConditionsKeyList(cseKeys));
     }
 
-    public void insertCompSeasonEvent(CompSeasonEventKey csek, CompSeasonEvent cse) throws SQLException {
-        insert(csek, cse);
-    }
-
     public void insertCompSeasonEventMap(Map<CompSeasonEventKey, CompSeasonEvent> cseMap) throws SQLException {
         insert(cseMap);
     }

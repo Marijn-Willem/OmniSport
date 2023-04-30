@@ -21,26 +21,26 @@ import java.util.List;
 public class SpeedSkatingHeatData extends OutputData {
     private final int competitionId;
     private final int seasonId;
-    private final int sportEventId;
-    private final int sportEventPartId;
+    private final int compSeasonEventId;
+    private final int compSeasonEventPartId;
     private final int heat;
     private final Integer clientId;
 
     private SpSkHeatPersonSportFragment personSport1Fragment;
     private SpSkHeatPersonSportFragment personSport2Fragment;
 
-    public SpeedSkatingHeatData(int competitionId, int seasonId, int sportEventId, int sportEventPartId, int heat, Integer clientId) {
+    public SpeedSkatingHeatData(int competitionId, int seasonId, int compSeasonEventId, int compSeasonEventPartId, int heat, Integer clientId) {
         this.competitionId = competitionId;
         this.seasonId = seasonId;
-        this.sportEventId = sportEventId;
-        this.sportEventPartId = sportEventPartId;
+        this.compSeasonEventId = compSeasonEventId;
+        this.compSeasonEventPartId = compSeasonEventPartId;
         this.heat = heat;
         this.clientId = clientId;
     }
 
     @Override
     public CacheDataKey getCacheKey() {
-        return new SpeedSkatingHeatKey(competitionId, seasonId, sportEventId, sportEventPartId, heat, clientId);
+        return new SpeedSkatingHeatKey(competitionId, seasonId, compSeasonEventId, compSeasonEventPartId, heat, clientId);
     }
 
     @Override
@@ -50,8 +50,8 @@ public class SpeedSkatingHeatData extends OutputData {
         if (sportId == Sport.sportIdSpeedSkating) {
             CompSeasonEventPartKey csepKey = new CompSeasonEventPartKey(
                     new CompSeasonEventKey(
-                            new CompSeasonKey(competitionId, seasonId), sportEventId
-                    ), sportEventPartId
+                            new CompSeasonKey(competitionId, seasonId), compSeasonEventId
+                    ), compSeasonEventPartId
             );
 
             List<EventPartPersonSport> eventPartPersonSports = new EventPartPersonSportManager(stat)
@@ -60,11 +60,11 @@ public class SpeedSkatingHeatData extends OutputData {
 
             if (eventPartPersonSports.size() == 2) {
                 personSport1Fragment = DataFragmentUtil.getFilledDataFragment(new SpSkHeatPersonSportFragment(
-                        competitionId, seasonId, sportEventId, sportEventPartId, heat,
+                        competitionId, seasonId, compSeasonEventId, compSeasonEventPartId, heat,
                         eventPartPersonSports.get(0).getPersonSportId(), clientId
                 ), getCacheKey(), stat);
                 personSport2Fragment = DataFragmentUtil.getFilledDataFragment(new SpSkHeatPersonSportFragment(
-                        competitionId, seasonId, sportEventId, sportEventPartId, heat,
+                        competitionId, seasonId, compSeasonEventId, compSeasonEventPartId, heat,
                         eventPartPersonSports.get(1).getPersonSportId(), clientId
                 ), getCacheKey(), stat);
             }

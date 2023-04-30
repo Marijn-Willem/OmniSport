@@ -20,29 +20,29 @@ public class EventDisciplinePartListFragment extends DataFragment {
     private final int competitionId;
     private final int seasonId;
     private final int sportId;
-    private final int sportEventId;
-    private final int sportEventPartId;
+    private final int compSeasonEventId;
+    private final int compSeasonEventPartId;
 
     private final List<EventDisciplinePart> eventDisciplineParts = new ArrayList<>();
 
-    public EventDisciplinePartListFragment(int competitionId, int seasonId, int sportId, int sportEventId, int sportEventPartId) {
+    public EventDisciplinePartListFragment(int competitionId, int seasonId, int sportId, int compSeasonEventId, int compSeasonEventPartId) {
         this.competitionId = competitionId;
         this.seasonId = seasonId;
         this.sportId = sportId;
-        this.sportEventId = sportEventId;
-        this.sportEventPartId = sportEventPartId;
+        this.compSeasonEventId = compSeasonEventId;
+        this.compSeasonEventPartId = compSeasonEventPartId;
     }
 
     @Override
     public CacheKey getCacheKey() {
-        return new EventDisciplinePartListKey(competitionId, seasonId, sportId, sportEventId, sportEventPartId);
+        return new EventDisciplinePartListKey(competitionId, seasonId, sportId, compSeasonEventId, compSeasonEventPartId);
     }
 
     @Override
     void fill(Statement stat) throws SQLException {
         CompSeasonEventPartKey compSeasonEventPartKey = new CompSeasonEventPartKey(
-                new CompSeasonEventKey(new CompSeasonKey(competitionId, seasonId), sportEventId),
-                sportEventPartId
+                new CompSeasonEventKey(new CompSeasonKey(competitionId, seasonId), compSeasonEventId),
+                compSeasonEventPartId
         );
 
         eventDisciplineParts.addAll(new EventDisciplinePartManager(stat).getEventDisciplineList(compSeasonEventPartKey));

@@ -20,34 +20,34 @@ import java.util.List;
 public class EventPersonSportListData extends OutputData {
 	private final int competitionId;
 	private final int seasonId;
-	private final int sportEventId;
+	private final int compSeasonEventId;
 	private final Integer clientId;
 
 	private final List<EventPersonSportFragment> eventPersonSportFragments = new ArrayList<>();
 
-	public EventPersonSportListData(int competitionId, int seasonId, int sportEventId, Integer clientId) {
+	public EventPersonSportListData(int competitionId, int seasonId, int compSeasonEventId, Integer clientId) {
 		this.competitionId = competitionId;
 		this.seasonId = seasonId;
-		this.sportEventId = sportEventId;
+		this.compSeasonEventId = compSeasonEventId;
 		this.clientId = clientId;
 	}
 
 	@Override
 	public CacheDataKey getCacheKey() {
-		return new EventPersonSportListKey(competitionId, seasonId, sportEventId, clientId);
+		return new EventPersonSportListKey(competitionId, seasonId, compSeasonEventId, clientId);
 	}
 
 	@Override
 	public void fill(Statement stat) throws SQLException {
 		CompSeasonEventKey cseKey = new CompSeasonEventKey(new CompSeasonKey(competitionId, seasonId),
-				sportEventId);
+				compSeasonEventId);
 
 		List<Integer> personSportIds = new EventPersonSportManager(stat).getPersonSportIdsCompSeasonEvent(cseKey);
 		List<PersonSport> personSports = new PersonSportManager(stat).getParticipantList(personSportIds);
 		personSports.sort(new DescribedEntityDescription());
 
 		eventPersonSportFragments.addAll(personSports.stream().map(x ->
-				new EventPersonSportFragment(competitionId, seasonId, sportEventId, x.getId(), clientId)).toList());
+				new EventPersonSportFragment(competitionId, seasonId, compSeasonEventId, x.getId(), clientId)).toList());
 
 		DataFragmentUtil.fillDataFragments(eventPersonSportFragments, getCacheKey());
 	}

@@ -5,13 +5,13 @@ import com.sports.logic.util.Util;
 public class EventPersonSportListKey extends CacheDataKey {
 	private final int competitionId;
 	private final int seasonId;
-	private final int sportEventId;
+	private final int compSeasonEventId;
 	private final int clientId;
 
-	public EventPersonSportListKey(int competitionId, int seasonId, int sportEventId, int clientId) {
+	public EventPersonSportListKey(int competitionId, int seasonId, int compSeasonEventId, int clientId) {
 		this.competitionId = competitionId;
 		this.seasonId = seasonId;
-		this.sportEventId = sportEventId;
+		this.compSeasonEventId = compSeasonEventId;
 		this.clientId = clientId;
 	}
 
@@ -19,7 +19,7 @@ public class EventPersonSportListKey extends CacheDataKey {
 	String getSpecificKeyPart() {
 		return Util.concatStrings(new String[] {
 		        Integer.toString(competitionId), Integer.toString(seasonId),
-		        Integer.toString(sportEventId), Integer.toString(clientId)
+		        Integer.toString(compSeasonEventId), Integer.toString(clientId)
 		}, "|");
 	}
 }

@@ -21,7 +21,7 @@ import java.util.List;
 public abstract class AlcifoPartRankingData extends OutputData {
     final int competitionId;
     final int seasonId;
-    final int sportEventId;
+    final int compSeasonEventId;
     final int compSeasonEventPartId;
     final Integer clientId;
 
@@ -30,11 +30,11 @@ public abstract class AlcifoPartRankingData extends OutputData {
     abstract AlcifoPartParticipantFactory getFactory(AlcifoParticipantFactory participantFactory);
     abstract SuperKey getKey(CompSeasonEventPartKey compSeasonEventPartKey);
 
-    public AlcifoPartRankingData(int competitionId, int seasonId, int sportEventId,
+    public AlcifoPartRankingData(int competitionId, int seasonId, int compSeasonEventId,
                                  int compSeasonEventPartId, Integer clientId) {
         this.competitionId = competitionId;
         this.seasonId = seasonId;
-        this.sportEventId = sportEventId;
+        this.compSeasonEventId = compSeasonEventId;
         this.compSeasonEventPartId = compSeasonEventPartId;
         this.clientId = clientId;
     }
@@ -63,12 +63,12 @@ public abstract class AlcifoPartRankingData extends OutputData {
 
             CompSeasonEventPartKey csepKey = new CompSeasonEventPartKey(
                     new CompSeasonEventKey(
-                            new CompSeasonKey(competitionId, seasonId), sportEventId), compSeasonEventPartId);
+                            new CompSeasonKey(competitionId, seasonId), compSeasonEventId), compSeasonEventPartId);
             DbCalculation dbCalculation = new DbCalculation(stat);
             SportDiscipline sportDiscipline = getSportDiscipline(csepKey, dbCalculation, stat);
 
             if (sportDiscipline != null && dbCalculation.isAlcifo(competitionId)) {
-                SportEventKey sek = new SportEventKey(sportId, sportEventId);
+                SportEventKey sek = new SportEventKey(sportId, compSeasonEventId);
                 SportEvent se = new SportEventManager(stat).getEntityFromSuperKey(sek); // Guaranteed to exist due to sportDiscipline
 
                 AlcifoPartParticipantFactory factory = getFactory(Calculation.getAlcifoParticipantFactory(se));
@@ -85,10 +85,10 @@ public abstract class AlcifoPartRankingData extends OutputData {
     private AlcifoParticipantFragment getFragment(Participant participant, int resultTypeId,
                                                   Integer resultTypePrecisionId) {
         if (participant instanceof PersonSport)
-            return new EventPartPersonSportFragment(competitionId, seasonId, sportEventId, compSeasonEventPartId,
+            return new EventPartPersonSportFragment(competitionId, seasonId, compSeasonEventId, compSeasonEventPartId,
                     (PersonSport) participant, resultTypeId, resultTypePrecisionId, clientId);
         else
-            return new EventPartTeamFragment(competitionId, seasonId, sportEventId, compSeasonEventPartId,
+            return new EventPartTeamFragment(competitionId, seasonId, compSeasonEventId, compSeasonEventPartId,
                     (Team) participant, resultTypeId, resultTypePrecisionId, clientId);
     }
 

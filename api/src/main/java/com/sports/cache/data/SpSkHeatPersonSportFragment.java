@@ -21,8 +21,8 @@ import java.util.List;
 public class SpSkHeatPersonSportFragment extends WritableFragment {
     private final int competitionId;
     private final int seasonId;
-    private final int sportEventId;
-    private final int sportEventPartId;
+    private final int compSeasonEventId;
+    private final int compSeasonEventPartId;
     private final int heat;
     private final int personSportId;
     private final int clientId;
@@ -32,12 +32,12 @@ public class SpSkHeatPersonSportFragment extends WritableFragment {
     private final List<Integer> cumulativeTimes = new ArrayList<>();
     private final List<Integer> lapTimes = new ArrayList<>();
 
-    public SpSkHeatPersonSportFragment(int competitionId, int seasonId, int sportEventId, int sportEventPartId,
+    public SpSkHeatPersonSportFragment(int competitionId, int seasonId, int compSeasonEventId, int compSeasonEventPartId,
                                        int heat, int personSportId, int clientId) {
         this.competitionId = competitionId;
         this.seasonId = seasonId;
-        this.sportEventId = sportEventId;
-        this.sportEventPartId = sportEventPartId;
+        this.compSeasonEventId = compSeasonEventId;
+        this.compSeasonEventPartId = compSeasonEventPartId;
         this.heat = heat;
         this.personSportId = personSportId;
         this.clientId = clientId;
@@ -45,7 +45,7 @@ public class SpSkHeatPersonSportFragment extends WritableFragment {
 
     @Override
     public CacheKey getCacheKey() {
-        return new SpSkHeatPersonSportKey(competitionId, seasonId, sportEventId, sportEventPartId,
+        return new SpSkHeatPersonSportKey(competitionId, seasonId, compSeasonEventId, compSeasonEventPartId,
                 heat, personSportId);
     }
 
@@ -55,14 +55,14 @@ public class SpSkHeatPersonSportFragment extends WritableFragment {
                 new PersonSportFragment(competitionId, seasonId, personSportId, clientId), getCacheDataKey(), stat);
 
         List<EventDisciplinePart> eventDisciplineParts = DataFragmentUtil.getFilledDataFragment(
-                new EventDisciplinePartListFragment(competitionId, seasonId, Sport.sportIdSpeedSkating, sportEventId, sportEventPartId),
+                new EventDisciplinePartListFragment(competitionId, seasonId, Sport.sportIdSpeedSkating, compSeasonEventId, compSeasonEventPartId),
                 getCacheDataKey(), stat).getEventDisciplineParts();
 
         EventPartPersonSportKey eventPartPersonSportKey = new EventPartPersonSportKey(
                 new CompSeasonEventPartKey(
                         new CompSeasonEventKey(
-                                new CompSeasonKey(competitionId, seasonId), sportEventId
-                        ), sportEventPartId
+                                new CompSeasonKey(competitionId, seasonId), compSeasonEventId
+                        ), compSeasonEventPartId
                 ), personSportId);
 
         List<DisciplinePartPersonSport> disciplinePartPersonSports = new DisciplinePartPersonSportManager(stat)

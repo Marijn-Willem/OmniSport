@@ -8,16 +8,16 @@ import java.sql.SQLException;
 import java.sql.Statement;
 
 public class EventPartTeamFragment extends AlcifoParticipantFragment {
-    private final int sportEventId;
+    private final int compSeasonEventId;
     private final int compSeasonEventPartId;
     private final Integer clubId;
     private final Integer nocId;
     private final Integer equipeId;
 
-    public EventPartTeamFragment(int competitionId, int seasonId, int sportEventId, int compSeasonEventPartId,
+    public EventPartTeamFragment(int competitionId, int seasonId, int compSeasonEventId, int compSeasonEventPartId,
                                  Team participant, int resultTypeId, Integer resultTypePrecisionId, int clientId) {
         super(competitionId, seasonId, participant, resultTypeId, resultTypePrecisionId, clientId);
-        this.sportEventId = sportEventId;
+        this.compSeasonEventId = compSeasonEventId;
         this.compSeasonEventPartId = compSeasonEventPartId;
         this.clubId = participant.getClubId();
         this.nocId = participant.getNocId();
@@ -26,7 +26,7 @@ public class EventPartTeamFragment extends AlcifoParticipantFragment {
 
     @Override
     public CacheKey getCacheKey() {
-        return new EventPartParticipantKey(competitionId, seasonId, sportEventId, compSeasonEventPartId, participantId);
+        return new EventPartParticipantKey(competitionId, seasonId, compSeasonEventId, compSeasonEventPartId, participantId);
     }
 
     @Override

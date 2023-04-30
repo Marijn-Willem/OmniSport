@@ -12,7 +12,7 @@ import java.util.List;
 
 public class GenerateUtil {
     public static List<List<String>> getLineGroups(String templateFile) throws IOException {
-        List<String> allLines = Files.readAllLines(getPath(null,
+        List<String> allLines = Files.readAllLines(getPath("api",
                 "generate\\template\\" + templateFile + ".txt"));
 
         List<List<String>> lineGroups = new ArrayList<>();
@@ -55,8 +55,7 @@ public class GenerateUtil {
     }
 
     private static Path getPath(String module, String path) {
-        String basePath = (module != null ? "..\\" + module + "\\" : "") +
-                "src\\main\\java\\com\\sports";
+        String basePath = module + "\\src\\main\\java\\com\\sports";
         return FileSystems.getDefault().getPath(basePath + "\\" + path);
     }
 }

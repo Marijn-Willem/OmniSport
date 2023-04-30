@@ -35,7 +35,7 @@ public class OutputDataGenerator {
     private static void createOutputData(List<String> lineGroup) throws IOException {
         String className = lineGroup.get(0) + "Data";
         String keyName = lineGroup.get(0) + "Key";
-        File file = GenerateUtil.createFile(null, "cache\\data\\" + className + ".java");
+        File file = GenerateUtil.createFile("api", "cache\\data\\" + className + ".java");
 
         BufferedWriter bw = new BufferedWriter(new FileWriter(file));
 
@@ -113,7 +113,7 @@ public class OutputDataGenerator {
             throws IOException {
         String outputName = lineGroup.get(0);
 
-        File file = GenerateUtil.createFile(null, "rest\\" + dir + "\\" + outputName + ".java");
+        File file = GenerateUtil.createFile("api", "rest\\" + dir + "\\" + outputName + ".java");
 
         BufferedWriter bw = new BufferedWriter(new FileWriter(file));
 
