@@ -10,13 +10,13 @@ import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.MediaType;
 
-@Path("json/compseasoneventpartranking/{competitionId}/{seasonId}/{sportEventId}/{compSeasonEventPartId}/{clientName}/{password}")
+@Path("json/compseasoneventpartranking/{competitionId}/{seasonId}/{compSeasonEventId}/{compSeasonEventPartId}/{clientName}/{password}")
 public class CompSeasonEventPartRanking {
 	@GET
 	@Produces(MediaType.APPLICATION_JSON + ";charset=\"UTF-8\"")
 	public String getCompSeasonEventPartRanking(@PathParam("competitionId") int competitionId,
 												@PathParam("seasonId") int seasonId,
-												@PathParam("sportEventId") int sportEventId,
+												@PathParam("compSeasonEventId") int compSeasonEventId,
 												@PathParam("compSeasonEventPartId") int compSeasonEventPartId,
 												@PathParam("clientName") String clientName,
 												@PathParam("password") String password) {
@@ -24,6 +24,6 @@ public class CompSeasonEventPartRanking {
 		Integer clientId = RestClientUtil.getValidatedClientId(clientName, password);
 
 		return new JsonOutputCreator(clientId, compSeasonKey).createOutput(
-				new CompSeasonEventPartRankingData(competitionId, seasonId, sportEventId, compSeasonEventPartId, clientId));
+				new CompSeasonEventPartRankingData(competitionId, seasonId, compSeasonEventId, compSeasonEventPartId, clientId));
 	}
 }

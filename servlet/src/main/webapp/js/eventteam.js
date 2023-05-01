@@ -1,5 +1,5 @@
 const processEventTeamImportLoader = new ElementLoader('resp', function () {
-    return '/ProcessEventTeamImport?cid=' + cid + '&sid=' + sid + '&eid=' + eid;
+    return '/ProcessEventTeamImport?cid=' + cid + '&sid=' + sid + '&cseid=' + cseid;
 }, null);
 
 function importEventTeams() {

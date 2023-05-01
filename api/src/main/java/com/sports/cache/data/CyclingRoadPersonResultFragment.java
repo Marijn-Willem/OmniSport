@@ -5,7 +5,6 @@ import com.sports.cache.key.CyclingRoadPersonResultKey;
 import com.sports.cache.util.*;
 import com.sports.entity.CompSeasonEventPart;
 import com.sports.entity.Competition;
-import com.sports.entity.Sport;
 import com.sports.entity.key.CompSeasonEventKey;
 import com.sports.entity.key.CompSeasonEventPartKey;
 import com.sports.entity.key.CompSeasonKey;
@@ -19,7 +18,7 @@ import java.time.LocalDateTime;
 public class CyclingRoadPersonResultFragment extends WritableFragment {
     private final int competitionId;
     private final int seasonId;
-    private final int sportEventId;
+    private final int compSeasonEventId;
     private final int compSeasonEventPartId;
     private final int personSportId;
     private final Integer rank;
@@ -31,12 +30,12 @@ public class CyclingRoadPersonResultFragment extends WritableFragment {
     private String eventPartName;
     private NoCountResultFragment noCountResultFragment;
 
-    public CyclingRoadPersonResultFragment(int competitionId, int seasonId, int sportEventId, int compSeasonEventPartId,
+    public CyclingRoadPersonResultFragment(int competitionId, int seasonId, int compSeasonEventId, int compSeasonEventPartId,
                                            int personSportId, Integer rank, Integer noCountResultId, LocalDateTime date,
                                            int clientId) {
         this.competitionId = competitionId;
         this.seasonId = seasonId;
-        this.sportEventId = sportEventId;
+        this.compSeasonEventId = compSeasonEventId;
         this.compSeasonEventPartId = compSeasonEventPartId;
         this.personSportId = personSportId;
         this.rank = rank;
@@ -47,7 +46,7 @@ public class CyclingRoadPersonResultFragment extends WritableFragment {
 
     @Override
     public CacheKey getCacheKey() {
-        return new CyclingRoadPersonResultKey(competitionId, seasonId, sportEventId, compSeasonEventPartId, personSportId);
+        return new CyclingRoadPersonResultKey(competitionId, seasonId, compSeasonEventId, compSeasonEventPartId, personSportId);
     }
 
     @Override
@@ -55,7 +54,7 @@ public class CyclingRoadPersonResultFragment extends WritableFragment {
         Competition competition = new CompetitionManager(stat).getCompetition(competitionId);
         CompSeasonKey compSeasonKey = new CompSeasonKey(competitionId, seasonId);
         CompSeasonEventPartKey csepKey = new CompSeasonEventPartKey(
-                new CompSeasonEventKey(compSeasonKey, Sport.sportIdCyclingRoad, sportEventId),
+                new CompSeasonEventKey(compSeasonKey, compSeasonEventId),
                 compSeasonEventPartId
         );
 
@@ -75,7 +74,7 @@ public class CyclingRoadPersonResultFragment extends WritableFragment {
     public String toXML() {
         return XmlUtil.getTag("competitionId", competitionId) +
                 XmlUtil.getTag("competition", competitionName) +
-                XmlUtil.getTag("sportEventId", sportEventId) +
+                XmlUtil.getTag("compSeasonEventId", compSeasonEventId) +
                 XmlUtil.getTag("compSeasonEventPart", eventPartName) +
                 XmlUtil.getTag("date", date) +
                 XmlUtil.getTag("rank", rank) +
@@ -86,7 +85,7 @@ public class CyclingRoadPersonResultFragment extends WritableFragment {
     public String toJson() {
         return JsonUtil.getEntry("competitionId", competitionId) + "," +
                 JsonUtil.getEntry("competition", competitionName) + "," +
-                JsonUtil.getEntry("sportEventId", sportEventId) + "," +
+                JsonUtil.getEntry("compSeasonEventId", compSeasonEventId) + "," +
                 JsonUtil.getEntry("compSeasonEventPart", eventPartName) + "," +
                 JsonUtil.getEntry("date", date) + "," +
                 JsonUtil.getEntry("rank", rank) + "," +

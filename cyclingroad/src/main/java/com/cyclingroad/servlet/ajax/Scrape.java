@@ -27,10 +27,11 @@ public class Scrape extends SuperResponseServlet {
     @Override
     protected void processBody(Statement stat, HttpServletRequest req, HttpServletResponse resp) throws IOException, SQLException {
         int csepid = getIntValuedParameterValue(req, "csepid");
-        CompSeasonEventKey cseKey = getCompSeasonEventKey(stat, req);
+        CompSeasonEventKey cseKey = getCompSeasonEventKey(req);
         CompSeasonEventPartKey csepKey = new CompSeasonEventPartKey(cseKey, csepid);
 
-        SportEvent sportEvent = new SportEventManager(stat).getEntityFromSuperKey(csepKey.getSuperKey().getSportEventKey());
+        CompSeasonEvent compSeasonEvent = new CompSeasonEventManager(stat).getEntityFromSuperKey(cseKey);
+        SportEvent sportEvent = new SportEventManager(stat).getEntityFromSuperKey(compSeasonEvent.getSportEventKey());
 
         AlcifoPartParticipantManager partParticipantManager = Calculation.getAlcifoParticipantFactory(sportEvent)
                 .getEventPartParticipantFactory().getManager(stat);
@@ -40,7 +41,6 @@ public class Scrape extends SuperResponseServlet {
         Writer w = resp.getWriter();
 
         if (partParticipants.size() == 0) {
-            CompSeasonEvent compSeasonEvent = new CompSeasonEventManager(stat).getEntityFromSuperKey(cseKey);
             CompSeasonEventPart compSeasonEventPart = new CompSeasonEventPartManager(stat).getCompSeasonEventPart(csepKey);
 
             String url = Util.concatStringsWithDelimiter(compSeasonEvent.getExternalSource(),

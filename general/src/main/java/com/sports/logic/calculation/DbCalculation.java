@@ -13,7 +13,6 @@ import com.sports.logic.util.Util;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.*;
-import java.util.stream.Collectors;
 
 import static com.sports.logic.calculation.Calculation.*;
 
@@ -70,16 +69,8 @@ public record DbCalculation(Statement stat) {
         return personNameMap;
     }
 
-    public Map<String, Person> getPersonNameMapWithNewPersons(List<String> names, SportEventKey sek) throws SQLException {
-        Map<String, Person> personNameMap = new HashMap<>();
-
-        List<SportEvent> sportEventList =
-                new SportEventManager(stat).getSportEventListByKeys(Collections.singletonList(sek));
-
-        if (sportEventList.size() == 1)
-            personNameMap = getPersonNameMapWithNewPersonsForGender(names, sportEventList.get(0).getGenderId());
-
-        return personNameMap;
+    public Map<String, Person> getPersonNameMapWithNewPersons(List<String> names, CompSeasonEvent cse) throws SQLException {
+        return getPersonNameMapWithNewPersonsForGender(names, cse.getGenderId());
     }
 
     public Map<String, Double> getDoubleMapWithNewDoubles(List<String[]> namePairs, int competitionId) throws SQLException {
@@ -144,10 +135,6 @@ public record DbCalculation(Statement stat) {
             doubles.add(me.getValue());
 
         return doubles;
-    }
-
-    public List<PersonSport> getStandingCompSeasonPhase(CompSeasonPhaseKey cspk) throws SQLException {
-        return getParticipantStandingCompSeasonPhase(cspk);
     }
 
     public <T extends Participant> List<T> getParticipantStandingCompSeasonPhase(CompSeasonPhaseKey cspk)
@@ -352,7 +339,7 @@ public record DbCalculation(Statement stat) {
         if (client.getLanguageId() != null) {
             languageIds.add(client.getLanguageId());
             languageIds.addAll(getReferencedLanguages(client.getLanguageId())
-                    .stream().map(Language::getId).collect(Collectors.toList()));
+                    .stream().map(Language::getId).toList());
         }
 
         for (Integer languageId : languageIds)
@@ -361,15 +348,6 @@ public record DbCalculation(Statement stat) {
                     return alias;
 
         return null;
-    }
-
-    public List<Client> getClientsRelatedToLanguage(int languageId) throws SQLException {
-        List<Integer> languageIds = new ArrayList<>() {{
-            add(languageId);
-            addAll(getReferencingLanguages(languageId).stream().map(Language::getId).collect(Collectors.toList()));
-        }};
-
-        return new ClientManager(stat).getClientsFromLanguageIds(languageIds);
     }
 
     public List<CompSeasonPhase> getCompSeasonPhaseSiblings(CompSeasonPhaseKey cspk) throws SQLException {
@@ -428,17 +406,23 @@ public record DbCalculation(Statement stat) {
         CompSeasonEventPartManager csepm = new CompSeasonEventPartManager(stat);
         EventDisciplinePartManager edpm = new EventDisciplinePartManager(stat);
 
-        List<CompSeasonEventKey> compSeasonEventKeys = csem.getCompSeasonEventKeys(csk);
+        Map<CompSeasonEventKey, CompSeasonEvent> compSeasonEventMap = new HashMap<>() {{
+            csem.getCompSeasonEvents(csk).forEach(x -> {
+                CompSeasonEventKey cseKey = new CompSeasonEventKey(csk, x.getCompSeasonEventId());
+                put(cseKey, x);
+            });
+        }};
+        List<CompSeasonEventKey> compSeasonEventKeys = compSeasonEventMap.keySet().stream().toList();
+
         List<CompSeasonEventPart> compSeasonEventParts = csepm.getCompSeasonEventPartsFromEvents(compSeasonEventKeys);
         Map<EventDisciplinePartKey, EventDisciplinePart> eventDisciplinePartMap = edpm.getEventDisciplineMapFromEvents(compSeasonEventKeys);
 
         Map<EventDisciplinePartKey, EventDisciplinePart> newDisciplinesParts = new HashMap<>() {{
             eventDisciplinePartMap.forEach((k, v) -> {
-                int sportId = k.getSuperKey().getSuperKey().getSportId();
-                int sportEventId = k.getSuperKey().getSuperKey().getSportEventId();
+                int compSeasonEventId = k.getSuperKey().getSuperKey().getCompSeasonEventId();
                 int eventPartId = k.getSuperKey().getCompSeasonEventPartId();
 
-                CompSeasonEventKey newEventKey = new CompSeasonEventKey(newCsk, sportId, sportEventId);
+                CompSeasonEventKey newEventKey = new CompSeasonEventKey(newCsk, compSeasonEventId);
                 CompSeasonEventPartKey newEventPartKey = new CompSeasonEventPartKey(newEventKey, eventPartId);
                 EventDisciplinePartKey newKey = new EventDisciplinePartKey(newEventPartKey, k.getEventDisciplinePartId());
 
@@ -448,7 +432,8 @@ public record DbCalculation(Statement stat) {
 
         Map<CompSeasonEventPartKey, CompSeasonEventPart> newEventParts = new HashMap<>() {{
             compSeasonEventParts.forEach(compSeasonEventPart -> {
-                CompSeasonEventKey newEventKey = new CompSeasonEventKey(newCsk, compSeasonEventPart.getSportId(), compSeasonEventPart.getSportEventId());
+                int compSeasonEventId = compSeasonEventPart.getCompSeasonEventPartKey().getSuperKey().getCompSeasonEventId();
+                CompSeasonEventKey newEventKey = new CompSeasonEventKey(newCsk, compSeasonEventId);
                 CompSeasonEventPartKey newEventPartKey = new CompSeasonEventPartKey(newEventKey, compSeasonEventPart.getCompSeasonEventPartId());
 
                 put(newEventPartKey, compSeasonEventPart);
@@ -456,8 +441,8 @@ public record DbCalculation(Statement stat) {
         }};
 
         Map<CompSeasonEventKey, CompSeasonEvent> newEventMap = new HashMap<>() {{
-            compSeasonEventKeys.forEach(key -> {
-                CompSeasonEventKey newKey = new CompSeasonEventKey(newCsk, key.getSportId(), key.getSportEventId());
+            compSeasonEventMap.forEach((k, v) -> {
+                CompSeasonEventKey newKey = new CompSeasonEventKey(newCsk, k.getCompSeasonEventId());
                 put(newKey, new CompSeasonEvent());
             });
         }};
@@ -578,15 +563,6 @@ public record DbCalculation(Statement stat) {
         return new LinkedHashMap<>() {{
             doubleMap.forEach((k, v) -> put(v.getDescription(), v));
         }};
-    }
-
-    private List<PersonSport> getPersonSportList(List<Participant> participantList) {
-        List<PersonSport> personList = new ArrayList<>();
-
-        for (Participant participant : participantList)
-            personList.add((PersonSport) participant);
-
-        return personList;
     }
 
     private void dedoublePersonSports(int personFromId, int personToId) throws SQLException {

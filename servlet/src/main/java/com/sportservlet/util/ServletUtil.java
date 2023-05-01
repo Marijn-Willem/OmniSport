@@ -1,14 +1,9 @@
 package com.sportservlet.util;
 
-import com.sports.entity.Gender;
-import com.sports.entity.GenderAliasable;
-import com.sports.entity.manager.NoCountResultManager;
 import com.sports.logic.util.Util;
 
 import java.io.IOException;
 import java.io.Writer;
-import java.sql.SQLException;
-import java.util.HashMap;
 import java.util.Map;
 
 public class ServletUtil {
@@ -18,12 +13,6 @@ public class ServletUtil {
         w.append("\">");
         w.append(text);
         w.append("</option>\n");
-    }
-
-    public static void writeGenderAliasableOption(int value, GenderAliasable genderAliasable, Writer w)
-            throws IOException {
-        writeOption(value, genderAliasable.getName() + " - (" +
-                Gender.getGenderNameFromId(genderAliasable.getGenderId()) + ")", w);
     }
 
     public static void writeLink(String path, String href, String text, Writer w) throws IOException {

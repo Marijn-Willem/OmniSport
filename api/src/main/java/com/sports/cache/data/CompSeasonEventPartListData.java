@@ -6,12 +6,10 @@ import com.sports.cache.util.DataFragmentUtil;
 import com.sports.cache.util.JsonUtil;
 import com.sports.cache.util.XmlUtil;
 import com.sports.entity.CompSeasonEventPart;
-import com.sports.entity.Competition;
 import com.sports.entity.comparator.OrderableOrder;
 import com.sports.entity.key.CompSeasonEventKey;
 import com.sports.entity.key.CompSeasonKey;
 import com.sports.entity.manager.CompSeasonEventPartManager;
-import com.sports.entity.manager.CompetitionManager;
 
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -22,43 +20,38 @@ import java.util.List;
 public class CompSeasonEventPartListData extends OutputData {
 	private final int competitionId;
 	private final int seasonId;
-	private final int sportEventId;
+	private final int compSeasonEventId;
 	private final Integer clientId;
 
 	private final List<CompSeasonEventPartFragment> fragmentList = new ArrayList<>();
 
-	public CompSeasonEventPartListData(int competitionId, int seasonId, int sportEventId, Integer clientId) {
+	public CompSeasonEventPartListData(int competitionId, int seasonId, int compSeasonEventId, Integer clientId) {
 		this.competitionId = competitionId;
 		this.seasonId = seasonId;
-		this.sportEventId = sportEventId;
+		this.compSeasonEventId = compSeasonEventId;
 		this.clientId = clientId;
 	}
 
 	@Override
 	public CacheDataKey getCacheKey() {
-		return new CompSeasonEventPartListKey(competitionId, seasonId, sportEventId, clientId);
+		return new CompSeasonEventPartListKey(competitionId, seasonId, compSeasonEventId, clientId);
 	}
 
 	@Override
 	public void fill(Statement stat) throws SQLException {
-		Competition competition = new CompetitionManager(stat).getCompetition(competitionId);
+		CompSeasonEventKey compSeasonEventKey = new CompSeasonEventKey(
+				new CompSeasonKey(competitionId, seasonId), compSeasonEventId);
 
-		if (competition != null) {
-			int sportId = competition.getSportId();
-			CompSeasonEventKey compSeasonEventKey = new CompSeasonEventKey(
-					new CompSeasonKey(competitionId, seasonId), sportId, sportEventId);
+		List<CompSeasonEventPart> compSeasonEventParts = new CompSeasonEventPartManager(stat)
+				.getCompSeasonEventPartsFromEvents(Collections.singletonList(compSeasonEventKey));
 
-			List<CompSeasonEventPart> compSeasonEventParts = new CompSeasonEventPartManager(stat)
-					.getCompSeasonEventPartsFromEvents(Collections.singletonList(compSeasonEventKey));
+		compSeasonEventParts.sort(new OrderableOrder());
 
-			compSeasonEventParts.sort(new OrderableOrder());
+		fragmentList.addAll(compSeasonEventParts.stream().map(x ->
+				new CompSeasonEventPartFragment(competitionId, seasonId, compSeasonEventId,
+						x.getCompSeasonEventPartId(), clientId)).toList());
 
-			fragmentList.addAll(compSeasonEventParts.stream().map(x ->
-					new CompSeasonEventPartFragment(competitionId, seasonId, sportEventId,
-							x.getCompSeasonEventPartId(), clientId)).toList());
-
-			DataFragmentUtil.fillDataFragments(fragmentList, getCacheKey());
-		}
+		DataFragmentUtil.fillDataFragments(fragmentList, getCacheKey());
 	}
 
 	@Override

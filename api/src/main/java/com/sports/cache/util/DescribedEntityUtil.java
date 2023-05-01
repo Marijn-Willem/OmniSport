@@ -61,7 +61,8 @@ public record DescribedEntityUtil(int clientId, CacheDataKey cacheDataKey, State
         EntityInstanceUtil entityInstanceUtil = new EntityInstanceUtil(clientId, cacheDataKey, stat);
 
         if (compSeasonEventPart.getSportEventPartId() != null) {
-            SportEventPartKey sportEventPartKey = new SportEventPartKey(compSeasonEventPart.getSportEventKey(),
+            CompSeasonEvent compSeasonEvent = getCompSeasonEvent(compSeasonEventPart);
+            SportEventPartKey sportEventPartKey = new SportEventPartKey(compSeasonEvent.getSportEventKey(),
                     compSeasonEventPart.getSportEventPartId());
 
             SportEventPart sportEventPart = new SportEventPartManager(stat).getSportEventPart(sportEventPartKey);
@@ -70,12 +71,10 @@ public record DescribedEntityUtil(int clientId, CacheDataKey cacheDataKey, State
         }
 
         if (compSeasonEventPart.getEventPartNameId() != null) {
-            EventPartNameKey eventPartNameKey = new EventPartNameKey(compSeasonEventPart.getSportEventKey(),
+            EventPartName eventPartName = new EventPartNameManager(stat).getEntityFromId(
                     compSeasonEventPart.getEventPartNameId());
 
-            EventPartName eventPartName = new EventPartNameManager(stat).getEntityFromSuperKey(eventPartNameKey);
-
-            return aliasUtil.getAliasableAsClientSpecificString(eventPartName, eventPartNameKey);
+            return aliasUtil.getAliasableAsClientSpecificString(eventPartName);
         }
 
         CompSeasonEventPartKey compSeasonEventPartKey = compSeasonEventPart.getCompSeasonEventPartKey();
@@ -91,8 +90,9 @@ public record DescribedEntityUtil(int clientId, CacheDataKey cacheDataKey, State
         }
 
         if (compSeasonEventPart.getSportDisciplineId() != null) {
+            CompSeasonEvent compSeasonEvent = getCompSeasonEvent(compSeasonEventPart);
             SportDisciplineKey sportDisciplineKey = new SportDisciplineKey(
-                    compSeasonEventPart.getSportId(), compSeasonEventPart.getSportDisciplineId());
+                    compSeasonEvent.getSportEventKey().getSportId(), compSeasonEventPart.getSportDisciplineId());
 
             SportDiscipline sportDiscipline = new SportDisciplineManager(stat)
                     .getEntityFromSuperKey(sportDisciplineKey);
@@ -101,5 +101,10 @@ public record DescribedEntityUtil(int clientId, CacheDataKey cacheDataKey, State
         }
 
         return null;
+    }
+
+    private CompSeasonEvent getCompSeasonEvent(CompSeasonEventPart compSeasonEventPart) throws SQLException {
+        CompSeasonEventKey cseKey = compSeasonEventPart.getCompSeasonEventPartKey().getSuperKey();
+        return new CompSeasonEventManager(stat).getEntityFromSuperKey(cseKey);
     }
 }

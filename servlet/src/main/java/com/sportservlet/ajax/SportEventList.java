@@ -1,15 +1,14 @@
 package com.sportservlet.ajax;
 
 import com.sports.calc.alcifo.DbCalculation;
-import com.sports.entity.Gender;
 import com.sports.entity.SportEvent;
 import com.sports.entity.comparator.AliasableName;
 import com.sports.entity.key.SportEventKey;
 import com.sports.entity.manager.SportEventManager;
 import com.sportservlet.SuperResponseServlet;
-
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+
 import java.io.IOException;
 import java.io.Writer;
 import java.sql.SQLException;
@@ -41,12 +40,8 @@ public class SportEventList extends SuperResponseServlet {
             w.append("value=\"");
             w.append(Integer.toString(sportEvent.getSportEventId()));
             w.append("\">");
-            w.append(getOptionContent(sportEvent));
+            w.append(sportEvent.getName());
             w.append("</option>\n");
         }
-    }
-
-    private String getOptionContent(SportEvent sportEvent) {
-        return sportEvent.getName() + " - (" + Gender.getGenderNameFromId(sportEvent.getGenderId()) + ")";
     }
 }

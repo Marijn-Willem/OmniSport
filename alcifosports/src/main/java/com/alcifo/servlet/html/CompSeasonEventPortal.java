@@ -17,13 +17,13 @@ public class CompSeasonEventPortal extends SuperHtmlServlet {
 
     @Override
     protected void writeBodyTag(Writer w) throws IOException {
-        w.append("<body onload=\"initSportEventList('SportEventListByCompSeason');\">\n");
+        w.append("<body onload=\"initSportEventList();\">\n");
     }
 
     @Override
     protected void processScriptTag(Statement stat, HttpServletRequest req, Writer w) throws IOException {
         writeCompSeasonVarsInScriptTag(w);
-        writeInitStateVarInScriptTag("eid", req, w);
+        writeInitStateVarInScriptTag("cseid", req, w);
     }
 
     @Override
@@ -37,7 +37,7 @@ public class CompSeasonEventPortal extends SuperHtmlServlet {
             throws IOException {
         Writer w = res.getWriter();
 
-        w.append("<div>\n<select id=\"selEid\">\n</select>\n</div><br/>\n");
+        w.append("<div>\n<select id=\"selCseid\">\n</select>\n</div><br/>\n");
         w.append("<input id=\"btnIns\" type=\"button\" value=\"Add Event Part\" ");
         w.append("onclick=\"goToInsertCompSeasonEventPart();\" /><br/>\n");
         w.append("<input type=\"button\" value=\"Manage Event\" ");

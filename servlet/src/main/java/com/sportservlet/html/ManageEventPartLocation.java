@@ -24,9 +24,7 @@ public abstract class ManageEventPartLocation extends ManageEntity {
     @Override
     protected void processScriptTag(Statement stat, HttpServletRequest req, Writer w) throws IOException, SQLException {
         super.processScriptTag(stat, req, w);
-        writeCompSeasonVarsInScriptTag(w);
-        writeVarInScriptTag("eid", getIntValuedParameterValue(req, "eid"), w);
-        writeVarInScriptTag("csepid", getIntValuedParameterValue(req, "csepid"), w);
+        writeCompSeasonEventPartVarsInScriptTag(req, w);
     }
 
     @Override
@@ -42,7 +40,7 @@ public abstract class ManageEventPartLocation extends ManageEntity {
         if (!"i".equals(mode)) {
             int eplid = getIntValuedParameterValue(req, "eplid");
 
-            EventPartLocationKey eplKey = new EventPartLocationKey(getCompSeasonEventPartKey(stat, req), eplid);
+            EventPartLocationKey eplKey = new EventPartLocationKey(getCompSeasonEventPartKey(req), eplid);
 
             eventPartLocation = new EventPartLocationManager(stat).getEntityFromSuperKey(eplKey);
         }

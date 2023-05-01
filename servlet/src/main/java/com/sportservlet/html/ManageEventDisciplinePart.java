@@ -29,7 +29,7 @@ public abstract class ManageEventDisciplinePart extends ManageEntity {
     protected void processScriptTag(Statement stat, HttpServletRequest req, Writer w) throws IOException, SQLException {
         super.processScriptTag(stat, req, w);
         writeCompSeasonVarsInScriptTag(w);
-        writeVarInScriptTag("eid", getIntValuedParameterValue(req, "eid"), w);
+        writeVarInScriptTag("cseid", getIntValuedParameterValue(req, "cseid"), w);
         writeVarInScriptTag("csepid", getIntValuedParameterValue(req, "csepid"), w);
     }
 
@@ -41,7 +41,7 @@ public abstract class ManageEventDisciplinePart extends ManageEntity {
     @Override
     protected void processSpecific(Statement stat, HttpServletRequest req, HttpServletResponse res)
             throws IOException, SQLException {
-        CompSeasonEventPartKey csepKey = getCompSeasonEventPartKey(stat, req);
+        CompSeasonEventPartKey csepKey = getCompSeasonEventPartKey(req);
 
         EventDisciplinePart eventDisciplinePart = null;
         if (!"i".equals(mode)) {

@@ -16,8 +16,7 @@ public abstract class EventTeamImport extends SuperEntityImport {
 
     @Override
     protected void processScriptTag(Statement stat, HttpServletRequest req, Writer w) throws IOException, SQLException {
-        writeCompSeasonVarsInScriptTag(w);
-        writeVarInScriptTag("eid", getIntValuedParameterValue(req, "eid"), w);
+        writeCompSeasonEventVarsInScriptTag(req, w);
     }
 
     @Override

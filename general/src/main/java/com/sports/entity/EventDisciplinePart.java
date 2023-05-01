@@ -3,6 +3,7 @@ package com.sports.entity;
 import com.sports.db.util.QueryUtil;
 
 public class EventDisciplinePart extends SuperKeyEntity implements NamedEntity {
+    private int sportId;
     private int sportDisciplineId;
     private Integer disciplinePartId;
     private String name;
@@ -12,10 +13,19 @@ public class EventDisciplinePart extends SuperKeyEntity implements NamedEntity {
 
     public String[] getPropertiesInSQLStrings() {
         return new String[] {
-                "" + sportDisciplineId,
+                String.valueOf(sportId),
+                String.valueOf(sportDisciplineId),
                 QueryUtil.convertIntegerToDbValue(disciplinePartId),
                 QueryUtil.convertStringToDbValue(name)
         };
+    }
+
+    public int getSportId() {
+        return sportId;
+    }
+
+    public void setSportId(int sportId) {
+        this.sportId = sportId;
     }
 
     public int getSportDisciplineId() {

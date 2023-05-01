@@ -90,7 +90,8 @@ function submit() {
         const p1id = document.getElementsByName('p1id')[0].value;
         const p2id = document.getElementsByName('p2id')[0].value;
 
-        let params = 'cid=' + cid + '&sid=' + sid + '&eid=' + eid + '&epid=' + epid + '&p1id=' + p1id + '&p2id=' + p2id;
+        let params = 'cid=' + cid + '&sid=' + sid + '&cseid=' + cseid + '&csepid=' + csepid +
+            '&p1id=' + p1id + '&p2id=' + p2id;
 
         const timeFields = document.getElementsByClassName('time');
 

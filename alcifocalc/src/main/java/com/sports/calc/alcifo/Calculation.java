@@ -40,4 +40,14 @@ public class Calculation {
                         sportEventKey.getSportEventId() == SportEvent.sportEventIdCyclingRoadSingleFemale
         );
     }
+
+    public static void setSportEventNames(List<CompSeasonEvent> compSeasonEvents, List<SportEvent> sportEvents) {
+        compSeasonEvents.forEach(x -> {
+            for (SportEvent sportEvent : sportEvents)
+                if (x.getSportEventKey().getSportEventId() == sportEvent.getSportEventId()) {
+                    x.setSportEventName(sportEvent.getName());
+                    break;
+                }
+        });
+    }
 }

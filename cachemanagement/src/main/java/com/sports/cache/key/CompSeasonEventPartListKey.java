@@ -8,10 +8,10 @@ public class CompSeasonEventPartListKey extends CacheDataKey {
 	private final int sportEventId;
 	private final int clientId;
 
-	public CompSeasonEventPartListKey(int competitionId, int seasonId, int sportEventId, int clientId) {
+	public CompSeasonEventPartListKey(int competitionId, int seasonId, int compSeasonEventId, int clientId) {
 		this.competitionId = competitionId;
 		this.seasonId = seasonId;
-		this.sportEventId = sportEventId;
+		this.sportEventId = compSeasonEventId;
 		this.clientId = clientId;
 	}
 

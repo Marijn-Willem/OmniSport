@@ -10,14 +10,14 @@ import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.MediaType;
 
-@Path("xml/speedskating/heat/{competitionId}/{seasonId}/{sportEventId}/{sportEventPartId}/{heat}/{clientName}/{password}")
+@Path("xml/speedskating/heat/{competitionId}/{seasonId}/{compSeasonEventId}/{compSeasonEventPartId}/{heat}/{clientName}/{password}")
 public class SpeedSkatingHeat {
     @GET
     @Produces(MediaType.TEXT_XML)
     public String getSpeedSkatingHeat(@PathParam("competitionId") int competitionId,
                                       @PathParam("seasonId") int seasonId,
-                                      @PathParam("sportEventId") int sportEventId,
-                                      @PathParam("sportEventPartId") int sportEventPartId,
+                                      @PathParam("compSeasonEventId") int compSeasonEventId,
+                                      @PathParam("compSeasonEventPartId") int compSeasonEventPartId,
                                       @PathParam("heat") int heat,
                                       @PathParam("clientName") String clientName,
                                       @PathParam("password") String password) {
@@ -26,6 +26,6 @@ public class SpeedSkatingHeat {
         Integer clientId = RestClientUtil.getValidatedClientId(clientName, password);
 
         return new XmlOutputCreator(clientId, compSeasonKey).createOutput(
-                new SpeedSkatingHeatData(competitionId, seasonId, sportEventId, sportEventPartId, heat, clientId));
+                new SpeedSkatingHeatData(competitionId, seasonId, compSeasonEventId, compSeasonEventPartId, heat, clientId));
     }
 }

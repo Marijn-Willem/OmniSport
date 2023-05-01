@@ -17,24 +17,24 @@ import java.util.List;
 public class EventPersonSportFragment extends WritableFragment {
     private final int competitionId;
     private final int seasonId;
-    private final int sportEventId;
+    private final int compSeasonEventId;
     private final int personSportId;
     private final int clientId;
 
     private PersonSportFragment personSportFragment;
     private CompSeasonTeamFragment compSeasonTeamFragment;
 
-    public EventPersonSportFragment(int competitionId, int seasonId, int sportEventId, int personSportId, int clientId) {
+    public EventPersonSportFragment(int competitionId, int seasonId, int compSeasonEventId, int personSportId, int clientId) {
         this.competitionId = competitionId;
         this.seasonId = seasonId;
-        this.sportEventId = sportEventId;
+        this.compSeasonEventId = compSeasonEventId;
         this.personSportId = personSportId;
         this.clientId = clientId;
     }
 
     @Override
     public CacheKey getCacheKey() {
-        return new EventPersonSportKey(competitionId, seasonId, sportEventId, personSportId);
+        return new EventPersonSportKey(competitionId, seasonId, compSeasonEventId, personSportId);
     }
 
     @Override

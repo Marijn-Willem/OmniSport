@@ -1,5 +1,6 @@
 package com.sportservlet.ajax;
 
+import com.sports.entity.CompSeasonEvent;
 import com.sports.entity.CompSeasonTeam;
 import com.sports.entity.EventTeam;
 import com.sports.entity.key.CompSeasonEventKey;
@@ -28,9 +29,8 @@ public class ProcessEventTeamImport extends SuperResponseServlet {
 
         if (teamNames != null) {
             int spid = new CompetitionManager(stat).getCompetition(competitionId).getSportId();
-            int eid = getIntValuedParameterValue(req, "eid");
 
-            CompSeasonEventKey cseKey = new CompSeasonEventKey(compSeasonKey, spid, eid);
+            CompSeasonEventKey cseKey = getCompSeasonEventKey(req);
             EventTeamManager etm = new EventTeamManager(stat);
 
             if (etm.getParticipantIdsInEvent(cseKey).size() == 0) {
@@ -38,7 +38,8 @@ public class ProcessEventTeamImport extends SuperResponseServlet {
                 Set<Integer> existingIds = new HashSet<>(cstm.getParticipantIdsCompSeason(compSeasonKey));
                 List<Integer> idsToInsertInCompSeason = new ArrayList<>();
 
-                int gid = new SportEventManager(stat).getEntityFromSuperKey(cseKey.getSportEventKey()).getGenderId();
+                CompSeasonEvent cse = new CompSeasonEventManager(stat).getEntityFromSuperKey(cseKey);
+                int gid = cse.getGenderId();
 
                 List<TeamDescriptionSportIdGenderIdKey> teamKeys = Arrays.stream(teamNames)
                         .map(x -> new TeamDescriptionSportIdGenderIdKey(x, spid, gid)).collect(Collectors.toList());
@@ -50,11 +51,11 @@ public class ProcessEventTeamImport extends SuperResponseServlet {
                         idsToInsertInCompSeason.add(tid);
                 });
 
-                Map<CompSeasonTeamKey, CompSeasonTeam> compSeasonTeamMap = new HashMap<CompSeasonTeamKey, CompSeasonTeam>() {{
+                Map<CompSeasonTeamKey, CompSeasonTeam> compSeasonTeamMap = new HashMap<>() {{
                     idsToInsertInCompSeason.forEach(id -> put(new CompSeasonTeamKey(compSeasonKey, id), new CompSeasonTeam()));
                 }};
 
-                Map<EventTeamKey, EventTeam> eventTeamMap = new HashMap<EventTeamKey, EventTeam>() {{
+                Map<EventTeamKey, EventTeam> eventTeamMap = new HashMap<>() {{
                     teamIds.forEach(id -> put(new EventTeamKey(cseKey, id), new EventTeam()));
                 }};
 

@@ -1,55 +1,59 @@
 package com.sportservlet.ajax;
 
+import com.sports.calc.alcifo.Calculation;
+import com.sports.entity.CompSeasonEvent;
 import com.sports.entity.Gender;
 import com.sports.entity.SportEvent;
-import com.sports.entity.key.CompSeasonEventKey;
+import com.sports.entity.comparator.CompSeasonEventNameGenderId;
 import com.sports.entity.key.SportEventKey;
 import com.sports.entity.manager.CompSeasonEventManager;
 import com.sports.entity.manager.SportEventManager;
 import com.sports.logic.util.Util;
 import com.sportservlet.SuperResponseServlet;
-
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+
 import java.io.IOException;
 import java.io.Writer;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public abstract class CompSeasonPortsAlcifoSport extends SuperResponseServlet {
-    protected List<SportEvent> sportEventList;
-
-    protected abstract String getSpecificURLCells(int eventId);
+    protected abstract String getSpecificURLCells(CompSeasonEvent compSeasonEvent, boolean isTeam);
 
     protected void processSpecific(Writer w) throws IOException { }
 
     @Override
     protected void processBody(Statement stat, HttpServletRequest req, HttpServletResponse resp)
             throws IOException, SQLException {
-        List<CompSeasonEventKey> compSeasonEventKeys = new CompSeasonEventManager(stat).getCompSeasonEventKeys(compSeasonKey);
-        List<SportEventKey> sportEventKeys = new ArrayList<>();
+        List<CompSeasonEvent> compSeasonEvents = new CompSeasonEventManager(stat).getCompSeasonEvents(compSeasonKey);
+        List<SportEventKey> sportEventKeys = new ArrayList<>() {{
+            addAll(compSeasonEvents.stream().map(CompSeasonEvent::getSportEventKey).toList());
+        }};
 
-        for (CompSeasonEventKey compSeasonEventKey : compSeasonEventKeys) {
-            int sportId = compSeasonEventKey.getSportId();
-            int sportEventId = compSeasonEventKey.getSportEventId();
+        Map<SportEventKey, SportEvent> sportEventMap = new HashMap<>() {{
+            new SportEventManager(stat).getSportEventListByKeys(sportEventKeys).forEach(x -> {
+                SportEventKey sek = new SportEventKey(x.getSportId(), x.getSportEventId());
+                put(sek, x);
+            });
+        }};
 
-            sportEventKeys.add(new SportEventKey(sportId, sportEventId));
-        }
-
-        sportEventList = new SportEventManager(stat).getSportEventListByKeys(sportEventKeys);
+        Calculation.setSportEventNames(compSeasonEvents, sportEventMap.values().stream().toList());
+        compSeasonEvents.sort(new CompSeasonEventNameGenderId());
 
         Writer w = resp.getWriter();
 
         w.append("<table class=\"click_through\">\n");
 
-        for (SportEvent sportEvent : sportEventList) {
-            int eventId = sportEvent.getSportEventId();
-
+        for (CompSeasonEvent compSeasonEvent : compSeasonEvents) {
             String url, title;
+            boolean isTeam = sportEventMap.get(compSeasonEvent.getSportEventKey()).isTeam();
 
-            if (sportEvent.isTeam()) {
+            if (isTeam) {
                 url = "EventTeamImport";
                 title = "Import teams";
             }
@@ -58,10 +62,12 @@ public abstract class CompSeasonPortsAlcifoSport extends SuperResponseServlet {
                 title = "Import persons";
             }
 
-            String line = "<tr><td>" + Util.concatStringsWithDelimiter(sportEvent.getName(),
-                    Gender.getGenderNameFromId(sportEvent.getGenderId()), " - ") + "</td>" +
-                    getSpecificURLCells(eventId) +
-                    getURLCell(eventId, url, title) +
+            int compSeasonEventId = compSeasonEvent.getCompSeasonEventId();
+
+            String line = "<tr><td>" + Util.concatStringsWithDelimiter(compSeasonEvent.getSportEventName(),
+                    Gender.getGenderNameFromId(compSeasonEvent.getGenderId()), " - ") + "</td>" +
+                    getSpecificURLCells(compSeasonEvent, isTeam) +
+                    getURLCell(compSeasonEventId, url, title) +
                     "</tr>\n";
 
             w.append(line);
@@ -71,8 +77,8 @@ public abstract class CompSeasonPortsAlcifoSport extends SuperResponseServlet {
         processSpecific(w);
     }
 
-    protected String getURLCell(int eventId, String url, String title) {
-        String paramList = "cid=" + competitionId + "&sid=" + seasonId + "&eid=" + eventId;
+    protected String getURLCell(int compSeasonEventId, String url, String title) {
+        String paramList = "cid=" + competitionId + "&sid=" + seasonId + "&cseid=" + compSeasonEventId;
 
         return "<td onclick=\"goToUrl('" + url + "', '" + paramList + "');\">" + title + "</td>";
     }

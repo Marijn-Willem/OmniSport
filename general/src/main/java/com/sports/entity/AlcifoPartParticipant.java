@@ -54,10 +54,6 @@ public abstract class AlcifoPartParticipant extends SuperKeyEntity {
         this.noCountResultId = noCountResultId;
     }
 
-    public Integer getCalculatedRank() {
-        return calculatedRank;
-    }
-
     public void setCalculatedRank(Integer calculatedRank) {
         this.calculatedRank = calculatedRank;
     }

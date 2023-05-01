@@ -53,5 +53,5 @@ function handleClickGeoName(row) {
 }
 
 function getCompSeasonEventPartParameters() {
-    return 'cid=' + cid + '&sid=' + sid + '&eid=' + eid + '&csepid=' + csepid;
+    return 'cid=' + cid + '&sid=' + sid + '&cseid=' + cseid + '&csepid=' + csepid;
 }

@@ -19,10 +19,11 @@ import java.sql.Statement;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 public abstract class ProcessManageAlcifoPartParticipants extends SuperResponseServlet {
-    abstract SuperKey getPartKey(Statement stat, HttpServletRequest req) throws SQLException;
+    abstract SuperKey getPartKey(HttpServletRequest req);
     abstract AlcifoPartParticipantFactory getFactory();
 
     protected void postProcessInsertOrUpdate(Statement stat, SuperKey partKey) throws SQLException { }
@@ -30,13 +31,13 @@ public abstract class ProcessManageAlcifoPartParticipants extends SuperResponseS
     @Override
     protected void processBody(Statement stat, HttpServletRequest req, HttpServletResponse resp)
             throws IOException, SQLException {
-        SuperKey partKey = getPartKey(stat, req);
+        SuperKey partKey = getPartKey(req);
         String[] personSportData = req.getParameterValues("pt");
 
         AlcifoPartParticipantFactory factory = getFactory();
 
         SportDiscipline sd = new SportDisciplineManager(stat).getEntityFromSuperKey(
-                new DbCalculation(stat).getSportDisciplineKey(factory.getCompSeasonEventPartKey(partKey)));
+                Objects.requireNonNull(new DbCalculation(stat).getSportDisciplineKey(factory.getCompSeasonEventPartKey(partKey))));
 
         Map<String, Integer> ncrMap = new NoCountResultManager(stat).getNameIdMap();
 

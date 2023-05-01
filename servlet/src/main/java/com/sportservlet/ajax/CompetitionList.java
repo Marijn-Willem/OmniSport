@@ -1,8 +1,10 @@
 package com.sportservlet.ajax;
 
 import com.sports.entity.Competition;
+import com.sports.entity.Gender;
 import com.sports.entity.comparator.AliasableName;
 import com.sports.entity.manager.CompetitionManager;
+import com.sports.logic.util.Util;
 import com.sportservlet.SuperResponseServlet;
 import com.sportservlet.util.ServletUtil;
 
@@ -22,7 +24,12 @@ public class CompetitionList extends SuperResponseServlet {
 
         competitions.sort(new AliasableName());
 
-        for (Competition competition : competitions)
-            ServletUtil.writeGenderAliasableOption(competition.getId(), competition, resp.getWriter());
+        for (Competition competition : competitions) {
+            String text = Util.concatStringsWithDelimiter(competition.getName(),
+                    Util.getStringBetweenBracketsOrEmptyString(Gender.getGenderNameFromId(competition.getId())),
+                    " - ");
+
+            ServletUtil.writeOption(competition.getId(), text, resp.getWriter());
+        }
     }
 }

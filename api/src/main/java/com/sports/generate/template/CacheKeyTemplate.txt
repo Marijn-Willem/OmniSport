@@ -10,10 +10,9 @@ competitionId
 seasonId
 clientId
 
-TestSixParameters
+TestFiveParameters
 competitionId
 seasonId
-sportId
-sportEventId
+compSeasonEventId
 compSeasonEventPartId
 clientId

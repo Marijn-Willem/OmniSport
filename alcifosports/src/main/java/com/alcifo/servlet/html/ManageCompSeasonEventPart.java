@@ -7,8 +7,8 @@ import java.sql.Statement;
 public class ManageCompSeasonEventPart extends com.sportservlet.html.ManageCompSeasonEventPart {
     @Override
     public String getBasicReturnPath(Statement stat, HttpServletRequest req) {
-        return "CompSeasonEventPartPortal?cid=" + competitionId + "&sid=" + seasonId + "&eid=" +
-                getIntValuedParameterValue(req, "eid");
+        return "CompSeasonEventPartPortal?cid=" + competitionId + "&sid=" + seasonId + "&cseid=" +
+                getIntValuedParameterValue(req, "cseid");
     }
 
     @Override

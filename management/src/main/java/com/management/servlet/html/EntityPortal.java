@@ -26,6 +26,7 @@ public class EntityPortal extends SuperHtmlServlet {
         writeEntityLink("Equipe", res.getWriter());
         writeEntityLink("LocationRole", res.getWriter());
         writeEntityLink("PhaseType", res.getWriter());
+        writeEntityLink("EventPartName", res.getWriter());
         writeEntityLink("NoCountResult", res.getWriter());
     }
 

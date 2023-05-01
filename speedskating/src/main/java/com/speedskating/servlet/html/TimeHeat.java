@@ -4,19 +4,16 @@ import com.sports.calc.alcifo.DbCalculation;
 import com.sports.entity.DisciplinePart;
 import com.sports.entity.EventDisciplinePart;
 import com.sports.entity.PersonSport;
-import com.sports.entity.Sport;
 import com.sports.entity.comparator.DisciplinePartOrder;
-import com.sports.entity.key.CompSeasonEventKey;
 import com.sports.entity.key.CompSeasonEventPartKey;
-import com.sports.entity.key.CompSeasonKey;
 import com.sports.entity.key.SportDisciplineKey;
 import com.sports.entity.manager.DisciplinePartManager;
 import com.sports.entity.manager.EventDisciplinePartManager;
 import com.sports.entity.manager.EventPartPersonSportManager;
 import com.sports.entity.manager.PersonSportManager;
-
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+
 import java.io.IOException;
 import java.io.Writer;
 import java.sql.SQLException;
@@ -32,26 +29,19 @@ public class TimeHeat extends SuperHtmlServlet {
 
     @Override
     protected String getReturnPath(Statement stat, HttpServletRequest req) {
-        int eid = getIntValuedParameterValue(req, "eid");
-        return "EventHeats?" + compSeasonUrlParameters + "&eid=" + eid;
+        int cseid = getIntValuedParameterValue(req, "cseid");
+        return "EventHeats?" + compSeasonUrlParameters + "&cseid=" + cseid;
     }
 
     @Override
     protected void processScriptTag(Statement stat, HttpServletRequest req, Writer w) throws IOException {
-        writeCompSeasonVarsInScriptTag(w);
-        writeVarInScriptTag("eid", getIntValuedParameterValue(req, "eid"), w);
-        writeVarInScriptTag("epid", getIntValuedParameterValue(req, "epid"), w);
+        writeCompSeasonEventPartVarsInScriptTag(req, w);
     }
 
     @Override
     protected void processHtmlBody(Statement stat, HttpServletRequest req, HttpServletResponse res)
             throws SQLException, IOException {
-        int eventId = Integer.parseInt(req.getParameter("eid"));
-        int eventPartId = Integer.parseInt(req.getParameter("epid"));
-
-        CompSeasonEventKey csek =
-                new CompSeasonEventKey(new CompSeasonKey(competitionId, seasonId), Sport.sportIdSpeedSkating, eventId);
-        CompSeasonEventPartKey csepk = new CompSeasonEventPartKey(csek, eventPartId);
+        CompSeasonEventPartKey csepk = getCompSeasonEventPartKey(req);
 
         EventPartPersonSportManager eppm = new EventPartPersonSportManager(stat);
 

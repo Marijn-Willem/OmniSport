@@ -33,7 +33,6 @@ public class SportEventManager extends SuperKeyAliasableManager<SportEventKey, S
         return new String[] {
                 "name",
                 "pointssortasc",
-                "genderid",
                 "isteam"
             };
     }
@@ -46,7 +45,6 @@ public class SportEventManager extends SuperKeyAliasableManager<SportEventKey, S
         sportEvent.setSportEventId(rs.getInt("sporteventid"));
         sportEvent.setName(rs.getString("name"));
         sportEvent.setPointsSortAsc(rs.getBoolean("pointssortasc"));
-        sportEvent.setGenderId(rs.getInt("genderid"));
         sportEvent.setTeam(rs.getBoolean("isteam"));
 
         return sportEvent;

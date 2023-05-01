@@ -1,11 +1,9 @@
 package com.sportservlet.html;
 
-import com.sports.entity.key.SportEventKey;
-import com.sports.entity.manager.SportEventManager;
-import com.sports.logic.calculation.DbCalculation;
-
+import com.sports.calc.alcifo.DbCalculation;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+
 import java.io.IOException;
 import java.io.Writer;
 import java.sql.SQLException;
@@ -20,14 +18,9 @@ public abstract class EventDisciplinePartPortal extends SuperHtmlServlet impleme
     @Override
     protected void processScriptTag(Statement stat, HttpServletRequest req, Writer w)
             throws IOException, SQLException {
-        int spid = new DbCalculation(stat).getSportId(competitionId);
-        int eid = getIntValuedParameterValue(req, "eid");
-        int csepid = getIntValuedParameterValue(req, "csepid");
-        boolean isTeam = new SportEventManager(stat).getEntityFromSuperKey(new SportEventKey(spid, eid)).isTeam();
+        boolean isTeam = new DbCalculation(stat).getSportEvent(getCompSeasonEventKey(req)).isTeam();
 
-        writeCompSeasonVarsInScriptTag(w);
-        writeVarInScriptTag("eid", eid, w);
-        writeVarInScriptTag("csepid", csepid, w);
+        writeCompSeasonEventPartVarsInScriptTag(req, w);
         w.append("const isTeam = ");
         w.append(Boolean.toString(isTeam));
         w.append(";\n");

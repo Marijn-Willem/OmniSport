@@ -1,13 +1,12 @@
 const eventPartNameListLoader = new ElementLoader('epnid', function () {
-    return '/EventPartNameList?spid=' + spid + '&eid=' + eid;
+    return '/EventPartNameList';
 }, null);
 
 function getProcessUrl() {
     const epnid = getValueFromElementByName('inpUpd');
     const nm = encodeURL(getValueFromElementByName('nm'));
 
-    return '/ProcessManageEventPartName?spid=' + spid + '&eid=' + eid + '&epnid=' + epnid +
-        '&nm=' + nm;
+    return '/ProcessManageEventPartName?epnid=' + epnid + '&nm=' + nm;
 }
 
 function checkInput() {
@@ -22,9 +21,9 @@ function goToManageEventPartName() {
     const epnid = document.getElementById('epnid').value;
 
     if (!isEmptyOrNull(epnid))
-        goToUrl('ManageEventPartName', 'spid=' + spid + '&eid=' + eid + '&epnid=' + epnid);
+        goToUrl('ManageEventPartName', 'epnid=' + epnid);
 }
 
 function goToInsertEventPartName() {
-    goToUrl('ManageEventPartName', 'spid=' + spid + '&eid=' + eid + '&md=i');
+    goToUrl('ManageEventPartName', 'md=i');
 }

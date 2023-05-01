@@ -19,7 +19,7 @@ public class EventDisciplinePartList extends SuperResponseServlet {
     @Override
     protected void processBody(Statement stat, HttpServletRequest req, HttpServletResponse resp)
             throws IOException, SQLException {
-        CompSeasonEventPartKey csepKey = getCompSeasonEventPartKey(stat, req);
+        CompSeasonEventPartKey csepKey = getCompSeasonEventPartKey(req);
 
         List<EventDisciplinePart> eventDisciplineParts = new EventDisciplinePartManager(stat).getEventDisciplineList(csepKey);
         eventDisciplineParts.sort(new NamedEntityName());

@@ -5,9 +5,7 @@ import com.sports.calc.alcifo.DbCalculation;
 import com.sports.entity.DisciplinePartPersonSport;
 import com.sports.entity.EventDisciplinePart;
 import com.sports.entity.PersonSport;
-import com.sports.entity.Sport;
 import com.sports.entity.comparator.EventDisciplinePartOrder;
-import com.sports.entity.key.CompSeasonEventKey;
 import com.sports.entity.key.CompSeasonEventPartKey;
 import com.sports.entity.key.EventPartPersonSportKey;
 import com.sports.entity.key.SportDisciplineKey;
@@ -15,14 +13,17 @@ import com.sports.entity.manager.DisciplinePartPersonSportManager;
 import com.sports.entity.manager.EventDisciplinePartManager;
 import com.sports.entity.manager.PersonSportManager;
 import com.sports.logic.util.Util;
-
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+
 import java.io.IOException;
 import java.io.Writer;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
 
 public class HeatOverview extends SuperHtmlServlet {
     @Override
@@ -32,21 +33,17 @@ public class HeatOverview extends SuperHtmlServlet {
 
     @Override
     protected String getReturnPath(Statement stat, HttpServletRequest req) {
-        int eid = getIntValuedParameterValue(req, "eid");
-        return "EventHeats?cid=" + competitionId + "&sid=" + seasonId + "&eid=" + eid;
+        int cseid = getIntValuedParameterValue(req, "cseid");
+        return "EventHeats?cid=" + competitionId + "&sid=" + seasonId + "&cseid=" + cseid;
     }
 
     @Override
     protected void processHtmlBody(Statement stat, HttpServletRequest req, HttpServletResponse res)
             throws SQLException, IOException {
-        int eventId = Integer.parseInt(req.getParameter("eid"));
-        int eventPartId = Integer.parseInt(req.getParameter("epid"));
         int ps1Id = Integer.parseInt(req.getParameter("p1id"));
         int ps2Id = Integer.parseInt(req.getParameter("p2id"));
 
-        CompSeasonEventPartKey csepk = new CompSeasonEventPartKey(
-                new CompSeasonEventKey(compSeasonKey, Sport.sportIdSpeedSkating, eventId),
-                eventPartId);
+        CompSeasonEventPartKey csepk = getCompSeasonEventPartKey(req);
 
         DbCalculation dbCalc = new DbCalculation(stat);
 

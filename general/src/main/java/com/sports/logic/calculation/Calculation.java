@@ -35,27 +35,6 @@ public class Calculation {
         return factory;
     }
 
-    public static List<CompSeasonPhaseKey> getCompSeasonPhaseKeys(List<CompSeasonPhase> compSeasonPhases) {
-        List<CompSeasonPhaseKey> compSeasonPhaseKeys = new ArrayList<CompSeasonPhaseKey>();
-
-        for (CompSeasonPhase compSeasonPhase : compSeasonPhases)
-            compSeasonPhaseKeys.add(compSeasonPhase.getCompSeasonPhaseKey());
-
-        return compSeasonPhaseKeys;
-    }
-
-    public static Set<CompSeasonPhaseKey> getCompSeasonPhasesInMatches(List<TeamMatch> teamMatches) {
-        Set<CompSeasonPhaseKey> compSeasonPhaseKeys = new HashSet<CompSeasonPhaseKey>();
-
-        for (TeamMatch teamMatch : teamMatches)
-            compSeasonPhaseKeys.add(new CompSeasonPhaseKey(
-                    new CompSeasonKey(teamMatch.getCompetitionId(), teamMatch.getSeasonId()),
-                    teamMatch.getCompSeasonPhaseId())
-            );
-
-        return compSeasonPhaseKeys;
-    }
-
     public static String getWhereClauseTeamInMatches(CompSeasonKey csk, int teamId, List<TeamMatch> teamMatchList) {
         String[] clauseParts = new String[teamMatchList.size()];
 
@@ -105,16 +84,6 @@ public class Calculation {
             double gamesBehind = (leaderWins - participant.getWins() + participant.getLosses() - leaderLosses) / 2D;
             participant.setGamesBehind(gamesBehind);
         }
-    }
-
-    public static Alias findAlias(List<Alias> aliases, String entityId, Integer clientId, Integer languageId) {
-        for (Alias alias : aliases)
-            if (alias.getEntityId().equals(entityId) &&
-                    (Util.compareIntegersNotNull(clientId, alias.getClientId()) ||
-                            Util.compareIntegersNotNull(languageId, alias.getLanguageId())))
-                return alias;
-
-        return null;
     }
 
     public static void setGenderIdsOnPersonSports(Collection<PersonSport> personSports, Map<Integer, Person> personMap) {

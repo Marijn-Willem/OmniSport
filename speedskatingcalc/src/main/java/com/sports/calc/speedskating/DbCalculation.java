@@ -1,8 +1,6 @@
 package com.sports.calc.speedskating;
 
-import com.sports.entity.EventPartPersonSport;
-import com.sports.entity.PersonSport;
-import com.sports.entity.SportEventPart;
+import com.sports.entity.*;
 import com.sports.entity.comparator.EventPartPersonPersonId;
 import com.sports.entity.comparator.EventPartPersonResPoints;
 import com.sports.entity.comparator.SportEventPartId;
@@ -10,9 +8,7 @@ import com.sports.entity.key.CompSeasonEventKey;
 import com.sports.entity.key.CompSeasonEventPartKey;
 import com.sports.entity.key.EventPartPersonSportKey;
 import com.sports.entity.key.SportEventPartKey;
-import com.sports.entity.manager.EventPartPersonSportManager;
-import com.sports.entity.manager.PersonSportManager;
-import com.sports.entity.manager.SportEventPartManager;
+import com.sports.entity.manager.*;
 
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -22,8 +18,12 @@ import java.util.Map;
 
 public record DbCalculation(Statement stat) {
     public List<EventPartPersonSport> getTotalRanking(CompSeasonEventPartKey csepk) throws SQLException {
-        SportEventPartKey sepk = new SportEventPartKey(csepk.getSuperKey().getSportEventKey(),
-                csepk.getCompSeasonEventPartId());
+        CompSeasonEventKey csek = csepk.getSuperKey();
+
+        CompSeasonEventPart compSeasonEventPart = new CompSeasonEventPartManager(stat).getCompSeasonEventPart(csepk);
+        CompSeasonEvent compSeasonEvent = new CompSeasonEventManager(stat).getEntityFromSuperKey(csek);
+        SportEventPartKey sepk = new SportEventPartKey(compSeasonEvent.getSportEventKey(),
+                compSeasonEventPart.getSportEventPartId());
 
         SportEventPartManager sepm = new SportEventPartManager(stat);
 
@@ -35,8 +35,6 @@ public record DbCalculation(Statement stat) {
 
         EventPartPersonSportManager eppm = new EventPartPersonSportManager(stat);
         List<Integer> personSportIds = eppm.getPersonSportIdsCompSeasonEventPart(csepk);
-
-        CompSeasonEventKey csek = csepk.getSuperKey();
 
         List<EventPartPersonSportKey> eventPartPersonSportKeys = new ArrayList<>();
 

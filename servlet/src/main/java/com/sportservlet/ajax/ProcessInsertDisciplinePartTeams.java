@@ -14,10 +14,10 @@ import java.util.List;
 
 public class ProcessInsertDisciplinePartTeams extends ProcessInsertAlcifoPartParticipants<EventDisciplinePartKey> {
     @Override
-    EventDisciplinePartKey getPartKey(Statement stat, HttpServletRequest req) throws SQLException {
+    EventDisciplinePartKey getPartKey(HttpServletRequest req) {
         int edpid = getIntValuedParameterValue(req, "edpid");
 
-        return new EventDisciplinePartKey(getCompSeasonEventPartKey(stat, req), edpid);
+        return new EventDisciplinePartKey(getCompSeasonEventPartKey(req), edpid);
     }
 
     @Override

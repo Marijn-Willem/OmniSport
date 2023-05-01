@@ -1,17 +1,14 @@
 package com.sportservlet.ajax;
 
-import com.sports.entity.key.CompSeasonEventPartKey;
 import com.sports.calc.alcifo.AlcifoPartParticipantFactory;
 import com.sports.calc.alcifo.EventPartPersonSportFactory;
-
+import com.sports.entity.key.CompSeasonEventPartKey;
 import jakarta.servlet.http.HttpServletRequest;
-import java.sql.SQLException;
-import java.sql.Statement;
 
 public class ProcessManageEventPartPersonSports extends ProcessManageAlcifoPartParticipants {
     @Override
-    CompSeasonEventPartKey getPartKey(Statement stat, HttpServletRequest req) throws SQLException {
-        return getCompSeasonEventPartKey(stat, req);
+    CompSeasonEventPartKey getPartKey(HttpServletRequest req) {
+        return getCompSeasonEventPartKey(req);
     }
 
     @Override
