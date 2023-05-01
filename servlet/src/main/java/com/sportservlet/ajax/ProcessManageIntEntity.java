@@ -32,6 +32,6 @@ public abstract class ProcessManageIntEntity<T extends IntEntity> extends Proces
             superManager.insert(id, entity);
         }
 
-        updateIdStr = "" + id;
+        updateIdStr = String.valueOf(id);
     }
 }

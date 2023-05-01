@@ -1,16 +1,14 @@
 package com.speedskating.servlet.html;
 
 import com.sports.entity.PersonSport;
-import com.sports.entity.Sport;
 import com.sports.entity.key.CompSeasonEventKey;
 import com.sports.entity.key.CompSeasonEventPartKey;
-import com.sports.entity.key.CompSeasonKey;
 import com.sports.entity.manager.EventPartPersonSportManager;
 import com.sports.entity.manager.EventPersonSportManager;
 import com.sports.entity.manager.PersonSportManager;
-
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+
 import java.io.IOException;
 import java.io.Writer;
 import java.sql.SQLException;
@@ -24,21 +22,16 @@ public class AddEventPartPersonSports extends SuperHtmlServlet {
 
     @Override
     protected String getReturnPath(Statement stat, HttpServletRequest req) {
-        int eid = getIntValuedParameterValue(req, "eid");
-        return "EventHeats?cid=" + competitionId + "&sid=" + seasonId + "&eid=" + eid;
+        int cseid = getIntValuedParameterValue(req, "cseid");
+        return "EventHeats?cid=" + competitionId + "&sid=" + seasonId + "&cseid=" + cseid;
     }
 
     protected void processHtmlBody(Statement stat, HttpServletRequest req, HttpServletResponse res)
             throws IOException, SQLException {
-        int competitionId = Integer.parseInt(req.getParameter("cid"));
-        int seasonId = Integer.parseInt(req.getParameter("sid"));
-        int eventId = Integer.parseInt(req.getParameter("eid"));
-        int eventPartId = Integer.parseInt(req.getParameter("epid"));
+        int eventPartId = Integer.parseInt(req.getParameter("csepid"));
 
-        CompSeasonEventKey csek = new CompSeasonEventKey(new CompSeasonKey(competitionId, seasonId),
-                            Sport.sportIdSpeedSkating, eventId);
-
-        CompSeasonEventPartKey csepk = new CompSeasonEventPartKey(csek, eventPartId);
+        CompSeasonEventKey csek = getCompSeasonEventKey(req);
+        CompSeasonEventPartKey csepk = getCompSeasonEventPartKey(req);
 
         List<Integer> psIdsCse = new EventPersonSportManager(stat).getPersonSportIdsCompSeasonEvent(csek);
         List<Integer> psIdsCsep = new EventPartPersonSportManager(stat).getPersonSportIdsCompSeasonEventPart(csepk);
@@ -66,9 +59,9 @@ public class AddEventPartPersonSports extends SuperHtmlServlet {
         w.append(line);
         line = "<input name=\"sid\" type=\"hidden\" value=\"" + seasonId + "\" /><br/>\n";
         w.append(line);
-        line = "<input name=\"eid\" type=\"hidden\" value=\"" + eventId + "\" /><br/>\n";
+        line = "<input name=\"cseid\" type=\"hidden\" value=\"" + csek.getCompSeasonEventId() + "\" /><br/>\n";
         w.append(line);
-        line = "<input name=\"epid\" type=\"hidden\" value=\"" + eventPartId + "\" /><br/>\n";
+        line = "<input name=\"csepid\" type=\"hidden\" value=\"" + eventPartId + "\" /><br/>\n";
         w.append(line);
 
         w.append("</form><br/>\n");

@@ -19,8 +19,8 @@ public class ProcessManageEventPartLocation extends ProcessManageSuperKeyEntity<
     private CompSeasonEventPartKey compSeasonEventPartKey;
 
     @Override
-    protected void initSpecific(Statement stat, HttpServletRequest req) throws SQLException {
-        compSeasonEventPartKey = getCompSeasonEventPartKey(stat, req);
+    protected void initSpecific(Statement stat, HttpServletRequest req) {
+        compSeasonEventPartKey = getCompSeasonEventPartKey(req);
     }
 
     @Override

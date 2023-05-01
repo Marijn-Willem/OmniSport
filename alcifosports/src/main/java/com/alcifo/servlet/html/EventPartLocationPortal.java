@@ -20,15 +20,13 @@ public class EventPartLocationPortal extends SuperHtmlServlet {
 
     @Override
     protected void processScriptTag(Statement stat, HttpServletRequest req, Writer w) throws IOException {
-        writeCompSeasonVarsInScriptTag(w);
-        writeVarInScriptTag("eid", getIntValuedParameterValue(req, "eid"), w);
-        writeVarInScriptTag("csepid", getIntValuedParameterValue(req, "csepid"), w);
+        writeCompSeasonEventPartVarsInScriptTag(req, w);
     }
 
     @Override
     protected String getReturnPath(Statement stat, HttpServletRequest req) {
-        int eid = getIntValuedParameterValue(req, "eid");
-        return "CompSeasonEventPartPortal?" + compSeasonUrlParameters + "&eid=" + eid;
+        int cseid = getIntValuedParameterValue(req, "cseid");
+        return "CompSeasonEventPartPortal?" + compSeasonUrlParameters + "&cseid=" + cseid;
     }
 
     @Override

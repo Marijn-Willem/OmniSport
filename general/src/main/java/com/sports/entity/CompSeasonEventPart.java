@@ -4,11 +4,12 @@ import com.sports.db.util.QueryUtil;
 import com.sports.entity.key.CompSeasonEventKey;
 import com.sports.entity.key.CompSeasonEventPartKey;
 import com.sports.entity.key.CompSeasonKey;
-import com.sports.entity.key.SportEventKey;
 
 import java.time.LocalDateTime;
 
 public class CompSeasonEventPart extends SuperKeyEntity implements Orderable, DescribedEntity {
+    private int sportId;
+    private int sportEventId;
     private Integer sportEventPartId;
     private Integer sportDisciplineId;
     private Integer eventPartNameId;
@@ -19,22 +20,39 @@ public class CompSeasonEventPart extends SuperKeyEntity implements Orderable, De
 
     private int competitionId;
     private int seasonId;
-    private int sportId;
-    private int sportEventId;
+    private int compSeasonEventId;
     private int compSeasonEventPartId;
     private String description;
     private LocalDateTime compSeasonEndDate;
 
     public String[] getPropertiesInSQLStrings() {
         return new String[] {
+                String.valueOf(sportId),
+                String.valueOf(sportEventId),
                 QueryUtil.convertIntegerToDbValue(sportEventPartId),
                 QueryUtil.convertIntegerToDbValue(sportDisciplineId),
                 QueryUtil.convertIntegerToDbValue(eventPartNameId),
-                "" + order,
+                String.valueOf(order),
                 QueryUtil.convertIntegerToDbValue(stage),
                 QueryUtil.convertDateTimeToDbString(date),
                 QueryUtil.convertStringToDbValue(externalSource)
         };
+    }
+
+    public int getSportId() {
+        return sportId;
+    }
+
+    public void setSportId(int sportId) {
+        this.sportId = sportId;
+    }
+
+    public int getSportEventId() {
+        return sportEventId;
+    }
+
+    public void setSportEventId(int sportEventId) {
+        this.sportEventId = sportEventId;
     }
 
     public Integer getSportEventPartId() {
@@ -101,20 +119,8 @@ public class CompSeasonEventPart extends SuperKeyEntity implements Orderable, De
         this.seasonId = seasonId;
     }
 
-    public int getSportId() {
-        return sportId;
-    }
-
-    public void setSportId(int sportId) {
-        this.sportId = sportId;
-    }
-
-    public int getSportEventId() {
-        return sportEventId;
-    }
-
-    public void setSportEventId(int sportEventId) {
-        this.sportEventId = sportEventId;
+    public void setCompSeasonEventId(int compSeasonEventId) {
+        this.compSeasonEventId = compSeasonEventId;
     }
 
     public int getCompSeasonEventPartId() {
@@ -128,13 +134,9 @@ public class CompSeasonEventPart extends SuperKeyEntity implements Orderable, De
     public CompSeasonEventPartKey getCompSeasonEventPartKey() {
         return new CompSeasonEventPartKey(
                 new CompSeasonEventKey(
-                        new CompSeasonKey(competitionId, seasonId), sportId, sportEventId),
+                        new CompSeasonKey(competitionId, seasonId), compSeasonEventId),
                 compSeasonEventPartId
         );
-    }
-
-    public SportEventKey getSportEventKey() {
-        return new SportEventKey(sportId, sportEventId);
     }
 
     public String getDescription() {

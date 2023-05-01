@@ -11,15 +11,15 @@ import com.sports.calc.alcifo.AlcifoParticipantFactory;
 public class EventDisciplinePartRankingData extends AlcifoPartRankingData {
     private final int eventDisciplinePartId;
 
-    public EventDisciplinePartRankingData(int competitionId, int seasonId, int sportEventId, int compSeasonEventPartId,
+    public EventDisciplinePartRankingData(int competitionId, int seasonId, int compSeasonEventId, int compSeasonEventPartId,
                                           int eventDisciplinePartId, Integer clientId) {
-        super(competitionId, seasonId, sportEventId, compSeasonEventPartId, clientId);
+        super(competitionId, seasonId, compSeasonEventId, compSeasonEventPartId, clientId);
         this.eventDisciplinePartId = eventDisciplinePartId;
     }
 
     @Override
     public CacheDataKey getCacheKey() {
-        return new EventDisciplinePartRankingKey(competitionId, seasonId, sportEventId, compSeasonEventPartId,
+        return new EventDisciplinePartRankingKey(competitionId, seasonId, compSeasonEventId, compSeasonEventPartId,
                 eventDisciplinePartId, clientId);
     }
 

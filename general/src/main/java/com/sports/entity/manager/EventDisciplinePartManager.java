@@ -35,6 +35,7 @@ public class EventDisciplinePartManager extends SuperKeySuperManager<EventDiscip
     @Override
     String[] getValueColumns() {
         return new String[] {
+                "sportid",
                 "sportdisciplineid",
                 "disciplinepartid",
                 "name"
@@ -46,6 +47,7 @@ public class EventDisciplinePartManager extends SuperKeySuperManager<EventDiscip
         EventDisciplinePart eventDisciplinePart = new EventDisciplinePart();
 
         eventDisciplinePart.setEventDisciplinePartId(rs.getInt("eventdisciplinepartid"));
+        eventDisciplinePart.setSportId(rs.getInt("sportid"));
         eventDisciplinePart.setSportDisciplineId(rs.getInt("sportdisciplineid"));
         eventDisciplinePart.setDisciplinePartId(QueryUtil.getIntegerFromResultSet(rs, "disciplinepartid"));
         eventDisciplinePart.setName(rs.getString("name"));
@@ -66,11 +68,6 @@ public class EventDisciplinePartManager extends SuperKeySuperManager<EventDiscip
 
     public List<EventDisciplinePart> getEventDisciplineList(CompSeasonEventPartKey csepk) throws SQLException {
         return getEntityList(csepk.getWhereClause());
-    }
-
-    public Map<EventDisciplinePartKey, EventDisciplinePart> getEventDisciplinePartMap(CompSeasonEventPartKey csepk)
-        throws SQLException {
-        return getSuperKeyEntityMap(csepk.getWhereClause());
     }
 
     public Map<EventDisciplinePartKey, EventDisciplinePart> getEventDisciplineMapFromEvents(List<CompSeasonEventKey> csekList) throws SQLException {

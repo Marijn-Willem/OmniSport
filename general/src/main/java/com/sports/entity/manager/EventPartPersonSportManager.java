@@ -120,11 +120,6 @@ public class EventPartPersonSportManager extends AlcifoPartParticipantManager<Ev
         return getEntityList(Util.concatStringsWithDelimiter(csepk.getWhereClause(), whereClause, " AND "));
     }
 
-    public List<EventPartPersonSport> getEventPartPersonSportList(List<CompSeasonEventPartKey> csepKeys)
-            throws SQLException {
-        return getEntityList(getConditionsKeyList(csepKeys));
-    }
-
     public Map<EventPartPersonSportKey, EventPartPersonSport> getEventPartPersonSportMap(List<EventPersonSportKey> eventPersonSportKeys)
         throws SQLException {
         return getPartParticipantMap(eventPersonSportKeys);
@@ -138,10 +133,6 @@ public class EventPartPersonSportManager extends AlcifoPartParticipantManager<Ev
     public Map<EventPartPersonSportKey, EventPartPersonSport> getEventPartPersonSportsWithNoCountResult(CompSeasonEventKey eventKey)
         throws SQLException {
         return getSuperKeyEntityMap(eventKey.getWhereClause() + " AND nocountresultid IS NOT NULL");
-    }
-
-    public List<EventPartPersonSport> getEventPartPersonSportsWithRankOne(CompSeasonEventKey cseKey) throws SQLException {
-        return getEntityList(cseKey.getWhereClause() + " AND rank = 1");
     }
 
     private List<Integer> getPersonSportIdsCompSeasonEventPart(CompSeasonEventPartKey csepk,

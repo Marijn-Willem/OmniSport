@@ -21,7 +21,7 @@ public class CompSeasonEventPartList extends SuperResponseServlet {
     @Override
     protected void processBody(Statement stat, HttpServletRequest req, HttpServletResponse resp)
             throws IOException, SQLException {
-        CompSeasonEventKey cseKey = getCompSeasonEventKey(stat, req);
+        CompSeasonEventKey cseKey = getCompSeasonEventKey(req);
         List<CompSeasonEventPart> compSeasonEventParts = new CompSeasonEventPartManager(stat)
                 .getCompSeasonEventPartsFromEvents(Collections.singletonList(cseKey));
         new DbCalculation(stat).setCompSeasonEventPartDescriptions(cseKey, compSeasonEventParts);

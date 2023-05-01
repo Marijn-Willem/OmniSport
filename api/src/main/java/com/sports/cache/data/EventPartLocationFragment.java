@@ -10,7 +10,6 @@ import com.sports.entity.EventPartLocation;
 import com.sports.entity.key.CompSeasonEventKey;
 import com.sports.entity.key.CompSeasonEventPartKey;
 import com.sports.entity.key.CompSeasonKey;
-import com.sports.entity.manager.CompetitionManager;
 import com.sports.entity.manager.EventPartLocationManager;
 
 import java.sql.SQLException;
@@ -19,7 +18,7 @@ import java.sql.Statement;
 public class EventPartLocationFragment extends WritableFragment {
     private final int competitionId;
     private final int seasonId;
-    private final int sportEventId;
+    private final int compSeasonEventId;
     private final int compSeasonEventPartId;
     private final int eventPartLocationId;
 
@@ -27,28 +26,27 @@ public class EventPartLocationFragment extends WritableFragment {
     private Point coordinates;
     private LocationRoleFragment locationRoleFragment;
 
-    public EventPartLocationFragment(int competitionId, int seasonId, int sportEventId,
+    public EventPartLocationFragment(int competitionId, int seasonId, int compSeasonEventId,
                                      int compSeasonEventPartId, int eventPartLocationId) {
         this.competitionId = competitionId;
         this.seasonId = seasonId;
-        this.sportEventId = sportEventId;
+        this.compSeasonEventId = compSeasonEventId;
         this.compSeasonEventPartId = compSeasonEventPartId;
         this.eventPartLocationId = eventPartLocationId;
     }
 
     @Override
     public CacheKey getCacheKey() {
-        return new EventPartLocationKey(competitionId, seasonId, sportEventId,
+        return new EventPartLocationKey(competitionId, seasonId, compSeasonEventId,
                 compSeasonEventPartId, eventPartLocationId);
     }
 
     @Override
     void fill(Statement stat) throws SQLException {
-        int sportId = new CompetitionManager(stat).getCompetition(competitionId).getSportId();
         com.sports.entity.key.EventPartLocationKey eplKey = new com.sports.entity.key.EventPartLocationKey(
                 new CompSeasonEventPartKey(
-                        new CompSeasonEventKey(new CompSeasonKey(competitionId, seasonId),
-                                sportId, sportEventId), compSeasonEventPartId),
+                        new CompSeasonEventKey(new CompSeasonKey(competitionId, seasonId), compSeasonEventId),
+                        compSeasonEventPartId),
                 eventPartLocationId
         );
 

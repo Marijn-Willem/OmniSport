@@ -44,6 +44,7 @@ public class Scraper {
     private final String url;
     private final CompSeasonEventPartKey compSeasonEventPartKey;
     private final Statement stat;
+    private CompSeasonEvent compSeasonEvent;
     private boolean isSucceeded;
     private final List<String> newPersonNames = new ArrayList<>();
 
@@ -61,7 +62,7 @@ public class Scraper {
         if (inputTable != null) {
             processInputTable(inputTable);
 
-            if (Calculation.isStageRace(compSeasonEventPartKey.getSuperKey().getSportEventId()))
+            if (Calculation.isStageRace(getCompSeasonEvent().getSportEventKey().getSportEventId()))
                 new com.sports.calc.cyclingroad.DbCalculation(stat)
                         .updateEventPersonSportsWithNoCountResult(compSeasonEventPartKey.getSuperKey());
         }
@@ -75,8 +76,8 @@ public class Scraper {
         return newPersonNames;
     }
 
-    private int getTableNr() {
-        return Calculation.isGeneralClassification(compSeasonEventPartKey.getSuperKey().getSportEventId()) ? 2 : 1;
+    private int getTableNr() throws SQLException {
+        return Calculation.isGeneralClassification(getCompSeasonEvent().getSportEventKey().getSportEventId()) ? 2 : 1;
     }
 
     private void processInputTable(String inputTable) throws SQLException {
@@ -89,7 +90,7 @@ public class Scraper {
         DbCalculation dbCalculation = new DbCalculation(stat);
 
         Map<String, Person> personNameMap = dbCalculation.getPersonNameMapWithNewPersons(
-                entityMap.keySet().stream().toList(), compSeasonEventPartKey.getSuperKey().getSportEventKey());
+                entityMap.keySet().stream().toList(), getCompSeasonEvent());
         List<PersonSport> personSports = dbCalculation.getPersonSportsWithNewInstances(Sport.sportIdCyclingRoad,
                 personNameMap.values().stream().toList());
 
@@ -251,6 +252,13 @@ public class Scraper {
         return new HashMap<>() {{
             nameIdMap.forEach((k, v) -> put(k, personMap.get(v).getName()));
         }};
+    }
+
+    private CompSeasonEvent getCompSeasonEvent() throws SQLException {
+        if (compSeasonEvent == null)
+            compSeasonEvent = new CompSeasonEventManager(stat).getEntityFromSuperKey(compSeasonEventPartKey.getSuperKey());
+
+        return compSeasonEvent;
     }
 
     private class UrlScraper implements ThreadWorker {

@@ -3,10 +3,7 @@ package com.sportservlet.ajax;
 import com.sports.calc.alcifo.Calculation;
 import com.sports.entity.*;
 import com.sports.entity.key.*;
-import com.sports.entity.manager.CompSeasonEventPartManager;
-import com.sports.entity.manager.CompetitionManager;
-import com.sports.entity.manager.EventPartPersonSportManager;
-import com.sports.entity.manager.EventPersonSportManager;
+import com.sports.entity.manager.*;
 import com.sports.logic.calculation.DbCalculation;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -17,6 +14,7 @@ import java.util.Map;
 
 public class ProcessEventPersonImport extends ProcessPersonImport {
     private CompSeasonEventKey csek;
+    private CompSeasonEvent cse;
     private EventPersonSportManager eventPersonSportManager;
     private boolean insertEventPartPersonSportWithRank;
     private boolean insertEventPartPersonSportForSinglePartEvent;
@@ -25,17 +23,18 @@ public class ProcessEventPersonImport extends ProcessPersonImport {
 
     @Override
     protected void initSpecific(Statement stat, HttpServletRequest req) throws SQLException {
-        int sportId = new CompetitionManager(stat).getCompetition(competitionId).getSportId();
-        int eventId = Integer.parseInt(req.getParameter("eid"));
+        int compSeasonEventId = Integer.parseInt(req.getParameter("cseid"));
 
-        csek = new CompSeasonEventKey(new CompSeasonKey(competitionId, seasonId), sportId, eventId);
+        csek = new CompSeasonEventKey(new CompSeasonKey(competitionId, seasonId), compSeasonEventId);
+        cse = new CompSeasonEventManager(stat).getEntityFromSuperKey(csek);
+        SportEventKey sek = cse.getSportEventKey();
 
         eventPersonSportManager = new EventPersonSportManager(stat);
 
-        insertEventPartPersonSportWithRank = Calculation.isCyclingRoadSingleRace(new SportEventKey(sportId, eventId));
+        insertEventPartPersonSportWithRank = Calculation.isCyclingRoadSingleRace(sek);
 
         insertEventPartPersonSportForSinglePartEvent = insertEventPartPersonSportWithRank ||
-                sportId == Sport.sportIdSpeedSkating;
+                sek.getSportId() == Sport.sportIdSpeedSkating;
 
         csepk = null;
         eventPartPersonSportManager = null;
@@ -61,7 +60,7 @@ public class ProcessEventPersonImport extends ProcessPersonImport {
     }
 
     protected Map<String, Person> getPersonNameMap(Statement stat, List<String> names) throws SQLException {
-        return new DbCalculation(stat).getPersonNameMapWithNewPersons(names, csek.getSportEventKey());
+        return new DbCalculation(stat).getPersonNameMapWithNewPersons(names, cse);
     }
 
     private void insertEventPartPersonSport(int personSportId, int nameIndX) throws SQLException {

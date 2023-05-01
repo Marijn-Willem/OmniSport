@@ -1,5 +1,4 @@
 com.alcifo.servlet.html.EventPartLocationPortal
-com.alcifo.servlet.ajax.SportEventListNotInCompSeason
 com.alcifo.servlet.html.CompSeasonEventPartPortal
 com.alcifo.servlet.html.SportList
 com.alcifo.servlet.html.EventDisciplinePartPortal
@@ -8,12 +7,11 @@ com.alcifo.servlet.html.CopyCompSeason
 com.alcifo.servlet.html.CompSeasonEventPortal
 com.sportservlet.ajax.ProcessCopyCompSeason
 com.sportservlet.ajax.ProcessManageCompSeasonEventPart
-com.alcifo.servlet.html.AddCompSeasonEvent
+com.alcifo.servlet.dispatch.AddCompSeasonEvent
 com.alcifo.servlet.ajax.CompSeasonEventPartPorts
 com.sportservlet.ajax.ProcessManageEventDisciplinePart
 com.alcifo.servlet.html.CompSeasonPortal
 com.sportservlet.ajax.CompetitionList
-com.alcifo.servlet.ajax.ProcessAddCompSeasonEvent
 com.sportservlet.ajax.SeasonList
 com.alcifo.servlet.html.ManageEventDisciplinePart
 com.alcifo.servlet.html.ManageCompSeasonEventPart

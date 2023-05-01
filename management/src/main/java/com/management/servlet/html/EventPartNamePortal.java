@@ -9,12 +9,6 @@ import java.sql.Statement;
 
 public class EventPartNamePortal extends SuperHtmlServlet {
     @Override
-    protected void processScriptTag(Statement stat, HttpServletRequest req, Writer w) throws IOException {
-        writeVarInScriptTag("spid", getIntValuedParameterValue(req, "spid"), w);
-        writeVarInScriptTag("eid", getIntValuedParameterValue(req, "eid"), w);
-    }
-
-    @Override
     protected void writeBodyTag(Writer w) throws IOException {
         w.append("<body onload=\"initPortal();\">\n");
     }
@@ -26,7 +20,7 @@ public class EventPartNamePortal extends SuperHtmlServlet {
 
     @Override
     public String getReturnPath(Statement stat, HttpServletRequest req) {
-        return "SportEventPortal?spid=" + getIntValuedParameterValue(req, "spid");
+        return "EntityPortal";
     }
 
     @Override

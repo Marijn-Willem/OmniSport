@@ -1,43 +1,36 @@
 let sportEventListLoader;
-let addCompSeasonEventLoader;
 
 function getProcessUrl() {
-    const eid = getValueFromElementByName('inpUpd');
+    const cseid = getValueFromElementByName('inpUpd');
 
-    let params = 'cid=' + cid + '&sid=' + sid + '&spid=' + spid + '&eid=' + eid;
+    let params = 'cid=' + cid + '&sid=' + sid + '&cseid=' + cseid;
+    params = getUpdateWithNonEmptyParameter(params, 'seid', 'seid');
+    params = getUpdateWithNonEmptyParameter(params, 'gid', 'gid');
     params = getUpdateWithNonEmptyParameter(params, 'es', 'es');
 
     return '/ProcessManageCompSeasonEvent?' + params;
 }
 
 function checkInput() {
-    return true;
+    return doCheckAndAlert(!isEmptyOrNull(getValueFromElementByName('seid')),
+        'Sport event is mandatory');
 }
 
-function initSportEventList(url) {
-    sportEventListLoader = new ElementLoader('selEid', function () {
-        return '/' + url + '?cid=' + cid + '&sid=' + sid;
+function initSportEventList() {
+    sportEventListLoader = new ElementLoader('selCseid', function () {
+        return '/SportEventListByCompSeason?cid=' + cid + '&sid=' + sid;
     }, function () {
-        setElementValueFromInitStateVar('selEid', eid);
+        setElementValueFromInitStateVar('selCseid', cseid);
     });
-
-    addCompSeasonEventLoader = new ElementLoader('divAdd', function () {
-        const eid = document.getElementById('selEid').value;
-        return !isEmptyOrNull(eid) ? '/ProcessAddCompSeasonEvent?cid=' + cid + '&sid=' + sid + '&eid=' + eid : null;
-    }, sportEventListLoader.loadElement);
 
     sportEventListLoader.loadElement();
 }
 
-function handleAddCompSeasonEvent() {
-    addCompSeasonEventLoader.loadElement();
-}
-
 function goToManageCompSeasonEvent() {
-    const eid = document.getElementById('selEid').value;
+    const cseid = document.getElementById('selCseid').value;
 
-    if (!isEmptyOrNull(eid))
-        goToUrl('ManageCompSeasonEvent', 'cid=' + cid + '&sid=' + sid + '&eid=' + eid);
+    if (!isEmptyOrNull(cseid))
+        goToUrl('ManageCompSeasonEvent', 'cid=' + cid + '&sid=' + sid + '&cseid=' + cseid);
 }
 
 function goToInsertCompSeasonEventPart() {
@@ -49,8 +42,8 @@ function goToCompSeasonEventPartPortal() {
 }
 
 function goToCompSeasonEventPartUrl(url, additionalParams) {
-    const eid = document.getElementById('selEid').value;
-    if (!isEmptyOrNull(eid))
-        goToUrl(url, 'cid=' + cid + '&sid=' + sid + '&eid=' + eid +
+    const cseid = document.getElementById('selCseid').value;
+    if (!isEmptyOrNull(cseid))
+        goToUrl(url, 'cid=' + cid + '&sid=' + sid + '&cseid=' + cseid +
             (additionalParams ? '&' + additionalParams : ''));
 }

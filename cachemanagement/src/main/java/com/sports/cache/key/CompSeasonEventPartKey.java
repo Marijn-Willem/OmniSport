@@ -5,13 +5,13 @@ import com.sports.logic.util.Util;
 public class CompSeasonEventPartKey extends CacheKey {
 	private final int competitionId;
 	private final int seasonId;
-	private final int sportEventId;
+	private final int compSeasonEventId;
 	private final int compSeasonEventPartId;
 
-	public CompSeasonEventPartKey(int competitionId, int seasonId, int sportEventId, int compSeasonEventPartId) {
+	public CompSeasonEventPartKey(int competitionId, int seasonId, int compSeasonEventId, int compSeasonEventPartId) {
 		this.competitionId = competitionId;
 		this.seasonId = seasonId;
-		this.sportEventId = sportEventId;
+		this.compSeasonEventId = compSeasonEventId;
 		this.compSeasonEventPartId = compSeasonEventPartId;
 	}
 
@@ -19,7 +19,7 @@ public class CompSeasonEventPartKey extends CacheKey {
 	String getSpecificKeyPart() {
 		return Util.concatStrings(new String[] {
 		        Integer.toString(competitionId), Integer.toString(seasonId),
-		        Integer.toString(sportEventId), Integer.toString(compSeasonEventPartId)
+		        Integer.toString(compSeasonEventId), Integer.toString(compSeasonEventPartId)
 		}, "|");
 	}
 }

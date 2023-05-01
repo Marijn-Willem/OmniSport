@@ -1,8 +1,8 @@
 package com.sports.entity.key;
 
 public class SportEventKey extends SuperKey {
-    private int sportId;
-    private int sportEventId;
+    private final int sportId;
+    private final int sportEventId;
 
     public SportEventKey(int sportId, int sportEventId) {
         this.sportId = sportId;

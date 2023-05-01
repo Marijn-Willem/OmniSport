@@ -17,7 +17,7 @@ import java.util.List;
 public abstract class ProcessInsertAlcifoPartParticipants<U extends SuperKey> extends SuperResponseServlet {
     U partKey;
 
-    abstract U getPartKey(Statement stat, HttpServletRequest req) throws SQLException;
+    abstract U getPartKey(HttpServletRequest req);
     abstract AlcifoPartParticipantFactory getFactory();
     boolean specificCheckBeforeInsert(Statement stat) throws SQLException { return true; }
     String getOutputSpecificCheckFail() { return null; }
@@ -25,7 +25,7 @@ public abstract class ProcessInsertAlcifoPartParticipants<U extends SuperKey> ex
     @Override
     protected void processBody(Statement stat, HttpServletRequest req, HttpServletResponse resp)
             throws IOException, SQLException {
-        partKey = getPartKey(stat, req);
+        partKey = getPartKey(req);
         AlcifoPartParticipantFactory factory = getFactory();
         List<? extends AlcifoPartParticipant> participants = ((AlcifoPartParticipantManager<?, U, ?>)factory.getManager(stat))
                 .getPartParticipantList(partKey);

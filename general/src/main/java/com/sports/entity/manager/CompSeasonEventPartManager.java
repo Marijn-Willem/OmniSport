@@ -4,7 +4,6 @@ import com.sports.db.util.QueryUtil;
 import com.sports.entity.CompSeasonEventPart;
 import com.sports.entity.key.CompSeasonEventKey;
 import com.sports.entity.key.CompSeasonEventPartKey;
-import com.sports.entity.key.CompSeasonKey;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -30,6 +29,8 @@ public class CompSeasonEventPartManager extends SuperKeySuperManager<CompSeasonE
     @Override
     String[] getValueColumns() {
         return new String[] {
+                "sportid",
+                "sporteventid",
                 "sporteventpartid",
                 "sportdisciplineid",
                 "eventpartnameid",
@@ -46,9 +47,10 @@ public class CompSeasonEventPartManager extends SuperKeySuperManager<CompSeasonE
 
         compSeasonEventPart.setCompetitionId(rs.getInt("competitionid"));
         compSeasonEventPart.setSeasonId(rs.getInt("seasonid"));
+        compSeasonEventPart.setCompSeasonEventId(rs.getInt("compseasoneventid"));
+        compSeasonEventPart.setCompSeasonEventPartId(rs.getInt("compseasoneventpartid"));
         compSeasonEventPart.setSportId(rs.getInt("sportid"));
         compSeasonEventPart.setSportEventId(rs.getInt("sporteventid"));
-        compSeasonEventPart.setCompSeasonEventPartId(rs.getInt("compseasoneventpartid"));
         compSeasonEventPart.setSportEventPartId(QueryUtil.getIntegerFromResultSet(rs, "sporteventpartid"));
         compSeasonEventPart.setSportDisciplineId(QueryUtil.getIntegerFromResultSet(rs, "sportdisciplineid"));
         compSeasonEventPart.setEventPartNameId(QueryUtil.getIntegerFromResultSet(rs, "eventpartnameid"));
@@ -86,14 +88,6 @@ public class CompSeasonEventPartManager extends SuperKeySuperManager<CompSeasonE
 
     public List<CompSeasonEventPart> getCompSeasonEventPartsFromEvents(List<CompSeasonEventKey> csekList) throws SQLException {
         return getEntityListFromSuperKeys(csekList);
-    }
-
-    public List<CompSeasonEventPart> getCompSeasonEventPartsFromKeys(List<CompSeasonEventPartKey> keys) throws SQLException {
-        return getEntityListFromSuperKeys(keys);
-    }
-
-    public List<CompSeasonEventPart> getCompSeasonEventPartsForStage(CompSeasonKey compSeasonKey, int stage) throws SQLException {
-        return getEntityList(compSeasonKey.getWhereClause() + " AND stage = " + stage);
     }
 
     public List<CompSeasonEventPart> getCompSeasonEventPartsToStage(List<CompSeasonEventKey> cseKeys, int stage) throws SQLException {

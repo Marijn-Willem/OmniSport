@@ -7,9 +7,8 @@ TestTwoParameters
 competitionId
 seasonId
 
-TestFiveParameters
+TestFourParameters
 competitionId
 seasonId
-sportId
-sportEventId
+compSeasonEventId
 compSeasonEventPartId

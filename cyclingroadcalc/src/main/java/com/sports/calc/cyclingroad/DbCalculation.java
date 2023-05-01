@@ -3,7 +3,6 @@ package com.sports.calc.cyclingroad;
 import com.sports.entity.*;
 import com.sports.entity.comparator.CompSeasonEventPartStage;
 import com.sports.entity.comparator.EventPartPersonSportEventDate;
-import com.sports.entity.comparator.EventPartPersonSportStage;
 import com.sports.entity.key.*;
 import com.sports.entity.manager.*;
 import com.sports.logic.util.Util;
@@ -17,22 +16,24 @@ import java.util.Map;
 
 public record DbCalculation(Statement stat) {
     public boolean setGeneralClassificationPointsForStage(CompSeasonKey compSeasonKey, int stage) throws SQLException {
-        List<CompSeasonEventKey> eventKeys = new CompSeasonEventManager(stat).getCompSeasonEventKeys(compSeasonKey);
+        List<CompSeasonEvent> compSeasonEvents = new CompSeasonEventManager(stat).getCompSeasonEvents(compSeasonKey);
 
-        CompSeasonEventKey stageRaceKey = null, generalKey = null;
+        CompSeasonEvent stageRace = null, general = null;
 
-        for (CompSeasonEventKey eventKey : eventKeys) {
-            if (Calculation.isStageRace(eventKey.getSportEventId()))
-                stageRaceKey = eventKey;
-            else if (Calculation.isGeneralClassification(eventKey.getSportEventId()))
-                generalKey = eventKey;
+        for (CompSeasonEvent compSeasonEvent : compSeasonEvents) {
+            int sportEventId = compSeasonEvent.getSportEventKey().getSportEventId();
 
-            if (stageRaceKey != null && generalKey != null)
+            if (Calculation.isStageRace(sportEventId))
+                stageRace = compSeasonEvent;
+            else if (Calculation.isGeneralClassification(sportEventId))
+                general = compSeasonEvent;
+
+            if (stageRace != null && general != null)
                 break;
         }
 
-        if (stageRaceKey != null && generalKey != null)
-            return setGeneralClassificationPointsForStage(eventKeys, stageRaceKey, generalKey, stage);
+        if (stageRace != null && general != null)
+            return setGeneralClassificationPointsForStage(compSeasonKey, compSeasonEvents, stageRace, general, stage);
 
         return false;
     }
@@ -58,32 +59,6 @@ public record DbCalculation(Statement stat) {
         epsm.updateParticipantMap(eventPersonSportsToUpdate);
     }
 
-    public List<EventPartPersonSport> getStageWinners(CompSeasonKey csKey) throws SQLException {
-        List<EventPartPersonSport> eppsList = new ArrayList<>();
-
-        List<CompSeasonEventKey> cseKeys = new CompSeasonEventManager(stat).getCompSeasonEventKeys(csKey);
-        CompSeasonEventKey cseKey = null;
-
-        for (CompSeasonEventKey csek : cseKeys)
-            if (Calculation.isStageRace(csek.getSportEventId())) {
-                cseKey = csek;
-                break;
-            }
-
-        if (cseKey != null) {
-            eppsList.addAll(new EventPartPersonSportManager(stat).getEventPartPersonSportsWithRankOne(cseKey));
-
-            com.sports.calc.alcifo.DbCalculation alcifoDbCalc = new com.sports.calc.alcifo.DbCalculation(stat);
-
-            alcifoDbCalc.fillCompSeasonEventParts(cseKey, eppsList);
-            alcifoDbCalc.fillEventPersonSports(cseKey, eppsList);
-
-            eppsList.sort(new EventPartPersonSportStage());
-        }
-
-        return eppsList;
-    }
-
     public List<EventPartPersonSport> getPersonResultsInSeason(int personSportId, int seasonId) throws SQLException {
         Map<CompSeasonKey, CompSeason> compSeasonsMap = getCompSeasonMapForSeason(seasonId);
         List<CompSeasonPersonSportKey> compSeasonPersonSportKeys = compSeasonsMap.keySet().stream().map(x ->
@@ -93,12 +68,15 @@ public record DbCalculation(Statement stat) {
 
         List<CompSeasonEventKey> compSeasonEventKeys = personSportKeys.stream()
                 .map(EventPersonSportKey::getCompSeasonEventKey).toList();
+        Map<CompSeasonEventKey, CompSeasonEvent> compSeasonEventMap = new CompSeasonEventManager(stat)
+                .getCompSeasonEventMap(compSeasonEventKeys);
         Map<CompSeasonEventPartKey, CompSeasonEventPart> compSeasonEventPartMap = new CompSeasonEventPartManager(stat)
                 .getCompSeasonEventPartMap(compSeasonEventKeys);
         Map<EventPartPersonSportKey, EventPartPersonSport> eventPartPersonSportMap = new EventPartPersonSportManager(stat)
                 .getEventPartPersonSportMap(personSportKeys);
 
-        Map<CompSeasonEventPartKey, CompSeasonEventPart> eventPartsForResults = getEventPartsForPersonResults(compSeasonEventPartMap);
+        Map<CompSeasonEventPartKey, CompSeasonEventPart> eventPartsForResults =
+                getEventPartsForPersonResults(compSeasonEventMap, compSeasonEventPartMap);
 
         List<EventPartPersonSport> eventPartPersonSports = new ArrayList<>() {{
             eventPartPersonSportMap.forEach((k, v) -> {
@@ -127,22 +105,36 @@ public record DbCalculation(Statement stat) {
                 eventPartPersonSportKey.getPersonSportId());
     }
 
-    private boolean setGeneralClassificationPointsForStage(List<CompSeasonEventKey> eventKeys,
-                                                           CompSeasonEventKey stageRaceKey,
-                                                           CompSeasonEventKey generalKey,
+    private boolean setGeneralClassificationPointsForStage(CompSeasonKey compSeasonKey,
+                                                           List<CompSeasonEvent> compSeasonEvents,
+                                                           CompSeasonEvent stageRace,
+                                                           CompSeasonEvent general,
                                                            int stage) throws SQLException {
         CompSeasonEventPartManager csepm = new CompSeasonEventPartManager(stat);
-        List<CompSeasonEventPart> eventPartsAll = csepm.getCompSeasonEventPartsToStage(eventKeys, stage);
+
+        Map<CompSeasonEventKey, CompSeasonEvent> compSeasonEventMap = new HashMap<>() {{
+            compSeasonEvents.forEach(x -> {
+                CompSeasonEventKey cseKey = new CompSeasonEventKey(compSeasonKey, x.getCompSeasonEventId());
+                put(cseKey, x);
+            });
+        }};
+        List<CompSeasonEventPart> eventPartsAll = csepm.getCompSeasonEventPartsToStage(
+                compSeasonEventMap.keySet().stream().toList(), stage);
 
         CompSeasonEventPart eventPartGeneral = getCompSeasonEventPartForStage(eventPartsAll,
-                generalKey.getSportEventId(), stage);
+                compSeasonEventMap, general.getSportEventKey().getSportEventId(), stage);
         CompSeasonEventPart eventPartGeneralBefore = stage > 1 ? getCompSeasonEventPartForStage(eventPartsAll,
-                generalKey.getSportEventId(), stage - 1) : null;
+                compSeasonEventMap, general.getSportEventKey().getSportEventId(), stage - 1) : null;
         CompSeasonEventPart eventPartStage = getCompSeasonEventPartForStage(eventPartsAll,
-                stageRaceKey.getSportEventId(), stage);
+                compSeasonEventMap, stageRace.getSportEventKey().getSportEventId(), stage);
 
-        if (eventPartGeneral != null && eventPartStage != null && (eventPartGeneralBefore != null || stage == 1))
-            return setGeneralClassificationPointsForStage(generalKey, stageRaceKey, eventPartGeneral, eventPartStage, eventPartGeneralBefore);
+        if (eventPartGeneral != null && eventPartStage != null && (eventPartGeneralBefore != null || stage == 1)) {
+            CompSeasonEventKey generalKey = new CompSeasonEventKey(compSeasonKey, general.getCompSeasonEventId());
+            CompSeasonEventKey stageRaceKey = new CompSeasonEventKey(compSeasonKey, stageRace.getCompSeasonEventId());
+
+            return setGeneralClassificationPointsForStage(generalKey, stageRaceKey, eventPartGeneral, eventPartStage,
+                    eventPartGeneralBefore);
+        }
 
         return false;
     }
@@ -202,10 +194,14 @@ public record DbCalculation(Statement stat) {
     }
 
     private CompSeasonEventPart getCompSeasonEventPartForStage(List<CompSeasonEventPart> compSeasonEventParts,
+                                                               Map<CompSeasonEventKey, CompSeasonEvent> compSeasonEventMap,
                                                                int sportEventId, int stage) {
-        for (CompSeasonEventPart compSeasonEventPart : compSeasonEventParts)
-            if (compSeasonEventPart.getSportEventId() == sportEventId && compSeasonEventPart.getStage() == stage)
+        for (CompSeasonEventPart compSeasonEventPart : compSeasonEventParts) {
+            int sportEventIdEventPart = getSportEventId(compSeasonEventPart, compSeasonEventMap);
+
+            if (sportEventIdEventPart == sportEventId && compSeasonEventPart.getStage() == stage)
                 return compSeasonEventPart;
+        }
 
         return null;
     }
@@ -217,12 +213,13 @@ public record DbCalculation(Statement stat) {
     }
 
     private Map<CompSeasonEventPartKey, CompSeasonEventPart> getEventPartsForPersonResults(
+            Map<CompSeasonEventKey, CompSeasonEvent> compSeasonEventMap,
             Map<CompSeasonEventPartKey, CompSeasonEventPart> allEventParts) {
         List<CompSeasonEventPart> singleAndStageParts = new ArrayList<>();
         Map<CompSeasonEventKey, List<CompSeasonEventPart>> gcPartMap = new HashMap<>();
 
         allEventParts.forEach((k, v) -> {
-            int sportEventId = v.getSportEventId();
+            int sportEventId = getSportEventId(v, compSeasonEventMap);
 
             if (Calculation.isSingleRace(sportEventId) || Calculation.isStageRace(sportEventId))
                 singleAndStageParts.add(v);
@@ -245,5 +242,10 @@ public record DbCalculation(Statement stat) {
                 put(csePart.getCompSeasonEventPartKey(), csePart);
             });
         }};
+    }
+
+    private int getSportEventId(CompSeasonEventPart csep, Map<CompSeasonEventKey, CompSeasonEvent> cseMap) {
+        CompSeasonEventKey cseKey = csep.getCompSeasonEventPartKey().getSuperKey();
+        return cseMap.get(cseKey).getSportEventKey().getSportEventId();
     }
 }

@@ -18,7 +18,7 @@ public class ProcessManageEventDisciplinePart extends ProcessManageSuperKeyEntit
 
     @Override
     protected void initSpecific(Statement stat, HttpServletRequest req) throws SQLException {
-        csepKey = getCompSeasonEventPartKey(stat, req);
+        csepKey = getCompSeasonEventPartKey(req);
         sdk = new DbCalculation(stat).getSportDisciplineKey(csepKey);
     }
 

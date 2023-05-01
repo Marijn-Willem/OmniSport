@@ -9,11 +9,11 @@ public class EventPartLocationKey extends CacheKey {
 	private final int compSeasonEventPartId;
 	private final int eventPartLocationId;
 
-	public EventPartLocationKey(int competitionId, int seasonId, int sportEventId,
+	public EventPartLocationKey(int competitionId, int seasonId, int compSeasonEventId,
 								int compSeasonEventPartId, int eventPartLocationId) {
 		this.competitionId = competitionId;
 		this.seasonId = seasonId;
-		this.sportEventId = sportEventId;
+		this.sportEventId = compSeasonEventId;
 		this.compSeasonEventPartId = compSeasonEventPartId;
 		this.eventPartLocationId = eventPartLocationId;
 	}

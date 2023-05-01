@@ -22,18 +22,22 @@ public class CompSeasonEventManager extends SuperKeySuperManager<CompSeasonEvent
 
     @Override
     String getKeyColumnString() {
-        return getCachedSuperManager().getKeyColumnString() + ", sportid, sporteventid";
+        return getCachedSuperManager().getKeyColumnString() + ", compseasoneventid";
     }
 
     @Override
     String[] getValueColumns() {
-        return new String[] { "externalsource" };
+        return new String[] { "sportid", "sporteventid", "genderid", "externalsource" };
     }
 
     @Override
     CompSeasonEvent getInstanceFromResultSet(ResultSet rs) throws SQLException {
         CompSeasonEvent compSeasonEvent = new CompSeasonEvent();
 
+        compSeasonEvent.setCompSeasonEventId(rs.getInt("compseasoneventid"));
+        compSeasonEvent.setSportId(rs.getInt("sportid"));
+        compSeasonEvent.setSportEventId(rs.getInt("sporteventid"));
+        compSeasonEvent.setGenderId(rs.getInt("genderid"));
         compSeasonEvent.setExternalSource(rs.getString("externalsource"));
 
         return compSeasonEvent;
@@ -47,19 +51,25 @@ public class CompSeasonEventManager extends SuperKeySuperManager<CompSeasonEvent
     @Override
     CompSeasonEventKey getSuperKeyFromResultSet(ResultSet rs) throws SQLException {
         return new CompSeasonEventKey(((CompSeasonManager)getCachedSuperManager()).getSuperKeyFromResultSet(rs),
-                rs.getInt("sportid"), rs.getInt("sporteventid")
+                rs.getInt("compseasoneventid")
         );
     }
 
-    public List<CompSeasonEventKey> getCompSeasonEventKeys(CompSeasonKey csk) throws SQLException {
-        return getSuperKeyList(csk.getWhereClause());
+    public List<CompSeasonEvent> getCompSeasonEvents(CompSeasonKey csk) throws SQLException {
+        return getEntityList(csk.getWhereClause());
     }
 
-    public void insertCompSeasonEvent(CompSeasonEventKey csek, CompSeasonEvent cse) throws SQLException {
-        insert(csek, cse);
+    public Map<CompSeasonEventKey, CompSeasonEvent> getCompSeasonEventMap(List<CompSeasonEventKey> cseKeys)
+        throws SQLException {
+        return getSuperKeyEntityMap(getConditionsKeyList(cseKeys));
     }
 
     public void insertCompSeasonEventMap(Map<CompSeasonEventKey, CompSeasonEvent> cseMap) throws SQLException {
         insert(cseMap);
+    }
+
+    public CompSeasonEventKey getNewCompSeasonEventKey(CompSeasonKey compSeasonKey) throws SQLException {
+        int compSeasonEventId = getNewInt("compseasoneventid", compSeasonKey.getWhereClause());
+        return new CompSeasonEventKey(compSeasonKey, compSeasonEventId);
     }
 }

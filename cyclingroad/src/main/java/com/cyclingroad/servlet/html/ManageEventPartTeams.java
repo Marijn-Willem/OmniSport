@@ -6,8 +6,8 @@ import java.sql.Statement;
 public class ManageEventPartTeams extends com.sportservlet.html.ManageEventPartTeams {
     @Override
     public String getReturnPath(Statement stat, HttpServletRequest req) {
-        return "CompSeasonEventPartPortal?" + compSeasonUrlParameters + "&eid=" +
-                getIntValuedParameterValue(req, "eid");
+        return "CompSeasonEventPartPortal?" + compSeasonUrlParameters + "&cseid=" +
+                getIntValuedParameterValue(req, "cseid");
     }
 
     @Override

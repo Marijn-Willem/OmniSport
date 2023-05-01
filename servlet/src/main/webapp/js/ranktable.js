@@ -10,7 +10,7 @@ let rowSwitchMode = false;
 const saveElementLoader = new ElementLoader('divPt', function () {
     const specificParameters = getSpecificParameters();
 
-    return '/' + processManageUrl + '?cid=' + cid + '&sid=' + sid + '&eid=' + eid +
+    return '/' + processManageUrl + '?cid=' + cid + '&sid=' + sid + '&cseid=' + cseid +
         '&csepid=' + csepid + (!isEmptyOrNull(specificParameters) ? '&' + specificParameters : '') +
         getParticipantDataParameterString();
 }, restoreModeRelatedFields);

@@ -5,12 +5,11 @@ const sportEventListLoader = new ElementLoader('eid', function () {
 function getProcessUrl() {
     const eid = getValueFromElementByName('inpUpd');
     const nm = getValueFromElementByName('nm');
-    const gid = getValueFromElementByName('gid');
     const psa = getValueFromCheckbox('psa');
     const it = getValueFromCheckbox('it');
 
     return '/ProcessManageSportEvent?spid=' + spid + '&eid=' + eid + '&nm=' + nm +
-        '&gid=' + gid + '&psa=' + psa + '&it=' + it;
+        '&psa=' + psa + '&it=' + it;
 }
 
 function checkInput() {
@@ -23,10 +22,6 @@ function goToManageSportEvent() {
 
 function goToSportEventPartPortal() {
     goToSportEventSpecificLink('SportEventPartPortal');
-}
-
-function goToEventPartNamePortal() {
-    goToSportEventSpecificLink('EventPartNamePortal');
 }
 
 function goToSportEventSpecificLink(link) {
