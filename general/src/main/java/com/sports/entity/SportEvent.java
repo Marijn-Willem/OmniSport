@@ -3,7 +3,7 @@ package com.sports.entity;
 import com.sports.db.util.QueryUtil;
 import com.sports.entity.key.SportEventKey;
 
-public class SportEvent extends SuperKeyAliasable implements GenderAliasable {
+public class SportEvent extends SuperKeyAliasable implements Aliasable {
     public static final int sportEventIdCyclingRoadSingleMale = 1;
     public static final int sportEventIdCyclingRoadSingleFemale = 2;
     public static final int sportEventIdCyclingRoadStageMale = 5;
@@ -13,7 +13,6 @@ public class SportEvent extends SuperKeyAliasable implements GenderAliasable {
 
     private String name;
     private boolean pointsSortAsc;
-    private int genderId;
     private boolean isTeam;
 
     private int sportId;
@@ -24,7 +23,6 @@ public class SportEvent extends SuperKeyAliasable implements GenderAliasable {
         return new String[] {
                 QueryUtil.convertStringToDbValue(name),
                 QueryUtil.convertBooleanToDbValue(pointsSortAsc),
-                String.valueOf(genderId),
                 QueryUtil.convertBooleanToDbValue(isTeam)
             };
     }
@@ -51,14 +49,6 @@ public class SportEvent extends SuperKeyAliasable implements GenderAliasable {
 
     public void setPointsSortAsc(boolean pointsSortAsc) {
         this.pointsSortAsc = pointsSortAsc;
-    }
-
-    public int getGenderId() {
-        return genderId;
-    }
-
-    public void setGenderId(int genderId) {
-        this.genderId = genderId;
     }
 
     public boolean isTeam() {

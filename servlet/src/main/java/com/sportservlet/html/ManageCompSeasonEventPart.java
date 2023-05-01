@@ -34,14 +34,13 @@ public abstract class ManageCompSeasonEventPart extends ManageEntity {
     protected void processScriptTag(Statement stat, HttpServletRequest req, Writer w) throws IOException, SQLException {
         super.processScriptTag(stat, req, w);
 
-        int eid = getIntValuedParameterValue(req, "eid");
-        CompSeasonEventKey cseKey = new CompSeasonEventKey(compSeasonKey, eid);
+        int cseid = getIntValuedParameterValue(req, "cseid");
+        CompSeasonEventKey cseKey = new CompSeasonEventKey(compSeasonKey, cseid);
         CompSeasonEvent cse = new CompSeasonEventManager(stat).getEntityFromSuperKey(cseKey);
         sportEventKey = cse.getSportEventKey();
         hasFixedParts = new DbCalculation(stat).hasSportEventParts(sportEventKey);
 
-        writeCompSeasonVarsInScriptTag(w);
-        writeVarInScriptTag("eid", getIntValuedParameterValue(req, "eid"), w);
+        writeCompSeasonEventVarsInScriptTag(req, w);
         w.append("const fp = ");
         w.append(Boolean.toString(hasFixedParts));
         w.append(";\n");
@@ -49,13 +48,13 @@ public abstract class ManageCompSeasonEventPart extends ManageEntity {
 
     protected void processSpecific(Statement stat, HttpServletRequest req, HttpServletResponse res)
             throws IOException, SQLException {
-        int eid = sportEventKey.getSportEventId();
+        int cseid = getIntValuedParameterValue(req, "cseid");
 
         CompSeasonEventPart csep = null;
         if (!"i".equals(mode)) {
             int csepid = getIntValuedParameterValue(req, "csepid");
             CompSeasonEventPartKey csepk = new CompSeasonEventPartKey(
-                    new CompSeasonEventKey(compSeasonKey, eid), csepid);
+                    new CompSeasonEventKey(compSeasonKey, cseid), csepid);
 
             csep = new CompSeasonEventPartManager(stat).getCompSeasonEventPart(csepk);
         }

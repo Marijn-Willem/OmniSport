@@ -1,8 +1,11 @@
 package com.sportservlet.ajax;
 
+import com.sports.entity.CompSeasonEvent;
 import com.sports.entity.CompSeasonEventPart;
 import com.sports.entity.key.CompSeasonEventKey;
 import com.sports.entity.key.CompSeasonEventPartKey;
+import com.sports.entity.key.SportEventKey;
+import com.sports.entity.manager.CompSeasonEventManager;
 import com.sports.entity.manager.CompSeasonEventPartManager;
 import com.sports.entity.manager.SuperKeySuperManager;
 
@@ -40,7 +43,10 @@ public class ProcessManageCompSeasonEventPart extends ProcessManageSuperKeyEntit
         return new CompSeasonEventPart();
     }
 
-    protected void processEntityFromRequest(Statement stat, HttpServletRequest req) {
+    protected void processEntityFromRequest(Statement stat, HttpServletRequest req) throws SQLException {
+        CompSeasonEvent compSeasonEvent = new CompSeasonEventManager(stat).getEntityFromSuperKey(csek);
+        SportEventKey sportEventKey = compSeasonEvent.getSportEventKey();
+
         Integer epid = convertRequestParamToIdInteger(req, "epid");
         Integer did = convertRequestParamToIdInteger(req, "did");
         Integer epnid = convertRequestParamToIdInteger(req, "epnid");
@@ -49,6 +55,8 @@ public class ProcessManageCompSeasonEventPart extends ProcessManageSuperKeyEntit
         LocalDateTime dt = convertRequestParameterToDatetime(req, "dt");
         String es = req.getParameter("es");
 
+        entity.setSportId(sportEventKey.getSportId());
+        entity.setSportEventId(sportEventKey.getSportEventId());
         entity.setSportEventPartId(epid);
         entity.setSportDisciplineId(did);
         entity.setEventPartNameId(epnid);

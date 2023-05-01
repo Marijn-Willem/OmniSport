@@ -1,6 +1,5 @@
 package com.management.servlet.html;
 
-import com.sports.entity.Gender;
 import com.sports.entity.SportEvent;
 import com.sports.entity.key.SportEventKey;
 import com.sports.entity.manager.SportEventManager;
@@ -59,8 +58,6 @@ public class ManageSportEvent extends ManageEntity {
         Writer w = res.getWriter();
 
         writeTextFieldWithLabel("Name", "nm", sportEvent != null ? sportEvent.getName() : null, w);
-        writeSelectWithLabel("Gender", "gid", Gender.getGenderLinkedHashMap(),
-                sportEvent != null ? sportEvent.getGenderId() : null, w);
         writeCheckbox("Points sort ascending", "psa", sportEvent != null && sportEvent.isPointsSortAsc(), w);
         writeCheckbox("Is Team", "it", sportEvent != null && sportEvent.isTeam(), w);
     }

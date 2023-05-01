@@ -14,7 +14,7 @@ import java.util.Map;
 
 public class ProcessEventPersonImport extends ProcessPersonImport {
     private CompSeasonEventKey csek;
-    private SportEventKey sek;
+    private CompSeasonEvent cse;
     private EventPersonSportManager eventPersonSportManager;
     private boolean insertEventPartPersonSportWithRank;
     private boolean insertEventPartPersonSportForSinglePartEvent;
@@ -26,8 +26,8 @@ public class ProcessEventPersonImport extends ProcessPersonImport {
         int compSeasonEventId = Integer.parseInt(req.getParameter("cseid"));
 
         csek = new CompSeasonEventKey(new CompSeasonKey(competitionId, seasonId), compSeasonEventId);
-        CompSeasonEvent compSeasonEvent = new CompSeasonEventManager(stat).getEntityFromSuperKey(csek);
-        sek = compSeasonEvent.getSportEventKey();
+        cse = new CompSeasonEventManager(stat).getEntityFromSuperKey(csek);
+        SportEventKey sek = cse.getSportEventKey();
 
         eventPersonSportManager = new EventPersonSportManager(stat);
 
@@ -60,7 +60,7 @@ public class ProcessEventPersonImport extends ProcessPersonImport {
     }
 
     protected Map<String, Person> getPersonNameMap(Statement stat, List<String> names) throws SQLException {
-        return new DbCalculation(stat).getPersonNameMapWithNewPersons(names, sek);
+        return new DbCalculation(stat).getPersonNameMapWithNewPersons(names, cse);
     }
 
     private void insertEventPartPersonSport(int personSportId, int nameIndX) throws SQLException {

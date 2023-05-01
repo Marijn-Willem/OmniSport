@@ -1,5 +1,5 @@
 const insertEventParticipantsFromCompSeasonLoader = new ElementLoader('resp', function () {
-    return '/ProcessInsertEventParticipantsFromCompSeason?cid=' + cid + '&sid=' + sid + '&eid=' + eid;
+    return '/ProcessInsertEventParticipantsFromCompSeason?cid=' + cid + '&sid=' + sid + '&cseid=' + cseid;
 }, null);
 
 function insertEventParticipantsFromCompSeason() {

@@ -45,9 +45,11 @@ public record DbCalculation(Statement stat) {
                 }
     }
 
-    public void postMortenInsertCompSeasonEvent(CompSeasonEventKey csek, CompSeasonEvent cse) throws SQLException {
+    public void postMortemInsertCompSeasonEvent(CompSeasonEventKey csek, CompSeasonEvent cse) throws SQLException {
         SportEventPartManager sepm = new SportEventPartManager(stat);
         DisciplinePartManager dppm = new DisciplinePartManager(stat);
+
+        SportEventKey sek = cse.getSportEventKey();
 
         List<SportEventPart> sportEventParts = sepm.getSportEventParts(cse.getSportEventKey());
 
@@ -55,11 +57,13 @@ public record DbCalculation(Statement stat) {
         List<SportDisciplineKey> sportDisciplineKeys = new ArrayList<>();
 
         for (SportEventPart sportEventPart : sportEventParts) {
-            sportDisciplineKeys.add(new SportDisciplineKey(cse.getSportEventKey().getSportId(),
+            sportDisciplineKeys.add(new SportDisciplineKey(sek.getSportId(),
                     sportEventPart.getSportDisciplineId()));
 
             CompSeasonEventPartKey csepKey = new CompSeasonEventPartKey(csek, sportEventPart.getSportEventPartId());
             CompSeasonEventPart csep = new CompSeasonEventPart();
+            csep.setSportId(sek.getSportId());
+            csep.setSportEventId(sek.getSportEventId());
             csep.setSportEventPartId(sportEventPart.getSportEventPartId());
             csep.setSportDisciplineId(sportEventPart.getSportDisciplineId());
             csep.setOrder(sportEventPart.getOrder());
@@ -81,6 +85,7 @@ public record DbCalculation(Statement stat) {
                 EventDisciplinePartKey edpk = new EventDisciplinePartKey(me.getKey(), disciplinePart.getDisciplinePartId());
 
                 EventDisciplinePart edp = new EventDisciplinePart();
+                edp.setSportId(sek.getSportId());
                 edp.setSportDisciplineId(sportDisciplineId);
                 edp.setDisciplinePartId(disciplinePart.getDisciplinePartId());
                 edp.setName(disciplinePart.getName());

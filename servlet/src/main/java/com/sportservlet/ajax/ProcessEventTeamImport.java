@@ -39,7 +39,7 @@ public class ProcessEventTeamImport extends SuperResponseServlet {
                 List<Integer> idsToInsertInCompSeason = new ArrayList<>();
 
                 CompSeasonEvent cse = new CompSeasonEventManager(stat).getEntityFromSuperKey(cseKey);
-                int gid = new SportEventManager(stat).getEntityFromSuperKey(cse.getSportEventKey()).getGenderId();
+                int gid = cse.getGenderId();
 
                 List<TeamDescriptionSportIdGenderIdKey> teamKeys = Arrays.stream(teamNames)
                         .map(x -> new TeamDescriptionSportIdGenderIdKey(x, spid, gid)).collect(Collectors.toList());

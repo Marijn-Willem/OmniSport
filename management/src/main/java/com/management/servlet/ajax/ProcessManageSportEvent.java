@@ -40,12 +40,10 @@ public class ProcessManageSportEvent extends ProcessManageSuperKeyEntity<SportEv
 
     protected void processEntityFromRequest(Statement stat, HttpServletRequest req) {
         String nm = req.getParameter("nm");
-        int gid = Integer.parseInt(req.getParameter("gid"));
         boolean psa = Boolean.parseBoolean(req.getParameter("psa"));
         boolean it = Boolean.parseBoolean(req.getParameter("it"));
 
         entity.setName(nm);
-        entity.setGenderId(gid);
         entity.setPointsSortAsc(psa);
         entity.setTeam(it);
     }

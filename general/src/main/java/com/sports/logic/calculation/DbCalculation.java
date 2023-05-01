@@ -69,16 +69,8 @@ public record DbCalculation(Statement stat) {
         return personNameMap;
     }
 
-    public Map<String, Person> getPersonNameMapWithNewPersons(List<String> names, SportEventKey sek) throws SQLException {
-        Map<String, Person> personNameMap = new HashMap<>();
-
-        List<SportEvent> sportEventList =
-                new SportEventManager(stat).getSportEventListByKeys(Collections.singletonList(sek));
-
-        if (sportEventList.size() == 1)
-            personNameMap = getPersonNameMapWithNewPersonsForGender(names, sportEventList.get(0).getGenderId());
-
-        return personNameMap;
+    public Map<String, Person> getPersonNameMapWithNewPersons(List<String> names, CompSeasonEvent cse) throws SQLException {
+        return getPersonNameMapWithNewPersonsForGender(names, cse.getGenderId());
     }
 
     public Map<String, Double> getDoubleMapWithNewDoubles(List<String[]> namePairs, int competitionId) throws SQLException {

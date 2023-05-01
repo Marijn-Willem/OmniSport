@@ -56,6 +56,6 @@ public class ProcessManageCompSeasonEvent extends ProcessManageSuperKeyEntity<Co
     @Override
     protected void postMortemSpecific(Statement stat) throws SQLException {
         if ("i".equals(mode))
-            new DbCalculation(stat).postMortenInsertCompSeasonEvent(superKey, entity);
+            new DbCalculation(stat).postMortemInsertCompSeasonEvent(superKey, entity);
     }
 }

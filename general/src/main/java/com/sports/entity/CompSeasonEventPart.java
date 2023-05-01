@@ -8,6 +8,8 @@ import com.sports.entity.key.CompSeasonKey;
 import java.time.LocalDateTime;
 
 public class CompSeasonEventPart extends SuperKeyEntity implements Orderable, DescribedEntity {
+    private int sportId;
+    private int sportEventId;
     private Integer sportEventPartId;
     private Integer sportDisciplineId;
     private Integer eventPartNameId;
@@ -25,6 +27,8 @@ public class CompSeasonEventPart extends SuperKeyEntity implements Orderable, De
 
     public String[] getPropertiesInSQLStrings() {
         return new String[] {
+                String.valueOf(sportId),
+                String.valueOf(sportEventId),
                 QueryUtil.convertIntegerToDbValue(sportEventPartId),
                 QueryUtil.convertIntegerToDbValue(sportDisciplineId),
                 QueryUtil.convertIntegerToDbValue(eventPartNameId),
@@ -33,6 +37,22 @@ public class CompSeasonEventPart extends SuperKeyEntity implements Orderable, De
                 QueryUtil.convertDateTimeToDbString(date),
                 QueryUtil.convertStringToDbValue(externalSource)
         };
+    }
+
+    public int getSportId() {
+        return sportId;
+    }
+
+    public void setSportId(int sportId) {
+        this.sportId = sportId;
+    }
+
+    public int getSportEventId() {
+        return sportEventId;
+    }
+
+    public void setSportEventId(int sportEventId) {
+        this.sportEventId = sportEventId;
     }
 
     public Integer getSportEventPartId() {

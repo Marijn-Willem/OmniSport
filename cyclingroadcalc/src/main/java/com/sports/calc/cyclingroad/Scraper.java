@@ -90,7 +90,7 @@ public class Scraper {
         DbCalculation dbCalculation = new DbCalculation(stat);
 
         Map<String, Person> personNameMap = dbCalculation.getPersonNameMapWithNewPersons(
-                entityMap.keySet().stream().toList(), getCompSeasonEvent().getSportEventKey());
+                entityMap.keySet().stream().toList(), getCompSeasonEvent());
         List<PersonSport> personSports = dbCalculation.getPersonSportsWithNewInstances(Sport.sportIdCyclingRoad,
                 personNameMap.values().stream().toList());
 

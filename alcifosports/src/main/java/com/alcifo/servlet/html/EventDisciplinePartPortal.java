@@ -14,8 +14,8 @@ import java.sql.Statement;
 public class EventDisciplinePartPortal extends com.sportservlet.html.EventDisciplinePartPortal {
     @Override
     public String getReturnPath(Statement stat, HttpServletRequest req) {
-        return "CompSeasonEventPartPortal?" + compSeasonUrlParameters + "&eid=" +
-                getIntValuedParameterValue(req, "eid");
+        return "CompSeasonEventPartPortal?" + compSeasonUrlParameters + "&cseid=" +
+                getIntValuedParameterValue(req, "cseid");
     }
 
     @Override
@@ -25,15 +25,15 @@ public class EventDisciplinePartPortal extends com.sportservlet.html.EventDiscip
 
     @Override
     protected void writeSpecificPart(Statement stat, HttpServletRequest req, Writer w) throws IOException, SQLException {
-        int eid = getIntValuedParameterValue(req, "eid");
+        int cseid = getIntValuedParameterValue(req, "cseid");
         int csepid = getIntValuedParameterValue(req, "csepid");
 
-        CompSeasonEventPartKey csepKey = new CompSeasonEventPartKey(new CompSeasonEventKey(compSeasonKey, eid), csepid);
+        CompSeasonEventPartKey csepKey = new CompSeasonEventPartKey(new CompSeasonEventKey(compSeasonKey, cseid), csepid);
         boolean hasFixedParts = new DbCalculation(stat).hasDisciplineParts(csepKey);
 
         if (!hasFixedParts) {
             ServletUtil.writeGenericGoToButton("ManageEventDisciplinePart", compSeasonUrlParameters +
-                    "&eid=" + eid + "&csepid=" + csepid + "&md=i", "Add Event Discipline Part", w);
+                    "&cseid=" + cseid + "&csepid=" + csepid + "&md=i", "Add Event Discipline Part", w);
         }
     }
 }

@@ -29,7 +29,7 @@ public abstract class ManageEventDisciplinePart extends ManageEntity {
     protected void processScriptTag(Statement stat, HttpServletRequest req, Writer w) throws IOException, SQLException {
         super.processScriptTag(stat, req, w);
         writeCompSeasonVarsInScriptTag(w);
-        writeVarInScriptTag("eid", getIntValuedParameterValue(req, "eid"), w);
+        writeVarInScriptTag("cseid", getIntValuedParameterValue(req, "cseid"), w);
         writeVarInScriptTag("csepid", getIntValuedParameterValue(req, "csepid"), w);
     }
 
