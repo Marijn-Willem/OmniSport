@@ -1,8 +1,8 @@
 package com.cyclingroad.servlet.ajax;
 
 import com.sports.calc.alcifo.DbCalculation;
-import com.sports.calc.cyclingroad.Calculation;
 import com.sports.entity.CompSeasonEvent;
+import com.sports.entity.SportEvent;
 import com.sports.entity.manager.CompSeasonEventManager;
 import com.sportservlet.SuperResponseServlet;
 import com.sportservlet.util.ServletUtil;
@@ -24,9 +24,10 @@ public class CompSeasonEventPartPorts extends SuperResponseServlet {
         String parameters = compSeasonUrlParameters + "&cseid=" + cseid + "&csepid=" + csepid;
 
         CompSeasonEvent cse = new CompSeasonEventManager(stat).getEntityFromSuperKey(getCompSeasonEventKey(req));
+        int sportEventId = cse.getSportEventKey().getSportEventId();
 
         boolean isTeam = new DbCalculation(stat).getSportEvent(getCompSeasonEventKey(req)).isTeam();
-        boolean showSetGeneralPoints = Calculation.isGeneralClassification(cseid);
+        boolean showSetGeneralPoints = sportEventId == SportEvent.sportEventIdCyclingRoadGeneral;
 
         String partUrl, participantAsString;
 

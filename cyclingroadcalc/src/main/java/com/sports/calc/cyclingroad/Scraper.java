@@ -62,7 +62,9 @@ public class Scraper {
         if (inputTable != null) {
             processInputTable(inputTable);
 
-            if (Calculation.isStageRace(getCompSeasonEvent().getSportEventKey().getSportEventId()))
+            int sportEventId = getCompSeasonEvent().getSportEventKey().getSportEventId();
+
+            if (sportEventId == SportEvent.sportEventIdCyclingRoadStage)
                 new com.sports.calc.cyclingroad.DbCalculation(stat)
                         .updateEventPersonSportsWithNoCountResult(compSeasonEventPartKey.getSuperKey());
         }
@@ -77,7 +79,9 @@ public class Scraper {
     }
 
     private int getTableNr() throws SQLException {
-        return Calculation.isGeneralClassification(getCompSeasonEvent().getSportEventKey().getSportEventId()) ? 2 : 1;
+        int sportEventId = getCompSeasonEvent().getSportEventKey().getSportEventId();
+
+        return sportEventId == SportEvent.sportEventIdCyclingRoadGeneral ? 2 : 1;
     }
 
     private void processInputTable(String inputTable) throws SQLException {

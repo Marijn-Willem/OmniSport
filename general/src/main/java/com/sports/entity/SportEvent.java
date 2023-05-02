@@ -4,12 +4,9 @@ import com.sports.db.util.QueryUtil;
 import com.sports.entity.key.SportEventKey;
 
 public class SportEvent extends SuperKeyAliasable implements Aliasable {
-    public static final int sportEventIdCyclingRoadSingleMale = 1;
-    public static final int sportEventIdCyclingRoadSingleFemale = 2;
-    public static final int sportEventIdCyclingRoadStageMale = 5;
-    public static final int sportEventIdCyclingRoadStageFemale = 6;
-    public static final int sportEventIdCyclingRoadGeneralMale = 11;
-    public static final int sportEventIdCyclingRoadGeneralFemale = 12;
+    public static final int sportEventIdCyclingRoadSingle = 1;
+    public static final int sportEventIdCyclingRoadStage = 5;
+    public static final int sportEventIdCyclingRoadGeneral = 11;
 
     private String name;
     private boolean pointsSortAsc;

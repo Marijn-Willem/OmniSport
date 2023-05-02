@@ -35,10 +35,8 @@ public class Calculation {
     }
 
     public static boolean isCyclingRoadSingleRace(SportEventKey sportEventKey) {
-        return sportEventKey.getSportId() == Sport.sportIdCyclingRoad && (
-                sportEventKey.getSportEventId() == SportEvent.sportEventIdCyclingRoadSingleMale ||
-                        sportEventKey.getSportEventId() == SportEvent.sportEventIdCyclingRoadSingleFemale
-        );
+        return sportEventKey.getSportId() == Sport.sportIdCyclingRoad &&
+                sportEventKey.getSportEventId() == SportEvent.sportEventIdCyclingRoadSingle;
     }
 
     public static void setSportEventNames(List<CompSeasonEvent> compSeasonEvents, List<SportEvent> sportEvents) {
