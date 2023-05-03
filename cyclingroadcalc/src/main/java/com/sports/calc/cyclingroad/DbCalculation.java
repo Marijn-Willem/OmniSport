@@ -23,9 +23,9 @@ public record DbCalculation(Statement stat) {
         for (CompSeasonEvent compSeasonEvent : compSeasonEvents) {
             int sportEventId = compSeasonEvent.getSportEventKey().getSportEventId();
 
-            if (Calculation.isStageRace(sportEventId))
+            if (sportEventId == SportEvent.sportEventIdCyclingRoadStage)
                 stageRace = compSeasonEvent;
-            else if (Calculation.isGeneralClassification(sportEventId))
+            else if (sportEventId == SportEvent.sportEventIdCyclingRoadGeneral)
                 general = compSeasonEvent;
 
             if (stageRace != null && general != null)
@@ -221,9 +221,9 @@ public record DbCalculation(Statement stat) {
         allEventParts.forEach((k, v) -> {
             int sportEventId = getSportEventId(v, compSeasonEventMap);
 
-            if (Calculation.isSingleRace(sportEventId) || Calculation.isStageRace(sportEventId))
+            if (sportEventId == SportEvent.sportEventIdCyclingRoadSingle || sportEventId == SportEvent.sportEventIdCyclingRoadStage)
                 singleAndStageParts.add(v);
-            else if (Calculation.isGeneralClassification(sportEventId) && v.getStage() != null) {
+            else if (sportEventId == SportEvent.sportEventIdCyclingRoadGeneral && v.getStage() != null) {
                 CompSeasonEventKey cseKey = k.getSuperKey();
                 if (!gcPartMap.containsKey(cseKey))
                     gcPartMap.put(cseKey, new ArrayList<>());

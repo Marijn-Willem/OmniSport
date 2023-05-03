@@ -26,7 +26,7 @@ public class CompetitionList extends SuperResponseServlet {
 
         for (Competition competition : competitions) {
             String text = Util.concatStringsWithDelimiter(competition.getName(),
-                    Util.getStringBetweenBracketsOrEmptyString(Gender.getGenderNameFromId(competition.getId())),
+                    Util.getStringBetweenBracketsOrEmptyString(Gender.getGenderNameFromId(competition.getGenderId())),
                     " - ");
 
             ServletUtil.writeOption(competition.getId(), text, resp.getWriter());
