@@ -9,6 +9,7 @@ import com.sports.calc.alcifo.Calculation;
 import com.sports.calc.alcifo.DbCalculation;
 import com.sports.entity.*;
 import com.sports.entity.key.*;
+import com.sports.entity.manager.CompSeasonEventManager;
 import com.sports.entity.manager.CompetitionManager;
 import com.sports.entity.manager.SportDisciplineManager;
 import com.sports.entity.manager.SportEventManager;
@@ -59,8 +60,6 @@ public abstract class AlcifoPartRankingData extends OutputData {
         Competition competition = new CompetitionManager(stat).getCompetition(competitionId);
 
         if (competition != null) {
-            int sportId = competition.getSportId();
-
             CompSeasonEventPartKey csepKey = new CompSeasonEventPartKey(
                     new CompSeasonEventKey(
                             new CompSeasonKey(competitionId, seasonId), compSeasonEventId), compSeasonEventPartId);
@@ -68,8 +67,8 @@ public abstract class AlcifoPartRankingData extends OutputData {
             SportDiscipline sportDiscipline = getSportDiscipline(csepKey, dbCalculation, stat);
 
             if (sportDiscipline != null && dbCalculation.isAlcifo(competitionId)) {
-                SportEventKey sek = new SportEventKey(sportId, compSeasonEventId);
-                SportEvent se = new SportEventManager(stat).getEntityFromSuperKey(sek); // Guaranteed to exist due to sportDiscipline
+                CompSeasonEvent cse = new CompSeasonEventManager(stat).getEntityFromSuperKey(csepKey.getSuperKey()); // Guaranteed to exist due to sport discipline
+                SportEvent se = new SportEventManager(stat).getEntityFromSuperKey(cse.getSportEventKey());
 
                 AlcifoPartParticipantFactory factory = getFactory(Calculation.getAlcifoParticipantFactory(se));
                 dbCalculation.getFullRankingInPart(factory, getKey(csepKey)).forEach(x ->
