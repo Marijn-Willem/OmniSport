@@ -26,7 +26,8 @@ public class EventPartLocationPortal extends SuperHtmlServlet {
     @Override
     protected String getReturnPath(Statement stat, HttpServletRequest req) {
         int cseid = getIntValuedParameterValue(req, "cseid");
-        return "CompSeasonEventPartPortal?" + compSeasonUrlParameters + "&cseid=" + cseid;
+        int csepid = getIntValuedParameterValue(req, "csepid");
+        return "CompSeasonEventPartPortal?" + compSeasonUrlParameters + "&cseid=" + cseid + "&csepid=" + csepid;
     }
 
     @Override

@@ -1,6 +1,9 @@
 const compSeasonEventPartListLoader = new ElementLoader('csepid', function () {
     return '/CompSeasonEventPartList?cid=' + cid + '&sid=' + sid + '&cseid=' + cseid;
-}, loadPorts);
+}, function () {
+    setElementValueFromInitStateVar('csepid', csepid);
+    loadPorts();
+});
 
 const compSeasonEventPartPortsLoader = new ElementLoader('divPorts', function () {
     const csepid = document.getElementById('csepid').value;
