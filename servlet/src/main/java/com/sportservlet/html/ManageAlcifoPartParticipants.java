@@ -1,14 +1,16 @@
 package com.sportservlet.html;
 
+import com.sports.calc.alcifo.AlcifoPartParticipantFactory;
 import com.sports.calc.alcifo.DbCalculation;
+import com.sports.entity.CompSeasonEventPart;
 import com.sports.entity.Participant;
 import com.sports.entity.ResultType;
 import com.sports.entity.SportDiscipline;
 import com.sports.entity.key.CompSeasonEventPartKey;
 import com.sports.entity.key.SportDisciplineKey;
 import com.sports.entity.key.SuperKey;
+import com.sports.entity.manager.CompSeasonEventPartManager;
 import com.sports.entity.manager.SportDisciplineManager;
-import com.sports.calc.alcifo.AlcifoPartParticipantFactory;
 import com.sports.logic.util.Util;
 import com.sportservlet.util.ServletUtil;
 import jakarta.servlet.http.HttpServletRequest;
@@ -19,11 +21,11 @@ import java.io.Writer;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.List;
-import java.util.Objects;
 
 public abstract class ManageAlcifoPartParticipants extends SuperHtmlServlet implements AbstractHtmlServlet {
     private final AlcifoPartParticipantFactory factory = getFactory();
     private SuperKey partKey;
+    private SportDisciplineKey sportDisciplineKey;
 
     abstract SuperKey getPartKey(HttpServletRequest req);
     abstract AlcifoPartParticipantFactory getFactory();
@@ -43,8 +45,10 @@ public abstract class ManageAlcifoPartParticipants extends SuperHtmlServlet impl
     protected void processScriptTag(Statement stat, HttpServletRequest req, Writer w) throws IOException, SQLException {
         partKey = getPartKey(req);
 
-        SportDisciplineKey sdk = new DbCalculation(stat).getSportDisciplineKey(factory.getCompSeasonEventPartKey(partKey));
-        int rtid = new SportDisciplineManager(stat).getEntityFromSuperKey(Objects.requireNonNull(sdk)).getResultTypeId();
+        CompSeasonEventPartKey csepKey = getCompSeasonEventPartKey(req);
+        CompSeasonEventPart compSeasonEventPart = new CompSeasonEventPartManager(stat).getEntityFromSuperKey(csepKey);
+        sportDisciplineKey = compSeasonEventPart.getSportDisciplineKey();
+        int rtid = new SportDisciplineManager(stat).getEntityFromSuperKey(sportDisciplineKey).getResultTypeId();
 
         writeCompSeasonVarsInScriptTag(w);
         writeVarInScriptTag("cseid", getIntValuedParameterValue(req, "cseid"), w);
@@ -60,9 +64,7 @@ public abstract class ManageAlcifoPartParticipants extends SuperHtmlServlet impl
             throws IOException, SQLException {
         List<? extends Participant> participants = new DbCalculation(stat).getFullRankingInPart(factory, partKey);
 
-        CompSeasonEventPartKey csepKey = factory.getCompSeasonEventPartKey(partKey);
-        SportDiscipline sd = new SportDisciplineManager(stat).getEntityFromSuperKey(
-                Objects.requireNonNull(new DbCalculation(stat).getSportDisciplineKey(csepKey)));
+        SportDiscipline sd = new SportDisciplineManager(stat).getEntityFromSuperKey(sportDisciplineKey);
 
         Writer w = res.getWriter();
 

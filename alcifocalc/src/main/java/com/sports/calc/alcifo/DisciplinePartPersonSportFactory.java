@@ -9,8 +9,6 @@ import com.sports.entity.manager.ParticipantManager;
 import com.sports.entity.manager.PersonSportManager;
 
 import java.sql.Statement;
-import java.util.HashMap;
-import java.util.Map;
 
 public class DisciplinePartPersonSportFactory implements AlcifoPartParticipantFactory {
     @Override
@@ -21,11 +19,6 @@ public class DisciplinePartPersonSportFactory implements AlcifoPartParticipantFa
     @Override
     public ParticipantManager<PersonSport> getParticipantManager(Statement stat) {
         return new PersonSportManager(stat);
-    }
-
-    @Override
-    public Map<DisciplinePartPersonSportKey, DisciplinePartPersonSport> getEmptyMap() {
-        return new HashMap<>();
     }
 
     @Override

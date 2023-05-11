@@ -1,16 +1,13 @@
 package com.speedskating.servlet.html;
 
 import com.sports.calc.alcifo.Calculation;
-import com.sports.calc.alcifo.DbCalculation;
+import com.sports.calc.speedskating.DbCalculation;
 import com.sports.entity.DisciplinePartPersonSport;
 import com.sports.entity.EventDisciplinePart;
 import com.sports.entity.PersonSport;
-import com.sports.entity.comparator.EventDisciplinePartOrder;
 import com.sports.entity.key.CompSeasonEventPartKey;
 import com.sports.entity.key.EventPartPersonSportKey;
-import com.sports.entity.key.SportDisciplineKey;
 import com.sports.entity.manager.DisciplinePartPersonSportManager;
-import com.sports.entity.manager.EventDisciplinePartManager;
 import com.sports.entity.manager.PersonSportManager;
 import com.sports.logic.util.Util;
 import jakarta.servlet.http.HttpServletRequest;
@@ -45,10 +42,6 @@ public class HeatOverview extends SuperHtmlServlet {
 
         CompSeasonEventPartKey csepk = getCompSeasonEventPartKey(req);
 
-        DbCalculation dbCalc = new DbCalculation(stat);
-
-        SportDisciplineKey sdk = dbCalc.getSportDisciplineKey(csepk);
-
         EventPartPersonSportKey eppk1 = new EventPartPersonSportKey(csepk, ps1Id);
         EventPartPersonSportKey eppk2 = new EventPartPersonSportKey(csepk, ps2Id);
 
@@ -66,9 +59,7 @@ public class HeatOverview extends SuperHtmlServlet {
 
         Map<Integer, PersonSport> personSportMap = new PersonSportManager(stat).getPersonSportMap(Arrays.asList(ps1Id, ps2Id));
 
-        List<EventDisciplinePart> eventDisciplineParts = new EventDisciplinePartManager(stat).getEventDisciplineList(csepk);
-        dbCalc.fillDisciplinePartsForEventDisciplineParts(sdk, eventDisciplineParts);
-        eventDisciplineParts.sort(new EventDisciplinePartOrder());
+        List<EventDisciplinePart> eventDisciplineParts = new DbCalculation(stat).getSortedEventDisciplineParts(csepk);
 
         dpParts1 = Calculation.getDisciplinePartPersonsSorted(dpParts1, eventDisciplineParts);
         dpParts2 = Calculation.getDisciplinePartPersonsSorted(dpParts2, eventDisciplineParts);

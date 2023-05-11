@@ -1,6 +1,6 @@
 package com.sportservlet.html;
 
-import com.sports.calc.alcifo.DbCalculation;
+import com.sports.entity.CompSeasonEventPart;
 import com.sports.entity.DisciplinePart;
 import com.sports.entity.EventDisciplinePart;
 import com.sports.entity.SportDiscipline;
@@ -8,12 +8,13 @@ import com.sports.entity.key.CompSeasonEventPartKey;
 import com.sports.entity.key.DisciplinePartKey;
 import com.sports.entity.key.EventDisciplinePartKey;
 import com.sports.entity.key.SportDisciplineKey;
+import com.sports.entity.manager.CompSeasonEventPartManager;
 import com.sports.entity.manager.DisciplinePartManager;
 import com.sports.entity.manager.EventDisciplinePartManager;
 import com.sports.entity.manager.SportDisciplineManager;
-
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+
 import java.io.IOException;
 import java.io.Writer;
 import java.sql.SQLException;
@@ -51,8 +52,8 @@ public abstract class ManageEventDisciplinePart extends ManageEntity {
             eventDisciplinePart = new EventDisciplinePartManager(stat).getEntityFromSuperKey(edpKey);
         }
 
-        SportDisciplineKey sdk = new DbCalculation(stat).getSportDisciplineKey(csepKey);
-        assert sdk != null;
+        CompSeasonEventPart compSeasonEventPart = new CompSeasonEventPartManager(stat).getEntityFromSuperKey(csepKey);
+        SportDisciplineKey sdk = compSeasonEventPart.getSportDisciplineKey();
         SportDiscipline sportDiscipline = new SportDisciplineManager(stat).getEntityFromSuperKey(sdk);
 
         DisciplinePartKey dpk = eventDisciplinePart != null && eventDisciplinePart.getDisciplinePartId() != null ?

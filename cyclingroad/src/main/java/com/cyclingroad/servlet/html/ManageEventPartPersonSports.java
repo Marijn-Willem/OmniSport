@@ -7,7 +7,8 @@ public class ManageEventPartPersonSports extends com.sportservlet.html.ManageEve
     @Override
     public String getReturnPath(Statement stat, HttpServletRequest req) {
         return "CompSeasonEventPartPortal?" + compSeasonUrlParameters + "&cseid=" +
-                getIntValuedParameterValue(req, "cseid");
+                getIntValuedParameterValue(req, "cseid") + "&csepid=" +
+                getIntValuedParameterValue(req, "csepid");
     }
 
     @Override

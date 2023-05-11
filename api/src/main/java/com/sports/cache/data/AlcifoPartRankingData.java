@@ -9,9 +9,7 @@ import com.sports.calc.alcifo.Calculation;
 import com.sports.calc.alcifo.DbCalculation;
 import com.sports.entity.*;
 import com.sports.entity.key.*;
-import com.sports.entity.manager.CompetitionManager;
-import com.sports.entity.manager.SportDisciplineManager;
-import com.sports.entity.manager.SportEventManager;
+import com.sports.entity.manager.*;
 
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -56,27 +54,26 @@ public abstract class AlcifoPartRankingData extends OutputData {
 
     @Override
     public void fill(Statement stat) throws SQLException {
-        Competition competition = new CompetitionManager(stat).getCompetition(competitionId);
+        CompSeasonEventPartKey csepKey = new CompSeasonEventPartKey(
+                new CompSeasonEventKey(
+                        new CompSeasonKey(competitionId, seasonId), compSeasonEventId), compSeasonEventPartId);
 
-        if (competition != null) {
-            int sportId = competition.getSportId();
+        CompSeasonEventPart compSeasonEventPart = new CompSeasonEventPartManager(stat).getCompSeasonEventPart(csepKey);
 
-            CompSeasonEventPartKey csepKey = new CompSeasonEventPartKey(
-                    new CompSeasonEventKey(
-                            new CompSeasonKey(competitionId, seasonId), compSeasonEventId), compSeasonEventPartId);
-            DbCalculation dbCalculation = new DbCalculation(stat);
-            SportDiscipline sportDiscipline = getSportDiscipline(csepKey, dbCalculation, stat);
+        DbCalculation dbCalculation = new DbCalculation(stat);
 
-            if (sportDiscipline != null && dbCalculation.isAlcifo(competitionId)) {
-                SportEventKey sek = new SportEventKey(sportId, compSeasonEventId);
-                SportEvent se = new SportEventManager(stat).getEntityFromSuperKey(sek); // Guaranteed to exist due to sportDiscipline
+        if (compSeasonEventPart != null && dbCalculation.isAlcifo(competitionId)) {
+            SportDiscipline sportDiscipline = new SportDisciplineManager(stat).getEntityFromSuperKey(
+                    compSeasonEventPart.getSportDisciplineKey());
 
-                AlcifoPartParticipantFactory factory = getFactory(Calculation.getAlcifoParticipantFactory(se));
-                dbCalculation.getFullRankingInPart(factory, getKey(csepKey)).forEach(x ->
-                        fragments.add(getFragment(x, sportDiscipline.getResultTypeId(),
-                                sportDiscipline.getResultTypePrecisionId()))
-                );
-            }
+            CompSeasonEvent cse = new CompSeasonEventManager(stat).getEntityFromSuperKey(csepKey.getSuperKey());
+            SportEvent se = new SportEventManager(stat).getEntityFromSuperKey(cse.getSportEventKey());
+
+            AlcifoPartParticipantFactory factory = getFactory(Calculation.getAlcifoParticipantFactory(se));
+            dbCalculation.getFullRankingInPart(factory, getKey(csepKey)).forEach(x ->
+                    fragments.add(getFragment(x, sportDiscipline.getResultTypeId(),
+                            sportDiscipline.getResultTypePrecisionId()))
+            );
 
             DataFragmentUtil.fillDataFragments(fragments, getCacheKey());
         }
@@ -90,12 +87,5 @@ public abstract class AlcifoPartRankingData extends OutputData {
         else
             return new EventPartTeamFragment(competitionId, seasonId, compSeasonEventId, compSeasonEventPartId,
                     (Team) participant, resultTypeId, resultTypePrecisionId, clientId);
-    }
-
-    private SportDiscipline getSportDiscipline(CompSeasonEventPartKey csepKey, DbCalculation dbCalc, Statement stat)
-        throws SQLException {
-        SportDisciplineKey sdKey = dbCalc.getSportDisciplineKey(csepKey);
-
-        return sdKey != null ? new SportDisciplineManager(stat).getEntityFromSuperKey(sdKey) : null;
     }
 }

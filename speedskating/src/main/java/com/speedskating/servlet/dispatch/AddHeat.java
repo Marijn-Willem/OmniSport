@@ -1,13 +1,13 @@
 package com.speedskating.servlet.dispatch;
 
-import com.sports.calc.alcifo.DbCalculation;
+import com.sports.calc.speedskating.DbCalculation;
 import com.sports.entity.DisciplinePartPersonSport;
 import com.sports.entity.EventDisciplinePart;
 import com.sports.entity.EventPartPersonSport;
-import com.sports.entity.comparator.EventDisciplinePartOrder;
-import com.sports.entity.key.*;
+import com.sports.entity.key.CompSeasonEventPartKey;
+import com.sports.entity.key.DisciplinePartPersonSportKey;
+import com.sports.entity.key.EventPartPersonSportKey;
 import com.sports.entity.manager.DisciplinePartPersonSportManager;
-import com.sports.entity.manager.EventDisciplinePartManager;
 import com.sports.entity.manager.EventPartPersonSportManager;
 import com.sports.logic.util.Util;
 import com.sportservlet.dispatch.SuperDispatchServlet;
@@ -29,10 +29,6 @@ public class AddHeat extends SuperDispatchServlet {
 
         CompSeasonEventPartKey csepk = getCompSeasonEventPartKey(req);
 
-        DbCalculation dbCalc = new DbCalculation(stat);
-
-        SportDisciplineKey sdk = dbCalc.getSportDisciplineKey(csepk);
-
         EventPartPersonSportManager eppm = new EventPartPersonSportManager(stat);
         int heat = eppm.getNewHeat(csepk);
 
@@ -44,9 +40,7 @@ public class AddHeat extends SuperDispatchServlet {
         EventPartPersonSportKey eppk1 = new EventPartPersonSportKey(csepk, personSport1Id),
                 eppk2 = new EventPartPersonSportKey(csepk, personSport2Id);
 
-        List<EventDisciplinePart> eventDisciplineParts = new EventDisciplinePartManager(stat).getEventDisciplineList(csepk);
-        dbCalc.fillDisciplinePartsForEventDisciplineParts(sdk, eventDisciplineParts);
-        eventDisciplineParts.sort(new EventDisciplinePartOrder());
+        List<EventDisciplinePart> eventDisciplineParts = new DbCalculation(stat).getSortedEventDisciplineParts(csepk);
         DisciplinePartPersonSportManager dppm = new DisciplinePartPersonSportManager(stat);
 
         for (int i = 0; i < eventDisciplineParts.size(); i++) {

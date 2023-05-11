@@ -1,14 +1,15 @@
 package com.sportservlet.ajax;
 
-import com.sports.calc.alcifo.DbCalculation;
+import com.sports.entity.CompSeasonEventPart;
 import com.sports.entity.EventDisciplinePart;
 import com.sports.entity.key.CompSeasonEventPartKey;
 import com.sports.entity.key.EventDisciplinePartKey;
 import com.sports.entity.key.SportDisciplineKey;
+import com.sports.entity.manager.CompSeasonEventPartManager;
 import com.sports.entity.manager.EventDisciplinePartManager;
 import com.sports.entity.manager.SuperKeySuperManager;
-
 import jakarta.servlet.http.HttpServletRequest;
+
 import java.sql.SQLException;
 import java.sql.Statement;
 
@@ -19,7 +20,8 @@ public class ProcessManageEventDisciplinePart extends ProcessManageSuperKeyEntit
     @Override
     protected void initSpecific(Statement stat, HttpServletRequest req) throws SQLException {
         csepKey = getCompSeasonEventPartKey(req);
-        sdk = new DbCalculation(stat).getSportDisciplineKey(csepKey);
+        CompSeasonEventPart compSeasonEventPart = new CompSeasonEventPartManager(stat).getEntityFromSuperKey(csepKey);
+        sdk = compSeasonEventPart.getSportDisciplineKey();
     }
 
     @Override

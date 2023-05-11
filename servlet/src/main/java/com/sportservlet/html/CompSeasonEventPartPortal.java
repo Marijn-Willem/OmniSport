@@ -28,6 +28,7 @@ public abstract class CompSeasonEventPartPortal extends SuperHtmlServlet impleme
         boolean isTeam = new DbCalculation(stat).getSportEvent(getCompSeasonEventKey(req)).isTeam();
 
         writeCompSeasonEventVarsInScriptTag(req, w);
+        writeInitStateVarInScriptTag("csepid", req, w);
         w.append("const isTeam = ");
         w.append(Boolean.toString(isTeam));
         w.append(";\n");
