@@ -10,7 +10,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.List;
-import java.util.Map;
 
 public class SportEventPartManager extends SuperKeyAliasableManager<SportEventPartKey, SportEventPart> {
     public SportEventPartManager(Statement stat) {
@@ -69,6 +68,12 @@ public class SportEventPartManager extends SuperKeyAliasableManager<SportEventPa
         return getEntityFromSuperKey(sepk);
     }
 
+    public SportEventPart getSportEventPartByOrder(SportEventKey sek, int order) throws SQLException {
+        List<SportEventPart> sportEventParts = getSportEventParts(sek, "\"order\" = " + order);
+
+        return sportEventParts.size() == 1 ? sportEventParts.get(0) : null;
+    }
+
     public List<SportEventPart> getSportEventParts(SportEventKey sek) throws SQLException {
         return getSportEventParts(sek, null);
     }
@@ -83,11 +88,6 @@ public class SportEventPartManager extends SuperKeyAliasableManager<SportEventPa
 
     public List<SportEventPartKey> getSportEventPartKeys(List<SportEventKey> sportEventKeys) throws SQLException {
         return getSuperKeyList(getConditionsKeyList(sportEventKeys));
-    }
-
-    public Map<SportEventPartKey, SportEventPart> getSportEventPartMap(List<SportEventPartKey> sportEventPartKeys)
-            throws SQLException {
-        return getSuperKeyEntityMap(getConditionsKeyList(sportEventPartKeys));
     }
 
     public int getNewPartId(SportEventKey sek) throws SQLException {

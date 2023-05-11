@@ -3,12 +3,13 @@ package com.sports.cache.data;
 import com.sports.cache.key.CacheKey;
 import com.sports.cache.key.EventDisciplinePartListKey;
 import com.sports.calc.alcifo.DbCalculation;
+import com.sports.entity.CompSeasonEventPart;
 import com.sports.entity.EventDisciplinePart;
 import com.sports.entity.comparator.EventDisciplinePartOrder;
 import com.sports.entity.key.CompSeasonEventKey;
 import com.sports.entity.key.CompSeasonEventPartKey;
 import com.sports.entity.key.CompSeasonKey;
-import com.sports.entity.key.SportDisciplineKey;
+import com.sports.entity.manager.CompSeasonEventPartManager;
 import com.sports.entity.manager.EventDisciplinePartManager;
 
 import java.sql.SQLException;
@@ -40,17 +41,20 @@ public class EventDisciplinePartListFragment extends DataFragment {
 
     @Override
     void fill(Statement stat) throws SQLException {
-        CompSeasonEventPartKey compSeasonEventPartKey = new CompSeasonEventPartKey(
+        CompSeasonEventPartKey csepk = new CompSeasonEventPartKey(
                 new CompSeasonEventKey(new CompSeasonKey(competitionId, seasonId), compSeasonEventId),
                 compSeasonEventPartId
         );
 
-        eventDisciplineParts.addAll(new EventDisciplinePartManager(stat).getEventDisciplineList(compSeasonEventPartKey));
+        CompSeasonEventPart compSeasonEventPart = new CompSeasonEventPartManager(stat).getEntityFromSuperKey(csepk);
 
-        DbCalculation dbCalc = new DbCalculation(stat);
-        SportDisciplineKey sdKey = dbCalc.getSportDisciplineKey(compSeasonEventPartKey);
-        dbCalc.fillDisciplinePartsForEventDisciplineParts(sdKey, eventDisciplineParts);
-        eventDisciplineParts.sort(new EventDisciplinePartOrder());
+        if (compSeasonEventPart != null) {
+            eventDisciplineParts.addAll(new EventDisciplinePartManager(stat).getEventDisciplineList(csepk));
+
+            DbCalculation dbCalc = new DbCalculation(stat);
+            dbCalc.fillDisciplinePartsForEventDisciplineParts(compSeasonEventPart.getSportDisciplineKey(), eventDisciplineParts);
+            eventDisciplineParts.sort(new EventDisciplinePartOrder());
+        }
     }
 
     public List<EventDisciplinePart> getEventDisciplineParts() {

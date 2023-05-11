@@ -13,9 +13,9 @@ public class SportEventPart extends SuperKeyAliasable implements Orderable {
     @Override
     public String[] getPropertiesInSQLStrings() {
         return new String[] {
-                "" + sportDisciplineId,
+                String.valueOf(sportDisciplineId),
                 QueryUtil.convertStringToDbValue(name),
-                "" + order,
+                String.valueOf(order),
                 QueryUtil.convertIntegerToDbValue(weight)
             };
     }

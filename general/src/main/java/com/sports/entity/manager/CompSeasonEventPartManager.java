@@ -30,8 +30,6 @@ public class CompSeasonEventPartManager extends SuperKeySuperManager<CompSeasonE
     String[] getValueColumns() {
         return new String[] {
                 "sportid",
-                "sporteventid",
-                "sporteventpartid",
                 "sportdisciplineid",
                 "eventpartnameid",
                 "\"order\"",
@@ -50,9 +48,7 @@ public class CompSeasonEventPartManager extends SuperKeySuperManager<CompSeasonE
         compSeasonEventPart.setCompSeasonEventId(rs.getInt("compseasoneventid"));
         compSeasonEventPart.setCompSeasonEventPartId(rs.getInt("compseasoneventpartid"));
         compSeasonEventPart.setSportId(rs.getInt("sportid"));
-        compSeasonEventPart.setSportEventId(rs.getInt("sporteventid"));
-        compSeasonEventPart.setSportEventPartId(QueryUtil.getIntegerFromResultSet(rs, "sporteventpartid"));
-        compSeasonEventPart.setSportDisciplineId(QueryUtil.getIntegerFromResultSet(rs, "sportdisciplineid"));
+        compSeasonEventPart.setSportDisciplineId(rs.getInt("sportdisciplineid"));
         compSeasonEventPart.setEventPartNameId(QueryUtil.getIntegerFromResultSet(rs, "eventpartnameid"));
         compSeasonEventPart.setOrder(rs.getInt("order"));
         compSeasonEventPart.setStage(QueryUtil.getIntegerFromResultSet(rs, "stage"));

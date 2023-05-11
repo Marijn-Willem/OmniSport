@@ -1,16 +1,13 @@
 package com.speedskating.servlet.html;
 
-import com.sports.calc.alcifo.DbCalculation;
+import com.sports.entity.CompSeasonEventPart;
 import com.sports.entity.DisciplinePart;
 import com.sports.entity.EventDisciplinePart;
 import com.sports.entity.PersonSport;
 import com.sports.entity.comparator.DisciplinePartOrder;
 import com.sports.entity.key.CompSeasonEventPartKey;
 import com.sports.entity.key.SportDisciplineKey;
-import com.sports.entity.manager.DisciplinePartManager;
-import com.sports.entity.manager.EventDisciplinePartManager;
-import com.sports.entity.manager.EventPartPersonSportManager;
-import com.sports.entity.manager.PersonSportManager;
+import com.sports.entity.manager.*;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
@@ -73,10 +70,10 @@ public class TimeHeat extends SuperHtmlServlet {
 
         w.append(line);
 
-        SportDisciplineKey sdk = new DbCalculation(stat).getSportDisciplineKey(csepk);
+        CompSeasonEventPart compSeasonEventPart = new CompSeasonEventPartManager(stat).getEntityFromSuperKey(csepk);
+        SportDisciplineKey sdk = compSeasonEventPart.getSportDisciplineKey();
         List<DisciplinePart> disciplinePartList = new ArrayList<>() {{
-            if (sdk != null)
-                addAll(new DisciplinePartManager(stat).getDisciplinePartList(sdk));
+            addAll(new DisciplinePartManager(stat).getDisciplinePartList(sdk));
         }};
 
         disciplinePartList.sort(new DisciplinePartOrder());

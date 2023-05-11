@@ -1,13 +1,11 @@
 package com.sports.calc.speedskating;
 
 import com.sports.entity.*;
+import com.sports.entity.comparator.EventDisciplinePartOrder;
 import com.sports.entity.comparator.EventPartPersonPersonId;
 import com.sports.entity.comparator.EventPartPersonResPoints;
 import com.sports.entity.comparator.SportEventPartId;
-import com.sports.entity.key.CompSeasonEventKey;
-import com.sports.entity.key.CompSeasonEventPartKey;
-import com.sports.entity.key.EventPartPersonSportKey;
-import com.sports.entity.key.SportEventPartKey;
+import com.sports.entity.key.*;
 import com.sports.entity.manager.*;
 
 import java.sql.SQLException;
@@ -22,14 +20,11 @@ public record DbCalculation(Statement stat) {
 
         CompSeasonEventPart compSeasonEventPart = new CompSeasonEventPartManager(stat).getCompSeasonEventPart(csepk);
         CompSeasonEvent compSeasonEvent = new CompSeasonEventManager(stat).getEntityFromSuperKey(csek);
-        SportEventPartKey sepk = new SportEventPartKey(compSeasonEvent.getSportEventKey(),
-                compSeasonEventPart.getSportEventPartId());
 
         SportEventPartManager sepm = new SportEventPartManager(stat);
 
-        SportEventPart sep = sepm.getSportEventPart(sepk);
-        List<SportEventPart> sportEventParts =
-                sepm.getSportEventParts(sepk.getSuperKey(), "\"order\" <= " + sep.getOrder());
+        List<SportEventPart> sportEventParts = sepm.getSportEventParts(compSeasonEvent.getSportEventKey(),
+                "\"order\" <= " + compSeasonEventPart.getOrder());
 
         sportEventParts.sort(new SportEventPartId());
 
@@ -84,5 +79,18 @@ public record DbCalculation(Statement stat) {
         ranking.sort(new EventPartPersonResPoints());
 
         return ranking;
+    }
+
+    public List<EventDisciplinePart> getSortedEventDisciplineParts(CompSeasonEventPartKey csepKey) throws SQLException {
+        CompSeasonEventPart compSeasonEventPart = new CompSeasonEventPartManager(stat).getEntityFromSuperKey(csepKey);
+        SportDisciplineKey sdk = compSeasonEventPart.getSportDisciplineKey();
+
+        com.sports.calc.alcifo.DbCalculation dbCalc = new com.sports.calc.alcifo.DbCalculation(stat);
+
+        List<EventDisciplinePart> eventDisciplineParts = new EventDisciplinePartManager(stat).getEventDisciplineList(csepKey);
+        dbCalc.fillDisciplinePartsForEventDisciplineParts(sdk, eventDisciplineParts);
+        eventDisciplineParts.sort(new EventDisciplinePartOrder());
+
+        return eventDisciplineParts;
     }
 }

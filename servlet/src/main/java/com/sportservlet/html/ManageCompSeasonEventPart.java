@@ -41,9 +41,6 @@ public abstract class ManageCompSeasonEventPart extends ManageEntity {
         hasFixedParts = new DbCalculation(stat).hasSportEventParts(sportEventKey);
 
         writeCompSeasonEventVarsInScriptTag(req, w);
-        w.append("const fp = ");
-        w.append(Boolean.toString(hasFixedParts));
-        w.append(";\n");
     }
 
     protected void processSpecific(Statement stat, HttpServletRequest req, HttpServletResponse res)
@@ -59,13 +56,8 @@ public abstract class ManageCompSeasonEventPart extends ManageEntity {
             csep = new CompSeasonEventPartManager(stat).getCompSeasonEventPart(csepk);
         }
 
-        List<SportEventPart> sportEventParts = new SportEventPartManager(stat).getSportEventParts(sportEventKey);
-        LinkedHashMap<Integer, String> sportEventPartMap = getLinkedHashMapFromNamedEntities(sportEventParts, true,
-                SportEventPart::getSportEventPartId);
-
-        List<SportDiscipline> sportDisciplines = new SportDisciplineManager(stat).getSportDisciplinesForSport(
-                sportEventKey.getSportId());
-        LinkedHashMap<Integer, String> sportDisciplineMap = getLinkedHashMapFromNamedEntities(sportDisciplines, true,
+        List<SportDiscipline> sportDisciplines = new SportDisciplineManager(stat).getSportDisciplinesForSport(sportEventKey.getSportId());
+        LinkedHashMap<Integer, String> sportDisciplineMap = getLinkedHashMapFromNamedEntities(sportDisciplines, false,
                 SportDiscipline::getSportDisciplineId);
 
         List<EventPartName> eventPartNames = new EventPartNameManager(stat).getEventPartNames();
@@ -74,7 +66,6 @@ public abstract class ManageCompSeasonEventPart extends ManageEntity {
 
         Writer w = res.getWriter();
 
-        writeSelectWithLabel("Sport Event Part", "epid", sportEventPartMap, csep != null ? csep.getSportEventPartId() : null, hasFixedParts, w);
         writeSelectWithLabel("Sport Discipline", "did", sportDisciplineMap, csep != null ? csep.getSportDisciplineId() : null, hasFixedParts, w);
         writeSelectWithLabel("Event part name", "epnid", eventPartNameMap, csep != null ? csep.getEventPartNameId() : null, hasFixedParts, w);
         writeNumericTextField("Order", "o", csep != null ? csep.getOrder() : null, hasFixedParts, w);

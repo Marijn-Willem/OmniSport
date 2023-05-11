@@ -1,25 +1,27 @@
 package com.sportservlet.ajax;
 
+import com.sports.calc.alcifo.AlcifoPartParticipantFactory;
 import com.sports.calc.alcifo.DbCalculation;
 import com.sports.entity.AlcifoPartParticipant;
+import com.sports.entity.CompSeasonEventPart;
 import com.sports.entity.ResultType;
 import com.sports.entity.SportDiscipline;
+import com.sports.entity.key.CompSeasonEventPartKey;
 import com.sports.entity.key.SuperKey;
+import com.sports.entity.manager.CompSeasonEventPartManager;
 import com.sports.entity.manager.NoCountResultManager;
 import com.sports.entity.manager.SportDisciplineManager;
-import com.sports.calc.alcifo.AlcifoPartParticipantFactory;
 import com.sports.logic.util.Util;
 import com.sportservlet.SuperResponseServlet;
-
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+
 import java.io.IOException;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.stream.Collectors;
 
 public abstract class ProcessManageAlcifoPartParticipants extends SuperResponseServlet {
@@ -36,8 +38,11 @@ public abstract class ProcessManageAlcifoPartParticipants extends SuperResponseS
 
         AlcifoPartParticipantFactory factory = getFactory();
 
+        CompSeasonEventPartKey csepKey = getCompSeasonEventPartKey(req);
+        CompSeasonEventPart compSeasonEventPart = new CompSeasonEventPartManager(stat).getEntityFromSuperKey(csepKey);
+
         SportDiscipline sd = new SportDisciplineManager(stat).getEntityFromSuperKey(
-                Objects.requireNonNull(new DbCalculation(stat).getSportDisciplineKey(factory.getCompSeasonEventPartKey(partKey))));
+                compSeasonEventPart.getSportDisciplineKey());
 
         Map<String, Integer> ncrMap = new NoCountResultManager(stat).getNameIdMap();
 
