@@ -1,6 +1,8 @@
 const sportEventListLoader = new ElementLoader('eid', function () {
     return '/SportEventList?spid=' + spid;
-}, null);
+}, function () {
+    setElementValueFromInitStateVar('eid', eid);
+});
 
 function getProcessUrl() {
     const eid = getValueFromElementByName('inpUpd');
