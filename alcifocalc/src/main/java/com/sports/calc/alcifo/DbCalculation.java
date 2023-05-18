@@ -162,7 +162,6 @@ public record DbCalculation(Statement stat) {
         SportEvent se = new SportEventManager(stat).getEntityFromSuperKey(cse.getSportEventKey());
         if (se != null)
             sortAndRankPartParticipantsByPoints(pPartList, se.isPointsSortAsc());
-        pPartList.forEach(AlcifoPartParticipant::overrideNullRankWithCalculatedRank);
 
         List<? extends Participant> participants = factory.getParticipantManager(stat).getParticipantList(
                 pPartList.stream().map(AlcifoPartParticipant::getParticipantId).collect(Collectors.toList())
@@ -263,7 +262,7 @@ public record DbCalculation(Statement stat) {
                                    Map<? extends SuperKey, ? extends AlcifoPartParticipant> partParticipantMap) {
         participants.forEach(pt -> {
             AlcifoPartParticipant pPart = partParticipantMap.get(factory.getKey(partKey, pt.getId()));
-            Integer rank = pPart != null ? pPart.getRank() : null;
+            Integer rank = pPart != null ? (pPart.getRank() != null ? pPart.getRank() : pPart.getCalculatedRank()) : null;
             Integer points = pPart != null ? pPart.getPoints() : null;
             Integer noCountResultId = pPart != null ? pPart.getNoCountResultId() : null;
 

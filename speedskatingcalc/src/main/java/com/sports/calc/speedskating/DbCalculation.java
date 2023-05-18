@@ -1,10 +1,7 @@
 package com.sports.calc.speedskating;
 
 import com.sports.entity.*;
-import com.sports.entity.comparator.EventDisciplinePartOrder;
-import com.sports.entity.comparator.EventPartPersonPersonId;
-import com.sports.entity.comparator.EventPartPersonResPoints;
-import com.sports.entity.comparator.SportEventPartId;
+import com.sports.entity.comparator.*;
 import com.sports.entity.key.*;
 import com.sports.entity.manager.*;
 
@@ -15,7 +12,7 @@ import java.util.List;
 import java.util.Map;
 
 public record DbCalculation(Statement stat) {
-    public List<EventPartPersonSport> getTotalRanking(CompSeasonEventPartKey csepk) throws SQLException {
+    public List<PersonSport> getTotalRanking(CompSeasonEventPartKey csepk) throws SQLException {
         CompSeasonEventKey csek = csepk.getSuperKey();
 
         CompSeasonEventPart compSeasonEventPart = new CompSeasonEventPartManager(stat).getCompSeasonEventPart(csepk);
@@ -44,8 +41,8 @@ public record DbCalculation(Statement stat) {
                 eppm.getEventPartPersonSportList(eventPartPersonSportKeys, "points IS NOT NULL");
         eventPartPeople.sort(new EventPartPersonPersonId());
 
-        List<EventPartPersonSport> ranking = new ArrayList<>();
         Map<Integer, PersonSport> personSportMap = new PersonSportManager(stat).getPersonSportMap(personSportIds);
+        List<PersonSport> personSportList = new ArrayList<>();
 
         int indX1 = 0;
 
@@ -58,7 +55,7 @@ public record DbCalculation(Statement stat) {
                 indX2++;
 
             if (indX2 - indX1 == sportEventParts.size()) {
-                eventPartPersonSport.setPersonSportDescription(personSportMap.get(eventPartPersonSport.getPersonSportId()).getDescription());
+                PersonSport personSport = personSportMap.get(eventPartPersonSport.getPersonSportId());
 
                 for (int j = 0; j < sportEventParts.size(); j++) {
                     SportEventPart sportEventPart = sportEventParts.get(j);
@@ -67,18 +64,19 @@ public record DbCalculation(Statement stat) {
                             (double) (eventPartPeople.get(indX1 + j).getPoints()) /
                                     (double) (1000 * weight);
 
-                    eventPartPersonSport.addResultPoints(resPoints);
+                    personSport.addResultPoints(resPoints);
                 }
 
-                ranking.add(eventPartPersonSport);
+                personSportList.add(personSport);
             }
 
             indX1 = indX2;
         }
 
-        ranking.sort(new EventPartPersonResPoints());
+        personSportList.sort(new ParticipantResPoints());
+        setRanks(personSportList);
 
-        return ranking;
+        return personSportList;
     }
 
     public List<EventDisciplinePart> getSortedEventDisciplineParts(CompSeasonEventPartKey csepKey) throws SQLException {
@@ -92,5 +90,19 @@ public record DbCalculation(Statement stat) {
         eventDisciplineParts.sort(new EventDisciplinePartOrder());
 
         return eventDisciplineParts;
+    }
+
+    private void setRanks(List<PersonSport> personSports) {
+        int curRank = 0;
+
+        for (int i = 0; i < personSports.size(); i++) {
+            PersonSport ps = personSports.get(i);
+            PersonSport psPrev = i > 0 ? personSports.get(i - 1) : null;
+
+            if (psPrev == null || ps.getResultPoints() > psPrev.getResultPoints())
+                curRank = i + 1;
+
+            ps.setRank(curRank);
+        }
     }
 }

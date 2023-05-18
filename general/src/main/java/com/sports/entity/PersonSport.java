@@ -2,24 +2,18 @@ package com.sports.entity;
 
 import com.sports.entity.key.PersonSportIdKey;
 
-import java.util.HashSet;
-import java.util.Set;
-
 public class PersonSport extends Participant {
     private int personId;
     private int sportId;
 
-    private int goals;
-    private int matches;
-    private final Set<String> teamNames = new HashSet<String>();
     private int teamId;
     private String sportName;
     private int genderId;
 
     String[] getSpecificPropertiesInSQLStrings() {
         return new String[] {
-                "" + personId,
-                "" + sportId
+                String.valueOf(personId),
+                String.valueOf(sportId)
         };
     }
 
@@ -41,30 +35,6 @@ public class PersonSport extends Participant {
 
     public int getPersonId() {
         return personId;
-    }
-
-    public int getGoals() {
-        return goals;
-    }
-
-    public void addGoal() {
-        goals++;
-    }
-
-    public int getMatches() {
-        return matches;
-    }
-
-    public void addMatch() {
-        matches++;
-    }
-
-    public Set<String> getTeamNames() {
-        return teamNames;
-    }
-
-    public void addTeamName(String teamName) {
-        teamNames.add(teamName);
     }
 
     public int getTeamId() {

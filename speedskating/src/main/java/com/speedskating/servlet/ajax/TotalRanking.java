@@ -1,7 +1,7 @@
 package com.speedskating.servlet.ajax;
 
 import com.sports.calc.speedskating.DbCalculation;
-import com.sports.entity.EventPartPersonSport;
+import com.sports.entity.PersonSport;
 import com.sports.entity.key.CompSeasonEventPartKey;
 import com.sports.logic.util.Util;
 import com.sportservlet.SuperResponseServlet;
@@ -19,26 +19,18 @@ public class TotalRanking extends SuperResponseServlet {
             throws IOException, SQLException {
         CompSeasonEventPartKey csepk = getCompSeasonEventPartKey(req);
 
-        List<EventPartPersonSport> ranking = new DbCalculation(stat).getTotalRanking(csepk);
-
-        int rnk = 0, nr = 0;
-        double prevPoints = 0.0;
+        List<PersonSport> ranking = new DbCalculation(stat).getTotalRanking(csepk);
 
         Writer w = resp.getWriter();
 
-        for (EventPartPersonSport eventPartPersonSport : ranking) {
-            nr++;
-            double points = eventPartPersonSport.getResultPoints();
+        for (PersonSport personSport : ranking) {
+            double points = personSport.getResultPoints();
 
-            if (points != prevPoints)
-                rnk = nr;
-
-            String rule = "<tr><td>" + rnk + ".</td><td>" + eventPartPersonSport.getPersonSportDescription() + "</td>" +
+            String rule = "<tr><td>" + personSport.getRank() + ".</td><td>" +
+                    personSport.getDescription() + "</td>" +
                     "<td>" + Util.getDoubleAsStringWith3Digits(points) + "</td></tr>\n";
 
             w.append(rule);
-
-            prevPoints = points;
         }
     }
 }

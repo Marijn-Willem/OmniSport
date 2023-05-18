@@ -107,9 +107,9 @@ public class Util {
         int seconds = (millis % 60000) / 1000;
         int hundredths = (millis % 1000) / 10;
 
-        return padZeroesToString("" + minutes) + ":" +
-                padZeroesToString("" + seconds) + ":" +
-                padZeroesToString("" + hundredths);
+        return padZeroesToString(String.valueOf(minutes)) + ":" +
+                padZeroesToString(String.valueOf(seconds)) + ":" +
+                padZeroesToString(String.valueOf(hundredths));
     }
 
     public static int getMillisFromTimeString(String timeStr) {
@@ -228,7 +228,7 @@ public class Util {
     }
 
     public static String convertEmptyInteger(Integer i, String altStr) {
-        return i != null ? "" + i : altStr;
+        return i != null ? String.valueOf(i) : altStr;
     }
 
     public static String convertEmptyDateTimeToString(LocalDateTime dtTm, String altStr) {

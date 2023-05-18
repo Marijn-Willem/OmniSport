@@ -9,10 +9,7 @@ public class EventPartPersonSport extends AlcifoPartParticipant {
 
     private int compSeasonEventPartId;
     private int personSportId;
-    private String personSportDescription;
     private int sportEventPartOrder;
-    private double resultPoints;
-    private EventPersonSport eventPersonSport;
     private CompSeasonEventPart compSeasonEventPart;
 
     @Override
@@ -64,14 +61,6 @@ public class EventPartPersonSport extends AlcifoPartParticipant {
         this.personSportId = personSportId;
     }
 
-    public String getPersonSportDescription() {
-        return personSportDescription;
-    }
-
-    public void setPersonSportDescription(String personSportDescription) {
-        this.personSportDescription = personSportDescription;
-    }
-
     public int getSportEventPartOrder() {
         return sportEventPartOrder;
     }
@@ -80,21 +69,6 @@ public class EventPartPersonSport extends AlcifoPartParticipant {
         this.sportEventPartOrder = sportEventPartOrder;
     }
 
-    public double getResultPoints() {
-        return resultPoints;
-    }
-
-    public void addResultPoints(double resultPoints) {
-        this.resultPoints += resultPoints;
-    }
-
-    public EventPersonSport getEventPersonSport() {
-        return eventPersonSport;
-    }
-
-    public void setEventPersonSport(EventPersonSport eventPersonSport) {
-        this.eventPersonSport = eventPersonSport;
-    }
 
     public CompSeasonEventPart getCompSeasonEventPart() {
         return compSeasonEventPart;
