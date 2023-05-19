@@ -20,6 +20,7 @@ public class SportEventPortal extends SuperHtmlServlet {
     @Override
     protected void processScriptTag(Statement stat, HttpServletRequest req, Writer w) throws IOException {
         writeVarInScriptTag("spid", getIntValuedParameterValue(req, "spid"), w);
+        writeInitStateVarInScriptTag("eid", req, w);
     }
 
     @Override

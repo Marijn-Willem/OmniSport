@@ -26,10 +26,6 @@ public abstract class AlcifoPartParticipant extends SuperKeyEntity {
         return Util.concatenateStringArrays(generalProps, getSpecificPropertiesInSQLStrings());
     }
 
-    public void overrideNullRankWithCalculatedRank() {
-        rank = rank == null ? calculatedRank : rank;
-    }
-
     public Integer getPoints() {
         return points;
     }
@@ -52,6 +48,10 @@ public abstract class AlcifoPartParticipant extends SuperKeyEntity {
 
     public void setNoCountResultId(Integer noCountResultId) {
         this.noCountResultId = noCountResultId;
+    }
+
+    public Integer getCalculatedRank() {
+        return calculatedRank;
     }
 
     public void setCalculatedRank(Integer calculatedRank) {

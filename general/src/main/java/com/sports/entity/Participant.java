@@ -24,6 +24,7 @@ public abstract class Participant extends IntEntity implements DescribedEntity {
     private Integer rank;
     private int streak;
     private double gamesBehind;
+    private double resultPoints;
 
     abstract String[] getSpecificPropertiesInSQLStrings();
 
@@ -31,7 +32,7 @@ public abstract class Participant extends IntEntity implements DescribedEntity {
     public String[] getPropertiesInSQLStrings() {
         String[] generalProps = new String[] {
                 QueryUtil.convertStringToDbValue(description),
-                "" + elo
+                String.valueOf(elo)
             };
 
         return Util.concatenateStringArrays(generalProps, getSpecificPropertiesInSQLStrings());
@@ -214,5 +215,13 @@ public abstract class Participant extends IntEntity implements DescribedEntity {
 
     public void setGamesBehind(double gamesBehind) {
         this.gamesBehind = gamesBehind;
+    }
+
+    public void addResultPoints(double resultPoints) {
+        this.resultPoints += resultPoints;
+    }
+
+    public double getResultPoints() {
+        return resultPoints;
     }
 }

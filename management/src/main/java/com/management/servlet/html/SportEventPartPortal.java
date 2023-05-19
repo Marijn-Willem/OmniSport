@@ -28,7 +28,8 @@ public class SportEventPartPortal extends SuperHtmlServlet {
 
     @Override
     public String getReturnPath(Statement stat, HttpServletRequest req) {
-        return "SportEventPortal?spid=" + getIntValuedParameterValue(req, "spid");
+        return "SportEventPortal?spid=" + getIntValuedParameterValue(req, "spid") + "&eid=" +
+                getIntValuedParameterValue(req, "eid");
     }
 
     @Override
