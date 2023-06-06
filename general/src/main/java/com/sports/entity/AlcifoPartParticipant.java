@@ -8,6 +8,7 @@ public abstract class AlcifoPartParticipant extends SuperKeyEntity {
     private Integer rank;
     private Integer noCountResultId;
 
+    private int compSeasonEventPartId;
     private Integer calculatedRank;
 
     abstract String[] getSpecificPropertiesInSQLStrings();
@@ -48,6 +49,14 @@ public abstract class AlcifoPartParticipant extends SuperKeyEntity {
 
     public void setNoCountResultId(Integer noCountResultId) {
         this.noCountResultId = noCountResultId;
+    }
+
+    public int getCompSeasonEventPartId() {
+        return compSeasonEventPartId;
+    }
+
+    public void setCompSeasonEventPartId(int compSeasonEventPartId) {
+        this.compSeasonEventPartId = compSeasonEventPartId;
     }
 
     public Integer getCalculatedRank() {

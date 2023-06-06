@@ -52,7 +52,6 @@ public class EventPartPersonSportManager extends AlcifoPartParticipantManager<Ev
         EventPartPersonSport eventPartPersonSport = new EventPartPersonSport();
 
         fillGenericPropertiesFromResultSet(eventPartPersonSport, rs);
-        eventPartPersonSport.setCompSeasonEventPartId(rs.getInt("compseasoneventpartid"));
         eventPartPersonSport.setHeat(QueryUtil.getIntegerFromResultSet(rs, "heat"));
 
         return eventPartPersonSport;

@@ -5,6 +5,8 @@ import com.sports.cache.key.ParticipantKey;
 import com.sports.cache.util.DataFragmentUtil;
 import com.sports.cache.util.JsonUtil;
 import com.sports.cache.util.XmlUtil;
+import com.sports.entity.SuperKeyEntity;
+import com.sports.entity.key.CompSeasonParticipantKey;
 import com.sports.logic.calculation.DbCalculation;
 import com.sports.logic.factory.CompSeasonParticipantFactory;
 
@@ -35,7 +37,8 @@ public class ParticipantFragment extends WritableFragment {
 
     @Override
     void fill(Statement stat) throws SQLException {
-        CompSeasonParticipantFactory factory = new DbCalculation(stat).getCompSeasonParticipantFactory(competitionId);
+        CompSeasonParticipantFactory<? extends CompSeasonParticipantKey, ? extends SuperKeyEntity> factory =
+                new DbCalculation(stat).getCompSeasonParticipantFactory(competitionId);
 
         switch (factory.getParticipantType()) {
             case PERSON_SPORT -> personSportFragment = DataFragmentUtil.getFilledDataFragment(

@@ -3,10 +3,12 @@ package com.sports.entity.manager;
 import com.sports.entity.CompSeasonEvent;
 import com.sports.entity.key.CompSeasonEventKey;
 import com.sports.entity.key.CompSeasonKey;
+import com.sports.entity.key.SportEventKey;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -62,6 +64,17 @@ public class CompSeasonEventManager extends SuperKeySuperManager<CompSeasonEvent
     public Map<CompSeasonEventKey, CompSeasonEvent> getCompSeasonEventMap(List<CompSeasonEventKey> cseKeys)
         throws SQLException {
         return getSuperKeyEntityMap(getConditionsKeyList(cseKeys));
+    }
+
+    public List<CompSeasonEvent> getCompSeasonEventsBySportEvents(CompSeasonKey csk, List<SportEventKey> seKeys)
+        throws SQLException {
+        List<CompSeasonEvent> compSeasonEventKeys = new ArrayList<>();
+
+        if (!seKeys.isEmpty())
+            compSeasonEventKeys.addAll(getEntityList(
+                    csk.getWhereClause() + " AND (" + getConditionsKeyList(seKeys) + ")"));
+
+        return compSeasonEventKeys;
     }
 
     public void insertCompSeasonEventMap(Map<CompSeasonEventKey, CompSeasonEvent> cseMap) throws SQLException {

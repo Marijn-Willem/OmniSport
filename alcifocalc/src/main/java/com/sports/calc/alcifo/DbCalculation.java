@@ -4,6 +4,9 @@ import com.sports.entity.*;
 import com.sports.entity.comparator.*;
 import com.sports.entity.key.*;
 import com.sports.entity.manager.*;
+import com.sports.logic.factory.CompSeasonParticipantFactory;
+import com.sports.logic.factory.CompSeasonPersonSportFactory;
+import com.sports.logic.factory.CompSeasonTeamFactory;
 
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -11,6 +14,12 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 public record DbCalculation(Statement stat) {
+    public CompSeasonParticipantFactory<? extends CompSeasonParticipantKey, ? extends SuperKeyEntity> getCompSeasonParticipantFactory(CompSeasonEventKey compSeasonEventKey)
+            throws SQLException {
+        SportEvent se = getSportEvent(compSeasonEventKey);
+        return se.isTeam() ? new CompSeasonTeamFactory() : new CompSeasonPersonSportFactory();
+    }
+
     public void fillDisciplinePartsForEventDisciplineParts(SportDisciplineKey sportDisciplineKey,
                                                            List<EventDisciplinePart> eventDisciplineParts)
             throws SQLException {

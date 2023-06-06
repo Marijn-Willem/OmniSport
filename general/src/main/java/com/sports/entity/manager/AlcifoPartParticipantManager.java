@@ -2,6 +2,7 @@ package com.sports.entity.manager;
 
 import com.sports.db.util.QueryUtil;
 import com.sports.entity.AlcifoPartParticipant;
+import com.sports.entity.key.CompSeasonEventKey;
 import com.sports.entity.key.SuperKey;
 import com.sports.logic.util.Util;
 
@@ -46,6 +47,10 @@ public abstract class AlcifoPartParticipantManager<S extends SuperKey, U extends
         return getSuperKeyEntityMapFromSuperKeys(alcifoParticipantKeys);
     }
 
+    public List<T> getPartParticipantsWithRankOne(CompSeasonEventKey compSeasonEventKey) throws SQLException {
+        return getEntityList(compSeasonEventKey.getWhereClause() + " AND rank = 1");
+    }
+
     public void updatePartParticipantMap(Map<S, T> ppMap) throws SQLException {
         updateEntityMap(ppMap);
     }
@@ -55,6 +60,7 @@ public abstract class AlcifoPartParticipantManager<S extends SuperKey, U extends
     }
 
     void fillGenericPropertiesFromResultSet(T alcifoPartParticipant, ResultSet rs) throws SQLException {
+        alcifoPartParticipant.setCompSeasonEventPartId(rs.getInt("compseasoneventpartid"));
         alcifoPartParticipant.setPoints(QueryUtil.getIntegerFromResultSet(rs, "points"));
         alcifoPartParticipant.setRank(QueryUtil.getIntegerFromResultSet(rs, "rank"));
         alcifoPartParticipant.setNoCountResultId(QueryUtil.getIntegerFromResultSet(rs, "nocountresultid"));
