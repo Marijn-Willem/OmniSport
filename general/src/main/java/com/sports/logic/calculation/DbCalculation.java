@@ -298,18 +298,6 @@ public record DbCalculation(Statement stat) {
         return new CompetitionManager(stat).getCompetition(competitionId).getSportId();
     }
 
-    public Map<String, PersonSport> getDescrPersonSportMapWithNewInstances(List<String> names, int competitionId)
-            throws SQLException {
-        Competition competition = new CompetitionManager(stat).getCompetition(competitionId);
-        return getDescrPersonSportMapWithNewInstances(names, competition);
-    }
-
-    public Map<String, PersonSport> getDescrPersonSportMapWithNewInstances(List<String> names, Competition competition)
-            throws SQLException {
-        Map<String, Person> personMap = getPersonNameMapWithNewPersons(names, competition);
-        return getDescrPersonSportMap(new ArrayList<>(personMap.values()), competition.getId());
-    }
-
     public List<Language> getReferencingLanguages(int languageId) throws SQLException {
         List<Language> referencingLanguages = new ArrayList<>();
 

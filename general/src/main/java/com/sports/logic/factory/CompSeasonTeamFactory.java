@@ -1,13 +1,13 @@
 package com.sports.logic.factory;
 
-import com.sports.entity.*;
+import com.sports.entity.CompSeasonTeam;
+import com.sports.entity.H2HMatch;
+import com.sports.entity.Participant;
+import com.sports.entity.SuperKeyEntity;
 import com.sports.entity.key.*;
 import com.sports.entity.manager.*;
 
-import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.List;
-import java.util.Map;
 
 public class CompSeasonTeamFactory implements CompSeasonParticipantFactory<CompSeasonTeamKey, CompSeasonTeam> {
     @Override
@@ -38,13 +38,6 @@ public class CompSeasonTeamFactory implements CompSeasonParticipantFactory<CompS
     @Override
     public CompSeasonPhaseParticipantKey getPhaseParticKey(CompSeasonPhaseKey cspk, int specifId) {
         return new CompSeasonPhaseTeamKey(cspk, specifId);
-    }
-
-    @Override
-    public Map<String, ? extends Participant> getDescriptionParticipantMap(Statement stat, List<String> descriptions, int competitionId) throws SQLException {
-        Competition competition = new CompetitionManager(stat).getCompetition(competitionId);
-
-        return new TeamManager(stat).getDescrTeamMapBySportGender(descriptions, competition.getSportId(), competition.getGenderId());
     }
 
     @Override

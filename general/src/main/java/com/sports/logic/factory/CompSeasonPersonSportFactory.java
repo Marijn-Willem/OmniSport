@@ -5,12 +5,8 @@ import com.sports.entity.Participant;
 import com.sports.entity.SuperKeyEntity;
 import com.sports.entity.key.*;
 import com.sports.entity.manager.*;
-import com.sports.logic.calculation.DbCalculation;
 
-import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.List;
-import java.util.Map;
 
 public class CompSeasonPersonSportFactory implements CompSeasonParticipantFactory<CompSeasonPersonSportKey, SuperKeyEntity> {
     @Override
@@ -41,11 +37,6 @@ public class CompSeasonPersonSportFactory implements CompSeasonParticipantFactor
     @Override
     public CompSeasonPhaseParticipantKey getPhaseParticKey(CompSeasonPhaseKey cspk, int specifId) {
         return new CompSeasonPhasePersonSportKey(cspk, specifId);
-    }
-
-    @Override
-    public Map<String, ? extends Participant> getDescriptionParticipantMap(Statement stat, List<String> descriptions, int competitionId) throws SQLException {
-        return new DbCalculation(stat).getDescrPersonSportMapWithNewInstances(descriptions, competitionId);
     }
 
     @Override

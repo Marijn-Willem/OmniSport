@@ -5,13 +5,8 @@ import com.sports.entity.Participant;
 import com.sports.entity.SuperKeyEntity;
 import com.sports.entity.key.*;
 import com.sports.entity.manager.*;
-import com.sports.logic.calculation.DbCalculation;
 
-import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
 
 public class CompSeasonDoubleFactory implements CompSeasonParticipantFactory<CompSeasonDoubleKey, SuperKeyEntity> {
     @Override
@@ -42,16 +37,6 @@ public class CompSeasonDoubleFactory implements CompSeasonParticipantFactory<Com
     @Override
     public CompSeasonPhaseParticipantKey getPhaseParticKey(CompSeasonPhaseKey cspk, int specifId) {
         return new CompSeasonPhaseDoubleKey(cspk, specifId);
-    }
-
-    @Override
-    public Map<String, ? extends Participant> getDescriptionParticipantMap(Statement stat, List<String> descriptions, int competitionId) throws SQLException {
-        List<String[]> descriptionPairs = new ArrayList<>();
-
-        for (String description : descriptions)
-            descriptionPairs.add(description.split(" / "));
-
-        return new DbCalculation(stat).getDoubleMapWithNewDoubles(descriptionPairs, competitionId);
     }
 
     @Override

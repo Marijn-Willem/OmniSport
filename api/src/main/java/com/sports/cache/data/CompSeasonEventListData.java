@@ -59,7 +59,7 @@ public class CompSeasonEventListData extends OutputData {
 
 	@Override
 	public String toXML() {
-		return XmlUtil.getTopLevelXmlList("compSeasonEventList", "sportEvent",
+		return XmlUtil.getTopLevelXmlList("compSeasonEventList", "compSeasonEvent",
 				compSeasonEventFragments);
 	}
 

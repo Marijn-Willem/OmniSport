@@ -7,7 +7,6 @@ import java.time.LocalDateTime;
 public class EventPartPersonSport extends AlcifoPartParticipant {
     private Integer heat;
 
-    private int compSeasonEventPartId;
     private int personSportId;
     private int sportEventPartOrder;
     private CompSeasonEventPart compSeasonEventPart;
@@ -43,14 +42,6 @@ public class EventPartPersonSport extends AlcifoPartParticipant {
 
     public void setHeat(Integer heat) {
         this.heat = heat;
-    }
-
-    public int getCompSeasonEventPartId() {
-        return compSeasonEventPartId;
-    }
-
-    public void setCompSeasonEventPartId(int compSeasonEventPartId) {
-        this.compSeasonEventPartId = compSeasonEventPartId;
     }
 
     public int getPersonSportId() {
