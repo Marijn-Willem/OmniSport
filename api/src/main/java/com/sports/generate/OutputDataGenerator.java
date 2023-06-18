@@ -123,11 +123,15 @@ public class OutputDataGenerator {
         GenerateUtil.appendWithNewLine("import com.sports.entity.key.CompSeasonKey;", bw);
         GenerateUtil.appendWithNewLine("import com.sports.rest.RestClientUtil;", bw);
         bw.newLine();
+        GenerateUtil.appendWithNewLine("import jakarta.servlet.http.HttpServletResponse;", bw);
         GenerateUtil.appendWithNewLine("import jakarta.ws.rs.GET;", bw);
         GenerateUtil.appendWithNewLine("import jakarta.ws.rs.Path;", bw);
         GenerateUtil.appendWithNewLine("import jakarta.ws.rs.PathParam;", bw);
         GenerateUtil.appendWithNewLine("import jakarta.ws.rs.Produces;", bw);
+        GenerateUtil.appendWithNewLine("import jakarta.ws.rs.core.Context;", bw);
         GenerateUtil.appendWithNewLine("import jakarta.ws.rs.core.MediaType;", bw);
+        bw.newLine();
+        GenerateUtil.appendWithNewLine("import java.io.IOException;", bw);
         bw.newLine();
         bw.append("@Path(\"");
         bw.append(dir);
@@ -157,7 +161,7 @@ public class OutputDataGenerator {
             writeParameter(whiteSpaces, lineGroup.get(i), bw);
 
         int whiteSpaces1 = lineGroup.size() == 1 ? 0 : whiteSpaces;
-        writeClientParameters(whiteSpaces1, whiteSpaces, bw);
+        writeAdditionalParameters(whiteSpaces1, whiteSpaces, bw);
 
         String dirWithCapital = dir.substring(0, 1).toUpperCase() + dir.substring(1);
 
@@ -167,7 +171,7 @@ public class OutputDataGenerator {
                 "RestClientUtil.getValidatedClientId(clientName, password);", bw);
         bw.newLine();
         GenerateUtil.appendWithNewLine("\t\treturn new " + dirWithCapital +
-                "OutputCreator(clientId, compSeasonKey).createOutput(new " + outputName + "Data(", bw);
+                "OutputCreator(clientId, response, compSeasonKey).createOutput(new " + outputName + "Data(", bw);
         bw.append("\t\t");
         GenerateUtil.appendWhitespaces("return n".length(), bw);
         for (int i = 1; i < lineGroup.size(); i++) {
@@ -193,12 +197,15 @@ public class OutputDataGenerator {
         bw.append("\t");
     }
 
-    private static void writeClientParameters(int whiteSpaces1, int whiteSpaces2, BufferedWriter bw)
+    private static void writeAdditionalParameters(int whiteSpaces1, int whiteSpaces2, BufferedWriter bw)
             throws IOException {
         GenerateUtil.appendWhitespaces(whiteSpaces1, bw);
         GenerateUtil.appendWithNewLine("@PathParam(\"clientName\") String clientName,", bw);
         bw.append("\t");
         GenerateUtil.appendWhitespaces(whiteSpaces2, bw);
-        GenerateUtil.appendWithNewLine("@PathParam(\"password\") String password) {", bw);
+        GenerateUtil.appendWithNewLine("@PathParam(\"password\") String password,", bw);
+        bw.append("\t");
+        GenerateUtil.appendWhitespaces(whiteSpaces2, bw);
+        GenerateUtil.appendWithNewLine("@Context HttpServletResponse response) throws IOException {", bw);
     }
 }
