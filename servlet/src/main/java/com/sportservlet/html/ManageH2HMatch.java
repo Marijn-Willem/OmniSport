@@ -22,6 +22,10 @@ import java.sql.Statement;
 import java.util.*;
 
 public abstract class ManageH2HMatch extends ManageEntity {
+    @Override
+    protected void initSpecific(Statement stat, HttpServletRequest req) {}
+
+    @Override
     protected void initAbstractProperties(HttpServletRequest req) {
         jsList.add("h2hmatch");
     }

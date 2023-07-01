@@ -22,6 +22,9 @@ import java.sql.Statement;
 
 public abstract class ManageEventDisciplinePart extends ManageEntity {
     @Override
+    protected void initSpecific(Statement stat, HttpServletRequest req) {}
+
+    @Override
     protected void initAbstractProperties(HttpServletRequest req) {
         jsList.add("eventdisciplinepart");
     }

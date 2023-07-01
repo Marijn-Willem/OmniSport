@@ -15,6 +15,9 @@ import java.sql.Statement;
 
 public class ManageCompSeasonPhaseTeam extends ManageEntity {
     @Override
+    protected void initSpecific(Statement stat, HttpServletRequest req) {}
+
+    @Override
     public String getBasicReturnPath(Statement stat, HttpServletRequest req) {
         return "CompSeasonPhaseTeamList?" + compSeasonUrlParameters + "&pid=" +
                 getIntValuedParameterValue(req, "pid");
@@ -58,7 +61,7 @@ public class ManageCompSeasonPhaseTeam extends ManageEntity {
             Writer w = res.getWriter();
 
             writeTextFieldWithLabel("Points correction", "pc",
-                    "" + compSeasonPhaseTeam.getPointsCorrection(), w);
+                    String.valueOf(compSeasonPhaseTeam.getPointsCorrection()), w);
         }
     }
 

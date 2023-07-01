@@ -31,6 +31,13 @@ public abstract class TeamSelectServlet extends SuperHtmlServlet implements Abst
     }
 
     @Override
+    protected void processScriptTag(Statement stat, HttpServletRequest req, Writer w) throws IOException, SQLException {
+        writeInitStateVarInScriptTag("spid", req, w);
+        writeInitStateVarInScriptTag("gid", req, w);
+        writeInitStateVarInScriptTag("tid", req, w);
+    }
+
+    @Override
     protected void processHtmlBody(Statement stat, HttpServletRequest req, HttpServletResponse res)
             throws IOException, SQLException {
         Writer w = res.getWriter();

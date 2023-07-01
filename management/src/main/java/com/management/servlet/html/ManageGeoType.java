@@ -11,6 +11,9 @@ public class ManageGeoType extends com.sportservlet.html.ManageGeoType {
     }
 
     @Override
+    protected void initSpecific(Statement stat, HttpServletRequest req) {}
+
+    @Override
     public void initSpecificProperties(HttpServletRequest req) {
         jsSpecificList.add("geotype");
         cssList.add("styling");

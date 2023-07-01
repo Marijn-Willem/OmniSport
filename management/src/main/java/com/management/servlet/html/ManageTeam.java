@@ -18,9 +18,21 @@ import java.sql.Statement;
 import java.util.LinkedHashMap;
 
 public class ManageTeam extends ManageEntity {
+    private Team team;
+
+    @Override
+    protected void initSpecific(Statement stat, HttpServletRequest req) throws SQLException {
+        if (!"i".equals(mode)) {
+            int tid = getIntValuedParameterValue(req, "tid");
+            team = new TeamManager(stat).getEntityFromId(tid);
+        }
+        else
+            team = null;
+    }
+
     @Override
     public String getBasicReturnPath(Statement stat, HttpServletRequest req) {
-        return "TeamPortal";
+        return "TeamPortal?spid=" + getSportId(req) + "&gid=" + getGenderId(req);
     }
 
     @Override
@@ -40,19 +52,12 @@ public class ManageTeam extends ManageEntity {
 
     protected void processSpecific(Statement stat, HttpServletRequest req, HttpServletResponse res)
             throws IOException, SQLException {
-        Team team = null;
-
-        if (!"i".equals(mode)) {
-            int tid = getIntValuedParameterValue(req, "tid");
-            team = new TeamManager(stat).getEntityFromId(tid);
-        }
-
-        int spid = team != null ? team.getSportId() : getIntValuedParameterValue(req, "spid");
+        int spid = getSportId(req);
         Sport sport = new SportManager(stat).getSport(spid);
         LinkedHashMap<Integer, String> sportMap = new LinkedHashMap<>();
         sportMap.put(spid, sport.getName());
 
-        int gid = team != null ? team.getGenderId() : getIntValuedParameterValue(req, "gid");
+        int gid = getGenderId(req);
 
         String cn = team != null && team.getClubId() != null ?
                 new ClubManager(stat).getEntityFromId(team.getClubId()).getName() : null;
@@ -72,5 +77,13 @@ public class ManageTeam extends ManageEntity {
         writeSelectWithLabel("Gender", "gid", Gender.getGenderLinkedHashMap(), gid, true, w);
         writeSpanWithLabel("Elo", team != null ? Integer.toString(team.getElo()) : "", w);
         w.append("<input type=\"button\" onclick=\"setTeamDescription();\" value=\"Set team description\" /><br/>\n");
+    }
+
+    private int getSportId(HttpServletRequest req) {
+        return team != null ? team.getSportId() : getIntValuedParameterValue(req, "spid");
+    }
+
+    private int getGenderId(HttpServletRequest req) {
+        return team != null ? team.getGenderId() : getIntValuedParameterValue(req, "gid");
     }
 }

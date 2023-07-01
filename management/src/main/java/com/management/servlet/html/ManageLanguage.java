@@ -22,6 +22,9 @@ public class ManageLanguage extends ManageEntity {
     }
 
     @Override
+    protected void initSpecific(Statement stat, HttpServletRequest req) {}
+
+    @Override
     public void initSpecificProperties(HttpServletRequest req) {
         cssList.add("styling");
     }
