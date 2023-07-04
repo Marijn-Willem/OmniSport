@@ -20,6 +20,9 @@ import java.util.List;
 
 public class ManageAlias extends ManageEntity {
     @Override
+    protected void initSpecific(Statement stat, HttpServletRequest req) {}
+
+    @Override
     protected void preProcessSpecific(Statement stat, HttpServletRequest req, HttpServletResponse res) throws IOException {
         ServletUtil.writeEntityList(getIntValuedParameterValue(req, "aeid"), res.getWriter());
     }
