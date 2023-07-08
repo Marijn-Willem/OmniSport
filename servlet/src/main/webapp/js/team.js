@@ -5,11 +5,16 @@ const teamListLoader = new ElementLoader('tid', function () {
     const gid = document.getElementById('gid').value;
 
     return '/TeamListBySportGender?spid=' + spid + '&gid=' + gid;
-}, null);
+}, function() { setElementValueFromInitStateVar('tid', tid); });
 
 const sportListLoader = new ElementLoader('spid', function () {
     return '/SportList';
-}, teamListLoader.loadElement);
+}, function() {
+    setElementValueFromInitStateVar('spid', spid);
+    setElementValueFromInitStateVar('gid', gid);
+
+    teamListLoader.loadElement();
+});
 
 function getName() {
     const options = document.getElementById('tid').options;

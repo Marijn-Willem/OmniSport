@@ -27,6 +27,9 @@ public abstract class ManageCompSeasonEvent extends ManageEntity {
     }
 
     @Override
+    protected void initSpecific(Statement stat, HttpServletRequest req) {}
+
+    @Override
     protected void initAbstractProperties(HttpServletRequest req) {
         jsList.add("compseasonevent");
     }

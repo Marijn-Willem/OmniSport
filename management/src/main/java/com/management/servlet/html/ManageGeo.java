@@ -28,6 +28,9 @@ public class ManageGeo extends ManageEntity {
     }
 
     @Override
+    protected void initSpecific(Statement stat, HttpServletRequest req) {}
+
+    @Override
     public void initSpecificProperties(HttpServletRequest req) {
         jsList.add("geo");
         jsSpecificList.add("geo");
@@ -77,6 +80,6 @@ public class ManageGeo extends ManageEntity {
     }
 
     protected String getUpdateId(HttpServletRequest req) {
-        return geo != null ? "" + geo.getId() : "";
+        return geo != null ? String.valueOf(geo.getId()) : "";
     }
 }

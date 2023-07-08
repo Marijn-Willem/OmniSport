@@ -20,6 +20,10 @@ import java.util.List;
 public abstract class ManagePerson extends ManageEntity {
     private Person person;
 
+    @Override
+    protected void initSpecific(Statement stat, HttpServletRequest req) {}
+
+    @Override
     protected void initAbstractProperties(HttpServletRequest req) {
         jsList.add("person");
     }

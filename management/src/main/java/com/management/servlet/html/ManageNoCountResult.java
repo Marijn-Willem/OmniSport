@@ -18,6 +18,9 @@ public class ManageNoCountResult extends ManageEntity {
     }
 
     @Override
+    protected void initSpecific(Statement stat, HttpServletRequest req) {}
+
+    @Override
     public void initSpecificProperties(HttpServletRequest req) {
         jsSpecificList.add("nocountresult");
         cssList.add("styling");

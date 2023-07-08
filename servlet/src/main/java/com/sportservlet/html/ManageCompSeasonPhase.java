@@ -9,10 +9,9 @@ import com.sports.entity.key.CompSeasonKey;
 import com.sports.entity.key.CompSeasonPhaseKey;
 import com.sports.entity.manager.CompSeasonPhaseManager;
 import com.sports.entity.manager.PhaseTypeManager;
-import com.sports.logic.util.Util;
-
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+
 import java.io.IOException;
 import java.io.Writer;
 import java.sql.SQLException;
@@ -22,6 +21,10 @@ import java.util.LinkedHashMap;
 import java.util.List;
 
 public abstract class ManageCompSeasonPhase extends ManageEntity {
+    @Override
+    protected void initSpecific(Statement stat, HttpServletRequest req) {}
+
+    @Override
     protected void initAbstractProperties(HttpServletRequest req) {
         jsList.add("compseasonphase");
     }

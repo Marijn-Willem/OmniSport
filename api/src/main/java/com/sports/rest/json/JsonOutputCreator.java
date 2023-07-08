@@ -1,22 +1,17 @@
 package com.sports.rest.json;
 
 import com.sports.cache.data.OutputData;
-import com.sports.cache.util.JsonUtil;
 import com.sports.entity.key.CompSeasonKey;
 import com.sports.rest.OutputCreator;
+import jakarta.servlet.http.HttpServletResponse;
 
 public class JsonOutputCreator extends OutputCreator {
-    public JsonOutputCreator(Integer clientId) {
-        super(clientId);
+    public JsonOutputCreator(Integer clientId, HttpServletResponse response) {
+        super(clientId, response);
     }
 
-    public JsonOutputCreator(Integer clientId, CompSeasonKey compSeasonKey) {
-        super(clientId, compSeasonKey);
-    }
-
-    @Override
-    protected String getEmptyResponse() {
-        return JsonUtil.getEmptyResponse();
+    public JsonOutputCreator(Integer clientId, HttpServletResponse response, CompSeasonKey compSeasonKey) {
+        super(clientId, response, compSeasonKey);
     }
 
     @Override

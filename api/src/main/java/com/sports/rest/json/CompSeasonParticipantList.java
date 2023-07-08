@@ -4,11 +4,15 @@ import com.sports.cache.data.CompSeasonParticipantListData;
 import com.sports.entity.key.CompSeasonKey;
 import com.sports.rest.RestClientUtil;
 
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.Produces;
+import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.MediaType;
+
+import java.io.IOException;
 
 @Path("json/compseasonparticipantlist/{competitionId}/{seasonId}/{clientName}/{password}")
 public class CompSeasonParticipantList {
@@ -17,10 +21,11 @@ public class CompSeasonParticipantList {
     public String getCompSeasonParticipantList(@PathParam("competitionId") int competitionId,
                                                @PathParam("seasonId") int seasonId,
                                                @PathParam("clientName") String clientName,
-                                               @PathParam("password") String password) {
+                                               @PathParam("password") String password,
+                                               @Context HttpServletResponse response) throws IOException {
         Integer clientId = RestClientUtil.getValidatedClientId(clientName, password);
 
-        return new JsonOutputCreator(clientId, new CompSeasonKey(competitionId, seasonId))
+        return new JsonOutputCreator(clientId, response, new CompSeasonKey(competitionId, seasonId))
                 .createOutput(new CompSeasonParticipantListData(competitionId, seasonId, clientId));
     }
 }

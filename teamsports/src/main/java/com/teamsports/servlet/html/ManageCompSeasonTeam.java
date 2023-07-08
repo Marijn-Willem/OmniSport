@@ -26,6 +26,9 @@ import java.util.List;
 
 public class ManageCompSeasonTeam extends ManageEntity {
     @Override
+    protected void initSpecific(Statement stat, HttpServletRequest req) {}
+
+    @Override
     public String getBasicReturnPath(Statement stat, HttpServletRequest req) {
         return "CompSeasonTeamPortal?cid=" + competitionId + "&sid=" + seasonId;
     }

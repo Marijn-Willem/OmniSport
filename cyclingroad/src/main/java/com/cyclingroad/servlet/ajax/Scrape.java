@@ -14,6 +14,7 @@ import com.sports.entity.manager.CompSeasonEventPartManager;
 import com.sports.entity.manager.SportEventManager;
 import com.sports.logic.util.Util;
 import com.sportservlet.SuperResponseServlet;
+import com.sportservlet.flush.CyclingRoadStageFlusher;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
@@ -57,6 +58,8 @@ public class Scrape extends SuperResponseServlet {
                     w.append(newPersonName);
                     w.append("</div>\n");
                 }
+
+                cacheFlusher = new CyclingRoadStageFlusher(csepKey);
             }
             else
                 w.append("Scrape failed");

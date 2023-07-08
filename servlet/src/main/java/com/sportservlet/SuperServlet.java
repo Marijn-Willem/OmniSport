@@ -27,6 +27,8 @@ public abstract class SuperServlet extends HttpServlet {
     protected abstract void processBody(Statement stat, HttpServletRequest req, HttpServletResponse resp)
             throws IOException, SQLException;
 
+    protected void init(Statement stat, HttpServletRequest req) throws SQLException { }
+
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         setCommonParameters(req);
@@ -77,6 +79,7 @@ public abstract class SuperServlet extends HttpServlet {
 
         @Override
         public void doWork(Statement stat) throws Exception {
+            init(stat, req);
             processBody(stat, req, resp);
         }
     }

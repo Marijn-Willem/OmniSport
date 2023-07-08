@@ -21,6 +21,10 @@ public abstract class ManageCompSeasonEventPart extends ManageEntity {
     private SportEventKey sportEventKey;
     private boolean hasFixedParts;
 
+    @Override
+    protected void initSpecific(Statement stat, HttpServletRequest req) {}
+
+    @Override
     protected void initAbstractProperties(HttpServletRequest req) {
         jsList.add("compseasoneventpart");
     }

@@ -24,6 +24,9 @@ import java.util.List;
 
 public class ManageTeamMatchAction extends ManageEntity {
     @Override
+    protected void initSpecific(Statement stat, HttpServletRequest req) {}
+
+    @Override
     public String getBasicReturnPath(Statement stat, HttpServletRequest req) {
         return "MatchTimeLine?" + compSeasonUrlParameters + "&mid=" + req.getParameter("mid");
     }

@@ -4,11 +4,15 @@ import com.sports.cache.data.DivisionStandingData;
 import com.sports.entity.key.CompSeasonKey;
 import com.sports.rest.RestClientUtil;
 
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.Produces;
+import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.MediaType;
+
+import java.io.IOException;
 
 @Path("xml/divisionstanding/{competitionId}/{seasonId}/{compSeasonPhaseId}/{compDivisionId}/{clientName}/{password}")
 public class DivisionStanding {
@@ -19,10 +23,11 @@ public class DivisionStanding {
                                       @PathParam("compSeasonPhaseId") int compSeasonPhaseId,
                                       @PathParam("compDivisionId") int compDivisionId,
                                       @PathParam("clientName") String clientName,
-                                      @PathParam("password") String password) {
+                                      @PathParam("password") String password,
+                                      @Context HttpServletResponse response) throws IOException {
         Integer clientId = RestClientUtil.getValidatedClientId(clientName, password);
 
-        return new XmlOutputCreator(clientId, new CompSeasonKey(competitionId, seasonId))
+        return new XmlOutputCreator(clientId, response, new CompSeasonKey(competitionId, seasonId))
                 .createOutput(
                         new DivisionStandingData(competitionId, seasonId, compSeasonPhaseId, compDivisionId, clientId)
                 );

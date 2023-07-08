@@ -33,6 +33,8 @@ public abstract class ManageEntity extends SuperHtmlServlet implements AbstractH
     protected abstract void processSpecific(Statement stat, HttpServletRequest req, HttpServletResponse res)
             throws IOException, SQLException;
 
+    protected abstract void initSpecific(Statement stat, HttpServletRequest req) throws SQLException;
+
     @Override
     protected String getReturnPath(Statement stat, HttpServletRequest req) throws SQLException {
         String returnPath = null;
@@ -55,6 +57,13 @@ public abstract class ManageEntity extends SuperHtmlServlet implements AbstractH
 
     protected String mode;
 
+    @Override
+    protected void init(Statement stat, HttpServletRequest req) throws SQLException {
+        mode = getMode(req);
+        initSpecific(stat, req);
+    }
+
+    @Override
     protected void initProperties(HttpServletRequest req) {
         jsList.add("general");
         jsList.add("entity");
@@ -91,7 +100,6 @@ public abstract class ManageEntity extends SuperHtmlServlet implements AbstractH
 
     protected void processHtmlBody(Statement stat, HttpServletRequest req, HttpServletResponse res)
             throws IOException, SQLException {
-        mode = getMode(req);
         preProcessSpecific(stat, req, res);
         processSpecific(stat, req, res);
 

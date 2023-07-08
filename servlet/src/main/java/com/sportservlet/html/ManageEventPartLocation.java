@@ -17,6 +17,9 @@ import java.util.Collections;
 
 public abstract class ManageEventPartLocation extends ManageEntity {
     @Override
+    protected void initSpecific(Statement stat, HttpServletRequest req) {}
+
+    @Override
     protected String getEntityIdName() {
         return "eplid";
     }
