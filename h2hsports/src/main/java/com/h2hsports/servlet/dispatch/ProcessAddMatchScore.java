@@ -17,6 +17,7 @@ import com.sports.logic.factory.H2HObjectFactory;
 import com.sports.logic.factory.H2HPartObjectFactory;
 import com.sports.logic.factory.H2HPartStatObjectFactory;
 import com.sportservlet.dispatch.SuperDispatchServlet;
+import com.sportservlet.flush.H2HMatchFlusher;
 import jakarta.servlet.http.HttpServletRequest;
 
 import java.sql.SQLException;
@@ -65,6 +66,8 @@ public class ProcessAddMatchScore extends SuperDispatchServlet {
                 req.getParameter("ncr_1") != null ||
                 req.getParameter("ncr_2") != null)
             new DbCalculation(stat).processFinishH2HMatch(factory, h2hMatchKey, h2hMatch);
+
+        cacheFlusher = new H2HMatchFlusher(h2hMatchKey);
     }
 
     private void processMatchScores(HttpServletRequest req) {
