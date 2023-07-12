@@ -285,7 +285,7 @@ public class Scraper {
             int tableCount = 0;
             StringBuilder currentTable = null;
 
-            while (br.ready() && tableCount < tableNr) {
+            while (tableCount < tableNr) {
                 String line = br.readLine();
                 Matcher matOpen = patTableOpen.matcher(line);
                 Matcher matClose = patTableClose.matcher(line);
