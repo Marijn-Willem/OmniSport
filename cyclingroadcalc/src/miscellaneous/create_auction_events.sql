@@ -84,8 +84,9 @@ SET externalsource = CONCAT('https://www.procyclingstats.com/race/', externalsou
 WHERE competitionid <= 15
 AND seasonid = @season_id
 
-INSERT INTO compseasoneventpart (competitionid, seasonid, compseasoneventid, compseasoneventpartid, sportid, sportdisciplineid, [order], created, modified)
-SELECT competitionid, seasonid, compseasoneventid, 1, sportid, 1, 1, GETDATE(), GETDATE()
-FROM compseasonevent
-WHERE competitionid <= 15
-AND seasonid = @season_id
+INSERT INTO compseasoneventpart (competitionid, seasonid, compseasoneventid, compseasoneventpartid, sportid, sporteventid, sporteventpartid, [order], created, modified)
+SELECT cse.competitionid, cse.seasonid, cse.compseasoneventid, sep.sporteventpartid, cse.sportid, cse.sporteventid, sep.sporteventpartid, sep.[order], GETDATE(), GETDATE()
+FROM compseasonevent cse
+JOIN sporteventpart sep ON cse.sportid = sep.sportid AND cse.sporteventid = sep.sporteventid
+WHERE cse.competitionid <= 15
+AND cse.seasonid = @season_id
