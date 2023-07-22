@@ -1,4 +1,0 @@
-SELECT name
-FROM person
-GROUP BY name
-HAVING COUNT(1) > 1;
