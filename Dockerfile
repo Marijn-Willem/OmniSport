@@ -1,11 +1,11 @@
-FROM gradle:8.0.2-jdk17 AS GRADLE_IMAGE
+FROM gradle:8.2.1-jdk17 AS GRADLE_IMAGE
 
 COPY / /tmp/
 
 WORKDIR /tmp/
 RUN gradle war
 
-FROM tomcat:10.1.7-jdk17-temurin
+FROM tomcat:10.1.11-jdk21-openjdk
 
 COPY --from=GRADLE_IMAGE /tmp/alcifosports/build/libs/alcifosports.war $CATALINA_HOME/webapps/alcifosports.war
 COPY --from=GRADLE_IMAGE /tmp/alias/build/libs/alias.war $CATALINA_HOME/webapps/alias.war
