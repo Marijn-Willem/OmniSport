@@ -10,7 +10,7 @@ import com.sports.logic.util.Util;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
-import java.net.URL;
+import java.net.URI;
 import java.net.URLConnection;
 import java.nio.charset.StandardCharsets;
 import java.sql.SQLException;
@@ -36,6 +36,7 @@ public class Scraper {
         add("der");
         add("des");
         add("dos");
+        add("du");
         add("la");
         add("le");
         add("van");
@@ -107,17 +108,8 @@ public class Scraper {
                     new EventPersonSport()));
         }};
 
-        Map<Integer, Integer> personIdPersonSportIdMap = new HashMap<>() {{
-            personSports.forEach(x -> put(x.getPersonId(), x.getId()));
-        }};
-
-        Map<EventPartPersonSportKey, EventPartPersonSport> eventPartPersonSportMap = new HashMap<>() {{
-            entityMap.forEach((k, v) -> {
-                int personSportId = personIdPersonSportIdMap.get(personNameMap.get(k).getId());
-                EventPartPersonSportKey eppsKey = new EventPartPersonSportKey(compSeasonEventPartKey, personSportId);
-                put(eppsKey, v);
-            });
-        }};
+        Map<EventPartPersonSportKey, EventPartPersonSport> eventPartPersonSportMap =
+                getEventPartPersonSportMap(personSports, entityMap, personNameMap);
 
         new CompSeasonPersonSportManager(stat).insertNonExistingPersonSports(compSeasonPersonSportKeys);
         new EventPersonSportManager(stat).insertNonExistingEventPersonSports(eventPersonSportMap);
@@ -129,6 +121,22 @@ public class Scraper {
         });
 
         isSucceeded = true;
+    }
+
+    private Map<EventPartPersonSportKey, EventPartPersonSport> getEventPartPersonSportMap(List<PersonSport> personSports,
+                                                                                          Map<String, EventPartPersonSport> entityMap,
+                                                                                          Map<String, Person> personNameMap) {
+        Map<Integer, Integer> personIdPersonSportIdMap = new HashMap<>() {{
+            personSports.forEach(x -> put(x.getPersonId(), x.getId()));
+        }};
+
+        return new HashMap<>() {{
+            entityMap.forEach((k, v) -> {
+                int personSportId = personIdPersonSportIdMap.get(personNameMap.get(k).getId());
+                EventPartPersonSportKey eppsKey = new EventPartPersonSportKey(compSeasonEventPartKey, personSportId);
+                put(eppsKey, v);
+            });
+        }};
     }
 
     private void processTableRows(String table, Map<String, EventPartPersonSport> entityMap,
@@ -279,7 +287,7 @@ public class Scraper {
 
         @Override
         public void doWork() throws Exception {
-            URLConnection conn = new URL(url).openConnection();
+            URLConnection conn = new URI(url).toURL().openConnection();
             BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream(), StandardCharsets.UTF_8));
 
             int tableCount = 0;
