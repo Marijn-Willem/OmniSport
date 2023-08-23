@@ -10,6 +10,7 @@ import com.sports.entity.CompSeasonEventPart;
 import com.sports.entity.key.CompSeasonEventKey;
 import com.sports.entity.key.CompSeasonKey;
 import com.sports.entity.manager.CompSeasonEventPartManager;
+import com.sports.entity.manager.CompetitionManager;
 import com.sports.entity.manager.EventPartLocationManager;
 
 import java.sql.SQLException;
@@ -29,6 +30,7 @@ public class CompSeasonEventPartFragment extends WritableFragment {
     private int order;
     private Integer stage;
     private LocalDateTime date;
+    private SportDisciplineFragment sportDisciplineFragment;
     private EventPartNameFragment eventPartNameFragment;
     private final List<EventPartLocationFragment> eventPartLocationFragments = new ArrayList<>();
 
@@ -64,6 +66,11 @@ public class CompSeasonEventPartFragment extends WritableFragment {
         stage = compSeasonEventPart.getStage();
         date = compSeasonEventPart.getDate();
 
+        int sportId = new CompetitionManager(stat).getCompetition(competitionId).getSportId();
+        sportDisciplineFragment = DataFragmentUtil.getFilledDataFragment(
+                new SportDisciplineFragment(sportId, compSeasonEventPart.getSportDisciplineId(), clientId),
+                getCacheDataKey(), stat);
+
         if (compSeasonEventPart.getEventPartNameId() != null)
             eventPartNameFragment = DataFragmentUtil.getFilledDataFragment(
                     new EventPartNameFragment(compSeasonEventPart.getEventPartNameId(), clientId),
@@ -84,6 +91,7 @@ public class CompSeasonEventPartFragment extends WritableFragment {
                 XmlUtil.getTag("order", order) +
                 XmlUtil.getTag("stage", stage) +
                 XmlUtil.getTag("date", date) +
+                XmlUtil.getFragmentAsTag("sportDiscipline", sportDisciplineFragment) +
                 XmlUtil.getNullableFragmentAsTag("eventPartName", eventPartNameFragment) +
                 XmlUtil.getEnclosedXmlList("eventPartLocationList", "eventPartLocation",
                         eventPartLocationFragments);
@@ -96,6 +104,7 @@ public class CompSeasonEventPartFragment extends WritableFragment {
                 JsonUtil.getEntry("order", order) + "," +
                 JsonUtil.getEntry("stage", stage) + "," +
                 JsonUtil.getEntry("date", date) + "," +
+                JsonUtil.getFragmentAsEntry("sportDiscipline", sportDisciplineFragment) + "," +
                 JsonUtil.getNullableFragmentAsEntry("eventPartName", eventPartNameFragment) + "," +
                 JsonUtil.getArray("eventPartLocationList", eventPartLocationFragments);
     }

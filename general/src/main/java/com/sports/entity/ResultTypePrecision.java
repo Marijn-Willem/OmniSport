@@ -3,7 +3,6 @@ package com.sports.entity;
 import com.sports.db.util.QueryUtil;
 
 public class ResultTypePrecision extends SuperKeyEntity implements NamedEntity {
-    public static final int resultTypePrecisionIdTimeSeconds = 1;
     public static final int resultTypePrecisionIdTimeCentiseconds = 2;
     public static final int resultTypePrecisionIdTimeMilliseconds = 3;
 
