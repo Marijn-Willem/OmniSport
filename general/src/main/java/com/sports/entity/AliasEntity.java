@@ -17,6 +17,7 @@ public class AliasEntity extends NamedIntEntity {
     public static final int aliasEntityIdEventPartName = 14;
     public static final int aliasEntityIdLocationRole = 15;
     public static final int aliasEntityIdEquipeInstance = 16;
+    public static final int aliasEntityIdResultType = 17;
 
     private int id;
     private String name;

@@ -78,6 +78,15 @@ const locationRoleListLoader = new ElementLoader('lrid', function () {
     return '/LocationRoleList';
 }, null);
 
+const eventPartNameListLoader = new ElementLoader('epnid', function () {
+    return '/EventPartNameList';
+}, null);
+
+const equipeListByNameLoader = new ElementLoader('tbl_eqn', function () {
+    const nm = document.getElementById('eqn').value;
+    return '/EquipeListByName?nm=' + nm;
+}, null);
+
 function loadSportList() {
     sportListLoaderAlias.loadElement();
 }
@@ -152,6 +161,14 @@ function loadLocationRoleList() {
     locationRoleListLoader.loadElement();
 }
 
+function loadEventPartNameList() {
+    eventPartNameListLoader.loadElement();
+}
+
+function loadEquipeNameList() {
+    equipeListByNameLoader.loadElement();
+}
+
 function removeNonAlcifoSports() {
     const options = document.getElementById('spid').options;
     const indicesToDelete = [];
@@ -197,6 +214,13 @@ function goToPrepareGeo() {
 
     if (!isEmptyOrNull(nm))
         goToUrl('PrepareGeoForEntityInstancePortal', 'aeid=' + aeid + '&nm=' + encodeURL(nm));
+}
+
+function goToPrepareEquipe() {
+    const nm = document.getElementById('eqn').value;
+
+    if (!isEmptyOrNull(nm))
+        goToUrl('PrepareEquipeForEntityInstancePortal', 'aeid=' + aeid + '&nm=' + encodeURL(nm));
 }
 
 function goToAddAlias() {
@@ -288,12 +312,24 @@ function getLocationRoleId() {
     return document.getElementById('lrid').value;
 }
 
+function getEventPartNameId() {
+    return document.getElementById('epnid').value;
+}
+
+function getResultTypeId() {
+    return document.getElementById('rtid').value;
+}
+
 function handleSelectPersonName(tblRow) {
     document.getElementById('inp_ps').value = tblRow.childNodes[0].innerHTML;
 }
 
 function handleClickGeoName(tblRow) {
     document.getElementById('gn').value = tblRow.childNodes[0].innerHTML;
+}
+
+function handleClickEquipeName(tblRow) {
+    document.getElementById('eqn').value = tblRow.childNodes[0].innerHTML;
 }
 
 function getProcessUrl() {

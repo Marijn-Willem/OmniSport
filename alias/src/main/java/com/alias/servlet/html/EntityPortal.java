@@ -18,11 +18,14 @@ public class EntityPortal extends SuperHtmlServlet {
         writeLink("Club", AliasEntity.aliasEntityIdClubInstance, w);
         writeLink("Competition", AliasEntity.aliasEntityIdCompetition, w);
         writeLink("Discipline part", AliasEntity.aliasEntityIdDisciplinePart, w);
+        writeLink("Equipe", AliasEntity.aliasEntityIdEquipeInstance, w);
+        writeLink("Event part name", AliasEntity.aliasEntityIdEventPartName, w);
         writeLink("Geo", AliasEntity.aliasEntityIdGeoInstance, w);
         writeLink("Location role", AliasEntity.aliasEntityIdLocationRole, w);
         writeLink("Noc", AliasEntity.aliasEntityIdNocInstance, w);
         writeLink("Person", AliasEntity.aliasEntityIdPersonInstance, w);
         writeLink("PhaseType", AliasEntity.aliasEntityIdPhaseType, w);
+        writeLink("ResultType", AliasEntity.aliasEntityIdResultType, w);
         writeLink("Sport", AliasEntity.aliasEntityIdSport, w);
         writeLink("Sport discipline", AliasEntity.aliasEntityIdSportDiscipline, w);
         writeLink("Sport event", AliasEntity.aliasEntityIdSportEvent, w);

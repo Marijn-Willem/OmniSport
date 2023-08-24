@@ -1,6 +1,6 @@
 body {background-color: palegreen; color: lightcoral}
 div, input, select, span, table, a {margin-left: 40%}
 span select, span input {margin-left: 0}
-ul {margin-left: 20%}
+ul {margin-left: 10%}
 li {display: inline; background-color: darkviolet}
 li.ci {font-weight: bold; background-color: darkred}

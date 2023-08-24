@@ -36,3 +36,9 @@ com.alias.servlet.html.PhaseTypePortal
 com.sportservlet.ajax.PhaseTypeList
 com.sportservlet.ajax.PersonSearchList
 com.sportservlet.ajax.TeamListBySportGender
+com.alias.servlet.html.EventPartNamePortal
+com.sportservlet.ajax.EventPartNameList
+com.alias.servlet.html.EquipePortal
+com.sportservlet.ajax.EquipeListByName
+com.alias.servlet.dispatch.PrepareEquipeForEntityInstancePortal
+com.alias.servlet.html.ResultTypePortal
