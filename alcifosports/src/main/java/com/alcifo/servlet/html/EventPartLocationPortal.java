@@ -1,5 +1,6 @@
 package com.alcifo.servlet.html;
 
+import com.sports.logic.util.Util;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
@@ -21,6 +22,7 @@ public class EventPartLocationPortal extends SuperHtmlServlet {
     @Override
     protected void processScriptTag(Statement stat, HttpServletRequest req, Writer w) throws IOException {
         writeCompSeasonEventPartVarsInScriptTag(req, w);
+        writeInitStateVarInScriptTag("eplid", req, w);
     }
 
     @Override

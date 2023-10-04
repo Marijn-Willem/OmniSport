@@ -1,6 +1,8 @@
 const eventPartLocationListLoader = new ElementLoader('eplid', function () {
     return '/EventPartLocationList?' + getCompSeasonEventPartParameters();
-}, null);
+}, function () {
+    setElementValueFromInitStateVar('eplid', eplid);
+});
 
 const geoNameListLoader = new ElementLoader('tblGn', function () {
     const gn = encodeURL(getValueFromElementByName('gn'));
