@@ -23,12 +23,13 @@ public class ManageFlushEntityInstanceNonCompSeason extends ManageFlush {
 
         w.append("<select id=\"en\" onchange=\"setVisibility();\">\n");
         writeOption("Club", w);
+        writeOption("Equipe", w);
         writeOption("Geo", w);
         writeOption("Noc", w);
         writeOption("Person", w);
         w.append("</select><br/>\n");
 
-        w.append("<input id=\"nm\" type=\"text\" onkeypress=\"clubNameListLoader.loadElement();\" /><br/>\n");
+        w.append("<input id=\"nm\" type=\"text\" onkeypress=\"loadTableName();\" /><br/>\n");
         w.append("<table id=\"tblNm\" border=\"1\"></table>\n");
         w.append("<input id=\"gn\" type=\"text\" onkeypress=\"handleChangeGn();\" /><br/>\n");
         w.append("<table id=\"tblGn\" border=\"1\"></table>\n");
@@ -42,6 +43,7 @@ public class ManageFlushEntityInstanceNonCompSeason extends ManageFlush {
         jsList.add("person");
         jsList.add("geo");
         jsList.add("club");
+        jsList.add("equipe");
         jsSpecificList.add("entityinstance");
     }
 

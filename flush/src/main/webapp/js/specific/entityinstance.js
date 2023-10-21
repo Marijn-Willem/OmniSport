@@ -48,11 +48,20 @@ function loadNocList() {
     nocLoader.loadElement();
 }
 
+function loadTableName() {
+    const en = document.getElementById('en').value;
+
+    if (en === 'Club')
+        clubNameListLoader.loadElement();
+    else if (en === 'Equipe')
+        loadEquipeList();
+}
+
 function setVisibility() {
     const en = document.getElementById('en').value;
 
-    document.getElementById('nm').style.display = en === 'Club' ? 'inline' : 'none';
-    document.getElementById('tblNm').style.display = en === 'Club' ? 'table' : 'none';
+    document.getElementById('nm').style.display = en === 'Club' || en === 'Equipe' ? 'inline' : 'none';
+    document.getElementById('tblNm').style.display = en === 'Club' || en === 'Equipe' ? 'table' : 'none';
 
     document.getElementById('gn').style.display = en === 'Geo' ? 'inline' : 'none';
     document.getElementById('tblGn').style.display = en === 'Geo' ? 'table' : 'none';
@@ -68,7 +77,7 @@ function getEntityAsString() {
 
     let elementId;
 
-    if (en === 'Club')
+    if (en === 'Club' || en === 'Equipe')
         elementId = 'nm';
     else if (en === 'Geo')
         elementId = 'gn';

@@ -20,3 +20,4 @@ com.sportservlet.ajax.NocList
 com.sportservlet.ajax.PersonSearchList
 com.sportservlet.ajax.SeasonList
 com.sportservlet.ajax.SportList
+com.sportservlet.ajax.EquipeListByName

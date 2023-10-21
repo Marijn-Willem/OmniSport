@@ -2,10 +2,9 @@ package com.flush.servlet.ajax;
 
 import com.sports.cache.key.CacheKey;
 import com.sports.cache.key.EntityInstanceNonCompSeasonKey;
-import com.sports.entity.Club;
-import com.sports.entity.Geo;
-import com.sports.entity.Person;
+import com.sports.entity.*;
 import com.sports.entity.manager.ClubManager;
+import com.sports.entity.manager.EquipeManager;
 import com.sports.entity.manager.PersonManager;
 import com.sports.logic.calculation.DbCalculation;
 import jakarta.servlet.http.HttpServletRequest;
@@ -24,21 +23,22 @@ public class FlushEntityInstanceNonCompSeason extends Flush {
     }
 
     Integer getEntityId(Statement stat, String en, String eas) throws SQLException {
-        if ("Club".equals(en)) {
-            Club club = new ClubManager(stat).getClubByName(eas);
-            return club != null ? club.getId() : null;
-        }
-        else if ("Geo".equals(en)) {
-            Geo geo = new DbCalculation(stat).getGeoFromOutputString(eas);
-            return geo != null ? geo.getId() : null;
-        }
-        else if ("Noc".equals(en))
-            return Integer.valueOf(eas);
-        else if ("Person".equals(en)) {
-            Person person = new PersonManager(stat).getPersonByName(eas);
-            return person != null ? person.getId() : null;
-        }
+        NamedIntEntity entity = null;
+        Integer entityId = null;
 
-        return null;
+        if ("Club".equals(en))
+            entity = new ClubManager(stat).getClubByName(eas);
+        else if ("Geo".equals(en))
+            entity = new DbCalculation(stat).getGeoFromOutputString(eas);
+        else if ("Noc".equals(en))
+            entityId = Integer.valueOf(eas);
+        else if ("Person".equals(en))
+            entity = new PersonManager(stat).getPersonByName(eas);
+        else if ("Equipe".equals(en))
+            entity = new EquipeManager(stat).getEquipeByName(eas);
+
+        entityId = entity != null ? Integer.valueOf(entity.getId()) : entityId;
+
+        return entityId;
     }
 }
