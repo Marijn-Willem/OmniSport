@@ -173,7 +173,7 @@ public class Util {
         StringBuilder strConcat = new StringBuilder();
 
         for (String str : strArr) {
-            if (strConcat.length() > 0)
+            if (!strConcat.isEmpty())
                 strConcat.append(delim);
 
             strConcat.append(str);
@@ -187,7 +187,7 @@ public class Util {
     }
 
     public static boolean isEmptyString(String str) {
-        return str == null || "".equals(str);
+        return str == null || str.isEmpty();
     }
 
     public static String getPrefixedStringOrEmptyString(String str, String prefix) {
@@ -215,16 +215,16 @@ public class Util {
     }
 
     public static String getCommaSepIntList(Collection<Integer> intList) {
-        String commaSepList = "";
+        StringBuilder commaSepList = new StringBuilder();
 
         for (Integer in : intList)
-            commaSepList += ("".equals(commaSepList) ? "" : ", ") + in;
+            commaSepList.append((commaSepList.isEmpty()) ? "" : ", ").append(in);
 
-        return commaSepList;
+        return commaSepList.toString();
     }
 
     public static String getListBetweenBrackets(List<String> strList) {
-        return strList.size() > 0 ? "(" + concatStrings(strList, ", ") + ")" : "";
+        return !strList.isEmpty() ? "(" + concatStrings(strList, ", ") + ")" : "";
     }
 
     public static String convertEmptyInteger(Integer i, String altStr) {
@@ -253,7 +253,7 @@ public class Util {
     }
 
     public static boolean isNumeric(String str) {
-        if (str.length() > 0) {
+        if (!str.isEmpty()) {
             for (int i = 0; i < str.length(); i++)
                 if (!Character.isDigit(str.charAt(i)))
                     return false;

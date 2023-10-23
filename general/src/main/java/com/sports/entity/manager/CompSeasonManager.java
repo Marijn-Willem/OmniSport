@@ -7,7 +7,6 @@ import com.sports.entity.key.CompSeasonKey;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -50,13 +49,6 @@ public class CompSeasonManager extends SuperKeySuperManager<CompSeasonKey, CompS
     @Override
     CompSeasonKey getSuperKeyFromResultSet(ResultSet rs) throws SQLException {
         return new CompSeasonKey(rs.getInt("competitionid"), rs.getInt("seasonid"));
-    }
-
-    public List<CompSeasonKey> getCompSeasons(List<Integer> compIds) throws SQLException {
-        return new ArrayList<>() {{
-            if (!compIds.isEmpty())
-                addAll(getSuperKeyList("competitionid IN (" + getCommaSepIntList(compIds) + ")"));
-        }};
     }
 
     public Map<CompSeasonKey, CompSeason> getCompSeasonMapForSeason(List<Integer> compIds, int seasonId) throws SQLException {
