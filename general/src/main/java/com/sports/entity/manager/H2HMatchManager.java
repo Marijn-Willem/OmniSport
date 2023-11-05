@@ -8,10 +8,7 @@ import com.sports.logic.util.Util;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public abstract class H2HMatchManager<S extends H2HMatchKey, T extends H2HMatch> extends SuperKeySuperManager<S, T>
         implements AbstractSuperKeyManager {
@@ -143,11 +140,35 @@ public abstract class H2HMatchManager<S extends H2HMatchKey, T extends H2HMatch>
         return getMatches(query);
     }
 
+    public List<T> getMatchesForParticipants(List<CompSeasonParticipantKey> keyList) throws SQLException {
+        return getEntityListFromSuperKeys(keyList);
+    }
+
+    public List<T> getMatchesWithBothParticipants(Collection<CompSeasonKey> compSeasonKeys, int participant1Id, int participant2Id)
+        throws SQLException {
+        return new ArrayList<>() {{
+            if (!compSeasonKeys.isEmpty()) {
+                StringBuilder sb = new StringBuilder();
+
+                compSeasonKeys.forEach(x -> {
+                    if (!sb.isEmpty())
+                        sb.append(" OR ");
+
+                    sb.append("(");
+                    sb.append(getMatchWithBothParticipantsClause(x, participant1Id, participant2Id));
+                    sb.append(")");
+                });
+
+                addAll(getEntityList(sb.toString()));
+            }
+        }};
+    }
+
     public Map<S, T> getMatchesForPhaseParticipants(
             List<? extends CompSeasonPhaseParticipantKey> keyList) throws SQLException {
         Map<S, T> matchMap = new HashMap<S, T>();
 
-        if (keyList.size() > 0)
+        if (!keyList.isEmpty())
             matchMap = getSuperKeyEntityMap("(" +
                     getCompSeasonPhaseParticQuery(keyList, getParticipant1IdColumn()) + " OR " +
                     getCompSeasonPhaseParticQuery(keyList, getParticipant2IdColumn()) + ")");
@@ -192,5 +213,14 @@ public abstract class H2HMatchManager<S extends H2HMatchKey, T extends H2HMatch>
         }
 
         return Util.concatStrings(subConditions, " OR ");
+    }
+
+    private String getMatchWithBothParticipantsClause(CompSeasonKey csKey, int participant1Id, int participant2Id) {
+        return "(" + csKey.getWhereClause() + " AND " +
+                getParticipant1IdColumn() + " = " + participant1Id + " AND " +
+                getParticipant2IdColumn() + " = " + participant2Id + ") OR (" +
+                csKey.getWhereClause() + " AND " +
+                getParticipant1IdColumn() + " = " + participant2Id + " AND " +
+                getParticipant2IdColumn() + " = " + participant1Id + ")";
     }
 }

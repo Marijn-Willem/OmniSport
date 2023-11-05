@@ -2,7 +2,6 @@ package com.sports.cache.data;
 
 import com.sports.cache.key.CacheDataKey;
 import com.sports.cache.key.MatchListParticipantKey;
-import com.sports.entity.CompSeasonPhase;
 import com.sports.entity.H2HMatch;
 import com.sports.entity.key.CompSeasonKey;
 import com.sports.entity.key.CompSeasonParticipantKey;
@@ -25,8 +24,10 @@ public class MatchListParticipantData extends MatchListData {
 	}
 
 	@Override
-	MatchListPhaseFragment getMatchListPhaseFragment(CompSeasonPhase compSeasonPhase, List<H2HMatch> h2HMatches) {
-		return new MatchListPhaseParticipantFragment(compSeasonPhase, h2HMatches, participantId, clientId);
+	MatchListPhaseFragment getMatchListPhaseFragment(int competitionId, int seasonId, int compSeasonPhaseId,
+													 List<H2HMatch> h2HMatches) {
+		return new MatchListPhaseParticipantFragment(competitionId, seasonId, compSeasonPhaseId, h2HMatches,
+				participantId, clientId);
 	}
 
 	public MatchListParticipantData(int competitionId, int seasonId, int participantId, Integer clientId) {

@@ -35,8 +35,9 @@ public class MatchListData extends OutputData {
 		return manager.getH2HMatchList(compSeasonKey, null);
 	}
 
-	MatchListPhaseFragment getMatchListPhaseFragment(CompSeasonPhase compSeasonPhase, List<H2HMatch> h2HMatches) {
-		return new MatchListPhaseFragment(compSeasonPhase, h2HMatches, clientId);
+	MatchListPhaseFragment getMatchListPhaseFragment(int competitionId, int seasonId, int compSeasonPhaseId,
+													 List<H2HMatch> h2HMatches) {
+		return new MatchListPhaseFragment(competitionId, seasonId, compSeasonPhaseId, h2HMatches, clientId);
 	}
 
 	public MatchListData(int competitionId, int seasonId, Integer clientId) {
@@ -74,7 +75,9 @@ public class MatchListData extends OutputData {
 		compSeasonPhases.forEach(x -> {
 			int compSeasonPhaseId = x.getCompSeasonPhaseKey().getCompSeasonPhaseId();
 			if (matchesByCompSeasonPhase.containsKey(compSeasonPhaseId))
-				matchListPhaseFragmentList.add(getMatchListPhaseFragment(x, matchesByCompSeasonPhase.get(compSeasonPhaseId)));
+				matchListPhaseFragmentList.add(getMatchListPhaseFragment(competitionId, seasonId,
+						x.getCompSeasonPhaseKey().getCompSeasonPhaseId(),
+						matchesByCompSeasonPhase.get(compSeasonPhaseId)));
 		});
 
 		DataFragmentUtil.fillDataFragments(matchListPhaseFragmentList, getCacheKey());

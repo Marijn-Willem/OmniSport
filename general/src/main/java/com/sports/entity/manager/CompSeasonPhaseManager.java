@@ -131,13 +131,6 @@ public class CompSeasonPhaseManager extends SuperKeySuperManager<CompSeasonPhase
         return compSeasonPhases.size() == 1 ? compSeasonPhases.get(0) : null;
     }
 
-    public List<CompSeasonPhaseKey> getKeysForPhaseTypeIds(List<Integer> phaseTypeIds) throws SQLException {
-        return new ArrayList<>() {{
-            if (!phaseTypeIds.isEmpty())
-                addAll(getSuperKeyList("phasetypeid IN (" + getCommaSepIntList(phaseTypeIds) + ")"));
-        }};
-    }
-
     public void insertCompSeasonPhases(List<CompSeasonPhase> compSeasonPhases) throws SQLException {
         Map<CompSeasonPhaseKey, CompSeasonPhase> insertMap = new HashMap<CompSeasonPhaseKey, CompSeasonPhase>();
 

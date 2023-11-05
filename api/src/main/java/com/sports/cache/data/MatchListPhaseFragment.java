@@ -5,8 +5,11 @@ import com.sports.cache.key.MatchListPhaseKey;
 import com.sports.cache.util.DataFragmentUtil;
 import com.sports.cache.util.JsonUtil;
 import com.sports.cache.util.XmlUtil;
+import com.sports.entity.key.CompSeasonKey;
+import com.sports.entity.key.CompSeasonPhaseKey;
 import com.sports.entity.CompSeasonPhase;
 import com.sports.entity.H2HMatch;
+import com.sports.entity.manager.CompSeasonPhaseManager;
 
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -17,16 +20,18 @@ public class MatchListPhaseFragment extends WritableFragment {
     final int competitionId;
     final int seasonId;
     final int compSeasonPhaseId;
+    final int clientId;
 
-    private final CompSeasonPhaseFragment compSeasonPhaseFragment;
+    private CompSeasonPhaseFragment compSeasonPhaseFragment;
     private final List<H2HMatchFragment> h2HMatchFragments = new ArrayList<>();
 
-    public MatchListPhaseFragment(CompSeasonPhase compSeasonPhase, List<H2HMatch> h2HMatches, int clientId) {
-        this.competitionId = compSeasonPhase.getCompSeasonPhaseKey().getCompetitionId();
-        this.seasonId = compSeasonPhase.getCompSeasonPhaseKey().getSeasonId();
-        this.compSeasonPhaseId = compSeasonPhase.getCompSeasonPhaseKey().getCompSeasonPhaseId();
+    public MatchListPhaseFragment(int competitionId, int seasonId, int compSeasonPhaseId,
+                                  List<H2HMatch> h2HMatches, int clientId) {
+        this.competitionId = competitionId;
+        this.seasonId = seasonId;
+        this.compSeasonPhaseId = compSeasonPhaseId;
+        this.clientId = clientId;
 
-        compSeasonPhaseFragment = new CompSeasonPhaseFragment(compSeasonPhase, clientId);
         h2HMatchFragments.addAll(h2HMatches.stream().map(x -> new H2HMatchFragment(x, clientId)).toList());
     }
 
@@ -37,7 +42,12 @@ public class MatchListPhaseFragment extends WritableFragment {
 
     @Override
     void fill(Statement stat) throws SQLException {
-        DataFragmentUtil.getFilledDataFragment(compSeasonPhaseFragment, getCacheDataKey(), stat);
+        CompSeasonPhaseKey compSeasonPhaseKey = new CompSeasonPhaseKey(new CompSeasonKey(competitionId, seasonId),
+                compSeasonPhaseId);
+        CompSeasonPhase compSeasonPhase = new CompSeasonPhaseManager(stat).getCompSeasonPhase(compSeasonPhaseKey);
+
+        compSeasonPhaseFragment = DataFragmentUtil.getFilledDataFragment(
+                new CompSeasonPhaseFragment(compSeasonPhase, clientId), getCacheDataKey(), stat);
         DataFragmentUtil.fillDataFragments(h2HMatchFragments, getCacheDataKey());
     }
 

@@ -7,6 +7,7 @@ import com.sports.entity.key.CompSeasonKey;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -65,6 +66,10 @@ public class CompSeasonManager extends SuperKeySuperManager<CompSeasonKey, CompS
 
     public List<Integer> getSeasonIdsForCompetition(int competitionId) throws SQLException {
         return getIdList(getGenericQuery("competitionid = " + competitionId), "seasonid");
+    }
+
+    public List<CompSeason> getCompSeasonList(Collection<CompSeasonKey> compSeasonKeys) throws SQLException {
+        return getEntityListFromSuperKeys(compSeasonKeys);
     }
 
     public CompSeason getCompSeason(CompSeasonKey csk) throws SQLException {

@@ -1,10 +1,7 @@
 package com.sports.calc.h2hsports;
 
 import com.sports.entity.*;
-import com.sports.entity.comparator.CompSeasonPhaseParentOrder;
-import com.sports.entity.comparator.CompSeasonPhaseRoundDescription;
-import com.sports.entity.comparator.H2HMatchPhaseRoundKnockoutOrder;
-import com.sports.entity.comparator.ParticipantRank;
+import com.sports.entity.comparator.*;
 import com.sports.entity.key.*;
 import com.sports.entity.manager.*;
 import com.sports.logic.factory.CompSeasonParticipantFactory;
@@ -289,53 +286,32 @@ public record DbCalculation(Statement stat) {
         return null;
     }
 
-    public List<Participant> getKnockoutPhaseRanking(CompSeasonPhaseKey cspk) throws SQLException {
-        List<Participant> ranking = new ArrayList<>();
+    public Map<CompSeasonKey, List<H2HMatch>> getEncountersBetweenParticipants(CompSeasonParticipantFactory factory,
+                                                                               int participant1Id, int participant2Id)
+            throws SQLException {
+        Set<CompSeasonKey> compSeasonKeys = factory.getCompSeasonParticipantManager(stat).getCompSeasonsForParticipants(
+                new ArrayList<>() {{ add(participant1Id); add(participant2Id); }}
+        );
 
-        CompSeasonPhaseManager cspm = new CompSeasonPhaseManager(stat);
-        CompSeasonPhase csp = cspm.getCompSeasonPhase(cspk);
+        List<H2HMatch> h2HMatches = factory.getH2HObjectFactory().getManager(stat)
+                .getMatchesWithBothParticipants(compSeasonKeys, participant1Id, participant2Id);
 
-        if (csp.isKnockoutParent() && csp.isFinished() && csp.getExpandFactor() == 1) {
-            List<CompSeasonPhase> childPhases = cspm.getPhaseListFromParent(cspk);
-            List<CompSeasonPhaseKey> phaseKeys = childPhases.stream().map(CompSeasonPhase::getCompSeasonPhaseKey)
-                    .collect(Collectors.toList());
+        Map<CompSeasonKey, List<H2HMatch>> encounterMap = new HashMap<>() {{
+            h2HMatches.forEach(x -> {
+                CompSeasonKey csKey = x.getCompSeasonPhaseKey().getSuperKey();
 
-            CompSeasonParticipantFactory factory = new com.sports.logic.calculation.DbCalculation(stat)
-                    .getCompSeasonParticipantFactory(cspk.getCompetitionId());
-            H2HMatchManager mm = factory.getH2HObjectFactory().getManager(stat);
-            List<H2HMatch> matches = mm.getH2HMatchesFromCompSeasonPhases(phaseKeys);
-            matches.sort(new H2HMatchPhaseRoundKnockoutOrder());
+                if (!containsKey(csKey))
+                    put(csKey, new ArrayList<>());
 
-            List<Integer> participantIds = new ArrayList<>();
-            Map<Integer, List<H2HMatch>> participantMatchMap = new HashMap<>();
+                get(csKey).add(x);
+            });
+        }};
 
-            for (int i = matches.size() - 1; i >= 0; i--) {
-                H2HMatch match = matches.get(i);
-                int p1Id = match.getParticipant1Id();
-                int p2Id = match.getParticipant2Id();
+        Comparator<H2HMatch> comparator = new MatchDate();
 
-                participantIds.add(p1Id);
-                participantIds.add(p2Id);
+        encounterMap.values().forEach(x -> x.sort(comparator));
 
-                if (!participantMatchMap.containsKey(p1Id))
-                    participantMatchMap.put(p1Id, new ArrayList<>());
-
-                if (!participantMatchMap.containsKey(p2Id))
-                    participantMatchMap.put(p2Id, new ArrayList<>());
-
-                participantMatchMap.get(p1Id).add(match);
-                participantMatchMap.get(p2Id).add(match);
-            }
-
-            ParticipantManager pm = factory.getParticipantManager(stat);
-            Map<Integer, Participant> participantMap = pm.getParticipantMap(participantIds);
-
-            processKnockoutPhaseRanks(matches, participantMatchMap, participantMap);
-            ranking.addAll(participantMap.values());
-            ranking.sort(new ParticipantRank());
-        }
-
-        return ranking;
+        return encounterMap;
     }
 
     private boolean hasKnockoutParent(CompSeasonPhaseKey cspk) throws SQLException {
@@ -403,7 +379,7 @@ public record DbCalculation(Statement stat) {
             throws SQLException {
         List<T> h2HMatches = mm.getNonFinishedH2HMatches(cspk);
 
-        if (h2HMatches.size() == 0) {
+        if (h2HMatches.isEmpty()) {
             CompSeasonPhaseManager cspm = new CompSeasonPhaseManager(stat);
             CompSeasonPhase csp = cspm.getCompSeasonPhase(cspk);
             CompSeasonPhase parentPhase = cspm.getCompSeasonPhase(new CompSeasonPhaseKey(cspk.getSuperKey(), csp.getParentPhaseId()));
@@ -417,7 +393,7 @@ public record DbCalculation(Statement stat) {
         CompSeasonPhaseKey cspk = parentPhase.getCompSeasonPhaseKey();
         List<CompSeasonPhase> childPhases = cspm.getNonFinishedPhasesFromParent(cspk);
 
-        if (childPhases.size() == 0)
+        if (childPhases.isEmpty())
             finishCompSeasonPhase(cspm, parentPhase);
     }
 
@@ -427,7 +403,7 @@ public record DbCalculation(Statement stat) {
     }
 
     private void updateElos(CompSeasonParticipantFactory factory, Collection<? extends H2HMatch> h2HMatches) throws SQLException {
-        if (h2HMatches.size() > 0) {
+        if (!h2HMatches.isEmpty()) {
             ParticipantManager pm = factory.getParticipantManager(stat);
 
             List<Integer> particIds = new ArrayList<Integer>();
@@ -521,57 +497,12 @@ public record DbCalculation(Statement stat) {
             throws SQLException {
         List<CompSeasonPhase> compSeasonPhases = cspm.getPhaseListFromParent(parentKey);
 
-        if (compSeasonPhases.size() > 0) {
+        if (!compSeasonPhases.isEmpty()) {
             setPhaseDescriptionsFromTypes(compSeasonPhases);
             compSeasonPhases.sort(new CompSeasonPhaseRoundDescription());
             return compSeasonPhases.get(0);
         }
 
         return null;
-    }
-
-    private void processKnockoutPhaseRanks(List<H2HMatch> matches,
-                                           Map<Integer, List<H2HMatch>> participantMatchMap,
-                                           Map<Integer, Participant> participantMap) {
-        H2HMatch lastMatch = matches.get(matches.size() - 1);
-        int rank1Id = lastMatch.getWinnerId();
-        int rank2Id = lastMatch.getParticipant1Id() == rank1Id ? lastMatch.getParticipant2Id() : lastMatch.getParticipant1Id();
-
-        participantMap.get(rank1Id).setRank(1);
-        participantMap.get(rank2Id).setRank(2);
-
-        Queue<Integer> participantQueue = new LinkedList<>();
-        participantQueue.add(rank1Id);
-        participantQueue.add(rank2Id);
-
-        while (!participantQueue.isEmpty()) {
-            int participantId = participantQueue.poll();
-            processParticipantForPhaseRanks(participantId, participantQueue, participantMatchMap, participantMap);
-        }
-    }
-
-    private void processParticipantForPhaseRanks(int participantId,
-                                                 Queue<Integer> participantQueue,
-                                                 Map<Integer, List<H2HMatch>> participantMatchMap,
-                                                 Map<Integer, Participant> participantMap) {
-        int rankWinner = participantMap.get(participantId).getRank();
-        int rank = rankWinner;
-        List<H2HMatch> matches = participantMatchMap.get(participantId);
-
-        for (int i = 1; i < matches.size(); i++) {
-            H2HMatch match = matches.get(i);
-            int opponentId = match.getParticipant1Id() == participantId ? match.getParticipant2Id() : match.getParticipant1Id();
-            rank = getNextRank(rankWinner, rank);
-            participantMap.get(opponentId).setRank(rank);
-            participantQueue.add(opponentId);
-        }
-    }
-
-    private int getNextRank(int rankWinner, int rank) {
-        int firstPower2 = 2;
-        while (firstPower2 < rank)
-            firstPower2 *= 2;
-
-        return rankWinner + firstPower2;
     }
 }

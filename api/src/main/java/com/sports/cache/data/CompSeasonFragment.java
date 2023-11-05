@@ -1,9 +1,13 @@
 package com.sports.cache.data;
 
 import com.sports.cache.key.CacheKey;
+import com.sports.cache.util.JsonUtil;
+import com.sports.cache.util.XmlUtil;
 import com.sports.entity.CompSeason;
 import com.sports.entity.key.CompSeasonKey;
 import com.sports.entity.manager.CompSeasonManager;
+import com.sports.entity.manager.CompetitionManager;
+import com.sports.entity.manager.SeasonManager;
 
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -14,6 +18,8 @@ public class CompSeasonFragment extends WritableFragment {
     private final int seasonId;
 
     private LocalDateTime startDate;
+    private String competitionName;
+    private String seasonName;
 
     public CompSeasonFragment(CompSeasonKey compSeasonKey) {
         this.competitionId = compSeasonKey.getCompetitionId();
@@ -40,16 +46,23 @@ public class CompSeasonFragment extends WritableFragment {
     void fill(Statement stat) throws SQLException {
         CompSeason compSeason = new CompSeasonManager(stat).getCompSeason(getCompSeasonKey());
         startDate = compSeason.getStartDate();
+
+        competitionName = new CompetitionManager(stat).getCompetition(competitionId).getName();
+        seasonName = new SeasonManager(stat).getSeason(seasonId).getName();
     }
 
     @Override
     public String toXML() {
-        return null;
+        return XmlUtil.getTag("competitionName", competitionName) +
+                XmlUtil.getTag("seasonName", seasonName) +
+                XmlUtil.getTag("startDate", startDate);
     }
 
     @Override
     public String toJson() {
-        return null;
+        return JsonUtil.getEntry("competitionName", competitionName) + "," +
+                JsonUtil.getEntry("seasonName", seasonName) + "," +
+                JsonUtil.getEntry("startDate", startDate);
     }
 
     public int getCompetitionId() {
