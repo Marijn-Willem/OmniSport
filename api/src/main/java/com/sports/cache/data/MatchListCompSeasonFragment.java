@@ -56,4 +56,8 @@ public class MatchListCompSeasonFragment extends WritableFragment {
         return compSeasonFragment.toJson() + "," +
                 JsonUtil.getArray("compSeasonPhaseList", matchListPhaseFragmentList);
     }
+
+    public CompSeasonKey getCompSeasonKey() {
+        return new CompSeasonKey(competitionId, seasonId);
+    }
 }

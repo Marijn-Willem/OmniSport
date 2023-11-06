@@ -1,8 +1,6 @@
 package com.sports.cache.data;
 
-import com.sports.cache.util.DataFragmentUtil;
-import com.sports.cache.util.JsonUtil;
-import com.sports.cache.util.XmlUtil;
+import com.sports.cache.util.*;
 import com.sports.calc.h2hsports.DbCalculation;
 import com.sports.entity.CompSeason;
 import com.sports.entity.CompSeasonPhase;
@@ -29,8 +27,8 @@ public abstract class EncounterListData extends OutputData {
     private final List<MatchListCompSeasonFragment> matchListCompSeasonFragmentList = new ArrayList<>();
 
     public EncounterListData(int participant1Id, int participant2Id, Integer clientId) {
-        this.participant1Id = participant1Id;
-        this.participant2Id = participant2Id;
+        this.participant1Id = Math.min(participant1Id, participant2Id);
+        this.participant2Id = Math.max(participant1Id, participant2Id);
         this.clientId = clientId;
     }
 
@@ -44,14 +42,19 @@ public abstract class EncounterListData extends OutputData {
 
         Map<CompSeasonKey, List<CompSeasonPhase>> compSeasonPhaseMap = getCompSeasonPhaseMap(encounterMap, stat);
 
+        MatchListCompSeasonFilter filter = new MatchListCompSeasonFilter(clientId, getCacheKey(), stat);
+
         compSeasons.forEach((x) -> {
             CompSeasonKey csKey = new CompSeasonKey(x.getCompetitionId(), x.getSeasonId());
             List<H2HMatch> h2HMatches = encounterMap.get(csKey);
             List<CompSeasonPhase> compSeasonPhases = compSeasonPhaseMap.get(csKey);
             LinkedHashMap<Integer, List<H2HMatch>> cspMatchMap = getCompSeasonPhaseMatchMap(h2HMatches, compSeasonPhases);
 
-            matchListCompSeasonFragmentList.add(new MatchListCompSeasonFragment(x.getCompetitionId(), x.getSeasonId(),
-                    clientId, cspMatchMap));
+            MatchListCompSeasonFragment fragment = new MatchListCompSeasonFragment(x.getCompetitionId(), x.getSeasonId(),
+                    clientId, cspMatchMap);
+
+            if (filter.isElementAllowed(fragment))
+                matchListCompSeasonFragmentList.add(fragment);
         });
 
         DataFragmentUtil.fillDataFragments(matchListCompSeasonFragmentList, getCacheKey());

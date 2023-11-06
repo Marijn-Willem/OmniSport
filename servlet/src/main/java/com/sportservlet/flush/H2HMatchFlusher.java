@@ -1,9 +1,6 @@
 package com.sportservlet.flush;
 
-import com.sports.cache.key.CacheKey;
-import com.sports.cache.key.CompSeasonPhaseParticipantListKey;
-import com.sports.cache.key.MatchListPhaseParticipantKey;
-import com.sports.cache.key.StandingParticipantKey;
+import com.sports.cache.key.*;
 import com.sports.entity.H2HMatch;
 import com.sports.entity.key.ClientCompSeasonKey;
 import com.sports.entity.key.CompSeasonParticipantKey;
@@ -11,6 +8,7 @@ import com.sports.entity.key.H2HMatchKey;
 import com.sports.logic.calculation.DbCalculation;
 import com.sports.logic.factory.CompSeasonParticipantFactory;
 import com.sports.logic.factory.H2HObjectFactory;
+import com.sports.logic.factory.ParticipantType;
 
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -51,6 +49,11 @@ public class H2HMatchFlusher extends CacheFlusher {
                         new PhaseParticipantListReplicator(matchNextRound.getCompSeasonPhaseId()),
                         h2HMatchKey.getSuperKey(), stat));
             }
+
+            if (h2HMatch.getParticipant1Id() != null && h2HMatch.getParticipant2Id() != null)
+                addAll(replicateForClientsWithRights(new EncounterListReplicator(
+                        h2HMatch.getParticipant1Id(), h2HMatch.getParticipant2Id(), factory.getParticipantType()),
+                        h2HMatchKey.getSuperKey(), stat));
         }};
     }
 
@@ -98,6 +101,35 @@ public class H2HMatchFlusher extends CacheFlusher {
                     compSeasonPhaseId,
                     clientCompSeasonKey.getClientId()
             );
+        }
+    }
+
+    private static class EncounterListReplicator extends ClientReplicator {
+        private final int participantIdMin;
+        private final int participantIdMax;
+        private final ParticipantType participantType;
+
+        public EncounterListReplicator(int participant1Id, int participant2Id, ParticipantType participantType) {
+            this.participantIdMin = Math.min(participant1Id, participant2Id);
+            this.participantIdMax = Math.max(participant1Id, participant2Id);
+            this.participantType = participantType;
+        }
+
+        @Override
+        CacheKey getCacheKeyForClientCompSeason(ClientCompSeasonKey clientCompSeasonKey) {
+            int clientId = clientCompSeasonKey.getClientId();
+
+            switch (participantType) {
+                case PERSON_SPORT -> {
+                    return new EncounterListPersonSportKey(participantIdMin, participantIdMax, clientId);
+                }
+                case DOUBLE -> {
+                    return new EncounterListDoubleKey(participantIdMin, participantIdMax, clientId);
+                }
+                default -> {
+                    return new EncounterListTeamKey(participantIdMin, participantIdMax, clientId);
+                }
+            }
         }
     }
 }
