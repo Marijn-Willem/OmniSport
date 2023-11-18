@@ -27,6 +27,7 @@ public abstract class MatchOverview extends SuperHtmlServlet implements Abstract
     @Override
     protected void processScriptTag(Statement stat, HttpServletRequest req, Writer w) throws IOException {
         writeCompSeasonVarsInScriptTag(w);
+        writeInitStateVarInScriptTag("pid", req, w);
     }
 
     @Override
@@ -52,7 +53,7 @@ public abstract class MatchOverview extends SuperHtmlServlet implements Abstract
 
         Writer w = res.getWriter();
 
-        w.append("<div>\n<select id=\"pid\" onchange=\"loadMatchesCompSeasonPhase();\">\n");
+        w.append("<div>\n<select id=\"selPid\" onchange=\"loadMatchesCompSeasonPhase();\">\n");
 
         String line;
 

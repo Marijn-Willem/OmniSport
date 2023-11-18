@@ -29,7 +29,7 @@ public class MatchInfo extends SuperHtmlServlet {
 
     @Override
     public String getReturnPath(Statement stat, HttpServletRequest req) {
-        return "MatchOverview?cid=" + competitionId + "&sid=" + seasonId;
+        return "MatchOverview?" + compSeasonUrlParameters + "&pid=" + req.getParameter("pid");
     }
 
     protected void processHtmlBody(Statement stat, HttpServletRequest req, HttpServletResponse res)

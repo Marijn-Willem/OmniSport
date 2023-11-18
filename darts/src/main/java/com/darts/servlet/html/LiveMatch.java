@@ -17,7 +17,10 @@ public class LiveMatch extends SuperHtmlServlet {
     @Override
     protected String getReturnPath(Statement stat, HttpServletRequest req) {
         PersonMatchKey personMatchKey = (PersonMatchKey)req.getSession().getAttribute("pmk");
-        return "MatchOverview?cid=" + personMatchKey.getCompetitionId() + "&sid=" + personMatchKey.getSeasonId();
+        PersonMatch personMatch = (PersonMatch)req.getSession().getAttribute("pm");
+
+        return "MatchOverview?cid=" + personMatchKey.getCompetitionId() + "&sid=" + personMatchKey.getSeasonId() +
+                "&pid=" + personMatch.getCompSeasonPhaseId();
     }
 
     protected void processHtmlBody(Statement stat, HttpServletRequest req, HttpServletResponse res) throws IOException {

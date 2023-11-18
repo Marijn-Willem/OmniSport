@@ -7,7 +7,7 @@ import java.sql.Statement;
 
 public class ManageDartsMatch extends ManageH2HMatch {
     public String getBasicReturnPath(Statement stat, HttpServletRequest req) {
-        return "MatchOverview?" + compSeasonUrlParameters;
+        return "MatchOverview?" + compSeasonUrlParameters + "&pid=" + req.getParameter("pid");
     }
 
     public void initSpecificProperties(HttpServletRequest req) {

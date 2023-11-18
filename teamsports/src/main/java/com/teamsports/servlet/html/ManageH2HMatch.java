@@ -19,10 +19,9 @@ public class ManageH2HMatch extends com.sportservlet.html.ManageH2HMatch {
 
     @Override
     public String getBasicReturnPath(Statement stat, HttpServletRequest req) {
-        if ("tl".equals(req.getParameter("from")))
-            return "MatchTimeLine?" + compSeasonUrlParameters + "&mid=" + req.getParameter("mid");
-        else
-            return "MatchOverview?" + compSeasonUrlParameters;
+        String url = "tl".equals(req.getParameter("from")) ? "MatchTimeLine" : "MatchOverview";
+
+        return url + "?" + compSeasonUrlParameters + "&pid=" + req.getParameter("pid");
     }
 
     @Override

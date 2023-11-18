@@ -26,12 +26,12 @@ public class MatchTimeLine extends SuperHtmlServlet {
 
     @Override
     protected String getReturnPath(Statement stat, HttpServletRequest req) throws SQLException {
-        return "MatchOverview?" + compSeasonUrlParameters;
+        return "MatchOverview?" + compSeasonUrlParameters + "&pid=" + req.getParameter("pid");
     }
 
     protected void processHtmlBody(Statement stat, HttpServletRequest req, HttpServletResponse res)
             throws IOException, SQLException {
-        int matchId = Integer.parseInt(req.getParameter("mid"));
+        int matchId = getIntValuedParameterValue(req, "mid");
 
         TeamMatchKey mk = new TeamMatchKey(compSeasonKey, matchId);
 
@@ -72,10 +72,12 @@ public class MatchTimeLine extends SuperHtmlServlet {
             w.append(rule);
         }
 
+        int pid = getIntValuedParameterValue(req, "pid");
+
         w.append("</table>\n");
-        writeLink("ManageH2HMatch?" + compSeasonUrlParameters + "&mid=" + matchId + "&from=tl",
+        writeLink("ManageH2HMatch?" + compSeasonUrlParameters + "&pid=" + pid + "&mid=" + matchId + "&from=tl",
                 "Manage Match", w);
-        writeLink("ManageTeamMatchAction?" + compSeasonUrlParameters + "&mid=" + matchId + "&md=i",
+        writeLink("ManageTeamMatchAction?" + compSeasonUrlParameters+ "&pid=" + pid + "&mid=" + matchId + "&md=i",
                 "Insert match action", w);
     }
 
