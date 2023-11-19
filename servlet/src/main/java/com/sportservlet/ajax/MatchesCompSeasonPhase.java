@@ -62,13 +62,13 @@ public abstract class MatchesCompSeasonPhase extends SuperResponseServlet {
                     getTd(match.getParticipant2Id(), particMap, match.isParticipant2Win()) + "<td>";
 
             if (showMatchLiveLink(match))
-                line += getAnchor(match.getSpecificId(), getMatchLiveLink(), "Live Match", null);
+                line += getAnchor(match, getMatchLiveLink(), "Live Match", null);
             else
                 line += getScoreString(stat, match);
 
             line += "</td><td>" + Util.convertEmptyDateTimeToDateString(match.getDate()) + "</td><td>";
-            line += getAnchor(match.getSpecificId(), getMatchInfoLink(), "Match Info", null) + "</td><td>";
-            line += getAnchor(match.getSpecificId(), getManageMatchLink(), "Manage Match", "md=u");
+            line += getAnchor(match, getMatchInfoLink(), "Match Info", null) + "</td><td>";
+            line += getAnchor(match, getManageMatchLink(), "Manage Match", "md=u");
             line += "</td></tr>\n";
 
             w.append(line);
@@ -79,9 +79,10 @@ public abstract class MatchesCompSeasonPhase extends SuperResponseServlet {
         return !match.isFinished();
     }
 
-    private String getAnchor(int matchId, String link, String value, String extraParams) {
+    private String getAnchor(H2HMatch match, String link, String value, String extraParams) {
         return "<a href=\"" + path + "/" + link + "?" + compSeasonUrlParameters +
-                "&mid=" + matchId + Util.getPrefixedStringOrEmptyString(extraParams, "&") + "\">" +
+                "&pid=" + match.getCompSeasonPhaseId() + "&mid=" + match.getSpecificId() +
+                Util.getPrefixedStringOrEmptyString(extraParams, "&") +"\">" +
                 value + "</a>";
     }
 

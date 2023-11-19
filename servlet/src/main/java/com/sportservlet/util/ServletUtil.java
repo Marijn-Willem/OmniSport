@@ -40,4 +40,12 @@ public class ServletUtil {
         w.append(Util.concatStrings(noCountResultMap.values(), "', '"));
         w.append("'];\n");
     }
+
+    public static void writeStringConst(String name, String value, Writer w) throws IOException {
+        w.append("const ");
+        w.append(name);
+        w.append(" = '");
+        w.append(value);
+        w.append("';\n");
+    }
 }

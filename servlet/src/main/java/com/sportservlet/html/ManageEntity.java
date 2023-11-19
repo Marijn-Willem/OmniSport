@@ -143,12 +143,6 @@ public abstract class ManageEntity extends SuperHtmlServlet implements AbstractH
 
     protected void writeSelectWithLabel(String label, String name, LinkedHashMap<Integer, String> options,
                               Integer selOption, boolean isDisabled, String onChange, Writer w) throws IOException {
-        writeSelectWithLabel(label, name, options, new HashMap<>(), selOption, isDisabled, onChange, w);
-    }
-
-    protected void writeSelectWithLabel(String label, String name, LinkedHashMap<Integer, String> options,
-                                        Map<Integer, String> attributes, Integer selOption, boolean isDisabled,
-                                        String onChange, Writer w) throws IOException {
         w.append("<span>");
         w.append(label);
         w.append(": <select name=\"");
@@ -171,10 +165,6 @@ public abstract class ManageEntity extends SuperHtmlServlet implements AbstractH
             w.append("<option value=\"");
             w.append(intValKey);
             w.append("\"");
-            if (attributes.containsKey(me.getKey())) {
-                w.append(" ");
-                w.append(attributes.get(me.getKey()));
-            }
             if (intValSelOpt.equals(intValKey))
                 w.append(" selected");
             w.append(">");

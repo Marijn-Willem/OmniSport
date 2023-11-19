@@ -28,7 +28,8 @@ public class ManageTeamMatchAction extends ManageEntity {
 
     @Override
     public String getBasicReturnPath(Statement stat, HttpServletRequest req) {
-        return "MatchTimeLine?" + compSeasonUrlParameters + "&mid=" + req.getParameter("mid");
+        return "MatchTimeLine?" + compSeasonUrlParameters + "&pid=" + req.getParameter("pid") +
+                "&mid=" + req.getParameter("mid");
     }
 
     @Override

@@ -4,6 +4,7 @@ import com.sports.calc.h2hsports.DbCalculation;
 import com.sports.entity.CompSeasonPhase;
 import com.sports.entity.comparator.CompSeasonPhaseRoundDescription;
 import com.sports.entity.key.CompSeasonKey;
+import com.sportservlet.util.ServletUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
@@ -27,6 +28,12 @@ public abstract class MatchOverview extends SuperHtmlServlet implements Abstract
     @Override
     protected void processScriptTag(Statement stat, HttpServletRequest req, Writer w) throws IOException {
         writeCompSeasonVarsInScriptTag(w);
+        writeInitStateVarInScriptTag("pid", req, w);
+        if (getAddMatchLink() != null)
+            ServletUtil.writeStringConst("aml", getAddMatchLink(), w);
+
+        if (getParametersAddMatchLink() != null)
+            ServletUtil.writeStringConst("amlP", getParametersAddMatchLink(), w);
     }
 
     @Override
@@ -52,7 +59,7 @@ public abstract class MatchOverview extends SuperHtmlServlet implements Abstract
 
         Writer w = res.getWriter();
 
-        w.append("<div>\n<select id=\"pid\" onchange=\"loadMatchesCompSeasonPhase();\">\n");
+        w.append("<div>\n<select id=\"selPid\" onchange=\"loadMatchesCompSeasonPhase();\">\n");
 
         String line;
 
@@ -73,11 +80,7 @@ public abstract class MatchOverview extends SuperHtmlServlet implements Abstract
         w.append("<table id=\"tbl_matchmatrix\" class=\"overview\" border=\"1\"></table>\n");
 
         if (getAddMatchLink() != null) {
-            String parameters = getParametersAddMatchLink();
-
-            String rule = "<div>\n<a href=\"" + path + "/" + getAddMatchLink() + "?" + compSeasonUrlParameters +
-                    (parameters != null ? "&" + parameters : "") + "\">Add match</a>\n</div>\n";
-
+            String rule = "<div>\n<input type=\"button\" onclick=\"goToAddMatch();\" value=\"Add match\" />\n</div>\n";
             w.append(rule);
         }
     }
