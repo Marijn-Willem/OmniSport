@@ -220,40 +220,6 @@ public record DbCalculation(Statement stat) {
                 }
     }
 
-    public Map<Integer, List<CompSeasonPhase>> getParticipantCompSeasonPhaseMap(List<CompSeasonPhase> compSeasonPhases)
-            throws SQLException {
-        Map<Integer, List<CompSeasonPhase>> participantCompSeasonPhaseMap = new HashMap<>();
-
-        if (compSeasonPhases.size() > 0) {
-            Map<CompSeasonPhaseKey, CompSeasonPhase> compSeasonPhaseMap = new HashMap<>();
-
-            for (CompSeasonPhase compSeasonPhase : compSeasonPhases)
-                compSeasonPhaseMap.put(compSeasonPhase.getCompSeasonPhaseKey(), compSeasonPhase);
-
-            List<CompSeasonPhaseKey> compSeasonPhaseKeys = new ArrayList<>(compSeasonPhaseMap.keySet());
-
-            Competition competition = new CompetitionManager(stat).getCompetition(compSeasonPhaseKeys.get(0).getCompetitionId());
-            Sport sport = new SportManager(stat).getSport(competition.getSportId());
-            CompSeasonParticipantFactory factory = com.sports.logic.calculation.Calculation
-                    .getCompSeasonParticipantFactory(competition, sport);
-
-            CompSeasonPhaseParticipantManager csppm = factory.getPhaseParticManager(stat);
-            List<? extends CompSeasonPhaseParticipantKey> phaseParticipantKeys = csppm.getPhaseParticipantsInPhases(compSeasonPhaseKeys);
-
-            for (CompSeasonPhaseParticipantKey phaseParticipantKey : phaseParticipantKeys) {
-                CompSeasonPhaseKey compSeasonPhaseKey = phaseParticipantKey.getSuperKey();
-                int participantId = phaseParticipantKey.getSpecificId();
-
-                if (!participantCompSeasonPhaseMap.containsKey(participantId))
-                    participantCompSeasonPhaseMap.put(participantId, new ArrayList<>());
-
-                participantCompSeasonPhaseMap.get(participantId).add(compSeasonPhaseMap.get(compSeasonPhaseKey));
-            }
-        }
-
-        return participantCompSeasonPhaseMap;
-    }
-
     public H2HMatch getH2HMatchNextRound(H2HObjectFactory<? extends H2HMatchKey, ? extends H2HMatch> factory,
                                          CompSeasonKey csk, H2HMatch h2hMatch) throws SQLException {
         if (h2hMatch.getKnockoutOrder() != null) {

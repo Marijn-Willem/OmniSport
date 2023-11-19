@@ -28,22 +28,6 @@ public record DbCalculation(Statement stat) {
         return new DivisionStandingProcessor(stat, cspk, sportId, csd).getStanding();
     }
 
-    public List<LocalDateTime> getMatchDatesCompSeason(CompSeasonKey compSeasonKey) throws SQLException {
-        List<TeamMatch> teamMatchList = new TeamMatchManager(stat).getMatchesWithDateInCompSeason(compSeasonKey);
-        teamMatchList.sort(new MatchDate());
-
-        List<LocalDateTime> dateList = new ArrayList<>();
-        LocalDateTime curCal = null;
-
-        for (TeamMatch teamMatch : teamMatchList)
-            if (curCal == null || !Util.compareDateTimesIgnoreTime(curCal, teamMatch.getDate())) {
-                dateList.add(Util.cloneDateTimeIgnoreTime(teamMatch.getDate()));
-                curCal = teamMatch.getDate();
-            }
-
-        return dateList;
-    }
-
     public List<Team> getCrocoCupStanding(int competitionId) throws SQLException {
         List<Team> standing = new ArrayList<>();
 
@@ -114,11 +98,6 @@ public record DbCalculation(Statement stat) {
         }
 
         return standing;
-    }
-
-    public Map<Integer, List<CompSeasonPhase>> getTeamCompSeasonPhaseMap(List<CompSeasonPhase> compSeasonPhases)
-            throws SQLException {
-        return new com.sports.calc.h2hsports.DbCalculation(stat).getParticipantCompSeasonPhaseMap(compSeasonPhases);
     }
 
     public List<Integer> getTeamsIdsInCompDivision(CompSeasonKey csk, CompDivisionKey cdk)
@@ -197,28 +176,9 @@ public record DbCalculation(Statement stat) {
         return parentDivisions;
     }
 
-    public List<TeamMatch> getEncounters(int team1Id, int team2Id, boolean strictOrder) throws SQLException {
-        CompSeasonPhaseTeamManager csptm = new CompSeasonPhaseTeamManager(stat);
-
-        Set<CompSeasonPhaseKey> compSeasonPhaseKeys1 = csptm.getCompSeasonPhaseKeysTeam(team1Id);
-        Set<CompSeasonPhaseKey> compSeasonPhaseKeys2 = csptm.getCompSeasonPhaseKeysTeam(team2Id);
-
-        Set<CompSeasonPhaseKey> intersect = new HashSet<>();
-
-        for (CompSeasonPhaseKey compSeasonPhaseKey : compSeasonPhaseKeys1)
-            if (compSeasonPhaseKeys2.contains(compSeasonPhaseKey))
-                intersect.add(compSeasonPhaseKey);
-
-        List<TeamMatch> matches = intersect.size() > 0 ?
-                new TeamMatchManager(stat).getEncounters(intersect, team1Id, team2Id, strictOrder) : new ArrayList<>();
-        matches.sort(new MatchDate());
-
-        return matches;
-    }
-
     public void importMatchActions(int sportId, String fileName) throws IOException, SQLException {
         List<MatchActionImportItem> importItems = Files.readAllLines(FileSystems.getDefault().getPath(fileName + ".txt"),
-                StandardCharsets.ISO_8859_1).stream().map(this::getMatchActionImportItem).collect(Collectors.toList());
+                StandardCharsets.ISO_8859_1).stream().map(this::getMatchActionImportItem).toList();
 
         Map<String, Competition> competitionMap = new HashMap<>() {{
             new CompetitionManager(stat).getCompetitionList(sportId).forEach(x -> put(x.getName(), x));

@@ -3,9 +3,7 @@
  */
 const matchesCompSeasonPhaseLoader = new ElementLoader('tbl_matches',
     function () {
-        const pid = document.getElementById('selPid').value;
-
-        return '/MatchesCompSeasonPhase?cid=' + cid + '&sid=' + sid + '&pid=' + pid;
+        return '/MatchesCompSeasonPhase?' + getParameters();
     },
     function () {
         loadStanding()
@@ -13,17 +11,13 @@ const matchesCompSeasonPhaseLoader = new ElementLoader('tbl_matches',
 
 const standingLoader = new ElementLoader('tbl_standing',
     function () {
-        const pid = document.getElementById('selPid').value;
-
-        return '/Standing?cid=' + cid + '&sid=' + sid + '&pid=' + pid;
+        return '/Standing?' + getParameters();
     },
     null);
 
 const matchMatrixLoader = new ElementLoader('tbl_matchmatrix',
     function () {
-        const pid = document.getElementById('selPid').value;
-
-        return '/MatchMatrix?cid=' + cid + '&sid=' + sid + '&pid=' + pid;
+        return '/MatchMatrix?' + getParameters();
     },
     null);
 
@@ -47,4 +41,17 @@ function loadStanding() {
         standingLoader.loadElement();
         matchMatrixLoader.loadElement();
     }
+}
+
+function goToAddMatch() {
+    const pid = document.getElementById('selPid').value;
+
+    if (!isEmptyOrNull(pid))
+        goToUrl(aml, getParameters() + (amlP !== null ? '&' + amlP : ''));
+}
+
+function getParameters() {
+    const pid = document.getElementById('selPid').value;
+
+    return 'cid=' + cid + '&sid=' + sid + '&pid=' + pid;
 }
