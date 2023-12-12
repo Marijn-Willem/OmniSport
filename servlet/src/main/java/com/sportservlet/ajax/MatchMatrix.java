@@ -22,14 +22,11 @@ import java.util.List;
 
 public class MatchMatrix extends SuperResponseServlet {
     protected CompSeasonPhaseKey cspk;
+    protected List<? extends Participant> participants;
 
-    protected void processBody(Statement stat, HttpServletRequest req, HttpServletResponse resp)
-            throws IOException, SQLException {
-        preProcess(stat);
-
+    @Override
+    protected void init(Statement stat, HttpServletRequest req) throws SQLException {
         int phaseId = Integer.parseInt(req.getParameter("pid"));
-        boolean oc = Boolean.parseBoolean(req.getParameter("oc"));
-
         cspk = new CompSeasonPhaseKey(compSeasonKey, phaseId);
 
         CompSeasonParticipantFactory factory = new com.sports.logic.calculation.DbCalculation(stat)
@@ -39,19 +36,21 @@ public class MatchMatrix extends SuperResponseServlet {
         ParticipantManager<? extends Participant> pm = factory.getParticipantManager(stat);
 
         List<Integer> particIds = csppm.getParticipantsInCompSeasonPhases(Collections.singletonList(cspk));
-        List<? extends Participant> participants = pm.getParticipantList(particIds);
-        sortParticipants(stat, participants);
+        participants = pm.getParticipantList(particIds);
+    }
 
+    protected void processBody(Statement stat, HttpServletRequest req, HttpServletResponse resp)
+            throws IOException, SQLException {
+        boolean oc = Boolean.parseBoolean(req.getParameter("oc"));
+
+        sortParticipants();
         List<List<List<H2HMatch>>> matchMatrix = new DbCalculation(stat).getMatchMatrixCompSeasonPhase(cspk, participants);
+
+        prepareData(matchMatrix);
 
         Writer w = resp.getWriter();
 
-        w.append("<tr><th/>");
-
-        for (int i = 0; i < participants.size(); i++)
-            writeColumnHeader(participants.get(i), i + 1, w);
-
-        w.append("</tr>\n");
+        writeColumnHeaders(w);
 
         for (int i = 0; i < participants.size(); i++) {
             Participant partic = participants.get(i);
@@ -59,21 +58,30 @@ public class MatchMatrix extends SuperResponseServlet {
         }
     }
 
-    protected void preProcess(Statement stat) throws SQLException {}
-
     protected String getOnClick(int mId) {
         return "";
     }
 
-    protected <S extends Participant> void sortParticipants(Statement stat, List<S> participants) throws SQLException {
+    protected void sortParticipants() {
         participants.sort(new DescribedEntityDescription());
+    }
+
+    protected void prepareData(List<List<List<H2HMatch>>> matchMatrix) { }
+
+    protected void writeColumnHeaders(Writer w) throws IOException {
+        w.append("<tr><th/>");
+
+        for (int i = 0; i < participants.size(); i++)
+            writeColumnHeader(participants.get(i), i, w);
+
+        w.append("</tr>\n");
     }
 
     protected void writeColumnHeader(Participant partic, int colIndX, Writer w) throws IOException {
         w.append("<th colindx=\"");
         w.append(Integer.toString(colIndX));
         w.append("\">");
-        w.append(partic.getDescription());
+        w.append(Util.convertNullStringToEmpty(partic.getDescription()));
         w.append("</th>");
     }
 
@@ -81,7 +89,7 @@ public class MatchMatrix extends SuperResponseServlet {
         w.append("<th rowspan=\"");
         w.append(Integer.toString(rowSpan));
         w.append("\">");
-        w.append(partic.getDescription());
+        w.append(Util.convertNullStringToEmpty(partic.getDescription()));
         w.append("</th>");
     }
 
@@ -99,11 +107,11 @@ public class MatchMatrix extends SuperResponseServlet {
             for (int j = 0; j < matrixRow.size(); j++) {
                 List<H2HMatch> matches = matrixRow.get(j);
 
-                if (i == 0 && matches.size() == 0) {
+                if (i == 0 && matches.isEmpty()) {
                     w.append("<td rowspan=\"");
                     w.append(Integer.toString(rowSpan));
                     w.append("\" colindx=\"");
-                    w.append(Integer.toString(j + 1));
+                    w.append(Integer.toString(j));
                     w.append("\">-</td>");
                 }
                 else if (i == colRowDp[j]) {
@@ -119,7 +127,7 @@ public class MatchMatrix extends SuperResponseServlet {
                     w.append("<td rowspan=\"");
                     w.append(Integer.toString(rowSpanCell));
                     w.append("\" colindx=\"");
-                    w.append(Integer.toString(j + 1));
+                    w.append(Integer.toString(j));
                     w.append("\"");
                     if (oc) {
                         String onClick = getOnClick(match.getSpecificId());

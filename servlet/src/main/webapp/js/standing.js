@@ -47,15 +47,15 @@ function insertMatches(teamId) {
     matchesLoader.loadElement();
 }
 
-function goToMatchTimeLine(competitionId, seasonId, matchId) {
-    window.location.href = path + '/MatchTimeLine?cid=' + competitionId +
-            '&sid=' + seasonId + '&mid=' + matchId;
+function goToMatchTimeLine(competitionId, seasonId, phaseId, matchId) {
+    goToUrl('MatchTimeLine', 'cid=' + competitionId + '&sid=' + seasonId +
+        '&pid=' + phaseId + '&mid=' + matchId);
 }
 
 function goToMatchMatrixDivision() {
     const pId_dId = getPIdDId();
     if (pId_dId[0])
-        window.location.href = path + '/MatchMatrixDivision?cid=' + cid + '&sid=' + sid + '&pid=' + pId_dId[0];
+        goToUrl('MatchMatrixDivision', 'cid=' + cid + '&sid=' + sid + '&pid=' + pId_dId[0]);
 }
 
 function handleSelectPhase() {
@@ -85,46 +85,95 @@ function handleSelectPhase() {
 
 function handleClickDivision(cb) {
     const did = cb.value;
-    const tbl = document.getElementById('tblMatchMatrix');
-    const headers = tbl.rows[0].children;
-    const indices = [];
 
-    for (let i = 0; i < headers.length; i++) {
-        const header = headers[i];
-        if (header.getAttribute('did') && header.getAttribute('did') === did)
-            indices.push(i);
+    toggleColumns(did, cb.checked);
+    toggleRows(did, cb.checked);
+}
+
+function toggleColumns(did, checked) {
+    const range = getColIndXRangeForDivision(did);
+    const rows = document.getElementById('tblMatchMatrix').rows;
+
+    const teamHeaders = rows[0].children;
+
+    for (let i = 1; i < teamHeaders.length; i++) {
+        const cell = teamHeaders[i];
+
+        if (cell.getAttribute('did') === did) {
+            cell.style.display = checked ? 'table-cell' : 'none';
+            break;
+        }
     }
 
-    for (let i = 0; i < indices.length; i++) {
-        const colIndX = indices[i];
-        const startRowIndX = getFirstRowIndXForColIndX(tbl.rows, colIndX);
-        const lastRowIndX = startRowIndX + parseInt(tbl.rows[startRowIndX].children[0].getAttribute('rowspan'));
+    for (let i = 1; i < rows.length; i++) {
+        const cells = rows[i].children;
 
-        for (let j = startRowIndX; j < lastRowIndX; j++)
-            tbl.rows[j].style.display = cb.checked ? 'table-row' : 'none';
+        for (let j = 0; j < cells.length; j++) {
+            const cell = cells[j];
+            const colIndX = parseInt(cell.getAttribute('colindx'));
 
-        for (let j = 0; j < tbl.rows.length; j++) {
-            const row = tbl.rows[j];
-            for (let k = 0; k < row.children.length; k++) {
-                const cell = row.children[k];
-                if (cell.getAttribute('colindx') && cell.getAttribute('colindx') === colIndX.toString())
-                    cell.style.display = cb.checked ? 'table-cell' : 'none';
-            }
+            if (colIndX >= range[0] && colIndX <= range[1])
+                cell.style.display = checked ? 'table-cell' : 'none';
+            else if (colIndX > range[1])
+                break;
         }
     }
 }
 
-function getFirstRowIndXForColIndX(rows, colIndX) {
-    let count = 0;
+function toggleRows(did, checked) {
+    const range = getRowIndXRangeForDivision(did);
+    const rows = document.getElementById('tblMatchMatrix').rows;
 
-    for (let i = 1; i < rows.length; i++) {
+    for (let i = range[0]; i <= range[1]; i++) {
         const row = rows[i];
-        if (row.getElementsByTagName('th').length === 1)
-            count++;
-
-        if (count === colIndX)
-            return i;
+        row.style.display = checked ? 'table-row' : 'none';
     }
+}
+
+function getColIndXRangeForDivision(did) {
+    const compDivHeaders = document.getElementById('tblMatchMatrix').rows[0].children;
+
+    let colIndXStart = 0;
+    let colIndXEnd = colIndXStart - 1;
+    let headerIndX = 1;
+
+    while (headerIndX < compDivHeaders.length) {
+        const header = compDivHeaders[headerIndX];
+        const colSpan = parseInt(header.getAttribute('colspan'));
+
+        colIndXEnd += colSpan;
+
+        if (header.getAttribute('did') !== did) {
+            colIndXStart = colIndXEnd + 1;
+            headerIndX += 1;
+        }
+        else
+            break;
+    }
+
+    return [colIndXStart, colIndXEnd];
+}
+
+function getRowIndXRangeForDivision(did) {
+    const tbl = document.getElementById('tblMatchMatrix');
+    const rows = tbl.rows;
+
+    let rowIndXStart = 2;
+    let rowIndXEnd = rowIndXStart - 1;
+
+    while (rowIndXStart < rows.length) {
+        const compDivHeader = rows[rowIndXStart].children[0];
+        const rowSpan = parseInt(compDivHeader.getAttribute('rowspan'));
+
+        rowIndXEnd += rowSpan;
+
+        if (compDivHeader.getAttribute('did') !== did)
+            rowIndXStart = rowIndXEnd + 1;
+        else
+            break;
+    }
+
+    return [rowIndXStart, rowIndXEnd];
 }
 
 function toggleElements(idList, className, display) {

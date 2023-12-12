@@ -17,13 +17,13 @@ public class Team extends Participant {
     private LocalDateTime startDate;
     private LocalDateTime endDate;
     private CompDivision compDivision;
-    private int compDivisionSort;
     private int playedParentDivision;
     private int winsParentDivision;
     private int drawsParentDivision;
     private int playedDivision;
     private int winsDivision;
     private int drawsDivision;
+    private int sortIndex;
 
     public double getParentDivisionAverage() {
         return Calculation.getAverage(playedParentDivision, winsParentDivision, drawsParentDivision);
@@ -113,14 +113,6 @@ public class Team extends Participant {
         this.compDivision = compDivision;
     }
 
-    public int getCompDivisionSort() {
-        return compDivisionSort;
-    }
-
-    public void setCompDivisionSort(int compDivisionSort) {
-        this.compDivisionSort = compDivisionSort;
-    }
-
     public int getPlayedParentDivision() { return playedParentDivision; }
 
     public void addPlayedParentDivision() { playedParentDivision++; }
@@ -144,6 +136,14 @@ public class Team extends Participant {
     public int getDrawsDivision() { return drawsDivision; }
 
     public void addDrawDivision() { drawsDivision++; }
+
+    public int getSortIndex() {
+        return sortIndex;
+    }
+
+    public void setSortIndex(int sortIndex) {
+        this.sortIndex = sortIndex;
+    }
 
     String[] getSpecificPropertiesInSQLStrings() {
         return new String[] {

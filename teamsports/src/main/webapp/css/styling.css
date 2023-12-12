@@ -7,3 +7,4 @@ input.cb, span input, div.text {margin-right: 0}
 table a, span input, span select, div input, div select, div a {margin-left: 0}
 input.ntf {width: 25px}
 td.matchWinner {font-weight: bold}
+th.verticalHeader {writing-mode: vertical-lr; text-orientation: upright}

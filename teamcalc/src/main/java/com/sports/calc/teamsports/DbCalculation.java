@@ -126,29 +126,6 @@ public record DbCalculation(Statement stat) {
         return teamIds;
     }
 
-    public void sortTeamsOnCompDivision(CompSeasonKey compSeasonKey, List<Team> teams) throws SQLException {
-        List<CompDivision> compDivisions = getSortedCompDivisions(compSeasonKey);
-        List<CompSeasonTeam> compSeasonTeams = new CompSeasonTeamManager(stat).getTeamsInCompSeason(compSeasonKey);
-
-        for (Team team : teams) {
-            CompSeasonTeam cst = null;
-            for (CompSeasonTeam compSeasonTeam : compSeasonTeams)
-                if (team.getId() == compSeasonTeam.getTeamId()) {
-                    cst = compSeasonTeam;
-                    break;
-                }
-
-            if (cst != null && cst.getCompDivisionId() != null)
-                for (int i = 0; i < compDivisions.size(); i++)
-                    if (cst.getCompDivisionId() == compDivisions.get(i).getCompDivisionId()) {
-                        team.setCompDivisionSort(i);
-                        break;
-                    }
-        }
-
-        teams.sort(new TeamCompDivisionSort());
-    }
-
     public List<CompDivision> getSortedCompDivisions(CompSeasonKey csk) throws SQLException {
         List<CompSeasonDivisionKey> csdKeys = new CompSeasonDivisionManager(stat).getCompSeasonDivisions(csk);
         List<CompDivisionKey> cdKeyes = csdKeys.stream().map(csdk ->
@@ -166,12 +143,11 @@ public record DbCalculation(Statement stat) {
                 childDivisions.add(compDivision);
 
         parentDivisions.sort(new NamedEntityName());
-
         setParentDivisionSorts(parentDivisions, childDivisions);
-        childDivisions.sort(new CompDivisionParentSort());
 
         // Also include parent divisions in the result for conference only competitions
         parentDivisions.addAll(childDivisions);
+        parentDivisions.sort(new CompDivisionParentSort());
 
         return parentDivisions;
     }
@@ -245,7 +221,7 @@ public record DbCalculation(Statement stat) {
         for (CompDivision childDivision : childDivisions)
             for (int i = 0; i < parentDivisions.size(); i++)
                 if (childDivision.getParentDivisionId() == parentDivisions.get(i).getCompDivisionId()) {
-                    childDivision.setParentDivisionSort(i);
+                    childDivision.setParentDivisionSort(i + 1);
                     break;
                 }
     }

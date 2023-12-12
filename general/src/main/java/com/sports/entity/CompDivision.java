@@ -8,6 +8,9 @@ public class CompDivision extends SuperKeyEntity implements NamedEntity {
 
     private int compDivisionId;
     private int parentDivisionSort;
+    private int nrTeams;
+    private Integer firstTeamId;
+    private int rowSpanMatchMatrix;
 
     public String[] getPropertiesInSQLStrings() {
         return new String[] {
@@ -46,5 +49,33 @@ public class CompDivision extends SuperKeyEntity implements NamedEntity {
 
     public void setParentDivisionSort(int parentDivisionSort) {
         this.parentDivisionSort = parentDivisionSort;
+    }
+
+    public int getNrTeams() {
+        return nrTeams;
+    }
+
+    public void increaseNrTeams() {
+        nrTeams++;
+    }
+
+    public Integer getFirstTeamId() {
+        return firstTeamId;
+    }
+
+    public void setFirstTeamId(Integer firstTeamId) {
+        this.firstTeamId = firstTeamId;
+    }
+
+    public int getRowSpanMatchMatrix() {
+        return rowSpanMatchMatrix;
+    }
+
+    public void increaseRowSpanMatchMatrix(int addedRowSpan) {
+        this.rowSpanMatchMatrix += addedRowSpan;
+    }
+
+    public void setRowSpanMatchMatrix(int rowSpanMatchMatrix) {
+        this.rowSpanMatchMatrix = rowSpanMatchMatrix;
     }
 }
