@@ -4,7 +4,7 @@ import com.sports.db.util.QueryUtil;
 
 import java.time.LocalDateTime;
 
-public class Competition extends IntAliasable implements Aliasable {
+public class Competition extends IntAliasable {
     private int id;
     private String name;
     private int sportId;
