@@ -22,7 +22,7 @@ function checkInput() {
     const checkDateRange = () => {
         if (dt !== '') {
             const date = convertStringToDate(dt);
-            return (!dts || date >= convertStringToDate(dts)) && (!dte || date <= convertStringToDate(dte));
+            return (dts == null || date >= convertStringToDate(dts)) && (dte == null || date <= convertStringToDate(dte));
         }
 
         return true;

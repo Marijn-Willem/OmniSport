@@ -60,12 +60,6 @@ public class Util {
                 padCharacter(String.valueOf(dtTm.getDayOfMonth()), '0', 2);
     }
 
-    public static boolean compareDateTimesIgnoreTime(LocalDateTime dtTm1, LocalDateTime dtTm2) {
-        return dtTm1.getYear() == dtTm2.getYear() &&
-                dtTm1.getMonthValue() == dtTm2.getMonthValue() &&
-                dtTm1.getDayOfMonth() == dtTm2.getDayOfMonth();
-    }
-
     public static LocalDateTime cloneDateTimeIgnoreTime(LocalDateTime dtTm) {
         return LocalDateTime.of(dtTm.getYear(), dtTm.getMonthValue(), dtTm.getDayOfMonth(), 0, 0);
     }

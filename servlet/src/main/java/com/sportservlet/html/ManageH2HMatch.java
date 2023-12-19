@@ -54,11 +54,11 @@ public abstract class ManageH2HMatch extends ManageEntity {
         writeCompSeasonVarsInScriptTag(w);
         writeVarInScriptTag("pid", getIntValuedParameterValue(req, "pid"), w);
 
-        if (compSeasonPhase.getStartDate() != null)
-            ServletUtil.writeStringConst("dts", Util.convertDateTimeToString(compSeasonPhase.getStartDate()), w);
+        String dts = compSeasonPhase.getStartDate() != null ? Util.convertDateTimeToString(compSeasonPhase.getStartDate()) : null;
+        String dte = compSeasonPhase.getEndDate() != null ? Util.convertDateTimeToString(compSeasonPhase.getEndDate()) : null;
 
-        if (compSeasonPhase.getEndDate() != null)
-            ServletUtil.writeStringConst("dte", Util.convertDateTimeToString(compSeasonPhase.getEndDate()), w);
+        ServletUtil.writeStringConst("dts", dts, w);
+        ServletUtil.writeStringConst("dte", dte, w);
     }
 
     protected void processSpecific(Statement stat, HttpServletRequest req, HttpServletResponse res)

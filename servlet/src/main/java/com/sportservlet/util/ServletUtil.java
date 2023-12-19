@@ -44,8 +44,14 @@ public class ServletUtil {
     public static void writeStringConst(String name, String value, Writer w) throws IOException {
         w.append("const ");
         w.append(name);
-        w.append(" = '");
-        w.append(value);
-        w.append("';\n");
+        w.append(" = ");
+        if (value != null) {
+            w.append("'");
+            w.append(value);
+            w.append("'");
+        }
+        else
+            w.append("null");
+        w.append(";\n");
     }
 }
