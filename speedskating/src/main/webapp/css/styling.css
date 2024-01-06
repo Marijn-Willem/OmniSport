@@ -3,6 +3,6 @@ input {background-color: gold}
 tr {background-color: lightcoral}
 th {background-color: red}
 h3, h1, div, input, table, span, select {margin-left: 40%}
-table input, span input, div input, div div, div table, div select, td select {margin-left: 0}
+table input, span input, div input, div div, div table, div select, td select, span select {margin-left: 0}
 table.click_through {font-size: 18px}
 input.ntf {width: 25px}
