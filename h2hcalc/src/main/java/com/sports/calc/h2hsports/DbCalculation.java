@@ -19,25 +19,6 @@ public record DbCalculation(Statement stat) {
         return factory.getManager(stat).getInstanceFromKey(factory.getKey(compSeasonKey, specificId));
     }
 
-    public List<CompSeasonPhase> getCompSeasonH2HPhasesWithMatches(CompSeasonKey compSeasonKey) throws SQLException {
-        H2HMatchManager<? extends H2HMatchKey, ? extends H2HMatch> h2Hmm =
-                new com.sports.logic.calculation.DbCalculation(stat).getCompSeasonParticipantFactory(compSeasonKey.getCompetitionId())
-                        .getH2HObjectFactory().getManager(stat);
-
-        List<? extends H2HMatch> H2HMatches = h2Hmm.getH2HMatchList(compSeasonKey, null);
-
-        List<CompSeasonPhaseKey> compSeasonPhaseKeys = new ArrayList<>();
-
-        for (H2HMatch h2hMatch : H2HMatches)
-            compSeasonPhaseKeys.add(new CompSeasonPhaseKey(compSeasonKey, h2hMatch.getCompSeasonPhaseId()));
-
-        List<CompSeasonPhase> compSeasonPhases = new CompSeasonPhaseManager(stat).getCompSeasonPhases(compSeasonPhaseKeys);
-        setPhaseDescriptionsFromTypes(compSeasonPhases);
-        compSeasonPhases.sort(new CompSeasonPhaseRoundDescription());
-
-        return compSeasonPhases;
-    }
-
     public List<List<List<H2HMatch>>> getMatchMatrixCompSeasonPhase(CompSeasonPhaseKey cspk, List<? extends Participant> participantsSorted)
             throws SQLException {
         Map<Integer, Integer> pIndXMap = new HashMap<>();

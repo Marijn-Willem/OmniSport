@@ -3,7 +3,7 @@ package com.sportservlet.html;
 import com.sports.calc.h2hsports.DbCalculation;
 import com.sports.entity.CompSeasonPhase;
 import com.sports.entity.comparator.CompSeasonPhaseRoundDescription;
-import com.sports.entity.key.CompSeasonKey;
+import com.sports.entity.manager.CompSeasonPhaseManager;
 import com.sportservlet.util.ServletUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -43,9 +43,7 @@ public abstract class MatchOverview extends SuperHtmlServlet implements Abstract
 
     protected void processHtmlBody(Statement stat, HttpServletRequest req, HttpServletResponse res)
             throws IOException, SQLException {
-        CompSeasonKey compSeasonKey = new CompSeasonKey(competitionId, seasonId);
-
-        List<CompSeasonPhase> compSeasonPhases = new DbCalculation(stat).getCompSeasonH2HPhasesWithMatches(compSeasonKey);
+        List<CompSeasonPhase> compSeasonPhases = new CompSeasonPhaseManager(stat).getNonKnockoutCompSeasonPhases(compSeasonKey);
         new DbCalculation(stat).setPhaseDescriptionsFromTypes(compSeasonPhases);
         compSeasonPhases.sort(new CompSeasonPhaseRoundDescription());
 
