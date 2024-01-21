@@ -1,12 +1,12 @@
-const languageLoader = new ElementLoader('lid', function () {
+const languageLoader = new ElementLoader('selLid', function () {
     return '/LanguageList';
-}, null);
+}, function () { setElementValueFromInitStateVar('selLid', lid); });
 
 function goToManageLanguage() {
-    const lid = document.getElementById('lid').value;
+    const lid = document.getElementById('selLid').value;
 
     if (lid !== null)
-        window.location.href = path + '/ManageLanguage?id=' + lid;
+        window.location.href = path + '/ManageLanguage?lid=' + lid;
 }
 
 function goToAddLanguage() {
@@ -18,11 +18,11 @@ function loadLanguageList() {
 }
 
 function getProcessUrl() {
-    const id = getValueFromElementByName('inpUpd');
+    const lid = getValueFromElementByName('inpUpd');
     const nm = getValueFromElementByName('nm');
     const fbid = getValueFromElementByName('fbid');
 
-    return '/ProcessManageLanguage?id=' + id + '&nm=' + nm + '&fbid=' + fbid;
+    return '/ProcessManageLanguage?lid=' + lid + '&nm=' + nm + '&fbid=' + fbid;
 }
 
 function checkInput() {

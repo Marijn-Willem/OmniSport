@@ -36,7 +36,7 @@ public class ManageLanguage extends ManageEntity {
 
     @Override
     protected String getEntityIdName() {
-        return "id";
+        return "lid";
     }
 
     @Override
@@ -46,7 +46,7 @@ public class ManageLanguage extends ManageEntity {
         LinkedHashMap<Integer, String> languageMap = getLanguageMap(stat);
 
         if (!"i".equals(mode)) {
-            int id = getIntValuedParameterValue(req, "id");
+            int id = getIntValuedParameterValue(req, "lid");
             language = new LanguageManager(stat).getEntityFromId(id);
             processLanguageMap(stat, languageMap, id);
         }

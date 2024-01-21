@@ -21,7 +21,7 @@ public class ProcessManageLanguage extends ProcessManageIntEntity<Language> {
 
     @Override
     protected Integer getIdFromRequest(HttpServletRequest req) {
-        return convertRequestParamToIdInteger(req, "id");
+        return convertRequestParamToIdInteger(req, "lid");
     }
 
     @Override
