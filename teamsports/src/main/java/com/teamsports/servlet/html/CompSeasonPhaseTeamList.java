@@ -21,7 +21,8 @@ public class CompSeasonPhaseTeamList extends SuperHtmlServlet {
 
     @Override
     protected String getReturnPath(Statement stat, HttpServletRequest req) throws SQLException {
-        return "CompSeasonPhasePortal?" + compSeasonUrlParameters;
+        return "CompSeasonPhasePortal?" + compSeasonUrlParameters + "&pid=" +
+                getIntValuedParameterValue(req, "pid");
     }
 
     @Override

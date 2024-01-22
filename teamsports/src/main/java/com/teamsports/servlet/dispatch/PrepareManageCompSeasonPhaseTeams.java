@@ -20,6 +20,6 @@ public class PrepareManageCompSeasonPhaseTeams extends SuperDispatchServlet {
         List<Integer> teamIds = new CompSeasonPhaseTeamManager(stat).getTeamsInCompSeasonPhases(
                 Collections.singletonList(cspk));
 
-        dispatchURL = teamIds.size() > 0 ? "CompSeasonPhaseTeamList" : "ManageCompSeasonPhaseTeams";
+        dispatchURL = !teamIds.isEmpty() ? "CompSeasonPhaseTeamList" : "ManageCompSeasonPhaseTeams";
     }
 }
