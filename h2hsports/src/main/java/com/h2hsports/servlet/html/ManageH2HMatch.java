@@ -16,7 +16,7 @@ public class ManageH2HMatch extends com.sportservlet.html.ManageH2HMatch {
             returnPath = "CompSeasonPortal?spid=" + spid + "&" + compSeasonUrlParameters;
         }
         else
-            returnPath = "MatchOverview?" + compSeasonUrlParameters + "&pid=" + req.getParameter("pid");
+            returnPath = "MatchOverview?" + compSeasonUrlParameters;
 
         return returnPath;
     }
