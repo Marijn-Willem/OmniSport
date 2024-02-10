@@ -18,6 +18,7 @@ public class CompSeasonPhaseFragment extends WritableFragment {
 
     private final Integer parentPhaseId;
     private final Integer round;
+    private final boolean knockoutParent;
     private final LocalDateTime startDate;
     private final LocalDateTime endDate;
     private final boolean finished;
@@ -37,6 +38,7 @@ public class CompSeasonPhaseFragment extends WritableFragment {
 
         parentPhaseId = compSeasonPhase.getParentPhaseId();
         round = compSeasonPhase.getRound();
+        knockoutParent = compSeasonPhase.isKnockoutParent();
         startDate = compSeasonPhase.getStartDate();
         endDate = compSeasonPhase.getEndDate();
         finished = compSeasonPhase.isFinished();
@@ -63,6 +65,7 @@ public class CompSeasonPhaseFragment extends WritableFragment {
         return XmlUtil.getTag("compSeasonPhaseId", compSeasonPhaseId) +
                 XmlUtil.getTag("parentPhaseId", parentPhaseId) +
                 XmlUtil.getTag("round", round) +
+                XmlUtil.getTag("knockoutParent", knockoutParent) +
                 XmlUtil.getTag("startDate", startDate) +
                 XmlUtil.getTag("endDate", endDate) +
                 XmlUtil.getTag("finished", finished) +
@@ -79,6 +82,7 @@ public class CompSeasonPhaseFragment extends WritableFragment {
         return JsonUtil.getEntry("compSeasonPhaseId", compSeasonPhaseId) + "," +
                 JsonUtil.getEntry("parentPhaseId", parentPhaseId) + "," +
                 JsonUtil.getEntry("round", round) + "," +
+                JsonUtil.getEntry("knockoutParent", knockoutParent) + "," +
                 JsonUtil.getEntry("startDate", startDate) + "," +
                 JsonUtil.getEntry("endDate", endDate) + "," +
                 JsonUtil.getEntry("finished", finished) + "," +
