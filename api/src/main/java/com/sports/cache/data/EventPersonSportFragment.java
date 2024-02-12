@@ -22,7 +22,7 @@ public class EventPersonSportFragment extends WritableFragment {
     private final int clientId;
 
     private PersonSportFragment personSportFragment;
-    private CompSeasonTeamFragment compSeasonTeamFragment;
+    private CompSeasonParticipantFragment compSeasonTeamFragment;
 
     public EventPersonSportFragment(int competitionId, int seasonId, int compSeasonEventId, int personSportId, int clientId) {
         this.competitionId = competitionId;
@@ -52,7 +52,7 @@ public class EventPersonSportFragment extends WritableFragment {
             int teamId = cstpsKeys.get(0).getSuperKey().getSpecificId();
 
             compSeasonTeamFragment = DataFragmentUtil.getFilledDataFragment(
-                    new CompSeasonTeamFragment(competitionId, seasonId, teamId, clientId), getCacheDataKey(), stat);
+                    new CompSeasonParticipantFragment(competitionId, seasonId, teamId, clientId), getCacheDataKey(), stat);
         }
     }
 

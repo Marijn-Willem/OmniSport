@@ -22,7 +22,7 @@ public class CompSeasonDivisionFragment extends CompDivisionFragment {
     private final int seasonId;
     private final int clientId;
 
-    private final List<CompSeasonTeamFragment> teamFragments = new ArrayList<>();
+    private final List<CompSeasonParticipantFragment> teamFragments = new ArrayList<>();
 
     public CompSeasonDivisionFragment(int competitionId, int seasonId, int compDivisionId, int clientId) {
         super(competitionId, compDivisionId);
@@ -46,7 +46,7 @@ public class CompSeasonDivisionFragment extends CompDivisionFragment {
         teams.sort(new DescribedEntityDescription());
 
         teamFragments.addAll(teams.stream().map(x ->
-                new CompSeasonTeamFragment(competitionId, seasonId, x.getId(), clientId)).toList());
+                new CompSeasonParticipantFragment(competitionId, seasonId, x.getId(), clientId)).toList());
 
         DataFragmentUtil.fillDataFragments(teamFragments, getCacheDataKey());
     }

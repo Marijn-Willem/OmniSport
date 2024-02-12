@@ -10,7 +10,7 @@ import com.sports.entity.manager.CompSeasonTeamManager;
 import java.sql.SQLException;
 import java.sql.Statement;
 
-public class CompSeasonTeamWithDivisionFragment extends CompSeasonTeamFragment {
+public class CompSeasonTeamWithDivisionFragment extends CompSeasonParticipantFragment {
     private CompDivisionFragment compDivisionFragment;
 
     public CompSeasonTeamWithDivisionFragment(int competitionId, int seasonId, int teamId, int clientId) {
@@ -22,7 +22,7 @@ public class CompSeasonTeamWithDivisionFragment extends CompSeasonTeamFragment {
         super.fill(stat);
 
         com.sports.entity.key.CompSeasonTeamKey compSeasonTeamKey =
-                new com.sports.entity.key.CompSeasonTeamKey(new CompSeasonKey(competitionId, seasonId), teamId);
+                new com.sports.entity.key.CompSeasonTeamKey(new CompSeasonKey(competitionId, seasonId), participantId);
         CompSeasonTeam compSeasonTeam = new CompSeasonTeamManager(stat).getCompSeasonTeam(compSeasonTeamKey);
 
         if (compSeasonTeam != null && compSeasonTeam.getCompDivisionId() != null)

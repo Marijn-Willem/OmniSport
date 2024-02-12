@@ -16,7 +16,7 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
-public class CompSeasonTeamWithPersonSportsFragment extends CompSeasonTeamFragment {
+public class CompSeasonTeamWithPersonSportsFragment extends CompSeasonParticipantFragment {
     private final List<PersonSportFragment> personSportFragments = new ArrayList<>();
 
     public CompSeasonTeamWithPersonSportsFragment(int competitionId, int seasonId, int teamId, int clientId) {
@@ -28,7 +28,7 @@ public class CompSeasonTeamWithPersonSportsFragment extends CompSeasonTeamFragme
         super.fill(stat);
 
         CompSeasonKey compSeasonKey = new CompSeasonKey(competitionId, seasonId);
-        CompSeasonTeamKey compSeasonTeamKey = new CompSeasonTeamKey(compSeasonKey, teamId);
+        CompSeasonTeamKey compSeasonTeamKey = new CompSeasonTeamKey(compSeasonKey, participantId);
 
         List<CompSeasonTeamPersonSportKey> teamPersonSportKeys = new CompSeasonTeamPersonSportManager(stat)
                 .getTeamPersonSportsForTeam(compSeasonTeamKey);

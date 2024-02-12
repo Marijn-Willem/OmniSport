@@ -2,8 +2,10 @@ package com.sports.cache.util;
 
 import com.sports.cache.key.CacheDataKey;
 import com.sports.entity.*;
+import com.sports.entity.Double;
 import com.sports.entity.key.*;
 import com.sports.entity.manager.*;
+import com.sports.logic.factory.ParticipantType;
 import com.sports.logic.util.Util;
 
 import java.sql.SQLException;
@@ -54,6 +56,24 @@ public record DescribedEntityUtil(int clientId, CacheDataKey cacheDataKey, State
         String personSport2String = getPersonSportString(personSportMap.get(dbl.getPersonSport2Id()), compSeasonKey);
 
         return Util.concatStringsWithDelimiter(personSport1String, personSport2String, " / ");
+    }
+
+    public String getParticipantString(Participant participant, ParticipantType participantType, CompSeasonKey compSeasonKey)
+        throws SQLException{
+        switch (participantType) {
+            case PERSON_SPORT -> {
+                return getPersonSportString((PersonSport) participant, compSeasonKey);
+            }
+            case DOUBLE -> {
+                return getDoubleString((Double) participant, compSeasonKey);
+            }
+            case TEAM -> {
+                return getTeamString((Team) participant, compSeasonKey);
+            }
+            default -> {
+                return null;
+            }
+        }
     }
 
     public String getCompSeasonEventPartString(CompSeasonEventPart compSeasonEventPart) throws SQLException {

@@ -24,7 +24,7 @@ public class StageWinnerFragment extends WritableFragment {
     private final int clientId;
 
     private PersonSportFragment personSportFragment;
-    private CompSeasonTeamFragment compSeasonTeamFragment;
+    private CompSeasonParticipantFragment compSeasonTeamFragment;
 
     public StageWinnerFragment(int competitionId, int seasonId, int compSeasonEventId, int participantId,
                                int stage, int clientId) {
@@ -54,7 +54,7 @@ public class StageWinnerFragment extends WritableFragment {
                         new PersonSportFragment(competitionId, seasonId, participantId, clientId), getCacheDataKey(), stat);
             case TEAM ->
                 compSeasonTeamFragment = DataFragmentUtil.getFilledDataFragment(
-                        new CompSeasonTeamFragment(competitionId, seasonId, participantId, clientId), getCacheDataKey(), stat);
+                        new CompSeasonParticipantFragment(competitionId, seasonId, participantId, clientId), getCacheDataKey(), stat);
             case DOUBLE -> {
             }
         }
