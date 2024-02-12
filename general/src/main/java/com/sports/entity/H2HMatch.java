@@ -13,7 +13,6 @@ public abstract class H2HMatch extends SuperKeyEntity implements WithH2HMatchPar
     private LocalDateTime date;
 
     private CompSeasonPhaseKey compSeasonPhaseKey;
-    private Integer phaseRound;
 
     public abstract int getSpecificId();
     abstract String[] getSpecificPropertiesInSQLStrings();
@@ -106,13 +105,5 @@ public abstract class H2HMatch extends SuperKeyEntity implements WithH2HMatchPar
 
     public void setCompSeasonPhaseKey(CompSeasonPhaseKey compSeasonPhaseKey) {
         this.compSeasonPhaseKey = compSeasonPhaseKey;
-    }
-
-    public Integer getPhaseRound() {
-        return phaseRound;
-    }
-
-    public void setPhaseRound(Integer phaseRound) {
-        this.phaseRound = phaseRound;
     }
 }

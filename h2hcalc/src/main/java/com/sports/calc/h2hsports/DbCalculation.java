@@ -185,22 +185,6 @@ public record DbCalculation(Statement stat) {
         compSeasonPhases.forEach(x -> x.setDescription(phaseTypeMap.get(x.getPhaseTypeId()).getName()));
     }
 
-    public void setPhaseRoundsOnH2HMatches(CompSeasonKey csk, List<? extends H2HMatch> matches) throws SQLException {
-        List<CompSeasonPhaseKey> phaseKeys = new ArrayList<>();
-
-        for (H2HMatch match : matches)
-            phaseKeys.add(new CompSeasonPhaseKey(csk, match.getCompSeasonPhaseId()));
-
-        List<CompSeasonPhase> compSeasonPhases = new CompSeasonPhaseManager(stat).getCompSeasonPhases(phaseKeys);
-
-        for (H2HMatch match : matches)
-            for (CompSeasonPhase compSeasonPhase : compSeasonPhases)
-                if (compSeasonPhase.getCompSeasonPhaseKey().getCompSeasonPhaseId() == match.getCompSeasonPhaseId()) {
-                    match.setPhaseRound(compSeasonPhase.getRound());
-                    break;
-                }
-    }
-
     public H2HMatch getH2HMatchNextRound(H2HObjectFactory<? extends H2HMatchKey, ? extends H2HMatch> factory,
                                          CompSeasonKey csk, H2HMatch h2hMatch) throws SQLException {
         if (h2hMatch.getKnockoutOrder() != null) {
@@ -276,7 +260,7 @@ public record DbCalculation(Statement stat) {
 
             H2HMatchManager<? extends H2HMatchKey, ? extends H2HMatch> h2HMm = factory.getH2HObjectFactory().getManager(stat);
             List<? extends H2HMatch> matches = h2HMm.getH2HMatchesFromCompSeasonPhases(phaseKeys);
-            matches.sort(new H2HMatchPhaseRoundKnockoutOrder());
+            matches.sort(new H2HMatchKnockoutOrder());
 
             List<Integer> participantIds = new ArrayList<>();
             Map<Integer, List<H2HMatch>> h2HMatchMap = new HashMap<>();
