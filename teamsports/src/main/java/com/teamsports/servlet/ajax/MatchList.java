@@ -45,7 +45,7 @@ public abstract class MatchList extends SuperResponseServlet {
         if (teamMap != null && teamMatchList != null) {
             teamMatchList.sort(new MatchDate());
 
-            ServletUtil.writeMatchTable(teamMatchList, cspk.getSuperKey(), teamMap, resp.getWriter());
+            ServletUtil.writeMatchTable(teamMatchList, cspk, teamMap, resp.getWriter());
         }
     }
 }

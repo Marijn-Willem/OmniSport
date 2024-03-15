@@ -3,7 +3,7 @@ package com.teamsports.servlet.util;
 import com.sports.calc.teamsports.Calculation;
 import com.sports.entity.Team;
 import com.sports.entity.TeamMatch;
-import com.sports.entity.key.CompSeasonKey;
+import com.sports.entity.key.CompSeasonPhaseKey;
 import com.sports.logic.util.Util;
 
 import java.io.IOException;
@@ -79,13 +79,13 @@ public class ServletUtil {
         w.append("<br/><table id=\"tblMatchMatrix\" border=\"1\">\n</table>\n");
     }
 
-    public static void writeMatchTable(List<TeamMatch> matchesSorted, CompSeasonKey compSeasonKey,
+    public static void writeMatchTable(List<TeamMatch> matchesSorted, CompSeasonPhaseKey compSeasonPhaseKey,
                                        Map<Integer, Team> teamMap, Writer w) throws IOException {
         String rule = "<tr><th>Home</th><th>Away</th><th colspan=\"2\">Score</th><th>Date</th></tr>\n";
         w.append(rule);
 
         for (TeamMatch teamMatch : matchesSorted) {
-            String onClick = " onclick=\"goToMatchTimeLine(" + compSeasonKey.getSepValues(", ") +
+            String onClick = " onclick=\"goToMatchTimeLine(" + compSeasonPhaseKey.getSepValues(", ") +
                     ", " + teamMatch.getTeamMatchId() + ")\"";
 
             rule = "<tr" + onClick + "><td>" + getTeamName(teamMap.get(teamMatch.getTeamHomeId())) + "</td>" +
