@@ -4,7 +4,7 @@ import com.sports.entity.CompSeasonPhase;
 import com.sports.entity.Competition;
 import com.sports.entity.DoublesMatch;
 import com.sports.entity.Gender;
-import com.sports.entity.comparator.H2HMatchKnockoutOrder;
+import com.sports.entity.comparator.H2HMatchKnockoutOrderDate;
 import com.sports.entity.key.CompSeasonDoubleKey;
 import com.sports.entity.key.CompSeasonPhaseDoubleKey;
 import com.sports.entity.key.CompSeasonPhaseKey;
@@ -90,7 +90,7 @@ public class ProcessCompSeasonDoublesImport extends SuperResponseServlet {
 
         List<DoublesMatch> matchList = dmm.getMatchesInCompSeasonPhases(Collections.singletonList(firstRoundKey));
 
-        matchList.sort(new H2HMatchKnockoutOrder());
+        matchList.sort(new H2HMatchKnockoutOrderDate());
 
         for (int i = 0; i < Math.min(matchList.size(), doubles.size() / 2); i++) {
             DoublesMatch match = matchList.get(i);

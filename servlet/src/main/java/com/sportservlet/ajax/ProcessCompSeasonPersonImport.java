@@ -3,7 +3,7 @@ package com.sportservlet.ajax;
 import com.sports.entity.CompSeasonPhase;
 import com.sports.entity.Person;
 import com.sports.entity.PersonMatch;
-import com.sports.entity.comparator.H2HMatchKnockoutOrder;
+import com.sports.entity.comparator.H2HMatchKnockoutOrderDate;
 import com.sports.entity.key.CompSeasonPhaseKey;
 import com.sports.entity.key.CompSeasonPhasePersonSportKey;
 import com.sports.entity.key.PersonMatchKey;
@@ -45,7 +45,7 @@ public class ProcessCompSeasonPersonImport extends ProcessPersonImport {
                 psm = new PersonMatchManager(stat);
 
                 matchesFirstRound = psm.getPersonMatchesFromCompSeasonPhases(Collections.singletonList(cspkRound1));
-                matchesFirstRound.sort(new H2HMatchKnockoutOrder());
+                matchesFirstRound.sort(new H2HMatchKnockoutOrderDate());
 
                 matchIndX = 0;
             }

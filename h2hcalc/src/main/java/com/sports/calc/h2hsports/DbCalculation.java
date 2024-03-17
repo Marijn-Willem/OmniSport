@@ -260,7 +260,7 @@ public record DbCalculation(Statement stat) {
 
             H2HMatchManager<? extends H2HMatchKey, ? extends H2HMatch> h2HMm = factory.getH2HObjectFactory().getManager(stat);
             List<? extends H2HMatch> matches = h2HMm.getH2HMatchesFromCompSeasonPhases(phaseKeys);
-            matches.sort(new H2HMatchKnockoutOrder());
+            matches.sort(new H2HMatchKnockoutOrderDate());
 
             List<Integer> participantIds = new ArrayList<>();
             Map<Integer, List<H2HMatch>> h2HMatchMap = new HashMap<>();

@@ -2,7 +2,7 @@ package com.sportservlet.ajax;
 
 import com.sports.entity.H2HMatch;
 import com.sports.entity.Participant;
-import com.sports.entity.comparator.H2HMatchKnockoutOrder;
+import com.sports.entity.comparator.H2HMatchKnockoutOrderDate;
 import com.sports.entity.key.CompSeasonPhaseKey;
 import com.sports.entity.manager.H2HMatchManager;
 import com.sports.logic.calculation.DbCalculation;
@@ -40,7 +40,7 @@ public abstract class MatchesCompSeasonPhase extends SuperResponseServlet {
         List<H2HMatch> h2hMatches =
                 h2HMatchManager.getH2HMatchesFromCompSeasonPhases(Collections.singletonList(cspk));
 
-        h2hMatches.sort(new H2HMatchKnockoutOrder());
+        h2hMatches.sort(new H2HMatchKnockoutOrderDate());
 
         List<Integer> particIds = new ArrayList<Integer>();
 
