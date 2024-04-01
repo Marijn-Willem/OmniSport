@@ -40,6 +40,7 @@ public class Scraper {
         add("la");
         add("le");
         add("van");
+        add("von");
     }};
 
     private final String url;
