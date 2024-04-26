@@ -1,10 +1,9 @@
 package com.sportservlet.ajax;
 
 import com.sports.calc.h2hsports.DbCalculation;
-import com.sports.entity.H2HMatch;
-import com.sports.entity.Participant;
+import com.sports.entity.*;
 import com.sports.entity.comparator.DescribedEntityDescription;
-import com.sports.entity.key.CompSeasonPhaseKey;
+import com.sports.entity.key.*;
 import com.sports.entity.manager.CompSeasonPhaseParticipantManager;
 import com.sports.entity.manager.ParticipantManager;
 import com.sports.logic.factory.CompSeasonParticipantFactory;
@@ -29,10 +28,22 @@ public class MatchMatrix extends SuperResponseServlet {
         int phaseId = Integer.parseInt(req.getParameter("pid"));
         cspk = new CompSeasonPhaseKey(compSeasonKey, phaseId);
 
-        CompSeasonParticipantFactory factory = new com.sports.logic.calculation.DbCalculation(stat)
+        CompSeasonParticipantFactory<? extends CompSeasonParticipantKey,
+                ? extends CompSeasonPhaseParticipantKey,
+                ? extends Participant,
+                ? extends SuperKeyEntity,
+                ? extends SuperKeyEntity,
+                ? extends H2HMatchKey,
+                ? extends H2HMatch,
+                ? extends H2HMatchPartKey,
+                ? extends H2HMatchPart,
+                ? extends H2HMatchPartStatKey,
+                ? extends H2HMatchPartStat> factory = new com.sports.logic.calculation.DbCalculation(stat)
                 .getCompSeasonParticipantFactory(competitionId);
 
-        CompSeasonPhaseParticipantManager csppm = factory.getPhaseParticManager(stat);
+        CompSeasonPhaseParticipantManager<? extends CompSeasonParticipantKey,
+                ? extends CompSeasonPhaseParticipantKey,
+                ? extends SuperKeyEntity> csppm = factory.getPhaseParticManager(stat);
         ParticipantManager<? extends Participant> pm = factory.getParticipantManager(stat);
 
         List<Integer> particIds = csppm.getParticipantsInCompSeasonPhases(Collections.singletonList(cspk));

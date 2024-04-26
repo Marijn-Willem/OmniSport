@@ -3,6 +3,8 @@ package com.sportservlet.flush;
 import com.sports.cache.key.CacheKey;
 import com.sports.cache.key.EntityInstanceCompSeasonKey;
 import com.sports.cache.key.EntityInstanceNonCompSeasonKey;
+import com.sports.entity.EntityInstance;
+import com.sports.entity.key.EntityInstanceKey;
 import com.sports.logic.calculation.Calculation;
 import com.sports.logic.factory.EntityInstanceFactory;
 
@@ -22,7 +24,8 @@ public class EntityInstanceFlusher extends CacheFlusher {
 
     @Override
     protected List<CacheKey> getCacheKeys(Statement stat) throws SQLException {
-        EntityInstanceFactory factory = Calculation.getEntityInstanceFactory(entityName);
+        EntityInstanceFactory<? extends EntityInstanceKey, ? extends EntityInstance> factory =
+                Calculation.getEntityInstanceFactory(entityName);
         assert factory != null;
 
         List<CacheKey> cacheKeys = factory.getCompSeasonsRelatedToEntity(entityId, stat)

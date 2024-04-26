@@ -9,10 +9,13 @@ import com.sports.entity.manager.H2HMatchPartManager;
 
 import java.sql.Statement;
 
-public interface H2HPartObjectFactory<S extends H2HMatchPartKey, T extends H2HMatchPart> {
-    H2HMatchPartManager<S, T> getMatchPartManager(Statement stat);
-    S getMatchPartKey(H2HMatchKey h2HMatchKey, int specifId);
-    T getMatchPart();
-    H2HPartStatObjectFactory<? extends H2HMatchPartStatKey, ? extends H2HMatchPartStat>
-        getPartStatObjectFactory();
+
+public interface H2HPartObjectFactory<MPK extends H2HMatchPartKey,
+        MP extends H2HMatchPart,
+        MPSK extends H2HMatchPartStatKey,
+        MPS extends H2HMatchPartStat> {
+    H2HMatchPartManager<MPK, MP> getMatchPartManager(Statement stat);
+    MPK getMatchPartKey(H2HMatchKey h2HMatchKey, int specifId);
+    MP getMatchPart();
+    H2HPartStatObjectFactory<MPSK, MPS> getPartStatObjectFactory();
 }

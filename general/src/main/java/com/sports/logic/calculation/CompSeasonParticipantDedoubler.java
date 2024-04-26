@@ -1,12 +1,7 @@
 package com.sports.logic.calculation;
 
-import com.sports.entity.H2HMatch;
-import com.sports.entity.H2HMatchPartStat;
-import com.sports.entity.SuperKeyEntity;
-import com.sports.entity.key.CompSeasonParticipantKey;
-import com.sports.entity.key.CompSeasonPhaseParticipantKey;
-import com.sports.entity.key.H2HMatchKey;
-import com.sports.entity.key.H2HMatchPartStatKey;
+import com.sports.entity.*;
+import com.sports.entity.key.*;
 import com.sports.entity.manager.CompSeasonParticipantManager;
 import com.sports.entity.manager.CompSeasonPhaseParticipantManager;
 import com.sports.entity.manager.H2HMatchManager;
@@ -18,11 +13,21 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.*;
 
-abstract class CompSeasonParticipantDedoubler<S extends CompSeasonParticipantKey, T extends SuperKeyEntity> {
+abstract class CompSeasonParticipantDedoubler<PK extends CompSeasonParticipantKey,
+        PPK extends CompSeasonPhaseParticipantKey,
+        P extends Participant,
+        CSP extends SuperKeyEntity,
+        CSPP extends SuperKeyEntity,
+        MK extends H2HMatchKey,
+        M extends H2HMatch,
+        MPK extends H2HMatchPartKey,
+        MP extends H2HMatchPart,
+        MPSK extends H2HMatchPartStatKey,
+        MPS extends H2HMatchPartStat> {
     Statement stat;
-    List<S> cspKeysFrom;
+    List<PK> cspKeysFrom;
 
-    abstract CompSeasonParticipantFactory<S, T> getFactory();
+    abstract CompSeasonParticipantFactory<PK, PPK, P, CSP, CSPP, MK, M, MPK, MP, MPSK, MPS> getFactory();
 
     CompSeasonParticipantDedoubler(Statement stat) {
         this.stat = stat;
@@ -33,37 +38,37 @@ abstract class CompSeasonParticipantDedoubler<S extends CompSeasonParticipantKey
     }
 
     public void dedouble(int pFromId, int pToId) throws SQLException {
-        CompSeasonParticipantFactory<S, T> factory = getFactory();
-        H2HObjectFactory<? extends H2HMatchKey, ? extends H2HMatch> h2hObjectFactory = factory.getH2HObjectFactory();
+        CompSeasonParticipantFactory<PK, PPK, P, CSP, CSPP, MK, M, MPK, MP, MPSK, MPS> factory = getFactory();
+        H2HObjectFactory<PK, PPK, P, CSP, CSPP, MK, M, MPK, MP, MPSK, MPS> h2hObjectFactory = factory.getH2HObjectFactory();
 
-        CompSeasonParticipantManager cspm = factory.getCompSeasonParticipantManager(stat);
-        CompSeasonPhaseParticipantManager csppm = factory.getPhaseParticManager(stat);
-        H2HMatchManager mm = h2hObjectFactory.getManager(stat);
-        H2HMatchPartStatManager mpsm = h2hObjectFactory.getPartObjectFactory().getPartStatObjectFactory().getStatManager(stat);
+        CompSeasonParticipantManager<PK, CSP> cspm = factory.getCompSeasonParticipantManager(stat);
+        CompSeasonPhaseParticipantManager<PK, PPK, CSPP> csppm = factory.getPhaseParticManager(stat);
+        H2HMatchManager<MK, M> mm = h2hObjectFactory.getManager(stat);
+        H2HMatchPartStatManager<MPSK, MPS> mpsm = h2hObjectFactory.getPartObjectFactory().getPartStatObjectFactory().getStatManager(stat);
 
         cspKeysFrom = cspm.getCompSeasonsFromParticipant(pFromId);
-        List<? extends CompSeasonPhaseParticipantKey> csppKeysFrom = csppm.getPhaseParticipants(cspKeysFrom);
-        Map<? extends H2HMatchKey, ? extends H2HMatch> mMap = mm.getMatchesForPhaseParticipants(csppKeysFrom);
-        Map<? extends H2HMatchPartStatKey, ? extends H2HMatchPartStat> mpsMap = mpsm.getH2HMatchPartStatMap(cspKeysFrom);
+        List<PPK> csppKeysFrom = csppm.getPhaseParticipants(cspKeysFrom);
+        Map<MK, M> mMap = mm.getMatchesForPhaseParticipants(csppKeysFrom);
+        Map<MPSK, MPS> mpsMap = mpsm.getH2HMatchPartStatMap(cspKeysFrom);
 
-        Set<CompSeasonParticipantKey> cspKeysToExisting = new HashSet<>(cspm.getCompSeasonsFromParticipant(pToId));
-        List<CompSeasonParticipantKey> cspKeysTo = new ArrayList<>();
+        Set<PK> cspKeysToExisting = new HashSet<>(cspm.getCompSeasonsFromParticipant(pToId));
+        List<PK> cspKeysTo = new ArrayList<>();
 
-        for (CompSeasonParticipantKey cspKeyFrom : cspKeysFrom) {
-            CompSeasonParticipantKey keyTo = factory.getCompSeasonParticKey(cspKeyFrom.getSuperKey(), pToId);
+        for (PK cspKeyFrom : cspKeysFrom) {
+            PK keyTo = factory.getCompSeasonParticKey(cspKeyFrom.getSuperKey(), pToId);
             if (!cspKeysToExisting.contains(keyTo))
                 cspKeysTo.add(keyTo);
         }
 
-        List<CompSeasonPhaseParticipantKey> csppKeysTo = new ArrayList<>();
+        List<PPK> csppKeysTo = new ArrayList<>();
 
-        for (CompSeasonPhaseParticipantKey csppKeyFrom : csppKeysFrom)
+        for (PPK csppKeyFrom : csppKeysFrom)
             csppKeysTo.add(factory.getPhaseParticKey(csppKeyFrom.getSuperKey(), pToId));
 
         cspm.insertCompSeasonParticipants(cspKeysTo);
         csppm.insertPhaseParticipantKeyList(csppKeysTo);
 
-        for (Map.Entry<? extends H2HMatchKey, ? extends H2HMatch> me : mMap.entrySet())
+        for (Map.Entry<MK, M> me : mMap.entrySet())
             if (me.getValue().getParticipant1Id() == pFromId)
                 me.getValue().setParticipant1Id(pToId);
             else
@@ -71,7 +76,7 @@ abstract class CompSeasonParticipantDedoubler<S extends CompSeasonParticipantKey
 
         mm.updateMatchMap(mMap);
 
-        for (Map.Entry<? extends H2HMatchPartStatKey, ? extends H2HMatchPartStat> me : mpsMap.entrySet())
+        for (Map.Entry<MPSK, MPS> me : mpsMap.entrySet())
             me.getValue().setParticipantId(pToId);
 
         mpsm.updateMatchPartStatMap(mpsMap);

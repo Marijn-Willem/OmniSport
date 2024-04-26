@@ -1,5 +1,6 @@
 package com.sports.calc.teamsports;
 
+import com.sports.entity.Team;
 import com.sports.entity.TeamMatch;
 import com.sports.entity.key.CompDivisionKey;
 import com.sports.entity.key.CompSeasonPhaseKey;
@@ -26,7 +27,7 @@ public class DivisionStandingProcessor extends TeamStandingProcessor {
     protected void setParticipantsAndMatches() throws SQLException {
         super.setParticipantsAndMatches();
 
-        ParticipantManager tm = new TeamManager(stat);
+        ParticipantManager<Team> tm = new TeamManager(stat);
         TeamMatchManager tmm = new TeamMatchManager(stat);
 
         List<Integer> teamIds = new DbCalculation(stat).getTeamsIdsInCompDivision(cspk.getSuperKey(), cdk);

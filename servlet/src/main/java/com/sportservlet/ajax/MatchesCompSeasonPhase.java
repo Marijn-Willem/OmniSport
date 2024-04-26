@@ -1,9 +1,8 @@
 package com.sportservlet.ajax;
 
-import com.sports.entity.H2HMatch;
-import com.sports.entity.Participant;
+import com.sports.entity.*;
 import com.sports.entity.comparator.H2HMatchKnockoutOrderDate;
-import com.sports.entity.key.CompSeasonPhaseKey;
+import com.sports.entity.key.*;
 import com.sports.entity.manager.H2HMatchManager;
 import com.sports.logic.calculation.DbCalculation;
 import com.sports.logic.factory.CompSeasonParticipantFactory;
@@ -34,15 +33,25 @@ public abstract class MatchesCompSeasonPhase extends SuperResponseServlet {
 
         CompSeasonPhaseKey cspk = new CompSeasonPhaseKey(compSeasonKey, compSeasonPhaseId);
 
-        CompSeasonParticipantFactory factory = new DbCalculation(stat).getCompSeasonParticipantFactory(competitionId);
-        H2HMatchManager h2HMatchManager = factory.getH2HObjectFactory().getManager(stat);
+        CompSeasonParticipantFactory<? extends CompSeasonParticipantKey,
+                ? extends CompSeasonPhaseParticipantKey,
+                ? extends Participant,
+                ? extends SuperKeyEntity,
+                ? extends SuperKeyEntity,
+                ? extends H2HMatchKey,
+                ? extends H2HMatch,
+                ? extends H2HMatchPartKey,
+                ? extends H2HMatchPart,
+                ? extends H2HMatchPartStatKey,
+                ? extends H2HMatchPartStat> factory = new DbCalculation(stat).getCompSeasonParticipantFactory(competitionId);
+        H2HMatchManager<? extends H2HMatchKey, ? extends H2HMatch> h2HMatchManager = factory.getH2HObjectFactory().getManager(stat);
 
-        List<H2HMatch> h2hMatches =
+        List<? extends H2HMatch> h2hMatches =
                 h2HMatchManager.getH2HMatchesFromCompSeasonPhases(Collections.singletonList(cspk));
 
         h2hMatches.sort(new H2HMatchKnockoutOrderDate());
 
-        List<Integer> particIds = new ArrayList<Integer>();
+        List<Integer> particIds = new ArrayList<>();
 
         for (H2HMatch match : h2hMatches) {
             if (match.getParticipant1Id() != null)
@@ -52,7 +61,7 @@ public abstract class MatchesCompSeasonPhase extends SuperResponseServlet {
                 particIds.add(match.getParticipant2Id());
         }
 
-        Map<Integer, Participant> particMap = factory.getParticipantManager(stat).getParticipantMap(particIds);
+        Map<Integer, ? extends Participant> particMap = factory.getParticipantManager(stat).getParticipantMap(particIds);
 
         Writer w = resp.getWriter();
 
@@ -86,7 +95,7 @@ public abstract class MatchesCompSeasonPhase extends SuperResponseServlet {
                 value + "</a>";
     }
 
-    private String getTd(Integer particId, Map<Integer, Participant> particMap, boolean isWinner) {
+    private String getTd(Integer particId, Map<Integer, ? extends Participant> particMap, boolean isWinner) {
         String text = particId != null ? particMap.get(particId).getDescription() : "-";
 
         return "<td" + (isWinner ? " class=\"matchWinner\"" : "") + ">" + text + "</td>";

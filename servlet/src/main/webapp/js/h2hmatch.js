@@ -11,7 +11,7 @@ function getProcessUrl() {
 
     const specificParameters = getSpecificParameters();
 
-    return '/ProcessManageH2HMatch?cid=' + cid + '&sid=' + sid + '&pid=' + pid + '&mid=' + mid +
+    return '/PrepareProcessManageH2HMatch?cid=' + cid + '&sid=' + sid + '&pid=' + pid + '&mid=' + mid +
         '&p1id=' + p1id + '&p2id=' + p2id + '&p1s=' + p1s + '&p2s=' + p2s +
         '&dt=' + dt + '&p1st=' + p1st + (!isEmptyOrNull(specificParameters) ? '&' + specificParameters : '');
 }

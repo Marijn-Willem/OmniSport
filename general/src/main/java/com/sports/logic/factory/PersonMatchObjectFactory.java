@@ -1,9 +1,7 @@
 package com.sports.logic.factory;
 
-import com.sports.entity.PersonMatch;
-import com.sports.entity.key.CompSeasonKey;
-import com.sports.entity.key.CompSeasonPhaseKey;
-import com.sports.entity.key.PersonMatchKey;
+import com.sports.entity.*;
+import com.sports.entity.key.*;
 import com.sports.entity.manager.H2HMatchManager;
 import com.sports.entity.manager.PersonMatchManager;
 import com.sports.logic.calculation.PersonStandingProcessor;
@@ -11,7 +9,17 @@ import com.sports.logic.calculation.StandingProcessor;
 
 import java.sql.Statement;
 
-public class PersonMatchObjectFactory implements H2HObjectFactory<PersonMatchKey, PersonMatch> {
+public class PersonMatchObjectFactory extends H2HObjectFactory<CompSeasonPersonSportKey,
+        CompSeasonPhasePersonSportKey,
+        PersonSport,
+        SuperKeyEntity,
+        SuperKeyEntity,
+        PersonMatchKey,
+        PersonMatch,
+        PersonMatchPartKey,
+        PersonMatchPart,
+        PersonMatchPartStatKey,
+        PersonMatchPartStat> {
     @Override
     public H2HMatchManager<PersonMatchKey, PersonMatch> getManager(Statement stat) {
         return new PersonMatchManager(stat);
@@ -28,7 +36,17 @@ public class PersonMatchObjectFactory implements H2HObjectFactory<PersonMatchKey
     }
 
     @Override
-    public StandingProcessor getStandingProcessor(Statement stat, CompSeasonPhaseKey cspk) {
+    public StandingProcessor<CompSeasonPersonSportKey,
+            CompSeasonPhasePersonSportKey,
+            PersonSport,
+            SuperKeyEntity,
+            SuperKeyEntity,
+            PersonMatchKey,
+            PersonMatch,
+            PersonMatchPartKey,
+            PersonMatchPart,
+            PersonMatchPartStatKey,
+            PersonMatchPartStat> getStandingProcessor(Statement stat, CompSeasonPhaseKey cspk) {
         return new PersonStandingProcessor(stat, cspk);
     }
 
@@ -38,7 +56,7 @@ public class PersonMatchObjectFactory implements H2HObjectFactory<PersonMatchKey
     }
 
     @Override
-    public boolean showMatchListForPhase() {
-        return true;
+    public String getProcessManagePath() {
+        return "ProcessManagePersonMatch";
     }
 }

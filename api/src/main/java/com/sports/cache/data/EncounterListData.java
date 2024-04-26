@@ -2,13 +2,10 @@ package com.sports.cache.data;
 
 import com.sports.cache.util.*;
 import com.sports.calc.h2hsports.DbCalculation;
-import com.sports.entity.CompSeason;
-import com.sports.entity.CompSeasonPhase;
-import com.sports.entity.H2HMatch;
+import com.sports.entity.*;
 import com.sports.entity.comparator.CompSeasonPhaseRoundDescription;
 import com.sports.entity.comparator.CompSeasonStartDate;
-import com.sports.entity.key.CompSeasonKey;
-import com.sports.entity.key.CompSeasonPhaseKey;
+import com.sports.entity.key.*;
 import com.sports.entity.manager.CompSeasonManager;
 import com.sports.entity.manager.CompSeasonPhaseManager;
 import com.sports.logic.factory.CompSeasonParticipantFactory;
@@ -22,7 +19,17 @@ public abstract class EncounterListData extends OutputData {
     final int participant2Id;
     final Integer clientId;
 
-    abstract CompSeasonParticipantFactory getCompSeasonParticipantFactory();
+    abstract CompSeasonParticipantFactory<? extends CompSeasonParticipantKey,
+            ? extends CompSeasonPhaseParticipantKey,
+            ? extends Participant,
+            ? extends SuperKeyEntity,
+            ? extends SuperKeyEntity,
+            ? extends H2HMatchKey,
+            ? extends H2HMatch,
+            ? extends H2HMatchPartKey,
+            ? extends H2HMatchPart,
+            ? extends H2HMatchPartStatKey,
+            ? extends H2HMatchPartStat> getCompSeasonParticipantFactory();
 
     private final List<MatchListCompSeasonFragment> matchListCompSeasonFragmentList = new ArrayList<>();
 

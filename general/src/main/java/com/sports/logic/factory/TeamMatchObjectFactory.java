@@ -1,12 +1,7 @@
 package com.sports.logic.factory;
 
-import com.sports.entity.CompSeason;
-import com.sports.entity.Competition;
-import com.sports.entity.Sport;
-import com.sports.entity.TeamMatch;
-import com.sports.entity.key.CompSeasonKey;
-import com.sports.entity.key.CompSeasonPhaseKey;
-import com.sports.entity.key.TeamMatchKey;
+import com.sports.entity.*;
+import com.sports.entity.key.*;
 import com.sports.entity.manager.CompSeasonManager;
 import com.sports.entity.manager.CompetitionManager;
 import com.sports.entity.manager.H2HMatchManager;
@@ -18,7 +13,17 @@ import com.sports.logic.calculation.TeamStandingProcessor;
 import java.sql.SQLException;
 import java.sql.Statement;
 
-public class TeamMatchObjectFactory implements H2HObjectFactory<TeamMatchKey, TeamMatch> {
+public class TeamMatchObjectFactory extends H2HObjectFactory<CompSeasonTeamKey,
+        CompSeasonPhaseTeamKey,
+        Team,
+        CompSeasonTeam,
+        CompSeasonPhaseTeam,
+        TeamMatchKey,
+        TeamMatch,
+        TeamMatchPartKey,
+        TeamMatchPart,
+        H2HMatchPartStatKey,
+        H2HMatchPartStat> {
     @Override
     public H2HMatchManager<TeamMatchKey, TeamMatch> getManager(Statement stat) {
         return new TeamMatchManager(stat);
@@ -35,7 +40,17 @@ public class TeamMatchObjectFactory implements H2HObjectFactory<TeamMatchKey, Te
     }
 
     @Override
-    public StandingProcessor getStandingProcessor(Statement stat, CompSeasonPhaseKey cspk) throws SQLException {
+    public StandingProcessor<CompSeasonTeamKey,
+            CompSeasonPhaseTeamKey,
+            Team,
+            CompSeasonTeam,
+            CompSeasonPhaseTeam,
+            TeamMatchKey,
+            TeamMatch,
+            TeamMatchPartKey,
+            TeamMatchPart,
+            H2HMatchPartStatKey,
+            H2HMatchPartStat> getStandingProcessor(Statement stat, CompSeasonPhaseKey cspk) throws SQLException {
         Competition competition = new CompetitionManager(stat).getCompetition(cspk.getCompetitionId());
 
         if (competition.getSportId() == Sport.sportIdRugby) {
@@ -52,7 +67,7 @@ public class TeamMatchObjectFactory implements H2HObjectFactory<TeamMatchKey, Te
     }
 
     @Override
-    public boolean showMatchListForPhase() {
-        return false;
+    public String getProcessManagePath() {
+        return "ProcessManageTeamMatch";
     }
 }

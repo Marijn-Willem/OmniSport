@@ -1,10 +1,12 @@
 package com.sportservlet.flush;
 
 import com.sports.cache.key.*;
-import com.sports.entity.H2HMatch;
+import com.sports.entity.*;
+import com.sports.entity.key.*;
 import com.sports.entity.key.ClientCompSeasonKey;
 import com.sports.entity.key.CompSeasonParticipantKey;
 import com.sports.entity.key.H2HMatchKey;
+import com.sports.entity.key.H2HMatchPartKey;
 import com.sports.logic.calculation.DbCalculation;
 import com.sports.logic.factory.CompSeasonParticipantFactory;
 import com.sports.logic.factory.H2HObjectFactory;
@@ -24,11 +26,31 @@ public class H2HMatchFlusher extends CacheFlusher {
 
     @Override
     protected List<CacheKey> getCacheKeys(Statement stat) throws SQLException {
-        CompSeasonParticipantFactory factory = new DbCalculation(stat).getCompSeasonParticipantFactory(h2HMatchKey.getCompetitionId());
+        CompSeasonParticipantFactory<? extends CompSeasonParticipantKey,
+                ? extends CompSeasonPhaseParticipantKey,
+                ? extends Participant,
+                ? extends SuperKeyEntity,
+                ? extends SuperKeyEntity,
+                ? extends H2HMatchKey,
+                ? extends H2HMatch,
+                ? extends H2HMatchPartKey,
+                ? extends H2HMatchPart,
+                ? extends H2HMatchPartStatKey,
+                ? extends H2HMatchPartStat> factory = new DbCalculation(stat).getCompSeasonParticipantFactory(h2HMatchKey.getCompetitionId());
         com.sports.calc.h2hsports.DbCalculation dbCalc = new com.sports.calc.h2hsports.DbCalculation(stat);
-        H2HObjectFactory h2HObjectFactory = factory.getH2HObjectFactory();
+        H2HObjectFactory<? extends CompSeasonParticipantKey,
+                ? extends CompSeasonPhaseParticipantKey,
+                ? extends Participant,
+                ? extends SuperKeyEntity,
+                ? extends SuperKeyEntity,
+                ? extends H2HMatchKey,
+                ? extends H2HMatch,
+                ? extends H2HMatchPartKey,
+                ? extends H2HMatchPart,
+                ? extends H2HMatchPartStatKey,
+                ? extends H2HMatchPartStat> h2HObjectFactory = factory.getH2HObjectFactory();
 
-        H2HMatch h2HMatch = h2HObjectFactory.getManager(stat).getInstanceFromKey(h2HMatchKey);
+        H2HMatch h2HMatch = h2HObjectFactory.getInstance(stat, h2HMatchKey.getSuperKey(), h2HMatchKey.getSpecificId());
         H2HMatch matchNextRound = dbCalc.getH2HMatchNextRound(h2HObjectFactory, h2HMatchKey.getSuperKey(), h2HMatch);
 
         return new ArrayList<>() {{
@@ -70,7 +92,17 @@ public class H2HMatchFlusher extends CacheFlusher {
             cacheKeys.add(pp2Key);
     }
 
-    private StandingParticipantKey getStandingParticipantKey(CompSeasonParticipantFactory factory, Integer participantId) {
+    private StandingParticipantKey getStandingParticipantKey(CompSeasonParticipantFactory<? extends CompSeasonParticipantKey,
+            ? extends CompSeasonPhaseParticipantKey,
+            ? extends Participant,
+            ? extends SuperKeyEntity,
+            ? extends SuperKeyEntity,
+            ? extends H2HMatchKey,
+            ? extends H2HMatch,
+            ? extends H2HMatchPartKey,
+            ? extends H2HMatchPart,
+            ? extends H2HMatchPartStatKey,
+            ? extends H2HMatchPartStat> factory, Integer participantId) {
         if (participantId != null) {
             CompSeasonParticipantKey cspKey = factory.getCompSeasonParticKey(h2HMatchKey.getSuperKey(), participantId);
             return new StandingParticipantKey(cspKey);

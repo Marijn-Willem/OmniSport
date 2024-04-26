@@ -1,10 +1,8 @@
 package com.sportservlet.html;
 
-import com.sports.entity.CompSeasonPhase;
-import com.sports.entity.Participant;
+import com.sports.entity.*;
 import com.sports.entity.comparator.DescribedEntityDescription;
-import com.sports.entity.key.CompSeasonKey;
-import com.sports.entity.key.CompSeasonPhaseKey;
+import com.sports.entity.key.*;
 import com.sports.entity.manager.CompSeasonParticipantManager;
 import com.sports.entity.manager.CompSeasonPhaseParticipantManager;
 import com.sports.entity.manager.ParticipantManager;
@@ -42,11 +40,24 @@ public abstract class ManageParticipantsCompSeasonPhase extends SuperHtmlServlet
         CompSeasonPhaseKey parentKey = new CompSeasonPhaseKey(new CompSeasonKey(competitionId, seasonId), phaseId);
         CompSeasonPhase csp = new com.sports.calc.h2hsports.DbCalculation(stat).getFirstRoundFromParent(parentKey);
 
-        CompSeasonParticipantFactory factory = new DbCalculation(stat).getCompSeasonParticipantFactory(competitionId);
+        CompSeasonParticipantFactory<? extends CompSeasonParticipantKey,
+                ? extends CompSeasonPhaseParticipantKey,
+                ? extends Participant,
+                ? extends SuperKeyEntity,
+                ? extends SuperKeyEntity,
+                ? extends H2HMatchKey,
+                ? extends H2HMatch,
+                ? extends H2HMatchPartKey,
+                ? extends H2HMatchPart,
+                ? extends H2HMatchPartStatKey,
+                ? extends H2HMatchPartStat> factory = new DbCalculation(stat).getCompSeasonParticipantFactory(competitionId);
 
-        ParticipantManager pm = factory.getParticipantManager(stat);
-        CompSeasonParticipantManager cspm = factory.getCompSeasonParticipantManager(stat);
-        CompSeasonPhaseParticipantManager csppm = factory.getPhaseParticManager(stat);
+        ParticipantManager<? extends Participant> pm = factory.getParticipantManager(stat);
+        CompSeasonParticipantManager<? extends CompSeasonParticipantKey, ? extends SuperKeyEntity> cspm =
+                factory.getCompSeasonParticipantManager(stat);
+        CompSeasonPhaseParticipantManager<? extends CompSeasonParticipantKey,
+                ? extends CompSeasonPhaseParticipantKey,
+                ? extends SuperKeyEntity> csppm = factory.getPhaseParticManager(stat);
 
         Set<Integer> idsInPhase = new HashSet<>() {{
             if (csp != null)
@@ -54,7 +65,7 @@ public abstract class ManageParticipantsCompSeasonPhase extends SuperHtmlServlet
         }};
 
         List<Integer> csIds = cspm.getParticipantIdsCompSeason(parentKey.getSuperKey());
-        List<Participant> participantList = pm.getParticipantList(csIds);
+        List<? extends Participant> participantList = pm.getParticipantList(csIds);
         participantList.sort(new DescribedEntityDescription());
 
         Writer w = res.getWriter();

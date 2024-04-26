@@ -17,7 +17,17 @@ import java.util.*;
 import static com.sports.logic.calculation.Calculation.*;
 
 public record DbCalculation(Statement stat) {
-    public CompSeasonParticipantFactory<? extends CompSeasonParticipantKey, ? extends SuperKeyEntity> getCompSeasonParticipantFactory(Competition competition)
+    public CompSeasonParticipantFactory<? extends CompSeasonParticipantKey,
+            ? extends CompSeasonPhaseParticipantKey,
+            ? extends Participant,
+            ? extends SuperKeyEntity,
+            ? extends SuperKeyEntity,
+            ? extends H2HMatchKey,
+            ? extends H2HMatch,
+            ? extends H2HMatchPartKey,
+            ? extends H2HMatchPart,
+            ? extends H2HMatchPartStatKey,
+            ? extends H2HMatchPartStat> getCompSeasonParticipantFactory(Competition competition)
         throws SQLException {
         if (competition.isH2hDouble())
             return new CompSeasonDoubleFactory();
@@ -27,8 +37,17 @@ public record DbCalculation(Statement stat) {
         return Calculation.getCompSeasonParticipantFactory(competition, sport);
     }
 
-    public CompSeasonParticipantFactory<? extends CompSeasonParticipantKey, ? extends SuperKeyEntity> getCompSeasonParticipantFactory(int competitionId)
-        throws SQLException {
+    public CompSeasonParticipantFactory<? extends CompSeasonParticipantKey,
+            ? extends CompSeasonPhaseParticipantKey,
+            ? extends Participant,
+            ? extends SuperKeyEntity,
+            ? extends SuperKeyEntity,
+            ? extends H2HMatchKey,
+            ? extends H2HMatch,
+            ? extends H2HMatchPartKey,
+            ? extends H2HMatchPart,
+            ? extends H2HMatchPartStatKey,
+            ? extends H2HMatchPartStat> getCompSeasonParticipantFactory(int competitionId) throws SQLException {
         return getCompSeasonParticipantFactory(new CompetitionManager(stat).getCompetition(competitionId));
     }
 
@@ -137,7 +156,7 @@ public record DbCalculation(Statement stat) {
         return doubles;
     }
 
-    public <T extends Participant> List<T> getParticipantStandingCompSeasonPhase(CompSeasonPhaseKey cspk)
+    public List<? extends Participant> getParticipantStandingCompSeasonPhase(CompSeasonPhaseKey cspk)
             throws SQLException {
         return getCompSeasonParticipantFactory(cspk.getCompetitionId()).getH2HObjectFactory()
                 .getStandingProcessor(stat, cspk).getStanding();
@@ -162,7 +181,7 @@ public record DbCalculation(Statement stat) {
         Sport sport;
         String name;
 
-        assert personSports.size() > 0;
+        assert !personSports.isEmpty();
         sport = getSport(sportList, personSports.get(0).getSportId());
         assert sport != null;
         name = baseName + " (" + sport.getName() + ")";
@@ -284,7 +303,7 @@ public record DbCalculation(Statement stat) {
             }
         }
 
-        if (personSportsToCreate.size() > 0) {
+        if (!personSportsToCreate.isEmpty()) {
             insertNewPersonSports(psm, personSportsToCreate);
             personSports.addAll(personSportsToCreate);
         }
@@ -447,7 +466,7 @@ public record DbCalculation(Statement stat) {
     private void insertCompSeasonPhasesFromParents(CompSeasonPhaseManager cspm,
                                                    List<CompSeasonPhase> compSeasonPhases,
                                                    List<Integer> parentPhases) throws SQLException {
-        if (compSeasonPhases.size() > 0) {
+        if (!compSeasonPhases.isEmpty()) {
             List<CompSeasonPhase> phasesToInsert = new ArrayList<>();
             List<Integer> phaseIdsToInsert = new ArrayList<>();
 
@@ -457,7 +476,7 @@ public record DbCalculation(Statement stat) {
                 int compSeasonPhaseId = compSeasonPhase.getCompSeasonPhaseKey().getCompSeasonPhaseId();
                 Integer parentPhaseId = compSeasonPhase.getParentPhaseId();
 
-                if ((parentPhases.size() == 0 && parentPhaseId == null) || parentPhases.contains(parentPhaseId)) {
+                if ((parentPhases.isEmpty() && parentPhaseId == null) || parentPhases.contains(parentPhaseId)) {
                     phasesToInsert.add(compSeasonPhase);
                     phaseIdsToInsert.add(compSeasonPhaseId);
                 } else
@@ -523,7 +542,7 @@ public record DbCalculation(Statement stat) {
         List<DoublePersonSport1PersonSport2Key> nonExistKeys = keys.stream().filter(x -> doubleMap.get(x) == null)
                 .toList();
 
-        if (nonExistKeys.size() > 0) {
+        if (!nonExistKeys.isEmpty()) {
             int idStart = dm.getNewId(), id = idStart;
             List<Double> newDoubles = new ArrayList<>();
 
@@ -613,7 +632,7 @@ public record DbCalculation(Statement stat) {
             personSportsToCreate.add(getNewPersonSport(personTo, personSportFrom));
         }
 
-        if (personSportsToCreate.size() > 0) {
+        if (!personSportsToCreate.isEmpty()) {
             insertNewPersonSports(psm, personSportsToCreate);
             personSportsTo.addAll(personSportsToCreate);
         }

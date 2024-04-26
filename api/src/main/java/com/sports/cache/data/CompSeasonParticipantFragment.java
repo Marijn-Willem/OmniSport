@@ -5,9 +5,8 @@ import com.sports.cache.key.CompSeasonParticipantKey;
 import com.sports.cache.util.DescribedEntityUtil;
 import com.sports.cache.util.JsonUtil;
 import com.sports.cache.util.XmlUtil;
-import com.sports.entity.Participant;
-import com.sports.entity.SuperKeyEntity;
-import com.sports.entity.key.CompSeasonKey;
+import com.sports.entity.*;
+import com.sports.entity.key.*;
 import com.sports.logic.calculation.DbCalculation;
 import com.sports.logic.factory.CompSeasonParticipantFactory;
 
@@ -37,7 +36,17 @@ public class CompSeasonParticipantFragment extends WritableFragment {
 
     @Override
     void fill(Statement stat) throws SQLException {
-        CompSeasonParticipantFactory<? extends com.sports.entity.key.CompSeasonParticipantKey, ? extends SuperKeyEntity> factory =
+        CompSeasonParticipantFactory<? extends com.sports.entity.key.CompSeasonParticipantKey,
+                ? extends CompSeasonPhaseParticipantKey,
+                ? extends Participant,
+                ? extends SuperKeyEntity,
+                ? extends SuperKeyEntity,
+                ? extends H2HMatchKey,
+                ? extends H2HMatch,
+                ? extends H2HMatchPartKey,
+                ? extends H2HMatchPart,
+                ? extends H2HMatchPartStatKey,
+                ? extends H2HMatchPartStat> factory =
                 new DbCalculation(stat).getCompSeasonParticipantFactory(competitionId);
 
         Participant participant = factory.getParticipantManager(stat).getEntityFromId(participantId);

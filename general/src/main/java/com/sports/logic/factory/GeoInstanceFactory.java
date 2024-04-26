@@ -13,7 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class GeoInstanceFactory implements EntityInstanceFactory {
+public class GeoInstanceFactory extends EntityInstanceFactory<GeoInstanceKey, GeoInstance> {
     @Override
     public EntityInstanceManager<GeoInstanceKey, GeoInstance> getManager(Statement stat) {
         return new GeoInstanceManager(stat);
@@ -30,6 +30,11 @@ public class GeoInstanceFactory implements EntityInstanceFactory {
     }
 
     @Override
+    public String getProcessManagePath() {
+        return "ProcessManageGeoInstance";
+    }
+
+    @Override
     public List<CompSeasonKey> getCompSeasonsRelatedToEntity(int entityId, Statement stat) throws SQLException {
         List<Noc> nocList = new NocManager(stat).getNocsFromGeo(entityId);
         List<Integer> nocIds = nocList.stream().map(Noc::getId).collect(Collectors.toList());
@@ -39,7 +44,7 @@ public class GeoInstanceFactory implements EntityInstanceFactory {
         return new ArrayList<>() {{
             addAll(new CompSeasonTeamManager(stat).getCompSeasonsForParticipants(teamIds));
             addAll(new EventPartLocationManager(stat).getEventPartLocationsForGeo(entityId)
-                    .stream().map(x -> x.getSuperKey().getSuperKey().getSuperKey()).collect(Collectors.toList()));
+                    .stream().map(x -> x.getSuperKey().getSuperKey().getSuperKey()).toList());
         }};
     }
 }

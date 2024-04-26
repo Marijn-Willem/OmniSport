@@ -13,7 +13,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class PersonInstanceFactory implements EntityInstanceFactory {
+public class PersonInstanceFactory extends EntityInstanceFactory<PersonInstanceKey, PersonInstance> {
     @Override
     public EntityInstanceManager<PersonInstanceKey, PersonInstance> getManager(Statement stat) {
         return new PersonInstanceManager(stat);
@@ -27,6 +27,11 @@ public class PersonInstanceFactory implements EntityInstanceFactory {
     @Override
     public PersonInstance getInstance() {
         return new PersonInstance();
+    }
+
+    @Override
+    public String getProcessManagePath() {
+        return "ProcessManagePersonInstance";
     }
 
     @Override

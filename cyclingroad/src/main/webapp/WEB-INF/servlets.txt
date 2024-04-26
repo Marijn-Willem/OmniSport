@@ -49,4 +49,9 @@ com.cyclingroad.servlet.html.ManageEntityInstance
 com.sportservlet.dispatch.PrepareEntityInstancePortalPerson
 com.sportservlet.ajax.EntityInstanceList
 com.sportservlet.ajax.ProcessInsertEntityInstance
-com.sportservlet.ajax.ProcessManageEntityInstance
+com.sportservlet.dispatch.PrepareProcessManageEntityInstance
+com.sportservlet.ajax.ProcessManageClubInstance
+com.sportservlet.ajax.ProcessManageEquipeInstance
+com.sportservlet.ajax.ProcessManageGeoInstance
+com.sportservlet.ajax.ProcessManageNocInstance
+com.sportservlet.ajax.ProcessManagePersonInstance

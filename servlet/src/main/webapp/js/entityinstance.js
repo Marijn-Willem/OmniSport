@@ -31,7 +31,7 @@ function getProcessUrl() {
     const eiid = getValueFromElementByName('inpUpd');
     const nm = getValueFromElementByName('nm');
 
-    return '/ProcessManageEntityInstance?eid=' + eid + '&eiid=' + eiid + '&nm=' + nm + '&enm=' + enm;
+    return '/PrepareProcessManageEntityInstance?eid=' + eid + '&eiid=' + eiid + '&nm=' + nm + '&enm=' + enm;
 }
 
 function checkInput() {

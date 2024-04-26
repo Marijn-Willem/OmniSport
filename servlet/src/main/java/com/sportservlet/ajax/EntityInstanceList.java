@@ -2,6 +2,7 @@ package com.sportservlet.ajax;
 
 import com.sports.entity.EntityInstance;
 import com.sports.entity.comparator.EntityInstanceStartDate;
+import com.sports.entity.key.EntityInstanceKey;
 import com.sports.logic.calculation.Calculation;
 import com.sports.logic.factory.EntityInstanceFactory;
 import com.sports.logic.util.Util;
@@ -23,7 +24,8 @@ public class EntityInstanceList extends SuperResponseServlet {
         int eid = getIntValuedParameterValue(req, "eid");
         String enm = req.getParameter("enm");
 
-        EntityInstanceFactory factory = Calculation.getEntityInstanceFactory(enm);
+        EntityInstanceFactory<? extends EntityInstanceKey, ? extends EntityInstance> factory =
+                Calculation.getEntityInstanceFactory(enm);
         assert factory != null;
         List<? extends EntityInstance> entityInstances = factory.getManager(stat).getInstancesForEntity(eid);
 

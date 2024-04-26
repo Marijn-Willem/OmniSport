@@ -25,11 +25,6 @@ public class CompSeasonPhaseDoubleManager extends CompSeasonPhaseParticipantMana
     }
 
     @Override
-    SuperKeyEntity getInstanceFromResultSet(ResultSet rs) throws SQLException {
-        return null;
-    }
-
-    @Override
     CompSeasonPhaseDoubleKey getSuperKeyFromResultSet(ResultSet rs) throws SQLException {
         return new CompSeasonPhaseDoubleKey(((CompSeasonPhaseManager)getCachedSuperManager()).getSuperKeyFromResultSet(rs),
                 rs.getInt(getSpecificIdColumn()));

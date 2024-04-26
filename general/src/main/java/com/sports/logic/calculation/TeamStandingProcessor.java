@@ -3,12 +3,8 @@ package com.sports.logic.calculation;
 import com.sports.entity.*;
 import com.sports.entity.comparator.ParticipantStandingUSA;
 import com.sports.entity.comparator.SuperComparator;
-import com.sports.entity.key.CompDivisionKey;
-import com.sports.entity.key.CompSeasonKey;
-import com.sports.entity.key.CompSeasonPhaseKey;
-import com.sports.entity.key.CompSeasonPhaseTeamKey;
+import com.sports.entity.key.*;
 import com.sports.entity.manager.*;
-import com.sports.logic.factory.CompSeasonParticipantFactory;
 import com.sports.logic.factory.CompSeasonTeamFactory;
 import com.sports.logic.util.Util;
 
@@ -19,7 +15,17 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-public class TeamStandingProcessor extends StandingProcessor<Team> {
+public class TeamStandingProcessor extends StandingProcessor<CompSeasonTeamKey,
+        CompSeasonPhaseTeamKey,
+        Team,
+        CompSeasonTeam,
+        CompSeasonPhaseTeam,
+        TeamMatchKey,
+        TeamMatch,
+        TeamMatchPartKey,
+        TeamMatchPart,
+        H2HMatchPartStatKey,
+        H2HMatchPartStat> {
     private final int sportId;
 
     private final Map<Integer, CompSeasonTeam> compSeasonTeamMap = new HashMap<>();
@@ -62,7 +68,7 @@ public class TeamStandingProcessor extends StandingProcessor<Team> {
     }
 
     @Override
-    protected void processH2HMatch(H2HMatch h2HMatch) {
+    protected void processH2HMatch(TeamMatch h2HMatch) {
         Team teamHome = particMap.get(h2HMatch.getParticipant1Id());
         Team teamAway = particMap.get(h2HMatch.getParticipant2Id());
 
@@ -110,7 +116,7 @@ public class TeamStandingProcessor extends StandingProcessor<Team> {
     }
 
     @Override
-    protected CompSeasonParticipantFactory getFactory() {
+    protected CompSeasonTeamFactory getFactory() {
         return new CompSeasonTeamFactory();
     }
 

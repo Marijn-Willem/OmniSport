@@ -15,7 +15,17 @@ import java.util.Map;
 
 import static com.sports.logic.calculation.Calculation.*;
 
-class PersonSportDedoubler extends CompSeasonParticipantDedoubler<CompSeasonPersonSportKey, SuperKeyEntity> {
+class PersonSportDedoubler extends CompSeasonParticipantDedoubler<CompSeasonPersonSportKey,
+        CompSeasonPhasePersonSportKey,
+        PersonSport,
+        SuperKeyEntity,
+        SuperKeyEntity,
+        PersonMatchKey,
+        PersonMatch,
+        PersonMatchPartKey,
+        PersonMatchPart,
+        PersonMatchPartStatKey,
+        PersonMatchPartStat> {
     CompSeasonPersonSportFactory getFactory() {
         return new CompSeasonPersonSportFactory();
     }

@@ -3,8 +3,9 @@ package com.sports.cache.data;
 import com.sports.cache.util.DataFragmentUtil;
 import com.sports.cache.util.JsonUtil;
 import com.sports.cache.util.XmlUtil;
-import com.sports.entity.Participant;
+import com.sports.entity.*;
 import com.sports.entity.comparator.DescribedEntityDescription;
+import com.sports.entity.key.*;
 import com.sports.logic.calculation.DbCalculation;
 import com.sports.logic.factory.CompSeasonParticipantFactory;
 
@@ -20,8 +21,17 @@ public abstract class ParticipantListData extends OutputData {
 
     private final List<ParticipantFragment> participantFragments = new ArrayList<>();
 
-    abstract List<Integer> getParticipantIds(Statement stat, CompSeasonParticipantFactory factory)
-            throws SQLException;
+    abstract List<Integer> getParticipantIds(Statement stat, CompSeasonParticipantFactory<? extends CompSeasonParticipantKey,
+            ? extends CompSeasonPhaseParticipantKey,
+            ? extends Participant,
+            ? extends SuperKeyEntity,
+            ? extends SuperKeyEntity,
+            ? extends H2HMatchKey,
+            ? extends H2HMatch,
+            ? extends H2HMatchPartKey,
+            ? extends H2HMatchPart,
+            ? extends H2HMatchPartStatKey,
+            ? extends H2HMatchPartStat> factory) throws SQLException;
 
     public ParticipantListData(int competitionId, int seasonId, Integer clientId) {
         this.competitionId = competitionId;
@@ -32,9 +42,19 @@ public abstract class ParticipantListData extends OutputData {
     @Override
     public void fill(Statement stat) throws SQLException {
         if (!new com.sports.calc.alcifo.DbCalculation(stat).isAlcifo(competitionId)) {
-            CompSeasonParticipantFactory factory = new DbCalculation(stat).getCompSeasonParticipantFactory(competitionId);
+            CompSeasonParticipantFactory<? extends CompSeasonParticipantKey,
+                    ? extends CompSeasonPhaseParticipantKey,
+                    ? extends Participant,
+                    ? extends SuperKeyEntity,
+                    ? extends SuperKeyEntity,
+                    ? extends H2HMatchKey,
+                    ? extends H2HMatch,
+                    ? extends H2HMatchPartKey,
+                    ? extends H2HMatchPart,
+                    ? extends H2HMatchPartStatKey,
+                    ? extends H2HMatchPartStat> factory = new DbCalculation(stat).getCompSeasonParticipantFactory(competitionId);
             List<Integer> participantIds = getParticipantIds(stat, factory);
-            List<Participant> participants = factory.getParticipantManager(stat).getParticipantList(participantIds);
+            List<? extends Participant> participants = factory.getParticipantManager(stat).getParticipantList(participantIds);
             participants.sort(new DescribedEntityDescription());
 
             participantFragments.addAll(participants.stream().map(x ->

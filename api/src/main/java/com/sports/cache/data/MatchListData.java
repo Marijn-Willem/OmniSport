@@ -5,11 +5,10 @@ import com.sports.cache.key.MatchListKey;
 import com.sports.cache.util.DataFragmentUtil;
 import com.sports.cache.util.JsonUtil;
 import com.sports.cache.util.XmlUtil;
-import com.sports.entity.CompSeasonPhase;
-import com.sports.entity.H2HMatch;
+import com.sports.entity.*;
 import com.sports.entity.comparator.CompSeasonPhaseRoundDescription;
 import com.sports.entity.comparator.MatchDate;
-import com.sports.entity.key.CompSeasonKey;
+import com.sports.entity.key.*;
 import com.sports.entity.manager.CompSeasonPhaseManager;
 import com.sports.entity.manager.H2HMatchManager;
 import com.sports.logic.calculation.DbCalculation;
@@ -29,9 +28,18 @@ public class MatchListData extends OutputData {
 
 	private final List<MatchListPhaseFragment> matchListPhaseFragmentList = new ArrayList<>();
 
-	List<H2HMatch> getH2HMatches(Statement stat, CompSeasonParticipantFactory factory,
-								 CompSeasonKey compSeasonKey) throws SQLException {
-		H2HMatchManager manager = factory.getH2HObjectFactory().getManager(stat);
+	<MK extends H2HMatchKey, M extends H2HMatch> List<M> getH2HMatches(Statement stat, CompSeasonParticipantFactory<? extends CompSeasonParticipantKey,
+			? extends CompSeasonPhaseParticipantKey,
+			? extends Participant,
+			? extends SuperKeyEntity,
+			? extends SuperKeyEntity,
+			MK,
+			M,
+			? extends H2HMatchPartKey,
+			? extends H2HMatchPart,
+			? extends H2HMatchPartStatKey,
+			? extends H2HMatchPartStat> factory, CompSeasonKey compSeasonKey) throws SQLException {
+		H2HMatchManager<MK, M> manager = factory.getH2HObjectFactory().getManager(stat);
 		return manager.getH2HMatchList(compSeasonKey, null);
 	}
 
@@ -55,8 +63,18 @@ public class MatchListData extends OutputData {
 	public void fill(Statement stat) throws SQLException {
 		CompSeasonKey compSeasonKey = new CompSeasonKey(competitionId, seasonId);
 
-		CompSeasonParticipantFactory factory = new DbCalculation(stat).getCompSeasonParticipantFactory(competitionId);
-		List<H2HMatch> matchList = getH2HMatches(stat, factory, compSeasonKey);
+		CompSeasonParticipantFactory<? extends CompSeasonParticipantKey,
+				? extends CompSeasonPhaseParticipantKey,
+				? extends Participant,
+				? extends SuperKeyEntity,
+				? extends SuperKeyEntity,
+				? extends H2HMatchKey,
+				? extends H2HMatch,
+				? extends H2HMatchPartKey,
+				? extends H2HMatchPart,
+				? extends H2HMatchPartStatKey,
+				? extends H2HMatchPartStat> factory = new DbCalculation(stat).getCompSeasonParticipantFactory(competitionId);
+		List<? extends H2HMatch> matchList = getH2HMatches(stat, factory, compSeasonKey);
 		matchList.sort(new MatchDate());
 
 		Map<Integer, List<H2HMatch>> matchesByCompSeasonPhase = new HashMap<>() {{

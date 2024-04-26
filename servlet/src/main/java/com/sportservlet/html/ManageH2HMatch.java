@@ -4,9 +4,7 @@ import com.sports.calc.h2hsports.DbCalculation;
 import com.sports.entity.*;
 import com.sports.entity.comparator.CompSeasonPhaseRoundDescription;
 import com.sports.entity.comparator.DescribedEntityDescription;
-import com.sports.entity.key.CompSeasonParticipantKey;
-import com.sports.entity.key.CompSeasonPhaseKey;
-import com.sports.entity.key.H2HMatchKey;
+import com.sports.entity.key.*;
 import com.sports.entity.manager.CompSeasonPhaseManager;
 import com.sports.entity.manager.CompetitionManager;
 import com.sports.entity.manager.SportManager;
@@ -67,9 +65,30 @@ public abstract class ManageH2HMatch extends ManageEntity {
         Sport sport = new SportManager(stat).getSport(competition.getSportId());
         String participantString = sport.isTeam() ? "Team" : competition.isH2hDouble() ? "Double" : "Person";
 
-        CompSeasonParticipantFactory<? extends CompSeasonParticipantKey, ? extends SuperKeyEntity> factory =
+        CompSeasonParticipantFactory<? extends CompSeasonParticipantKey,
+                ? extends CompSeasonPhaseParticipantKey,
+                ? extends Participant,
+                ? extends SuperKeyEntity,
+                ? extends SuperKeyEntity,
+                ? extends H2HMatchKey,
+                ? extends H2HMatch,
+                ? extends H2HMatchPartKey,
+                ? extends H2HMatchPart,
+                ? extends H2HMatchPartStatKey,
+                ? extends H2HMatchPartStat> factory =
                 new com.sports.logic.calculation.DbCalculation(stat).getCompSeasonParticipantFactory(competition);
-        H2HObjectFactory<? extends H2HMatchKey, ? extends H2HMatch> h2hObjectFactory = factory.getH2HObjectFactory();
+
+        H2HObjectFactory<? extends CompSeasonParticipantKey,
+                ? extends CompSeasonPhaseParticipantKey,
+                ? extends Participant,
+                ? extends SuperKeyEntity,
+                ? extends SuperKeyEntity,
+                ? extends H2HMatchKey,
+                ? extends H2HMatch,
+                ? extends H2HMatchPartKey,
+                ? extends H2HMatchPart,
+                ? extends H2HMatchPartStatKey,
+                ? extends H2HMatchPartStat> h2hObjectFactory = factory.getH2HObjectFactory();
 
         H2HMatch h2HMatch = null;
 

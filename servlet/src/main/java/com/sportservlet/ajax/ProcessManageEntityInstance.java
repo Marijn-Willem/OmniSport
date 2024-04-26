@@ -3,7 +3,6 @@ package com.sportservlet.ajax;
 import com.sports.entity.EntityInstance;
 import com.sports.entity.key.EntityInstanceKey;
 import com.sports.entity.manager.SuperKeySuperManager;
-import com.sports.logic.calculation.Calculation;
 import com.sports.logic.factory.EntityInstanceFactory;
 import com.sportservlet.flush.CacheFlusher;
 import com.sportservlet.flush.EntityInstanceFlusher;
@@ -11,33 +10,35 @@ import jakarta.servlet.http.HttpServletRequest;
 
 import java.sql.Statement;
 
-public class ProcessManageEntityInstance extends ProcessManageSuperKeyEntity<EntityInstanceKey, EntityInstance> {
+abstract class ProcessManageEntityInstance<EIK extends EntityInstanceKey, EI extends EntityInstance> extends ProcessManageSuperKeyEntity<EIK, EI> {
     private String entityName;
-    private EntityInstanceFactory entityInstanceFactory;
+    private EntityInstanceFactory<EIK, EI> entityInstanceFactory;
+
+    abstract EntityInstanceFactory<EIK, EI> getEntityInstanceFactory();
 
     @Override
     protected void initSpecific(Statement stat, HttpServletRequest req) {
         entityName = req.getParameter("enm");
-        entityInstanceFactory = Calculation.getEntityInstanceFactory(entityName);
+        entityInstanceFactory = getEntityInstanceFactory();
     }
 
     @Override
-    protected SuperKeySuperManager<EntityInstanceKey, EntityInstance> getSuperManager(Statement stat) {
-        return (SuperKeySuperManager<EntityInstanceKey, EntityInstance>) entityInstanceFactory.getManager(stat);
+    protected SuperKeySuperManager<EIK, EI> getSuperManager(Statement stat) {
+        return entityInstanceFactory.getManager(stat);
     }
 
     @Override
-    protected EntityInstanceKey getNewSuperKey(SuperKeySuperManager<EntityInstanceKey, EntityInstance> superManager, HttpServletRequest req) {
+    protected EIK getNewSuperKey(SuperKeySuperManager<EIK, EI> superManager, HttpServletRequest req) {
         return null;
     }
 
     @Override
-    protected String getUpdateIdStr(EntityInstanceKey superKey) {
+    protected String getUpdateIdStr(EIK superKey) {
         return Integer.toString(superKey.getInstanceId());
     }
 
     @Override
-    protected EntityInstanceKey getSuperKeyFromRequest(HttpServletRequest req) {
+    protected EIK getSuperKeyFromRequest(HttpServletRequest req) {
         int eid = getIntValuedParameterValue(req, "eid");
         int eiid = getIntValuedParameterValue(req, "eiid");
 
@@ -45,7 +46,7 @@ public class ProcessManageEntityInstance extends ProcessManageSuperKeyEntity<Ent
     }
 
     @Override
-    protected EntityInstance getNewEntity() {
+    protected EI getNewEntity() {
         return entityInstanceFactory.getInstance();
     }
 

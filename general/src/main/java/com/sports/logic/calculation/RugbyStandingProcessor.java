@@ -41,7 +41,7 @@ public class RugbyStandingProcessor extends TeamStandingProcessor {
 
         List<TeamMatchKey> teamMatchKeys = new ArrayList<>();
 
-        for (H2HMatch teamMatch : h2HMatches)
+        for (TeamMatch teamMatch : h2HMatches)
             teamMatchKeys.add(new TeamMatchKey(cspk.getSuperKey(), teamMatch.getSpecificId()));
 
         TeamMatchActionManager mam = new TeamMatchActionManager(stat);
@@ -52,7 +52,7 @@ public class RugbyStandingProcessor extends TeamStandingProcessor {
         h2HMatches.sort(new MatchId());
         matchActionList.sort(new MatchActionMatch());
 
-        if (matchActionList.size() > 0)
+        if (!matchActionList.isEmpty())
             curMatchIndX = getIndexNextMatch(0, matchActionList.get(0).getTeamMatchId());
 
         for (TeamMatchAction matchAction : matchActionList) {
@@ -76,7 +76,7 @@ public class RugbyStandingProcessor extends TeamStandingProcessor {
     }
 
     @Override
-    protected void processH2HMatch(H2HMatch h2HMatch) {
+    protected void processH2HMatch(TeamMatch h2HMatch) {
         super.processH2HMatch(h2HMatch);
 
         if (compSeason.getLossDiffBonus() != null && h2HMatch.getScore1_1() != null && h2HMatch.getScore1_2() != null) {
@@ -96,21 +96,21 @@ public class RugbyStandingProcessor extends TeamStandingProcessor {
     }
 
     private void processBonusPointsMatch(int curMatchIndX, int triesHome, int triesAway) {
-        TeamMatch curMatch = (TeamMatch)h2HMatches.get(curMatchIndX);
+        TeamMatch curMatch = h2HMatches.get(curMatchIndX);
         int triesDiff = triesHome - triesAway;
         processBonusPoints(particMap.get(curMatch.getTeamHomeId()), triesHome, triesDiff);
         processBonusPoints(particMap.get(curMatch.getTeamAwayId()), triesAway, -triesDiff);
     }
 
-    private void processBonusPoints(Participant participant, int tries, int triesDiff) {
+    private void processBonusPoints(Team participant, int tries, int triesDiff) {
         if (compSeason.getTriesAbsBonus() != null && tries >= compSeason.getTriesAbsBonus()) {
             participant.addPoints(1);
-            ((Team)participant).addBonusPoint();
+            participant.addBonusPoint();
         }
 
         if (compSeason.getTriesRelBonus() != null && triesDiff >= compSeason.getTriesRelBonus()) {
             participant.addPoints(1);
-            ((Team)participant).addBonusPoint();
+            participant.addBonusPoint();
         }
     }
 
@@ -123,7 +123,7 @@ public class RugbyStandingProcessor extends TeamStandingProcessor {
         return nextIndX;
     }
 
-    private TeamMatch getTeamMatchFromIndex(List<H2HMatch> matches, int indX) {
-        return (TeamMatch)matches.get(indX);
+    private TeamMatch getTeamMatchFromIndex(List<TeamMatch> matches, int indX) {
+        return matches.get(indX);
     }
 }

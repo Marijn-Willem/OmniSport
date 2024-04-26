@@ -20,7 +20,8 @@ import java.util.stream.Collectors;
 public record DbCalculation(Statement stat) {
     public List<Team> getStandingCompSeasonPhase(CompSeasonPhaseKey cspk)
             throws SQLException {
-        return new com.sports.logic.calculation.DbCalculation(stat).getParticipantStandingCompSeasonPhase(cspk);
+        return new com.sports.logic.calculation.DbCalculation(stat).getParticipantStandingCompSeasonPhase(cspk)
+                .stream().map(x -> (Team)x).toList();
     }
 
     public List<Team> getDivisionStanding(CompSeasonPhaseKey cspk, CompDivisionKey csd) throws SQLException {

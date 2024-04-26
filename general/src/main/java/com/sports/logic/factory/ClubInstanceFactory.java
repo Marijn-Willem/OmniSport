@@ -15,7 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class ClubInstanceFactory implements EntityInstanceFactory {
+public class ClubInstanceFactory extends EntityInstanceFactory<ClubInstanceKey, ClubInstance> {
     @Override
     public EntityInstanceManager<ClubInstanceKey, ClubInstance> getManager(Statement stat) {
         return new ClubInstanceManager(stat);
@@ -29,6 +29,11 @@ public class ClubInstanceFactory implements EntityInstanceFactory {
     @Override
     public ClubInstance getInstance() {
         return new ClubInstance();
+    }
+
+    @Override
+    public String getProcessManagePath() {
+        return "ProcessManageClubInstance";
     }
 
     @Override

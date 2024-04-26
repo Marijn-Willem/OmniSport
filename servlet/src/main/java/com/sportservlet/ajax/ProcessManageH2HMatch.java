@@ -1,10 +1,9 @@
 package com.sportservlet.ajax;
 
-import com.sports.entity.H2HMatch;
-import com.sports.entity.key.H2HMatchKey;
+import com.sports.entity.*;
+import com.sports.entity.key.*;
 import com.sports.entity.manager.H2HMatchManager;
 import com.sports.entity.manager.SuperKeySuperManager;
-import com.sports.logic.calculation.DbCalculation;
 import com.sports.logic.factory.CompSeasonParticipantFactory;
 import com.sports.logic.factory.H2HObjectFactory;
 import com.sportservlet.flush.CacheFlusher;
@@ -15,30 +14,62 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.time.LocalDateTime;
 
-public class ProcessManageH2HMatch extends ProcessManageSuperKeyEntity<H2HMatchKey, H2HMatch> {
-    private CompSeasonParticipantFactory factory;
-    private H2HObjectFactory h2HObjectFactory;
+public abstract class ProcessManageH2HMatch<MK extends H2HMatchKey, M extends H2HMatch> extends ProcessManageSuperKeyEntity<MK, M> {
+    private CompSeasonParticipantFactory<? extends CompSeasonParticipantKey,
+            ? extends CompSeasonPhaseParticipantKey,
+            ? extends Participant,
+            ? extends SuperKeyEntity,
+            ? extends SuperKeyEntity,
+            MK,
+            M,
+            ? extends H2HMatchPartKey,
+            ? extends H2HMatchPart,
+            ? extends H2HMatchPartStatKey,
+            ? extends H2HMatchPartStat> factory;
 
-    protected SuperKeySuperManager<H2HMatchKey, H2HMatch> getSuperManager(Statement stat) {
+    private H2HObjectFactory<? extends CompSeasonParticipantKey,
+            ? extends CompSeasonPhaseParticipantKey,
+            ? extends Participant,
+            ? extends SuperKeyEntity,
+            ? extends SuperKeyEntity,
+            MK,
+            M,
+            ? extends H2HMatchPartKey,
+            ? extends H2HMatchPart,
+            ? extends H2HMatchPartStatKey,
+            ? extends H2HMatchPartStat> h2HObjectFactory;
+
+    protected abstract CompSeasonParticipantFactory<? extends CompSeasonParticipantKey,
+            ? extends CompSeasonPhaseParticipantKey,
+            ? extends Participant,
+            ? extends SuperKeyEntity,
+            ? extends SuperKeyEntity,
+            MK,
+            M,
+            ? extends H2HMatchPartKey,
+            ? extends H2HMatchPart,
+            ? extends H2HMatchPartStatKey,
+            ? extends H2HMatchPartStat> getFactory();
+
+    protected SuperKeySuperManager<MK, M> getSuperManager(Statement stat) {
         return h2HObjectFactory.getManager(stat);
     }
 
-    protected H2HMatchKey getNewSuperKey(SuperKeySuperManager<H2HMatchKey, H2HMatch> superManager,
-                               HttpServletRequest req) throws SQLException {
-        int matchId = ((H2HMatchManager)superManager).getNewSpecId(compSeasonKey);
+    protected MK getNewSuperKey(SuperKeySuperManager<MK, M> superManager, HttpServletRequest req) throws SQLException {
+        int matchId = ((H2HMatchManager<MK, M>)superManager).getNewSpecId(compSeasonKey);
         return h2HObjectFactory.getKey(compSeasonKey, matchId);
     }
 
-    protected String getUpdateIdStr(H2HMatchKey superKey) {
+    protected String getUpdateIdStr(MK superKey) {
         return "" + superKey.getSpecificId();
     }
 
-    protected H2HMatchKey getSuperKeyFromRequest(HttpServletRequest req) {
+    protected MK getSuperKeyFromRequest(HttpServletRequest req) {
         int matchId = Integer.parseInt(req.getParameter("mid"));
         return h2HObjectFactory.getKey(compSeasonKey, matchId);
     }
 
-    protected H2HMatch getNewEntity() {
+    protected M getNewEntity() {
         return h2HObjectFactory.getMatch();
     }
 
@@ -67,7 +98,7 @@ public class ProcessManageH2HMatch extends ProcessManageSuperKeyEntity<H2HMatchK
 
     @Override
     protected void initSpecific(Statement stat, HttpServletRequest req) throws SQLException {
-        factory = new DbCalculation(stat).getCompSeasonParticipantFactory(competitionId);
+        factory = getFactory();
         h2HObjectFactory = factory.getH2HObjectFactory();
     }
 

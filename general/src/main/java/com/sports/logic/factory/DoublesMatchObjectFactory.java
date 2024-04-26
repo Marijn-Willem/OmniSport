@@ -1,17 +1,25 @@
 package com.sports.logic.factory;
 
-import com.sports.entity.DoublesMatch;
-import com.sports.entity.key.CompSeasonKey;
-import com.sports.entity.key.CompSeasonPhaseKey;
-import com.sports.entity.key.DoublesMatchKey;
+import com.sports.entity.*;
+import com.sports.entity.Double;
+import com.sports.entity.key.*;
 import com.sports.entity.manager.DoublesMatchManager;
 import com.sports.entity.manager.H2HMatchManager;
 import com.sports.logic.calculation.DoubleStandingProcessor;
-import com.sports.logic.calculation.StandingProcessor;
 
 import java.sql.Statement;
 
-public class DoublesMatchObjectFactory implements H2HObjectFactory<DoublesMatchKey, DoublesMatch> {
+public class DoublesMatchObjectFactory extends H2HObjectFactory<CompSeasonDoubleKey,
+        CompSeasonPhaseDoubleKey,
+        Double,
+        SuperKeyEntity,
+        SuperKeyEntity,
+        DoublesMatchKey,
+        DoublesMatch,
+        DoublesMatchPartKey,
+        DoublesMatchPart,
+        DoublesMatchPartStatKey,
+        DoublesMatchPartStat> {
     @Override
     public H2HMatchManager<DoublesMatchKey, DoublesMatch> getManager(Statement stat) {
         return new DoublesMatchManager(stat);
@@ -28,7 +36,7 @@ public class DoublesMatchObjectFactory implements H2HObjectFactory<DoublesMatchK
     }
 
     @Override
-    public StandingProcessor getStandingProcessor(Statement stat, CompSeasonPhaseKey cspk) {
+    public DoubleStandingProcessor getStandingProcessor(Statement stat, CompSeasonPhaseKey cspk) {
         return new DoubleStandingProcessor(stat, cspk);
     }
 
@@ -38,7 +46,7 @@ public class DoublesMatchObjectFactory implements H2HObjectFactory<DoublesMatchK
     }
 
     @Override
-    public boolean showMatchListForPhase() {
-        return true;
+    public String getProcessManagePath() {
+        return "ProcessManageDoublesMatch";
     }
 }

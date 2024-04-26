@@ -2,7 +2,10 @@ com.darts.servlet.html.CompSeasonPortal
 com.sportservlet.ajax.CompetitionList
 com.darts.servlet.dispatch.ProcessLeg
 com.darts.servlet.html.CompSeasonPersonImport
-com.sportservlet.ajax.ProcessManageH2HMatch
+com.sportservlet.dispatch.PrepareProcessManageH2HMatch
+com.sportservlet.ajax.ProcessManagePersonMatch
+com.sportservlet.ajax.ProcessManageDoublesMatch
+com.sportservlet.ajax.ProcessManageTeamMatch
 com.sportservlet.ajax.MatchMatrix
 com.darts.servlet.html.LiveMatch
 com.sportservlet.ajax.ProcessCompSeasonPersonImport

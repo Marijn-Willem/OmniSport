@@ -15,7 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class NocInstanceFactory implements EntityInstanceFactory {
+public class NocInstanceFactory extends EntityInstanceFactory<NocInstanceKey, NocInstance> {
     @Override
     public EntityInstanceManager<NocInstanceKey, NocInstance> getManager(Statement stat) {
         return new NocInstanceManager(stat);
@@ -29,6 +29,11 @@ public class NocInstanceFactory implements EntityInstanceFactory {
     @Override
     public NocInstance getInstance() {
         return new NocInstance();
+    }
+
+    @Override
+    public String getProcessManagePath() {
+        return "ProcessManageNocInstance";
     }
 
     @Override

@@ -1,16 +1,15 @@
 package com.sports.logic.factory;
 
-import com.sports.entity.H2HMatch;
-import com.sports.entity.Participant;
-import com.sports.entity.SuperKeyEntity;
+import com.sports.entity.*;
+import com.sports.entity.Double;
 import com.sports.entity.key.*;
 import com.sports.entity.manager.*;
 
 import java.sql.Statement;
 
-public class CompSeasonDoubleFactory implements CompSeasonParticipantFactory<CompSeasonDoubleKey, SuperKeyEntity> {
+public class CompSeasonDoubleFactory implements CompSeasonParticipantFactory<CompSeasonDoubleKey, CompSeasonPhaseDoubleKey, Double, SuperKeyEntity, SuperKeyEntity, DoublesMatchKey, DoublesMatch, DoublesMatchPartKey, DoublesMatchPart, DoublesMatchPartStatKey, DoublesMatchPartStat> {
     @Override
-    public H2HObjectFactory<? extends H2HMatchKey, ? extends H2HMatch> getH2HObjectFactory() {
+    public DoublesMatchObjectFactory getH2HObjectFactory() {
         return new DoublesMatchObjectFactory();
     }
 
@@ -20,22 +19,22 @@ public class CompSeasonDoubleFactory implements CompSeasonParticipantFactory<Com
     }
 
     @Override
-    public ParticipantManager<? extends Participant> getParticipantManager(Statement stat) {
+    public ParticipantManager<Double> getParticipantManager(Statement stat) {
         return new DoubleManager(stat);
     }
 
     @Override
-    public CompSeasonPhaseParticipantManager<? extends CompSeasonParticipantKey, ? extends CompSeasonPhaseParticipantKey, ? extends SuperKeyEntity> getPhaseParticManager(Statement stat) {
+    public CompSeasonPhaseParticipantManager<CompSeasonDoubleKey, CompSeasonPhaseDoubleKey, SuperKeyEntity> getPhaseParticManager(Statement stat) {
         return new CompSeasonPhaseDoubleManager(stat);
     }
 
     @Override
-    public CompSeasonParticipantKey getCompSeasonParticKey(CompSeasonKey csk, int specifId) {
+    public CompSeasonDoubleKey getCompSeasonParticKey(CompSeasonKey csk, int specifId) {
         return new CompSeasonDoubleKey(csk, specifId);
     }
 
     @Override
-    public CompSeasonPhaseParticipantKey getPhaseParticKey(CompSeasonPhaseKey cspk, int specifId) {
+    public CompSeasonPhaseDoubleKey getPhaseParticKey(CompSeasonPhaseKey cspk, int specifId) {
         return new CompSeasonPhaseDoubleKey(cspk, specifId);
     }
 

@@ -1,16 +1,24 @@
 package com.sports.logic.factory;
 
-import com.sports.entity.H2HMatch;
-import com.sports.entity.Participant;
-import com.sports.entity.SuperKeyEntity;
+import com.sports.entity.*;
 import com.sports.entity.key.*;
 import com.sports.entity.manager.*;
 
 import java.sql.Statement;
 
-public class CompSeasonPersonSportFactory implements CompSeasonParticipantFactory<CompSeasonPersonSportKey, SuperKeyEntity> {
+public class CompSeasonPersonSportFactory implements CompSeasonParticipantFactory<CompSeasonPersonSportKey, CompSeasonPhasePersonSportKey, PersonSport, SuperKeyEntity, SuperKeyEntity, PersonMatchKey, PersonMatch, PersonMatchPartKey, PersonMatchPart, PersonMatchPartStatKey, PersonMatchPartStat> {
     @Override
-    public H2HObjectFactory<? extends H2HMatchKey, ? extends H2HMatch> getH2HObjectFactory() {
+    public H2HObjectFactory<CompSeasonPersonSportKey,
+            CompSeasonPhasePersonSportKey,
+            PersonSport,
+            SuperKeyEntity,
+            SuperKeyEntity,
+            PersonMatchKey,
+            PersonMatch,
+            PersonMatchPartKey,
+            PersonMatchPart,
+            PersonMatchPartStatKey,
+            PersonMatchPartStat> getH2HObjectFactory() {
         return new PersonMatchObjectFactory();
     }
 
@@ -20,22 +28,22 @@ public class CompSeasonPersonSportFactory implements CompSeasonParticipantFactor
     }
 
     @Override
-    public ParticipantManager<? extends Participant> getParticipantManager(Statement stat) {
+    public ParticipantManager<PersonSport> getParticipantManager(Statement stat) {
         return new PersonSportManager(stat);
     }
 
     @Override
-    public CompSeasonPhaseParticipantManager<? extends CompSeasonParticipantKey, ? extends CompSeasonPhaseParticipantKey, ? extends SuperKeyEntity> getPhaseParticManager(Statement stat) {
+    public CompSeasonPhaseParticipantManager<CompSeasonPersonSportKey, CompSeasonPhasePersonSportKey, SuperKeyEntity> getPhaseParticManager(Statement stat) {
         return new CompSeasonPhasePersonSportManager(stat);
     }
 
     @Override
-    public CompSeasonParticipantKey getCompSeasonParticKey(CompSeasonKey csk, int specifId) {
+    public CompSeasonPersonSportKey getCompSeasonParticKey(CompSeasonKey csk, int specifId) {
         return new CompSeasonPersonSportKey(csk, specifId);
     }
 
     @Override
-    public CompSeasonPhaseParticipantKey getPhaseParticKey(CompSeasonPhaseKey cspk, int specifId) {
+    public CompSeasonPhasePersonSportKey getPhaseParticKey(CompSeasonPhaseKey cspk, int specifId) {
         return new CompSeasonPhasePersonSportKey(cspk, specifId);
     }
 

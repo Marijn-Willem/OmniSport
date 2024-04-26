@@ -1,7 +1,7 @@
 package com.sportservlet.html;
 
 import com.sports.entity.EntityInstance;
-import com.sports.entity.manager.EntityInstanceManager;
+import com.sports.entity.key.EntityInstanceKey;
 import com.sports.logic.calculation.Calculation;
 import com.sports.logic.factory.EntityInstanceFactory;
 import jakarta.servlet.http.HttpServletRequest;
@@ -51,12 +51,11 @@ public abstract class ManageEntityInstance extends ManageEntity {
         int eid = getIntValuedParameterValue(req, "eid");
         int eiid = getIntValuedParameterValue(req, "eiid");
 
-        EntityInstanceFactory factory = Calculation.getEntityInstanceFactory(req.getParameter("enm"));
+        EntityInstanceFactory<? extends EntityInstanceKey, ? extends EntityInstance> factory =
+                Calculation.getEntityInstanceFactory(req.getParameter("enm"));
         assert factory != null;
 
-        EntityInstanceManager manager = factory.getManager(stat);
-
-        EntityInstance entityInstance = (EntityInstance) manager.getEntityFromSuperKey(factory.getKey(eid, eiid));
+        EntityInstance entityInstance = factory.getEntity(stat, eid, eiid);
 
         Writer w = res.getWriter();
 

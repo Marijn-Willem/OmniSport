@@ -3,8 +3,7 @@ package com.h2hsports.servlet.html;
 import com.sports.entity.*;
 import com.sports.entity.comparator.H2HMatchPartId;
 import com.sports.entity.comparator.H2HMatchPartStatId;
-import com.sports.entity.key.H2HMatchKey;
-import com.sports.entity.key.H2HMatchPartKey;
+import com.sports.entity.key.*;
 import com.sports.entity.manager.CompetitionManager;
 import com.sports.entity.manager.H2HMatchPartManager;
 import com.sports.entity.manager.H2HMatchPartStatManager;
@@ -38,9 +37,29 @@ public class MatchInfo extends SuperHtmlServlet {
 
         Competition competition = new CompetitionManager(stat).getCompetition(competitionId);
 
-        CompSeasonParticipantFactory factory = new com.sports.logic.calculation.DbCalculation(stat)
+        CompSeasonParticipantFactory<? extends CompSeasonParticipantKey,
+                ? extends CompSeasonPhaseParticipantKey,
+                ? extends Participant,
+                ? extends SuperKeyEntity,
+                ? extends SuperKeyEntity,
+                ? extends H2HMatchKey,
+                ? extends H2HMatch,
+                ? extends H2HMatchPartKey,
+                ? extends H2HMatchPart,
+                ? extends H2HMatchPartStatKey,
+                ? extends H2HMatchPartStat> factory = new com.sports.logic.calculation.DbCalculation(stat)
                 .getCompSeasonParticipantFactory(competition);
-        H2HObjectFactory h2HObjectFactory = factory.getH2HObjectFactory();
+        H2HObjectFactory<? extends CompSeasonParticipantKey,
+                ? extends CompSeasonPhaseParticipantKey,
+                ? extends Participant,
+                ? extends SuperKeyEntity,
+                ? extends SuperKeyEntity,
+                ? extends H2HMatchKey,
+                ? extends H2HMatch,
+                ? extends H2HMatchPartKey,
+                ? extends H2HMatchPart,
+                ? extends H2HMatchPartStatKey,
+                ? extends H2HMatchPartStat> h2HObjectFactory = factory.getH2HObjectFactory();
 
         H2HMatch h2hMatch = new com.sports.calc.h2hsports.DbCalculation(stat).retrieveH2HMatch(h2HObjectFactory, compSeasonKey, h2hMatchId);
 
@@ -75,8 +94,11 @@ public class MatchInfo extends SuperHtmlServlet {
 
             w.append(line);
 
-            H2HPartObjectFactory partFactory = h2HObjectFactory.getPartObjectFactory();
-            H2HMatchPartManager mpm = partFactory.getMatchPartManager(stat);
+            H2HPartObjectFactory<? extends H2HMatchPartKey,
+                    ? extends H2HMatchPart,
+                    ? extends H2HMatchPartStatKey,
+                    ? extends H2HMatchPartStat> partFactory = h2HObjectFactory.getPartObjectFactory();
+            H2HMatchPartManager<? extends H2HMatchPartKey, ? extends H2HMatchPart> mpm = partFactory.getMatchPartManager(stat);
             List<? extends H2HMatchPart> h2hMatchParts = mpm.getH2HMatchPartsWithoutParent(h2hMatchKey);
 
             h2hMatchParts.sort(new H2HMatchPartId());
@@ -86,8 +108,9 @@ public class MatchInfo extends SuperHtmlServlet {
             for (H2HMatchPart h2hMatchPart : h2hMatchParts)
                 h2hMatchPartKeys.add(partFactory.getMatchPartKey(h2hMatchKey, h2hMatchPart.getMatchPartId()));
 
-            if (h2hMatchParts.size() > 0) {
-                H2HMatchPartStatManager mpsm = partFactory.getPartStatObjectFactory().getStatManager(stat);
+            if (!h2hMatchParts.isEmpty()) {
+                H2HMatchPartStatManager<? extends H2HMatchPartStatKey, ? extends H2HMatchPartStat> mpsm =
+                        partFactory.getPartStatObjectFactory().getStatManager(stat);
 
                 List<? extends H2HMatchPartStat> h2HMatchPartStats = mpsm.getH2HMatchPartStats(h2hMatchPartKeys,
                                 Collections.singletonList(StatType.statTypeScoreId));

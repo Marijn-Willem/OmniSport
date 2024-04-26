@@ -7,8 +7,8 @@ import com.sports.entity.manager.H2HMatchPartStatManager;
 
 import java.sql.Statement;
 
-public interface H2HPartStatObjectFactory<S extends H2HMatchPartStatKey, T extends H2HMatchPartStat> {
-    H2HMatchPartStatManager<S, T> getStatManager(Statement stat);
-    S getMatchPartStatKey(H2HMatchPartKey h2HMatchPartKey, int specifId);
-    T getMatchPartStat();
+public interface H2HPartStatObjectFactory<MPSK extends H2HMatchPartStatKey, MPS extends H2HMatchPartStat> {
+    H2HMatchPartStatManager<MPSK, MPS> getStatManager(Statement stat);
+    MPSK getMatchPartStatKey(H2HMatchPartKey h2HMatchPartKey, int specifId);
+    MPS getMatchPartStat();
 }

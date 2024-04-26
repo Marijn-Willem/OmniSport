@@ -6,10 +6,8 @@ import com.sports.cache.util.DataFragmentUtil;
 import com.sports.cache.util.JsonUtil;
 import com.sports.cache.util.XmlUtil;
 import com.sports.calc.h2hsports.DbCalculation;
-import com.sports.entity.SuperKeyEntity;
-import com.sports.entity.key.CompSeasonKey;
-import com.sports.entity.key.CompSeasonParticipantKey;
-import com.sports.entity.key.CompSeasonPhaseKey;
+import com.sports.entity.*;
+import com.sports.entity.key.*;
 import com.sports.logic.factory.CompSeasonParticipantFactory;
 
 import java.sql.SQLException;
@@ -40,7 +38,17 @@ public class KnockoutRankingData extends OutputData {
 	@Override
 	public void fill(Statement stat) throws SQLException {
 		CompSeasonPhaseKey cspKey = new CompSeasonPhaseKey(new CompSeasonKey(competitionId, seasonId), compSeasonPhaseId);
-		CompSeasonParticipantFactory<? extends CompSeasonParticipantKey, ? extends SuperKeyEntity> factory =
+		CompSeasonParticipantFactory<? extends CompSeasonParticipantKey,
+				? extends CompSeasonPhaseParticipantKey,
+				? extends Participant,
+				? extends SuperKeyEntity,
+				? extends SuperKeyEntity,
+				? extends H2HMatchKey,
+				? extends H2HMatch,
+				? extends H2HMatchPartKey,
+				? extends H2HMatchPart,
+				? extends H2HMatchPartStatKey,
+				? extends H2HMatchPartStat> factory =
 				new com.sports.logic.calculation.DbCalculation(stat).getCompSeasonParticipantFactory(competitionId);
 
 		participantFragments.addAll(new DbCalculation(stat).getKnockoutPhaseRanking(cspKey, factory).stream().map(x ->

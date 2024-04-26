@@ -1,17 +1,14 @@
 package com.sports.logic.factory;
 
-import com.sports.entity.CompSeasonTeam;
-import com.sports.entity.H2HMatch;
-import com.sports.entity.Participant;
-import com.sports.entity.SuperKeyEntity;
+import com.sports.entity.*;
 import com.sports.entity.key.*;
 import com.sports.entity.manager.*;
 
 import java.sql.Statement;
 
-public class CompSeasonTeamFactory implements CompSeasonParticipantFactory<CompSeasonTeamKey, CompSeasonTeam> {
+public class CompSeasonTeamFactory implements CompSeasonParticipantFactory<CompSeasonTeamKey, CompSeasonPhaseTeamKey, Team, CompSeasonTeam, CompSeasonPhaseTeam, TeamMatchKey, TeamMatch, TeamMatchPartKey, TeamMatchPart, H2HMatchPartStatKey, H2HMatchPartStat> {
     @Override
-    public H2HObjectFactory<? extends H2HMatchKey, ? extends H2HMatch> getH2HObjectFactory() {
+    public TeamMatchObjectFactory getH2HObjectFactory() {
         return new TeamMatchObjectFactory();
     }
 
@@ -21,22 +18,22 @@ public class CompSeasonTeamFactory implements CompSeasonParticipantFactory<CompS
     }
 
     @Override
-    public ParticipantManager<? extends Participant> getParticipantManager(Statement stat) {
+    public ParticipantManager<Team> getParticipantManager(Statement stat) {
         return new TeamManager(stat);
     }
 
     @Override
-    public CompSeasonPhaseParticipantManager<? extends CompSeasonParticipantKey, ? extends CompSeasonPhaseParticipantKey, ? extends SuperKeyEntity> getPhaseParticManager(Statement stat) {
+    public CompSeasonPhaseParticipantManager<CompSeasonTeamKey, CompSeasonPhaseTeamKey, CompSeasonPhaseTeam> getPhaseParticManager(Statement stat) {
         return new CompSeasonPhaseTeamManager(stat);
     }
 
     @Override
-    public CompSeasonParticipantKey getCompSeasonParticKey(CompSeasonKey csk, int specifId) {
+    public CompSeasonTeamKey getCompSeasonParticKey(CompSeasonKey csk, int specifId) {
         return new CompSeasonTeamKey(csk, specifId);
     }
 
     @Override
-    public CompSeasonPhaseParticipantKey getPhaseParticKey(CompSeasonPhaseKey cspk, int specifId) {
+    public CompSeasonPhaseTeamKey getPhaseParticKey(CompSeasonPhaseKey cspk, int specifId) {
         return new CompSeasonPhaseTeamKey(cspk, specifId);
     }
 

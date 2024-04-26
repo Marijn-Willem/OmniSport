@@ -60,7 +60,8 @@ public record EntityInstanceUtil(int clientId, CacheDataKey cacheDataKey, Statem
 
     private String getAliasString(String entityName, EntityInstance entityInstance)
             throws SQLException {
-        EntityInstanceFactory factory = Calculation.getEntityInstanceFactory(entityName);
+        EntityInstanceFactory<? extends EntityInstanceKey, ? extends EntityInstance> factory =
+                Calculation.getEntityInstanceFactory(entityName);
         assert factory != null;
 
         EntityInstanceKey entityInstanceKey = factory.getKey(entityInstance.getEntityId(),

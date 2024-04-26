@@ -12,7 +12,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.List;
 
-public class EquipeInstanceFactory implements EntityInstanceFactory {
+public class EquipeInstanceFactory extends EntityInstanceFactory<EquipeInstanceKey, EquipeInstance> {
     @Override
     public EquipeInstanceManager getManager(Statement stat) {
         return new EquipeInstanceManager(stat);
@@ -26,6 +26,11 @@ public class EquipeInstanceFactory implements EntityInstanceFactory {
     @Override
     public EquipeInstance getInstance() {
         return new EquipeInstance();
+    }
+
+    @Override
+    public String getProcessManagePath() {
+        return "ProcessManageEquipeInstance";
     }
 
     @Override

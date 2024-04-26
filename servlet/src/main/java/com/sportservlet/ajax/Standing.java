@@ -1,7 +1,7 @@
 package com.sportservlet.ajax;
 
-import com.sports.entity.Participant;
-import com.sports.entity.key.CompSeasonPhaseKey;
+import com.sports.entity.*;
+import com.sports.entity.key.*;
 import com.sports.logic.calculation.DbCalculation;
 import com.sports.logic.factory.CompSeasonParticipantFactory;
 import com.sports.logic.util.Util;
@@ -23,8 +23,18 @@ public class Standing extends SuperResponseServlet {
         CompSeasonPhaseKey cspk = new CompSeasonPhaseKey(compSeasonKey, pid);
 
         DbCalculation dbCalculation = new DbCalculation(stat);
-        List<Participant> standing = dbCalculation.getParticipantStandingCompSeasonPhase(cspk);
-        CompSeasonParticipantFactory factory = dbCalculation.getCompSeasonParticipantFactory(competitionId);
+        List<? extends Participant> standing = dbCalculation.getParticipantStandingCompSeasonPhase(cspk);
+        CompSeasonParticipantFactory<? extends CompSeasonParticipantKey,
+                ? extends CompSeasonPhaseParticipantKey,
+                ? extends Participant,
+                ? extends SuperKeyEntity,
+                ? extends SuperKeyEntity,
+                ? extends H2HMatchKey,
+                ? extends H2HMatch,
+                ? extends H2HMatchPartKey,
+                ? extends H2HMatchPart,
+                ? extends H2HMatchPartStatKey,
+                ? extends H2HMatchPartStat> factory = dbCalculation.getCompSeasonParticipantFactory(competitionId);
 
         Writer w = resp.getWriter();
         w.append("<tr><th>Rank</th><th>");

@@ -31,7 +31,12 @@ com.management.servlet.ajax.ClientList
 com.management.servlet.html.ManageClub
 com.management.servlet.ajax.LanguageList
 com.management.servlet.html.ManageCompSeason
-com.sportservlet.ajax.ProcessManageEntityInstance
+com.sportservlet.dispatch.PrepareProcessManageEntityInstance
+com.sportservlet.ajax.ProcessManageClubInstance
+com.sportservlet.ajax.ProcessManageEquipeInstance
+com.sportservlet.ajax.ProcessManageGeoInstance
+com.sportservlet.ajax.ProcessManageNocInstance
+com.sportservlet.ajax.ProcessManagePersonInstance
 com.management.servlet.html.CompDivisionPortal
 com.management.servlet.ajax.ProcessManageClient
 com.management.servlet.dispatch.PrepareEntityInstancePortalClub

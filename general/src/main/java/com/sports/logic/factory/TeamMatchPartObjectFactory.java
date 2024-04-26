@@ -11,7 +11,7 @@ import com.sports.entity.manager.TeamMatchPartManager;
 
 import java.sql.Statement;
 
-public class TeamMatchPartObjectFactory implements H2HPartObjectFactory<TeamMatchPartKey, TeamMatchPart> {
+public class TeamMatchPartObjectFactory implements H2HPartObjectFactory<TeamMatchPartKey, TeamMatchPart, H2HMatchPartStatKey, H2HMatchPartStat> {
     public H2HMatchPartManager<TeamMatchPartKey, TeamMatchPart> getMatchPartManager(Statement stat) {
         return new TeamMatchPartManager(stat);
     }
@@ -24,8 +24,8 @@ public class TeamMatchPartObjectFactory implements H2HPartObjectFactory<TeamMatc
         return new TeamMatchPart();
     }
 
-    public H2HPartStatObjectFactory<? extends H2HMatchPartStatKey,
-            ? extends H2HMatchPartStat> getPartStatObjectFactory() {
+    @Override
+    public H2HPartStatObjectFactory<H2HMatchPartStatKey, H2HMatchPartStat> getPartStatObjectFactory() {
         return null;
     }
 }

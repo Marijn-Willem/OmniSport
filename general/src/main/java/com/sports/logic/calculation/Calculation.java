@@ -11,15 +11,26 @@ import com.sports.logic.util.Util;
 import java.util.*;
 
 public class Calculation {
-    public static CompSeasonParticipantFactory<? extends CompSeasonParticipantKey, ? extends SuperKeyEntity> getCompSeasonParticipantFactory(Competition competition, Sport sport) {
+    public static CompSeasonParticipantFactory<? extends CompSeasonParticipantKey,
+            ? extends CompSeasonPhaseParticipantKey,
+            ? extends Participant,
+            ? extends SuperKeyEntity,
+            ? extends SuperKeyEntity,
+            ? extends H2HMatchKey,
+            ? extends H2HMatch,
+            ? extends H2HMatchPartKey,
+            ? extends H2HMatchPart,
+            ? extends H2HMatchPartStatKey,
+            ? extends H2HMatchPartStat> getCompSeasonParticipantFactory(Competition competition, Sport sport) {
         if (competition.isH2hDouble())
             return new CompSeasonDoubleFactory();
 
         return sport.isTeam() ? new CompSeasonTeamFactory() : new CompSeasonPersonSportFactory();
     }
 
-    public static EntityInstanceFactory getEntityInstanceFactory(String entityName) {
-        EntityInstanceFactory factory = null;
+    public static EntityInstanceFactory<? extends EntityInstanceKey,
+            ? extends EntityInstance> getEntityInstanceFactory(String entityName) {
+        EntityInstanceFactory<? extends EntityInstanceKey, ? extends EntityInstance> factory = null;
 
         switch (entityName) {
             case "Club": factory = new ClubInstanceFactory(); break;
@@ -74,8 +85,8 @@ public class Calculation {
                                                                                      SuperComparator<T> comparator) {
         participants.sort(comparator);
 
-        int leaderWins = participants.size() > 0 ? participants.get(0).getWins() : 0;
-        int leaderLosses = participants.size() > 0 ? participants.get(0).getLosses() : 0;
+        int leaderWins = !participants.isEmpty() ? participants.get(0).getWins() : 0;
+        int leaderLosses = !participants.isEmpty() ? participants.get(0).getLosses() : 0;
 
         for (int i = 0; i < participants.size(); i++) {
             Participant participant = participants.get(i);

@@ -14,7 +14,17 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 public record DbCalculation(Statement stat) {
-    public CompSeasonParticipantFactory<? extends CompSeasonParticipantKey, ? extends SuperKeyEntity> getCompSeasonParticipantFactory(CompSeasonEventKey compSeasonEventKey)
+    public CompSeasonParticipantFactory<? extends CompSeasonParticipantKey,
+            ? extends CompSeasonPhaseParticipantKey,
+            ? extends Participant,
+            ? extends SuperKeyEntity,
+            ? extends SuperKeyEntity,
+            ? extends H2HMatchKey,
+            ? extends H2HMatch,
+            ? extends H2HMatchPartKey,
+            ? extends H2HMatchPart,
+            ? extends H2HMatchPartStatKey,
+            ? extends H2HMatchPartStat> getCompSeasonParticipantFactory(CompSeasonEventKey compSeasonEventKey)
             throws SQLException {
         SportEvent se = getSportEvent(compSeasonEventKey);
         return se.isTeam() ? new CompSeasonTeamFactory() : new CompSeasonPersonSportFactory();
@@ -93,7 +103,7 @@ public record DbCalculation(Statement stat) {
         List<DisciplinePart> disciplineParts = new DisciplinePartManager(stat)
                 .getDisciplinePartList(Collections.singletonList(csep.getSportDisciplineKey()));
 
-        return disciplineParts.size() > 0;
+        return !disciplineParts.isEmpty();
     }
 
     public void insertParticipantsFromCompSeason(CompSeasonEventKey cseKey, CompSeasonEvent cse) throws SQLException {
@@ -179,7 +189,7 @@ public record DbCalculation(Statement stat) {
         setRanksAndPoints(factory, partKey, participants, pPartMap);
         participants.sort(new ParticipantRank());
 
-        if (participants.size() > 0 && participants.get(0).getPoints() != null && se != null)
+        if (!participants.isEmpty() && participants.get(0).getPoints() != null && se != null)
             setPointsBehind(participants, participants.get(0).getPoints(), se.isPointsSortAsc());
 
         return participants;
@@ -203,7 +213,7 @@ public record DbCalculation(Statement stat) {
         List<SportEventPart> sportEventParts = new SportEventPartManager(stat).getSportEventParts(
                 compSeasonEvent.getSportEventKey());
 
-        if (sportEventParts.size() > 0)
+        if (!sportEventParts.isEmpty())
             setEventPartDescriptionsFromFixedParts(compSeasonEventParts, sportEventParts);
         else
             setEventPartDescriptionsWithoutFixedParts(compSeasonEventKey, compSeasonEventParts);

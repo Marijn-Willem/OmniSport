@@ -1,15 +1,17 @@
 package com.sports.logic.factory;
 
 import com.sports.entity.DoublesMatchPart;
+import com.sports.entity.DoublesMatchPartStat;
 import com.sports.entity.key.DoublesMatchKey;
 import com.sports.entity.key.DoublesMatchPartKey;
+import com.sports.entity.key.DoublesMatchPartStatKey;
 import com.sports.entity.key.H2HMatchKey;
 import com.sports.entity.manager.DoublesMatchPartManager;
 import com.sports.entity.manager.H2HMatchPartManager;
 
 import java.sql.Statement;
 
-public class DoublesMatchPartObjectFactory implements H2HPartObjectFactory<DoublesMatchPartKey, DoublesMatchPart> {
+public class DoublesMatchPartObjectFactory implements H2HPartObjectFactory<DoublesMatchPartKey, DoublesMatchPart, DoublesMatchPartStatKey, DoublesMatchPartStat> {
     public H2HMatchPartManager<DoublesMatchPartKey, DoublesMatchPart> getMatchPartManager(Statement stat) {
         return new DoublesMatchPartManager(stat);
     }

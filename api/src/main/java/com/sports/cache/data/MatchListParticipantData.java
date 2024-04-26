@@ -2,9 +2,8 @@ package com.sports.cache.data;
 
 import com.sports.cache.key.CacheDataKey;
 import com.sports.cache.key.MatchListParticipantKey;
-import com.sports.entity.H2HMatch;
-import com.sports.entity.key.CompSeasonKey;
-import com.sports.entity.key.CompSeasonParticipantKey;
+import com.sports.entity.*;
+import com.sports.entity.key.*;
 import com.sports.entity.manager.H2HMatchManager;
 import com.sports.logic.factory.CompSeasonParticipantFactory;
 
@@ -16,10 +15,20 @@ public class MatchListParticipantData extends MatchListData {
 	private final int participantId;
 
 	@Override
-	List<H2HMatch> getH2HMatches(Statement stat, CompSeasonParticipantFactory factory, CompSeasonKey compSeasonKey)
+	<MK extends H2HMatchKey, M extends H2HMatch> List<M> getH2HMatches(Statement stat, CompSeasonParticipantFactory<? extends CompSeasonParticipantKey,
+			? extends CompSeasonPhaseParticipantKey,
+			? extends Participant,
+			? extends SuperKeyEntity,
+			? extends SuperKeyEntity,
+			MK,
+			M,
+			? extends H2HMatchPartKey,
+			? extends H2HMatchPart,
+			? extends H2HMatchPartStatKey,
+			? extends H2HMatchPartStat> factory, CompSeasonKey compSeasonKey)
 			throws SQLException {
 		CompSeasonParticipantKey compSeasonParticipantKey = factory.getCompSeasonParticKey(compSeasonKey, participantId);
-		H2HMatchManager matchManager = factory.getH2HObjectFactory().getManager(stat);
+		H2HMatchManager<MK, M> matchManager = factory.getH2HObjectFactory().getManager(stat);
 		return matchManager.getMatchesParticipantInCompSeason(compSeasonParticipantKey);
 	}
 

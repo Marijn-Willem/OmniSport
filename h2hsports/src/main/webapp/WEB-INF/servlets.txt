@@ -21,7 +21,10 @@ com.h2hsports.servlet.html.ManageParticipantsCompSeasonPhase
 com.sportservlet.ajax.CompetitionList
 com.h2hsports.servlet.html.AddMatchScore
 com.sportservlet.ajax.ProcessManageCompSeasonPhase
-com.sportservlet.ajax.ProcessManageH2HMatch
+com.sportservlet.dispatch.PrepareProcessManageH2HMatch
+com.sportservlet.ajax.ProcessManagePersonMatch
+com.sportservlet.ajax.ProcessManageDoublesMatch
+com.sportservlet.ajax.ProcessManageTeamMatch
 com.sportservlet.ajax.MatchMatrix
 com.sportservlet.ajax.SeasonList
 com.h2hsports.servlet.html.ManagePerson
@@ -38,4 +41,9 @@ com.h2hsports.servlet.html.ManageEntityInstance
 com.sportservlet.dispatch.PrepareEntityInstancePortalPerson
 com.sportservlet.ajax.EntityInstanceList
 com.sportservlet.ajax.ProcessInsertEntityInstance
-com.sportservlet.ajax.ProcessManageEntityInstance
+com.sportservlet.dispatch.PrepareProcessManageEntityInstance
+com.sportservlet.ajax.ProcessManageClubInstance
+com.sportservlet.ajax.ProcessManageEquipeInstance
+com.sportservlet.ajax.ProcessManageGeoInstance
+com.sportservlet.ajax.ProcessManageNocInstance
+com.sportservlet.ajax.ProcessManagePersonInstance

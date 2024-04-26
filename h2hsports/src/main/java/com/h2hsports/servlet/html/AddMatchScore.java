@@ -23,8 +23,29 @@ import java.util.Map;
 
 public class AddMatchScore extends SuperHtmlServlet {
     private CompSeasonPhaseKey compSeasonPhaseKey;
-    private CompSeasonParticipantFactory<? extends CompSeasonParticipantKey, ? extends SuperKeyEntity> factory;
-    private H2HObjectFactory<? extends H2HMatchKey, ? extends H2HMatch> h2hObjectFactory;
+    private CompSeasonParticipantFactory<? extends CompSeasonParticipantKey,
+            ? extends CompSeasonPhaseParticipantKey,
+            ? extends Participant,
+            ? extends SuperKeyEntity,
+            ? extends SuperKeyEntity,
+            ? extends H2HMatchKey,
+            ? extends H2HMatch,
+            ? extends H2HMatchPartKey,
+            ? extends H2HMatchPart,
+            ? extends H2HMatchPartStatKey,
+            ? extends H2HMatchPartStat> factory;
+
+    private H2HObjectFactory<? extends CompSeasonParticipantKey,
+            ? extends CompSeasonPhaseParticipantKey,
+            ? extends Participant,
+            ? extends SuperKeyEntity,
+            ? extends SuperKeyEntity,
+            ? extends H2HMatchKey,
+            ? extends H2HMatch,
+            ? extends H2HMatchPartKey,
+            ? extends H2HMatchPart,
+            ? extends H2HMatchPartStatKey,
+            ? extends H2HMatchPartStat> h2hObjectFactory;
 
     public void initSpecificProperties(HttpServletRequest req) {
         jsList.add("entity");
@@ -117,8 +138,9 @@ public class AddMatchScore extends SuperHtmlServlet {
     }
 
     private Map<Integer, ? extends Participant> getParticipantMap(Statement stat) throws SQLException {
-        CompSeasonPhaseParticipantManager csppm =
-                factory.getPhaseParticManager(stat);
+        CompSeasonPhaseParticipantManager<? extends CompSeasonParticipantKey,
+                ? extends CompSeasonPhaseParticipantKey,
+                ? extends SuperKeyEntity> csppm = factory.getPhaseParticManager(stat);
         ParticipantManager<? extends Participant> pm = factory.getParticipantManager(stat);
 
         List<Integer> particIds = csppm.getParticipantIds(compSeasonPhaseKey);

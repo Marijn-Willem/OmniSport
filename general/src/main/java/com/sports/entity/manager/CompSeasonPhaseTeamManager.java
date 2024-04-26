@@ -67,33 +67,4 @@ public class CompSeasonPhaseTeamManager extends CompSeasonPhaseParticipantManage
     public List<CompSeasonPhaseTeam> getCompSeasonPhaseTeams(List<CompSeasonPhaseTeamKey> keys) throws SQLException {
         return getEntityListFromSuperKeys(keys);
     }
-
-    public Set<CompSeasonPhaseKey> getCompSeasonPhaseKeysTeam(int teamId) throws SQLException {
-        Set<CompSeasonPhaseKey> compSeasonPhaseKeys = new HashSet<CompSeasonPhaseKey>();
-
-        String query = getGenericQuery("teamid = " + teamId);
-
-        ResultSet rs = stat.executeQuery(query);
-
-        while (rs.next())
-            compSeasonPhaseKeys.add(getCompSeasonPhaseKeyFromResultSet(rs));
-
-        return compSeasonPhaseKeys;
-    }
-
-    public List<CompSeasonPhaseKey> getCompSeasonPhaseKeysWithTeam(CompSeasonKey csk, int teamId)
-        throws SQLException {
-        List<CompSeasonPhaseKey> compSeasonPhaseKeys = new ArrayList<CompSeasonPhaseKey>();
-
-        ResultSet rs = stat.executeQuery(getGenericQuery(csk.getWhereClause() + " AND teamid = " + teamId));
-
-        while (rs.next())
-            compSeasonPhaseKeys.add(getCompSeasonPhaseKeyFromResultSet(rs));
-
-        return compSeasonPhaseKeys;
-    }
-
-    private CompSeasonPhaseKey getCompSeasonPhaseKeyFromResultSet(ResultSet rs) throws SQLException {
-        return getSuperKeyFromResultSet(rs).getSuperKey();
-    }
 }

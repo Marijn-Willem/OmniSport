@@ -1,10 +1,7 @@
 package com.teamsports.servlet.ajax;
 
 import com.sports.calc.teamsports.DbCalculation;
-import com.sports.entity.Competition;
-import com.sports.entity.Geo;
-import com.sports.entity.Sport;
-import com.sports.entity.Team;
+import com.sports.entity.*;
 import com.sports.entity.key.CompDivisionKey;
 import com.sports.entity.key.CompSeasonKey;
 import com.sports.entity.key.CompSeasonPhaseKey;
