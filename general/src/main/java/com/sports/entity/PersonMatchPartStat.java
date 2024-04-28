@@ -14,6 +14,12 @@ public class PersonMatchPartStat extends H2HMatchPartStat {
         return new String[] { "" + personSportId, QueryUtil.convertIntegerToDbValue(value2) };
     }
 
+    @Override
+    void copySpecific(H2HMatchPartStat other) {
+        ((PersonMatchPartStat) other).personSportId = this.personSportId;
+        ((PersonMatchPartStat) other).value2 = this.value2;
+    }
+
     public int getParticipantId() {
         return getPersonSportId();
     }

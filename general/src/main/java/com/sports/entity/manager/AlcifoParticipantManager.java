@@ -12,8 +12,8 @@ import java.sql.Statement;
 import java.util.List;
 import java.util.Map;
 
-public abstract class AlcifoParticipantManager<S extends AlcifoParticipantKey, T extends AlcifoParticipant>
-    extends SuperKeySuperManager<S, T> implements AbstractSuperKeyManager {
+public abstract class AlcifoParticipantManager<APK extends AlcifoParticipantKey, AP extends AlcifoParticipant>
+    extends SuperKeySuperManager<APK, AP> implements AbstractSuperKeyManager {
     public AlcifoParticipantManager(Statement stat) {
         super(stat);
     }
@@ -46,7 +46,7 @@ public abstract class AlcifoParticipantManager<S extends AlcifoParticipantKey, T
         return new CompSeasonEventManager(stat);
     }
 
-    void fillGenericPropertiesFromResultSet(T alcifoParticipant, ResultSet rs) throws SQLException {
+    void fillGenericPropertiesFromResultSet(AP alcifoParticipant, ResultSet rs) throws SQLException {
         alcifoParticipant.setSpecificId(rs.getInt(getIdColumn()));
         alcifoParticipant.setRank(QueryUtil.getIntegerFromResultSet(rs, "rank"));
         alcifoParticipant.setNoCountResultId(QueryUtil.getIntegerFromResultSet(rs, "nocountresultid"));
@@ -56,15 +56,15 @@ public abstract class AlcifoParticipantManager<S extends AlcifoParticipantKey, T
         return getIdList(getGenericQuery(compSeasonEventKey.getWhereClause()), getIdColumn());
     }
 
-    public Map<S, T> getParticipantMapInEvent(CompSeasonEventKey compSeasonEventKey) throws SQLException {
+    public Map<APK, AP> getParticipantMapInEvent(CompSeasonEventKey compSeasonEventKey) throws SQLException {
         return getSuperKeyEntityMap(compSeasonEventKey.getWhereClause());
     }
 
-    public void insertParticipantMap(Map<S, T> participantMap) throws SQLException {
+    public void insertParticipantMap(Map<APK, AP> participantMap) throws SQLException {
         insert(participantMap);
     }
 
-    public void updateParticipantMap(Map<S, T> participantMap) throws SQLException {
+    public void updateParticipantMap(Map<APK, AP> participantMap) throws SQLException {
         updateEntityMap(participantMap);
     }
 }

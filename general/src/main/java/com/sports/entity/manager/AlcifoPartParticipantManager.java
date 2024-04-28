@@ -12,8 +12,8 @@ import java.sql.Statement;
 import java.util.List;
 import java.util.Map;
 
-public abstract class AlcifoPartParticipantManager<S extends SuperKey, U extends SuperKey, T extends AlcifoPartParticipant>
-        extends SuperKeySuperManager<S, T> implements AbstractSuperKeyManager {
+public abstract class AlcifoPartParticipantManager<APPK extends SuperKey, PK extends SuperKey, APP extends AlcifoPartParticipant>
+        extends SuperKeySuperManager<APPK, APP> implements AbstractSuperKeyManager {
     abstract String getParticipantIdColumn();
 
     public AlcifoPartParticipantManager(Statement stat) {
@@ -39,27 +39,27 @@ public abstract class AlcifoPartParticipantManager<S extends SuperKey, U extends
         return Util.concatenateStringArrays(getGenericColumns(), getSpecificValueColumns());
     }
 
-    public List<T> getPartParticipantList(U partKey) throws SQLException {
+    public List<APP> getPartParticipantList(PK partKey) throws SQLException {
         return getEntityList(partKey.getWhereClause());
     }
 
-    public Map<S, T> getPartParticipantMap(List<? extends SuperKey> alcifoParticipantKeys) throws SQLException {
+    public Map<APPK, APP> getPartParticipantMap(List<? extends SuperKey> alcifoParticipantKeys) throws SQLException {
         return getSuperKeyEntityMapFromSuperKeys(alcifoParticipantKeys);
     }
 
-    public List<T> getPartParticipantsWithRankOne(CompSeasonEventKey compSeasonEventKey) throws SQLException {
+    public List<APP> getPartParticipantsWithRankOne(CompSeasonEventKey compSeasonEventKey) throws SQLException {
         return getEntityList(compSeasonEventKey.getWhereClause() + " AND rank = 1");
     }
 
-    public void updatePartParticipantMap(Map<S, T> ppMap) throws SQLException {
+    public void updatePartParticipantMap(Map<APPK, APP> ppMap) throws SQLException {
         updateEntityMap(ppMap);
     }
 
-    public void insertPartParticipantMap(Map<S, T> ppMap) throws SQLException {
+    public void insertPartParticipantMap(Map<APPK, APP> ppMap) throws SQLException {
         insert(ppMap);
     }
 
-    void fillGenericPropertiesFromResultSet(T alcifoPartParticipant, ResultSet rs) throws SQLException {
+    void fillGenericPropertiesFromResultSet(APP alcifoPartParticipant, ResultSet rs) throws SQLException {
         alcifoPartParticipant.setCompSeasonEventPartId(rs.getInt("compseasoneventpartid"));
         alcifoPartParticipant.setPoints(QueryUtil.getIntegerFromResultSet(rs, "points"));
         alcifoPartParticipant.setRank(QueryUtil.getIntegerFromResultSet(rs, "rank"));

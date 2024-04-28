@@ -16,6 +16,7 @@ public abstract class H2HMatch extends SuperKeyEntity implements WithH2HMatchPar
 
     public abstract int getSpecificId();
     abstract String[] getSpecificPropertiesInSQLStrings();
+    abstract void copySpecific(H2HMatch other);
     public abstract void setParticipant1Id(Integer participant1id);
     public abstract Integer getParticipant1Id();
     public abstract void setParticipant2Id(Integer participant2id);
@@ -105,5 +106,20 @@ public abstract class H2HMatch extends SuperKeyEntity implements WithH2HMatchPar
 
     public void setCompSeasonPhaseKey(CompSeasonPhaseKey compSeasonPhaseKey) {
         this.compSeasonPhaseKey = compSeasonPhaseKey;
+    }
+
+    public void copy(H2HMatch other) {
+        other.setParticipant1Id(getParticipant1Id());
+        other.setParticipant2Id(getParticipant2Id());
+        other.setScore1_1(getScore1_1());
+        other.setScore1_2(getScore1_2());
+        other.setParticipant1NcrId(getParticipant1NcrId());
+        other.setParticipant2NcrId(getParticipant2NcrId());
+        other.finished = finished;
+        other.compSeasonPhaseId = compSeasonPhaseId;
+        other.knockoutOrder = knockoutOrder;
+        other.date = date;
+
+        copySpecific(other);
     }
 }

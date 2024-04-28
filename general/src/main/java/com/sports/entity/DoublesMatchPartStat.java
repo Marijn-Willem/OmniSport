@@ -10,6 +10,11 @@ public class DoublesMatchPartStat extends H2HMatchPartStat {
         return new String[] { "" + doubleId };
     }
 
+    @Override
+    void copySpecific(H2HMatchPartStat other) {
+        ((DoublesMatchPartStat) other).doubleId = doubleId;
+    }
+
     public int getParticipantId() {
         return getDoubleId();
     }

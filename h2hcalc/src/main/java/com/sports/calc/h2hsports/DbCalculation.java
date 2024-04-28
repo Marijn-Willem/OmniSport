@@ -73,9 +73,21 @@ public record DbCalculation(Statement stat) {
             ? extends H2HMatchPartKey,
             ? extends H2HMatchPart,
             ? extends H2HMatchPartStatKey,
-            ? extends H2HMatchPartStat> factory, MK h2hmk, M h2hm) throws SQLException {
+            ? extends H2HMatchPartStat> factory, H2HMatchKey h2hmk, H2HMatch h2hm) throws SQLException {
+        H2HObjectFactory<? extends CompSeasonParticipantKey,
+                ? extends CompSeasonPhaseParticipantKey,
+                ? extends Participant,
+                ? extends SuperKeyEntity,
+                ? extends SuperKeyEntity,
+                MK,
+                M,
+                ? extends H2HMatchPartKey,
+                ? extends H2HMatchPart,
+                ? extends H2HMatchPartStatKey,
+                ? extends H2HMatchPartStat> h2HObjectFactory = factory.getH2HObjectFactory();
+
         Map<MK, M> matchMap = new HashMap<>();
-        matchMap.put(h2hmk, h2hm);
+        matchMap.put(h2HObjectFactory.castKey(h2hmk), h2HObjectFactory.castMatch(h2hm));
 
         processFinishH2HMatches(factory, matchMap);
     }

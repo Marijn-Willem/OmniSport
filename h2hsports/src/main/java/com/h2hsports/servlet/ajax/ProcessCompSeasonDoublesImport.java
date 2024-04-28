@@ -32,7 +32,7 @@ public class ProcessCompSeasonDoublesImport extends SuperResponseServlet {
 
         String errorMessage = null;
 
-        if (compSeasDoubleIds.size() > 0)
+        if (!compSeasDoubleIds.isEmpty())
             errorMessage = "Already doubles in this compseason!";
         else if (nameArr.length % 2 == 1)
             errorMessage = "Odd number of persons in memory!";
@@ -119,7 +119,7 @@ public class ProcessCompSeasonDoublesImport extends SuperResponseServlet {
             if (dbl.isNewlyCreated())
                 newDoubles.add(dbl);
 
-        if (newDoubles.size() > 0) {
+        if (!newDoubles.isEmpty()) {
             Competition comp = new CompetitionManager(stat).getCompetition(competitionId);
 
             w.append("<div>The following doubles are newly created,</div>\n");

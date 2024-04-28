@@ -20,8 +20,6 @@ public class TeamMatch extends H2HMatch {
     private int competitionId;
     private int seasonId;
     private int teamMatchId;
-    private int scoreHomeVirtual;
-    private int scoreAwayVirtual;
 
     @Override
     String[] getSpecificPropertiesInSQLStrings() {
@@ -31,23 +29,21 @@ public class TeamMatch extends H2HMatch {
             };
     }
 
-    public H2HMatchManager getManager(Statement stat) {
+    @Override
+    void copySpecific(H2HMatch other) {
+        ((TeamMatch) other).scoreShootoutHome = this.scoreShootoutHome;
+        ((TeamMatch) other).scoreShootoutAway = this.scoreShootoutAway;
+    }
+
+    public TeamMatchManager getManager(Statement stat) {
         return new TeamMatchManager(stat);
     }
 
-    public H2HMatchPartManager getMatchPartManager(Statement stat) {
-        return null;
-    }
-
-    public ParticipantManager getParticipantManager(Statement stat) {
+    public TeamManager getParticipantManager(Statement stat) {
         return new TeamManager(stat);
     }
 
-    public CompSeasonParticipantManager getCompSeasonParticManager(Statement stat) {
-        return new CompSeasonTeamManager(stat);
-    }
-
-    public CompSeasonPhaseParticipantManager getPhaseParticManager(Statement stat) {
+    public CompSeasonPhaseTeamManager getPhaseParticManager(Statement stat) {
         return new CompSeasonPhaseTeamManager(stat);
     }
 
@@ -131,19 +127,6 @@ public class TeamMatch extends H2HMatch {
         setTeamAwayNcrId(participant2NcrId);
     }
 
-    public void initVirtualScoresWithActualScores() {
-        scoreHomeVirtual = scoreHome;
-        scoreAwayVirtual = scoreAway;
-    }
-
-    public void decreaseScoreHomeVirtual() {
-        scoreHomeVirtual--;
-    }
-
-    public void decreaseScoreAwayVirtual() {
-        scoreAwayVirtual--;
-    }
-
     @Override
     public boolean isParticipant1Win() {
         return super.isParticipant1Win() || (
@@ -168,16 +151,8 @@ public class TeamMatch extends H2HMatch {
         return teamHomeId;
     }
 
-    public void setTeamHomeId(Integer teamHomeId) {
-        this.teamHomeId = teamHomeId;
-    }
-
     public Integer getTeamAwayId() {
         return teamAwayId;
-    }
-
-    public void setTeamAwayId(Integer teamAwayId) {
-        this.teamAwayId = teamAwayId;
     }
 
     public Integer getScoreHome() {
@@ -234,13 +209,5 @@ public class TeamMatch extends H2HMatch {
 
     public void setTeamMatchId(int teamMatchId) {
         this.teamMatchId = teamMatchId;
-    }
-
-    public int getScoreHomeVirtual() {
-        return scoreHomeVirtual;
-    }
-
-    public int getScoreAwayVirtual() {
-        return scoreAwayVirtual;
     }
 }

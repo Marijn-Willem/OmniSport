@@ -9,7 +9,7 @@ public abstract class H2HMatchPart extends SuperKeyEntity {
 
     public abstract int getMatchPartId();
     abstract String[] getSpecificPropertiesInSQLStrings();
-    public abstract boolean getParticipant1Win();
+    abstract void copySpecific(H2HMatchPart other);
     public abstract void setParticipant1Win(boolean participant1Win);
 
     @Override
@@ -47,5 +47,13 @@ public abstract class H2HMatchPart extends SuperKeyEntity {
 
     public void setFinished(boolean finished) {
         this.finished = finished;
+    }
+
+    public void copy(H2HMatchPart other) {
+        other.name = name;
+        other.parentMatchPartId = parentMatchPartId;
+        other.finished = finished;
+
+        copySpecific(other);
     }
 }

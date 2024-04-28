@@ -11,7 +11,7 @@ import com.sports.entity.manager.PersonMatchPartManager;
 
 import java.sql.Statement;
 
-public class PersonMatchPartObjectFactory implements H2HPartObjectFactory<PersonMatchPartKey, PersonMatchPart, PersonMatchPartStatKey, PersonMatchPartStat> {
+public class PersonMatchPartObjectFactory extends H2HPartObjectFactory<PersonMatchPartKey, PersonMatchPart, PersonMatchPartStatKey, PersonMatchPartStat> {
     public H2HMatchPartManager<PersonMatchPartKey, PersonMatchPart> getMatchPartManager(Statement stat) {
         return new PersonMatchPartManager(stat);
     }

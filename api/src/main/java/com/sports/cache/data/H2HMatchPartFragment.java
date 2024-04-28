@@ -4,9 +4,8 @@ import com.sports.cache.key.CacheKey;
 import com.sports.cache.key.H2HMatchPartKey;
 import com.sports.cache.util.JsonUtil;
 import com.sports.cache.util.XmlUtil;
-import com.sports.entity.H2HMatchPart;
-import com.sports.entity.key.CompSeasonKey;
-import com.sports.entity.manager.H2HMatchPartManager;
+import com.sports.entity.*;
+import com.sports.entity.key.*;
 import com.sports.logic.calculation.DbCalculation;
 import com.sports.logic.factory.H2HObjectFactory;
 import com.sports.logic.factory.H2HPartObjectFactory;
@@ -38,14 +37,25 @@ public class H2HMatchPartFragment extends WritableFragment {
 
     @Override
     void fill(Statement stat) throws SQLException {
-        H2HObjectFactory factory = new DbCalculation(stat).getCompSeasonParticipantFactory(competitionId)
+        H2HObjectFactory<? extends CompSeasonParticipantKey,
+                ? extends CompSeasonPhaseParticipantKey,
+                ? extends Participant,
+                ? extends SuperKeyEntity,
+                ? extends SuperKeyEntity,
+                ? extends H2HMatchKey,
+                ? extends H2HMatch,
+                ? extends com.sports.entity.key.H2HMatchPartKey,
+                ? extends H2HMatchPart,
+                ? extends H2HMatchPartStatKey,
+                ? extends H2HMatchPartStat> factory = new DbCalculation(stat).getCompSeasonParticipantFactory(competitionId)
                 .getH2HObjectFactory();
-        H2HPartObjectFactory partFactory = factory.getPartObjectFactory();
+        H2HPartObjectFactory<? extends com.sports.entity.key.H2HMatchPartKey,
+                ? extends H2HMatchPart,
+                ? extends H2HMatchPartStatKey,
+                ? extends H2HMatchPartStat> partFactory = factory.getPartObjectFactory();
 
         com.sports.entity.key.H2HMatchKey matchKey = factory.getKey(new CompSeasonKey(competitionId, seasonId), matchId);
-        H2HMatchPartManager manager = partFactory.getMatchPartManager(stat);
-        com.sports.entity.key.H2HMatchPartKey matchPartKey = partFactory.getMatchPartKey(matchKey, specificId);
-        H2HMatchPart matchPart = manager.getH2HMatchPart(matchPartKey);
+        H2HMatchPart matchPart = partFactory.getEntity(stat, matchKey, specificId);
 
         name = matchPart.getName();
         parentMatchPartId = matchPart.getParentMatchPartId();

@@ -1,16 +1,8 @@
 package com.h2hsports.servlet.dispatch;
 
 import com.sports.calc.h2hsports.DbCalculation;
-import com.sports.entity.H2HMatch;
-import com.sports.entity.H2HMatchPart;
-import com.sports.entity.H2HMatchPartStat;
-import com.sports.entity.StatType;
-import com.sports.entity.key.H2HMatchKey;
-import com.sports.entity.key.H2HMatchPartKey;
-import com.sports.entity.key.H2HMatchPartStatKey;
-import com.sports.entity.manager.H2HMatchManager;
-import com.sports.entity.manager.H2HMatchPartManager;
-import com.sports.entity.manager.H2HMatchPartStatManager;
+import com.sports.entity.*;
+import com.sports.entity.key.*;
 import com.sports.entity.manager.NoCountResultManager;
 import com.sports.logic.factory.CompSeasonParticipantFactory;
 import com.sports.logic.factory.H2HObjectFactory;
@@ -25,8 +17,17 @@ import java.sql.Statement;
 import java.util.Map;
 
 public class ProcessAddMatchScore extends SuperDispatchServlet {
-    private CompSeasonParticipantFactory factory;
-    private H2HObjectFactory h2HObjectFactory;
+    private H2HObjectFactory<? extends CompSeasonParticipantKey,
+            ? extends CompSeasonPhaseParticipantKey,
+            ? extends Participant,
+            ? extends SuperKeyEntity,
+            ? extends SuperKeyEntity,
+            ? extends H2HMatchKey,
+            ? extends H2HMatch,
+            ? extends H2HMatchPartKey,
+            ? extends H2HMatchPart,
+            ? extends H2HMatchPartStatKey,
+            ? extends H2HMatchPartStat> h2HObjectFactory;
     private H2HMatchKey h2hMatchKey;
     private H2HMatch h2hMatch;
 
@@ -35,14 +36,23 @@ public class ProcessAddMatchScore extends SuperDispatchServlet {
 
         dispatchURL = "MatchOverview?" + compSeasonUrlParameters;
 
-        factory = new com.sports.logic.calculation.DbCalculation(stat).
+        CompSeasonParticipantFactory<? extends CompSeasonParticipantKey,
+            ? extends CompSeasonPhaseParticipantKey,
+            ? extends Participant,
+            ? extends SuperKeyEntity,
+            ? extends SuperKeyEntity,
+            ? extends H2HMatchKey,
+            ? extends H2HMatch,
+            ? extends H2HMatchPartKey,
+            ? extends H2HMatchPart,
+            ? extends H2HMatchPartStatKey,
+            ? extends H2HMatchPartStat> factory = new com.sports.logic.calculation.DbCalculation(stat).
                 getCompSeasonParticipantFactory(competitionId);
         h2HObjectFactory = factory.getH2HObjectFactory();
 
         h2hMatchKey = h2HObjectFactory.getKey(compSeasonKey, h2hMatchId);
 
-        H2HMatchManager mm = h2HObjectFactory.getManager(stat);
-        h2hMatch = mm.getInstanceFromKey(h2hMatchKey);
+        h2hMatch = h2HObjectFactory.getInstance(stat, compSeasonKey, h2hMatchId);
 
         h2hMatch.setParticipant1Id(getIntValuedParameterValue(req, "p1id"));
         h2hMatch.setParticipant2Id(getIntValuedParameterValue(req, "p2id"));
@@ -55,7 +65,7 @@ public class ProcessAddMatchScore extends SuperDispatchServlet {
         if (noCountResultMap.containsKey(req.getParameter("ncr_2")))
             h2hMatch.setParticipant2NcrId(noCountResultMap.get(req.getParameter("ncr_2")));
 
-        mm.update(h2hMatchKey, h2hMatch);
+        h2HObjectFactory.update(stat, compSeasonKey, h2hMatchId, h2hMatch);
 
         if (req.getParameter("scr_m_1") != null)
             processMatchScores(req);
@@ -79,11 +89,12 @@ public class ProcessAddMatchScore extends SuperDispatchServlet {
     }
 
     private void processSetScores(Statement stat, HttpServletRequest req) throws SQLException {
-        H2HPartObjectFactory partFactory = h2HObjectFactory.getPartObjectFactory();
-        H2HPartStatObjectFactory partStatFactory = partFactory.getPartStatObjectFactory();
-
-        H2HMatchPartManager mpm = partFactory.getMatchPartManager(stat);
-        H2HMatchPartStatManager mpsm = null;
+        H2HPartObjectFactory<? extends H2HMatchPartKey,
+                ? extends H2HMatchPart,
+                ? extends H2HMatchPartStatKey,
+                ? extends H2HMatchPartStat> partFactory = h2HObjectFactory.getPartObjectFactory();
+        H2HPartStatObjectFactory<? extends H2HMatchPartStatKey, ? extends H2HMatchPartStat> partStatFactory =
+                partFactory.getPartStatObjectFactory();
 
         int setNr = 0;
 
@@ -98,10 +109,7 @@ public class ProcessAddMatchScore extends SuperDispatchServlet {
             h2hMatchPart.setParticipant1Win(setScore1 > setScore2);
             h2hMatchPart.setFinished(true);
 
-            mpm.insert(h2hMatchPartKey, h2hMatchPart);
-
-            H2HMatchPartStatKey mpsk1 = partStatFactory.getMatchPartStatKey(h2hMatchPartKey, 1);
-            H2HMatchPartStatKey mpsk2 = partStatFactory.getMatchPartStatKey(h2hMatchPartKey, 2);
+            partFactory.insert(stat, h2hMatchKey, h2hMatchPartKey.getSpecificId(), h2hMatchPart);
 
             H2HMatchPartStat mps1 = partStatFactory.getMatchPartStat();
             mps1.setParticipantId(h2hMatch.getParticipant1Id());
@@ -113,11 +121,8 @@ public class ProcessAddMatchScore extends SuperDispatchServlet {
             mps2.setStatTypeId(StatType.statTypeScoreId);
             mps2.setValue(setScore2);
 
-            if (setNr == 1)
-                mpsm = partFactory.getPartStatObjectFactory().getStatManager(stat);
-
-            mpsm.insert(mpsk1, mps1);
-            mpsm.insert(mpsk2, mps2);
+            partStatFactory.insert(stat, h2hMatchPartKey, 1, mps1);
+            partStatFactory.insert(stat, h2hMatchPartKey, 2, mps2);
         }
     }
 }

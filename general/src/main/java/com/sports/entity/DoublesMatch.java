@@ -23,23 +23,20 @@ public class DoublesMatch extends H2HMatch {
             };
     }
 
-    public H2HMatchManager getManager(Statement stat) {
+    @Override
+    void copySpecific(H2HMatch other) {
+        ((DoublesMatch) other).double1Start = double1Start;
+    }
+
+    public DoublesMatchManager getManager(Statement stat) {
         return new DoublesMatchManager(stat);
     }
 
-    public H2HMatchPartManager getMatchPartManager(Statement stat) {
-        return new DoublesMatchPartManager(stat);
-    }
-
-    public ParticipantManager getParticipantManager(Statement stat) {
+    public DoubleManager getParticipantManager(Statement stat) {
         return new DoubleManager(stat);
     }
 
-    public CompSeasonParticipantManager getCompSeasonParticManager(Statement stat) {
-        return new CompSeasonDoubleManager(stat);
-    }
-
-    public CompSeasonPhaseParticipantManager getPhaseParticManager(Statement stat) {
+    public CompSeasonPhaseDoubleManager getPhaseParticManager(Statement stat) {
         return new CompSeasonPhaseDoubleManager(stat);
     }
 

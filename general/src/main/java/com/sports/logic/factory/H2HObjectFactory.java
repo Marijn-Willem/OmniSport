@@ -12,7 +12,8 @@ public abstract class H2HObjectFactory<PK extends CompSeasonParticipantKey,
         PPK extends CompSeasonPhaseParticipantKey,
         P extends Participant,
         CSP extends SuperKeyEntity,
-        CSPP extends SuperKeyEntity,MK extends H2HMatchKey,
+        CSPP extends SuperKeyEntity,
+        MK extends H2HMatchKey,
         M extends H2HMatch,
         MPK extends H2HMatchPartKey,
         MP extends H2HMatchPart,
@@ -38,7 +39,18 @@ public abstract class H2HObjectFactory<PK extends CompSeasonParticipantKey,
         return getCachedManager(stat).getInstanceFromKey(getKey(compSeasonKey, specifId));
     }
 
-    public void update(Statement stat, CompSeasonKey compSeasonKey, int specifId, M h2hMatch) throws SQLException {
-        getCachedManager(stat).update(getKey(compSeasonKey, specifId), h2hMatch);
+    public void update(Statement stat, CompSeasonKey compSeasonKey, int specifId, H2HMatch h2hMatch) throws SQLException {
+        getCachedManager(stat).update(getKey(compSeasonKey, specifId), castMatch(h2hMatch));
+    }
+
+    public MK castKey(H2HMatchKey h2hMatchKey) {
+        return getKey(h2hMatchKey.getSuperKey(), h2hMatchKey.getSpecificId());
+    }
+
+    public M castMatch(H2HMatch h2hMatch) {
+        M newMatch = getMatch();
+        h2hMatch.copy(newMatch);
+
+        return newMatch;
     }
 }

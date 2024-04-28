@@ -29,6 +29,11 @@ public class PersonMatch extends H2HMatch {
             };
     }
 
+    @Override
+    void copySpecific(H2HMatch other) {
+        ((PersonMatch) other).person1Start = person1Start;
+    }
+
     public void increaseScore1Person1() {
         person1score++;
     }
@@ -161,10 +166,6 @@ public class PersonMatch extends H2HMatch {
         return personSport2Id;
     }
 
-    public void setPersonSport2Id(Integer personSport2Id) {
-        this.personSport2Id = personSport2Id;
-    }
-
     public boolean isPerson1Start() {
         return person1Start;
     }
@@ -219,14 +220,6 @@ public class PersonMatch extends H2HMatch {
 
     public void setMaxPersonMatchPart2Id(int maxPersonMatchPart2Id) {
         this.maxPersonMatchPart2Id = maxPersonMatchPart2Id;
-    }
-
-    public void setScore2Person1(int score2Person1) {
-        this.score2Person1 = score2Person1;
-    }
-
-    public void setScore2Person2(int score2Person2) {
-        this.score2Person2 = score2Person2;
     }
 
     public Integer getBestOf1() {
