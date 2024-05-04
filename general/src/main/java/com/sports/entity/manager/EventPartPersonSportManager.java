@@ -104,7 +104,7 @@ public class EventPartPersonSportManager extends AlcifoPartParticipantManager<Ev
                                                                   String whereClause) throws SQLException {
         List<EventPartPersonSport> eventPartPersonSportList = new ArrayList<>();
         
-        if (eventPartPersonSportKeys.size() > 0) {
+        if (!eventPartPersonSportKeys.isEmpty()) {
             eventPartPersonSportList = getEntityList(
                     Util.concatStringsWithDelimiter("(" + getConditionsKeyList(eventPartPersonSportKeys) + ")",
                             whereClause, " AND ")

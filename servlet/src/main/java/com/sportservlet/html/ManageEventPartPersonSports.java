@@ -1,18 +1,18 @@
 package com.sportservlet.html;
 
-import com.sports.calc.alcifo.AlcifoPartParticipantFactory;
 import com.sports.calc.alcifo.EventPartPersonSportFactory;
+import com.sports.entity.PersonSport;
 import com.sports.entity.key.CompSeasonEventPartKey;
 import jakarta.servlet.http.HttpServletRequest;
 
-public abstract class ManageEventPartPersonSports extends ManageAlcifoPartParticipants {
+public abstract class ManageEventPartPersonSports extends ManageAlcifoPartParticipants<PersonSport, CompSeasonEventPartKey> {
     @Override
     CompSeasonEventPartKey getPartKey(HttpServletRequest req) {
         return getCompSeasonEventPartKey(req);
     }
 
     @Override
-    AlcifoPartParticipantFactory getFactory() {
+    EventPartPersonSportFactory getFactory() {
         return new EventPartPersonSportFactory();
     }
 

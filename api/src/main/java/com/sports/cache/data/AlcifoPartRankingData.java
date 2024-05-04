@@ -16,7 +16,7 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class AlcifoPartRankingData extends OutputData {
+public abstract class AlcifoPartRankingData<PK extends SuperKey> extends OutputData {
     final int competitionId;
     final int seasonId;
     final int compSeasonEventId;
@@ -25,8 +25,23 @@ public abstract class AlcifoPartRankingData extends OutputData {
 
     private final List<AlcifoParticipantFragment> fragments = new ArrayList<>();
 
-    abstract AlcifoPartParticipantFactory getFactory(AlcifoParticipantFactory participantFactory);
-    abstract SuperKey getKey(CompSeasonEventPartKey compSeasonEventPartKey);
+    abstract AlcifoPartParticipantFactory<? extends CompSeasonParticipantKey,
+            ? extends SuperKeyEntity,
+            ? extends Participant,
+            ? extends AlcifoParticipantKey,
+            ? extends AlcifoParticipant,
+            ? extends SuperKey,
+            PK,
+            ? extends AlcifoPartParticipant,
+            ? extends SuperKey,
+            ? extends AlcifoPartParticipant> getFactory(AlcifoParticipantFactory<? extends CompSeasonParticipantKey,
+                ? extends SuperKeyEntity,
+                ? extends Participant,
+                ? extends AlcifoParticipantKey,
+                ? extends AlcifoParticipant,
+                ? extends SuperKey,
+                ? extends AlcifoPartParticipant> participantFactory);
+    abstract PK getKey(CompSeasonEventPartKey compSeasonEventPartKey);
 
     public AlcifoPartRankingData(int competitionId, int seasonId, int compSeasonEventId,
                                  int compSeasonEventPartId, Integer clientId) {
@@ -69,7 +84,16 @@ public abstract class AlcifoPartRankingData extends OutputData {
             CompSeasonEvent cse = new CompSeasonEventManager(stat).getEntityFromSuperKey(csepKey.getSuperKey());
             SportEvent se = new SportEventManager(stat).getEntityFromSuperKey(cse.getSportEventKey());
 
-            AlcifoPartParticipantFactory factory = getFactory(Calculation.getAlcifoParticipantFactory(se));
+            AlcifoPartParticipantFactory<? extends CompSeasonParticipantKey,
+                    ? extends SuperKeyEntity,
+                    ? extends Participant,
+                    ? extends AlcifoParticipantKey,
+                    ? extends AlcifoParticipant,
+                    ? extends SuperKey,
+                    PK,
+                    ? extends AlcifoPartParticipant,
+                    ? extends SuperKey,
+                    ? extends AlcifoPartParticipant> factory = getFactory(Calculation.getAlcifoParticipantFactory(se));
             dbCalculation.getFullRankingInPart(factory, getKey(csepKey)).forEach(x ->
                     fragments.add(getFragment(x, sportDiscipline.getResultTypeId(),
                             sportDiscipline.getResultTypePrecisionId()))

@@ -2,13 +2,17 @@ package com.sports.cache.data;
 
 import com.sports.cache.key.CacheDataKey;
 import com.sports.cache.key.EventDisciplinePartRankingKey;
-import com.sports.entity.key.CompSeasonEventPartKey;
-import com.sports.entity.key.EventDisciplinePartKey;
-import com.sports.entity.key.SuperKey;
+import com.sports.calc.alcifo.DisciplinePartPersonSportFactory;
+import com.sports.calc.alcifo.DisciplinePartTeamFactory;
+import com.sports.entity.AlcifoPartParticipant;
+import com.sports.entity.AlcifoParticipant;
+import com.sports.entity.Participant;
+import com.sports.entity.SuperKeyEntity;
+import com.sports.entity.key.*;
 import com.sports.calc.alcifo.AlcifoPartParticipantFactory;
 import com.sports.calc.alcifo.AlcifoParticipantFactory;
 
-public class EventDisciplinePartRankingData extends AlcifoPartRankingData {
+public class EventDisciplinePartRankingData extends AlcifoPartRankingData<EventDisciplinePartKey> {
     private final int eventDisciplinePartId;
 
     public EventDisciplinePartRankingData(int competitionId, int seasonId, int compSeasonEventId, int compSeasonEventPartId,
@@ -24,12 +28,31 @@ public class EventDisciplinePartRankingData extends AlcifoPartRankingData {
     }
 
     @Override
-    AlcifoPartParticipantFactory getFactory(AlcifoParticipantFactory participantFactory) {
-        return participantFactory.getDisciplinePartParticipantFactory();
+    AlcifoPartParticipantFactory<? extends CompSeasonParticipantKey,
+        ? extends SuperKeyEntity,
+        ? extends Participant,
+        ? extends AlcifoParticipantKey,
+        ? extends AlcifoParticipant,
+        ? extends SuperKey,
+        EventDisciplinePartKey,
+        ? extends AlcifoPartParticipant,
+        ? extends SuperKey,
+        ? extends AlcifoPartParticipant> getFactory(AlcifoParticipantFactory<? extends CompSeasonParticipantKey,
+            ? extends SuperKeyEntity,
+            ? extends Participant,
+            ? extends AlcifoParticipantKey,
+            ? extends AlcifoParticipant,
+            ? extends SuperKey,
+            ? extends AlcifoPartParticipant> participantFactory) {
+        return switch (participantFactory.getParticipantType()) {
+            case PERSON_SPORT -> new DisciplinePartPersonSportFactory();
+            case TEAM -> new DisciplinePartTeamFactory();
+            default -> null;
+        };
     }
 
     @Override
-    SuperKey getKey(CompSeasonEventPartKey compSeasonEventPartKey) {
+    EventDisciplinePartKey getKey(CompSeasonEventPartKey compSeasonEventPartKey) {
         return new EventDisciplinePartKey(compSeasonEventPartKey, eventDisciplinePartId);
     }
 }

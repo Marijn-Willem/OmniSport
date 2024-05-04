@@ -17,7 +17,7 @@ import java.sql.Statement;
 import java.util.Comparator;
 import java.util.List;
 
-public class MatchMatrix extends com.sportservlet.ajax.MatchMatrix {
+public class MatchMatrixTeam extends com.sportservlet.ajax.MatchMatrixTeam {
     private List<CompDivision> compDivisions;
 
     @Override
@@ -25,15 +25,15 @@ public class MatchMatrix extends com.sportservlet.ajax.MatchMatrix {
         super.init(stat, req);
         compDivisions = new DbCalculation(stat).getSortedCompDivisions(compSeasonKey);
         new com.sports.logic.calculation.DbCalculation(stat)
-                .addCompDivisionsToTeams((List<Team>)participants, compSeasonKey);
+                .addCompDivisionsToTeams(participants, compSeasonKey);
 
-        participants.forEach(x -> setSortOrderData((Team) x));
+        participants.forEach(this::setSortOrderData);
     }
 
     @Override
     protected void sortParticipants() {
         if (!compDivisions.isEmpty())
-            ((List<Team>)participants).sort(new TeamCompDivisionParentSortName());
+            participants.sort(new TeamCompDivisionParentSortName());
         else
             super.sortParticipants();
     }
@@ -47,7 +47,7 @@ public class MatchMatrix extends com.sportservlet.ajax.MatchMatrix {
         };
 
         for (int i = 0; i < participants.size(); i++)
-            ((Team) participants.get(i)).setSortIndex(i);
+            participants.get(i).setSortIndex(i);
 
         copyCompDivisionFieldsToTeams();
         applyActionOnSortedTeams(teamCompDivisionAction);
@@ -155,7 +155,7 @@ public class MatchMatrix extends com.sportservlet.ajax.MatchMatrix {
         int compDivIndX = 0;
 
         while (teamIndX < participants.size() && compDivIndX < compDivisions.size()) {
-            Team team = (Team) participants.get(teamIndX);
+            Team team = participants.get(teamIndX);
             CompDivision compDivision = compDivisions.get(compDivIndX);
 
             if (team.getCompDivision() == null || comparator.compare(team.getCompDivision(), compDivision) < 0)

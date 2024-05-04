@@ -2,11 +2,10 @@ package com.sportservlet.ajax;
 
 import com.sports.calc.alcifo.AlcifoPartParticipantFactory;
 import com.sports.calc.alcifo.DbCalculation;
-import com.sports.entity.AlcifoPartParticipant;
-import com.sports.entity.CompSeasonEventPart;
-import com.sports.entity.ResultType;
-import com.sports.entity.SportDiscipline;
+import com.sports.entity.*;
+import com.sports.entity.key.AlcifoParticipantKey;
 import com.sports.entity.key.CompSeasonEventPartKey;
+import com.sports.entity.key.CompSeasonParticipantKey;
 import com.sports.entity.key.SuperKey;
 import com.sports.entity.manager.CompSeasonEventPartManager;
 import com.sports.entity.manager.NoCountResultManager;
@@ -24,19 +23,37 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-public abstract class ProcessManageAlcifoPartParticipants extends SuperResponseServlet {
-    abstract SuperKey getPartKey(HttpServletRequest req);
-    abstract AlcifoPartParticipantFactory getFactory();
+public abstract class ProcessManageAlcifoPartParticipants<PK extends SuperKey, APP extends AlcifoPartParticipant> extends SuperResponseServlet {
+    abstract PK getPartKey(HttpServletRequest req);
+    abstract AlcifoPartParticipantFactory<? extends CompSeasonParticipantKey,
+            ? extends SuperKeyEntity,
+            ? extends Participant,
+            ? extends AlcifoParticipantKey,
+            ? extends AlcifoParticipant,
+            ? extends SuperKey,
+            PK,
+            APP,
+            ? extends SuperKey,
+            ? extends AlcifoPartParticipant> getFactory();
 
     protected void postProcessInsertOrUpdate(Statement stat, SuperKey partKey) throws SQLException { }
 
     @Override
     protected void processBody(Statement stat, HttpServletRequest req, HttpServletResponse resp)
             throws IOException, SQLException {
-        SuperKey partKey = getPartKey(req);
+        PK partKey = getPartKey(req);
         String[] personSportData = req.getParameterValues("pt");
 
-        AlcifoPartParticipantFactory factory = getFactory();
+        AlcifoPartParticipantFactory<? extends CompSeasonParticipantKey,
+                ? extends SuperKeyEntity,
+                ? extends Participant,
+                ? extends AlcifoParticipantKey,
+                ? extends AlcifoParticipant,
+                ? extends SuperKey,
+                PK,
+                APP,
+                ? extends SuperKey,
+                ? extends AlcifoPartParticipant> factory = getFactory();
 
         CompSeasonEventPartKey csepKey = getCompSeasonEventPartKey(req);
         CompSeasonEventPart compSeasonEventPart = new CompSeasonEventPartManager(stat).getEntityFromSuperKey(csepKey);
@@ -46,7 +63,7 @@ public abstract class ProcessManageAlcifoPartParticipants extends SuperResponseS
 
         Map<String, Integer> ncrMap = new NoCountResultManager(stat).getNameIdMap();
 
-        List<AlcifoPartParticipant> partParticipants = Arrays.stream(personSportData)
+        List<APP> partParticipants = Arrays.stream(personSportData)
                 .map(pd -> getParticipant(pd, sd.getResultTypeId(), ncrMap, factory))
                 .collect(Collectors.toList());
 
@@ -56,10 +73,19 @@ public abstract class ProcessManageAlcifoPartParticipants extends SuperResponseS
         resp.getWriter().append("Participants updated");
     }
 
-    private AlcifoPartParticipant getParticipant(String data, int resultTypeId, Map<String, Integer> ncrMap,
-                                                 AlcifoPartParticipantFactory factory) {
+    private APP getParticipant(String data, int resultTypeId, Map<String, Integer> ncrMap,
+                                                 AlcifoPartParticipantFactory<? extends CompSeasonParticipantKey,
+                                                         ? extends SuperKeyEntity,
+                                                         ? extends Participant,
+                                                         ? extends AlcifoParticipantKey,
+                                                         ? extends AlcifoParticipant,
+                                                         ? extends SuperKey,
+                                                         PK,
+                                                         APP,
+                                                         ? extends SuperKey,
+                                                         ? extends AlcifoPartParticipant> factory) {
         String[] dataSplit = data.split("\\|");
-        AlcifoPartParticipant partParticipant = factory.getInstance();
+        APP partParticipant = factory.getInstance();
         partParticipant.setParticipantId(Integer.parseInt(dataSplit[0]));
 
         partParticipant.setRank(dataSplit.length > 1 ? Util.convertStringToInteger(dataSplit[1]) : null);

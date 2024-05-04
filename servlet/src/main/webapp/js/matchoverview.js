@@ -17,7 +17,7 @@ const standingLoader = new ElementLoader('tbl_standing',
 
 const matchMatrixLoader = new ElementLoader('tbl_matchmatrix',
     function () {
-        return '/MatchMatrix?' + getParameters();
+        return '/PrepareMatchMatrix?' + getParameters();
     },
     null);
 

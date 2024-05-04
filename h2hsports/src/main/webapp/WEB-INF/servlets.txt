@@ -25,7 +25,10 @@ com.sportservlet.dispatch.PrepareProcessManageH2HMatch
 com.sportservlet.ajax.ProcessManagePersonMatch
 com.sportservlet.ajax.ProcessManageDoublesMatch
 com.sportservlet.ajax.ProcessManageTeamMatch
-com.sportservlet.ajax.MatchMatrix
+com.sportservlet.dispatch.PrepareMatchMatrix
+com.sportservlet.ajax.MatchMatrixPersonSport
+com.sportservlet.ajax.MatchMatrixDouble
+com.sportservlet.ajax.MatchMatrixTeam
 com.sportservlet.ajax.SeasonList
 com.h2hsports.servlet.html.ManagePerson
 com.h2hsports.servlet.ajax.CompSeasonPorts

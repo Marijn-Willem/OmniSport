@@ -2,13 +2,8 @@ package com.sportservlet.html;
 
 import com.sports.calc.alcifo.AlcifoPartParticipantFactory;
 import com.sports.calc.alcifo.DbCalculation;
-import com.sports.entity.CompSeasonEventPart;
-import com.sports.entity.Participant;
-import com.sports.entity.ResultType;
-import com.sports.entity.SportDiscipline;
-import com.sports.entity.key.CompSeasonEventPartKey;
-import com.sports.entity.key.SportDisciplineKey;
-import com.sports.entity.key.SuperKey;
+import com.sports.entity.*;
+import com.sports.entity.key.*;
 import com.sports.entity.manager.CompSeasonEventPartManager;
 import com.sports.entity.manager.SportDisciplineManager;
 import com.sports.logic.util.Util;
@@ -22,13 +17,31 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.List;
 
-public abstract class ManageAlcifoPartParticipants extends SuperHtmlServlet implements AbstractHtmlServlet {
-    private final AlcifoPartParticipantFactory factory = getFactory();
-    private SuperKey partKey;
+public abstract class ManageAlcifoPartParticipants<P extends Participant, PK extends SuperKey> extends SuperHtmlServlet implements AbstractHtmlServlet {
+    private final AlcifoPartParticipantFactory<? extends CompSeasonParticipantKey,
+            ? extends SuperKeyEntity,
+            P,
+            ? extends AlcifoParticipantKey,
+            ? extends AlcifoParticipant,
+            ? extends SuperKey,
+            PK,
+            ? extends AlcifoPartParticipant,
+            ? extends SuperKey,
+            ? extends AlcifoPartParticipant> factory = getFactory();
+    private PK partKey;
     private SportDisciplineKey sportDisciplineKey;
 
-    abstract SuperKey getPartKey(HttpServletRequest req);
-    abstract AlcifoPartParticipantFactory getFactory();
+    abstract PK getPartKey(HttpServletRequest req);
+    abstract AlcifoPartParticipantFactory<? extends CompSeasonParticipantKey,
+            ? extends SuperKeyEntity,
+            P,
+            ? extends AlcifoParticipantKey,
+            ? extends AlcifoParticipant,
+            ? extends SuperKey,
+            PK,
+            ? extends AlcifoPartParticipant,
+            ? extends SuperKey,
+            ? extends AlcifoPartParticipant> getFactory();
     abstract void initSpecificJsProperties();
 
     void writeSpecificScriptTagVars(HttpServletRequest req, Writer w) throws IOException { }
@@ -62,7 +75,7 @@ public abstract class ManageAlcifoPartParticipants extends SuperHtmlServlet impl
     @Override
     protected void processHtmlBody(Statement stat, HttpServletRequest req, HttpServletResponse res)
             throws IOException, SQLException {
-        List<? extends Participant> participants = new DbCalculation(stat).getFullRankingInPart(factory, partKey);
+        List<P> participants = new DbCalculation(stat).getFullRankingInPart(factory, partKey);
 
         SportDiscipline sd = new SportDisciplineManager(stat).getEntityFromSuperKey(sportDisciplineKey);
 

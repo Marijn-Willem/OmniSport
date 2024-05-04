@@ -2,11 +2,8 @@ package com.speedskating.servlet.ajax;
 
 import com.sports.calc.alcifo.AlcifoPartParticipantFactory;
 import com.sports.calc.alcifo.Calculation;
-import com.sports.entity.CompSeasonEvent;
-import com.sports.entity.Participant;
-import com.sports.entity.SportEvent;
-import com.sports.entity.key.CompSeasonEventKey;
-import com.sports.entity.key.CompSeasonEventPartKey;
+import com.sports.entity.*;
+import com.sports.entity.key.*;
 import com.sports.entity.manager.CompSeasonEventManager;
 import com.sports.entity.manager.SportEventManager;
 import com.sports.logic.util.Util;
@@ -29,7 +26,16 @@ public class EventPartRanking extends SuperResponseServlet {
         CompSeasonEvent cse = new CompSeasonEventManager(stat).getEntityFromSuperKey(cseKey);
         SportEvent sportEvent = new SportEventManager(stat).getEntityFromSuperKey(cse.getSportEventKey());
 
-        AlcifoPartParticipantFactory factory = Calculation.getAlcifoParticipantFactory(sportEvent)
+        AlcifoPartParticipantFactory<? extends CompSeasonParticipantKey,
+                ? extends SuperKeyEntity,
+                ? extends Participant,
+                ? extends AlcifoParticipantKey,
+                ? extends AlcifoParticipant,
+                ? extends SuperKey,
+                CompSeasonEventPartKey,
+                ? extends AlcifoPartParticipant,
+                ? extends SuperKey,
+                ? extends AlcifoPartParticipant> factory = Calculation.getAlcifoParticipantFactory(sportEvent)
                 .getEventPartParticipantFactory();
 
         List<? extends Participant> ranking = new com.sports.calc.alcifo.DbCalculation(stat)

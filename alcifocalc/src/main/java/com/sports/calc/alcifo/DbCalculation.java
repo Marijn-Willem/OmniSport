@@ -111,14 +111,17 @@ public record DbCalculation(Statement stat) {
         SportEvent sportEvent = new SportEventManager(stat).getEntityFromSuperKey(cse.getSportEventKey());
 
         if (sportEvent != null) {
-            AlcifoParticipantFactory factory = Calculation.getAlcifoParticipantFactory(sportEvent);
+            AlcifoParticipantFactory<? extends CompSeasonParticipantKey,
+                    ? extends SuperKeyEntity,
+                    ? extends Participant,
+                    ? extends AlcifoParticipantKey,
+                    ? extends AlcifoParticipant,
+                    ? extends SuperKey,
+                    ? extends AlcifoPartParticipant> factory = Calculation.getAlcifoParticipantFactory(sportEvent);
 
-            List<Integer> personSportIds = factory.getCompSeasonParticipantManager(stat).getParticipantIdsCompSeason(csKey);
-            Map partMap = new HashMap<SuperKey, AlcifoParticipant>() {{
-                personSportIds.forEach(id -> put(factory.getAlcifoParticipantKey(cseKey, id), factory.getAlcifoParticipant()));
-            }};
+            List<Integer> participantIds = factory.getCompSeasonParticipantManager(stat).getParticipantIdsCompSeason(csKey);
 
-            factory.getManager(stat).insertParticipantMap(partMap);
+            factory.insertParticipants(stat, cseKey, participantIds);
         }
     }
 
@@ -133,47 +136,63 @@ public record DbCalculation(Statement stat) {
         return resultMap;
     }
 
-    public void insertPartParticipants(SuperKey partKey, AlcifoPartParticipantFactory factory) throws SQLException {
-        AlcifoPartParticipantManager partParticipantManager = factory.getManager(stat);
-        AlcifoParticipantManager participantManager = factory.getParticipantFactory().getManager(stat);
+    public <APK extends AlcifoParticipantKey,
+            PK extends SuperKey,
+            AP extends AlcifoParticipant> void insertPartParticipants(PK partKey, AlcifoPartParticipantFactory<? extends CompSeasonParticipantKey,
+            ? extends SuperKeyEntity,
+            ? extends Participant,
+            APK,
+            AP,
+            ? extends SuperKey,
+            PK,
+            ? extends AlcifoPartParticipant,
+            ? extends SuperKey,
+            ? extends AlcifoPartParticipant> factory) throws SQLException {
+        AlcifoParticipantManager<APK, AP> participantManager = factory.getParticipantFactory().getManager(stat);
 
         CompSeasonEventKey cseKey = factory.getCompSeasonEventPartKey(partKey).getSuperKey();
+        Map<APK, AP> pPartMap = participantManager.getParticipantMapInEvent(cseKey);
 
-        Map partParticipantMap = new HashMap<SuperKey, AlcifoPartParticipant>() {{
-            Map<? extends AlcifoParticipantKey, ? extends AlcifoParticipant> pPartMap =
-                    participantManager.getParticipantMapInEvent(cseKey);
-            pPartMap.forEach((k, v) -> {
-                if (v.getNoCountResultId() == null)
-                    put(factory.getKey(partKey, k.getParticipantId()), factory.getInstance());
-            });
-        }};
-
-        partParticipantManager.insertPartParticipantMap(partParticipantMap);
+        factory.insertPartParticipants(stat, partKey, pPartMap);
     }
 
-    public void updatePartParticipants(SuperKey partKey, List<? extends AlcifoPartParticipant> partParticipants,
-                                       AlcifoPartParticipantFactory factory) throws SQLException {
-        Map updateMap = new HashMap() {{
-            partParticipants.forEach(x -> {
-                SuperKey key = factory.getKey(partKey, x.getParticipantId());
-                put(key, x);
-            });
-        }};
-
-        factory.getManager(stat).updatePartParticipantMap(updateMap);
+    public <PK extends SuperKey,
+            APP extends AlcifoPartParticipant> void updatePartParticipants(PK partKey, List<APP> partParticipants, AlcifoPartParticipantFactory<? extends CompSeasonParticipantKey,
+            ? extends SuperKeyEntity,
+            ? extends Participant,
+            ? extends AlcifoParticipantKey,
+            ? extends AlcifoParticipant,
+            ? extends SuperKey,
+            PK,
+            APP,
+            ? extends SuperKey,
+            ? extends AlcifoPartParticipant> factory) throws SQLException {
+        factory.updateParticipants(stat, partKey, partParticipants);
     }
 
-    public <U extends SuperKey> List<? extends Participant> getFullRankingInPart(AlcifoPartParticipantFactory factory, U partKey)
+    public <P extends Participant,
+            APPK extends SuperKey,
+            PK extends SuperKey,
+            APP extends AlcifoPartParticipant> List<P> getFullRankingInPart(AlcifoPartParticipantFactory<? extends CompSeasonParticipantKey,
+            ? extends SuperKeyEntity,
+            P,
+            ? extends AlcifoParticipantKey,
+            ? extends AlcifoParticipant,
+            APPK,
+            PK,
+            APP,
+            ? extends SuperKey,
+            ? extends AlcifoPartParticipant> factory, PK partKey)
             throws SQLException {
-        AlcifoPartParticipantManager<?, U, ?> partParticipantManager = (AlcifoPartParticipantManager<?, U, ?>) factory.getManager(stat);
+        AlcifoPartParticipantManager<APPK, PK, APP> partParticipantManager = factory.getManager(stat);
 
         CompSeasonEventKey cseKey = factory.getCompSeasonEventPartKey(partKey).getSuperKey();
         CompSeasonEvent cse = new CompSeasonEventManager(stat).getEntityFromSuperKey(cseKey);
 
-        List<? extends AlcifoPartParticipant> pPartList = partParticipantManager.getPartParticipantList(partKey);
-        Map<SuperKey, AlcifoPartParticipant> pPartMap = new HashMap<>() {{
+        List<APP> pPartList = partParticipantManager.getPartParticipantList(partKey);
+        Map<APPK, APP> pPartMap = new HashMap<>() {{
             pPartList.forEach(x -> {
-                SuperKey key = factory.getKey(partKey, x.getParticipantId());
+                APPK key = factory.getKey(partKey, x.getParticipantId());
                 put(key, x);
             });
         }};
@@ -182,7 +201,7 @@ public record DbCalculation(Statement stat) {
         if (se != null)
             sortAndRankPartParticipantsByPoints(pPartList, se.isPointsSortAsc());
 
-        List<? extends Participant> participants = factory.getParticipantManager(stat).getParticipantList(
+        List<P> participants = factory.getParticipantManager(stat).getParticipantList(
                 pPartList.stream().map(AlcifoPartParticipant::getParticipantId).collect(Collectors.toList())
         );
 
@@ -275,12 +294,21 @@ public record DbCalculation(Statement stat) {
         return selectedDisciplineParts;
     }
 
-    private void setRanksAndPoints(AlcifoPartParticipantFactory factory,
-                                   SuperKey partKey,
-                                   List<? extends Participant> participants,
-                                   Map<? extends SuperKey, ? extends AlcifoPartParticipant> partParticipantMap) {
+    private <P extends Participant,
+            APPK extends SuperKey,
+            PK extends SuperKey,
+            APP extends AlcifoPartParticipant> void setRanksAndPoints(AlcifoPartParticipantFactory<? extends CompSeasonParticipantKey,
+            ? extends SuperKeyEntity,
+            P,
+            ? extends AlcifoParticipantKey,
+            ? extends AlcifoParticipant,
+            APPK,
+            PK,
+            APP,
+            ? extends SuperKey,
+            ? extends AlcifoPartParticipant> factory, PK partKey, List<P> participants, Map<APPK, APP> partParticipantMap) {
         participants.forEach(pt -> {
-            AlcifoPartParticipant pPart = partParticipantMap.get(factory.getKey(partKey, pt.getId()));
+            APP pPart = partParticipantMap.get(factory.getKey(partKey, pt.getId()));
             Integer rank = pPart != null ? (pPart.getRank() != null ? pPart.getRank() : pPart.getCalculatedRank()) : null;
             Integer points = pPart != null ? pPart.getPoints() : null;
             Integer noCountResultId = pPart != null ? pPart.getNoCountResultId() : null;

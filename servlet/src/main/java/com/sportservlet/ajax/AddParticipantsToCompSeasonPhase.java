@@ -1,9 +1,7 @@
 package com.sportservlet.ajax;
 
-import com.sports.entity.CompSeasonPhase;
-import com.sports.entity.key.CompSeasonKey;
-import com.sports.entity.key.CompSeasonPhaseKey;
-import com.sports.entity.key.CompSeasonPhaseParticipantKey;
+import com.sports.entity.*;
+import com.sports.entity.key.*;
 import com.sports.entity.manager.CompSeasonPhaseParticipantManager;
 import com.sports.logic.calculation.DbCalculation;
 import com.sports.logic.factory.CompSeasonParticipantFactory;
@@ -19,9 +17,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class AddParticipantsToCompSeasonPhase extends SuperResponseServlet {
-    private CompSeasonParticipantFactory factory;
-    private CompSeasonPhaseKey cspk;
-
     protected void processBody(Statement stat, HttpServletRequest req, HttpServletResponse resp)
             throws IOException, SQLException {
         int competitionId = Integer.parseInt(req.getParameter("cid"));
@@ -41,17 +36,29 @@ public class AddParticipantsToCompSeasonPhase extends SuperResponseServlet {
         String output;
 
         if (firstRound != null) {
-            cspk = firstRound.getCompSeasonPhaseKey();
-            factory = new DbCalculation(stat).getCompSeasonParticipantFactory(competitionId);
+            CompSeasonPhaseKey cspk = firstRound.getCompSeasonPhaseKey();
+            CompSeasonParticipantFactory<? extends CompSeasonParticipantKey,
+                    ? extends CompSeasonPhaseParticipantKey,
+                    ? extends Participant,
+                    ? extends SuperKeyEntity,
+                    ? extends SuperKeyEntity,
+                    ? extends H2HMatchKey,
+                    ? extends H2HMatch,
+                    ? extends H2HMatchPartKey,
+                    ? extends H2HMatchPart,
+                    ? extends H2HMatchPartStatKey,
+                    ? extends H2HMatchPartStat> factory = new DbCalculation(stat).getCompSeasonParticipantFactory(competitionId);
 
-            CompSeasonPhaseParticipantManager csppm = factory.getPhaseParticManager(stat);
+            CompSeasonPhaseParticipantManager<? extends CompSeasonParticipantKey,
+                    ? extends CompSeasonPhaseParticipantKey,
+                    ? extends SuperKeyEntity> csppm = factory.getPhaseParticManager(stat);
             List<Integer> curPartIds = csppm.getParticipantIds(cspk);
 
             List<Integer> partIdsToDel = Util.getElementsLeftNotInRight(curPartIds, partIds);
             List<Integer> partIdsToAdd = Util.getElementsLeftNotInRight(partIds, curPartIds);
 
-            csppm.deletePhaseParticipants(getParticipantKeys(partIdsToDel));
-            csppm.insertPhaseParticipantKeyList(getParticipantKeys(partIdsToAdd));
+            factory.deletePhaseParticipants(stat, cspk, partIdsToDel);
+            factory.insertPhaseParticipantKeyList(stat, cspk, partIdsToAdd);
 
             output = "Participants successfully processed";
         }
@@ -59,14 +66,5 @@ public class AddParticipantsToCompSeasonPhase extends SuperResponseServlet {
             output = "No phases present under this parent phase";
 
         resp.getWriter().append(output);
-    }
-
-    private List<CompSeasonPhaseParticipantKey> getParticipantKeys(List<Integer> particIds) {
-        List<CompSeasonPhaseParticipantKey> participantKeys = new ArrayList<CompSeasonPhaseParticipantKey>();
-
-        for (Integer particId : particIds)
-            participantKeys.add(factory.getPhaseParticKey(cspk, particId));
-
-        return participantKeys;
     }
 }

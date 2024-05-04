@@ -19,32 +19,42 @@ import java.sql.Statement;
 import java.util.Collections;
 import java.util.List;
 
-public class MatchMatrix extends SuperResponseServlet {
+public abstract class MatchMatrix<P extends Participant> extends SuperResponseServlet {
     protected CompSeasonPhaseKey cspk;
-    protected List<? extends Participant> participants;
+    protected List<P> participants;
+    protected CompSeasonParticipantFactory<? extends CompSeasonParticipantKey,
+            ? extends CompSeasonPhaseParticipantKey,
+            P,
+            ? extends SuperKeyEntity,
+            ? extends SuperKeyEntity,
+            ? extends H2HMatchKey,
+            ? extends H2HMatch,
+            ? extends H2HMatchPartKey,
+            ? extends H2HMatchPart,
+            ? extends H2HMatchPartStatKey,
+            ? extends H2HMatchPartStat> factory = getFactory();
+
+    protected abstract CompSeasonParticipantFactory<? extends CompSeasonParticipantKey,
+            ? extends CompSeasonPhaseParticipantKey,
+            P,
+            ? extends SuperKeyEntity,
+            ? extends SuperKeyEntity,
+            ? extends H2HMatchKey,
+            ? extends H2HMatch,
+            ? extends H2HMatchPartKey,
+            ? extends H2HMatchPart,
+            ? extends H2HMatchPartStatKey,
+            ? extends H2HMatchPartStat> getFactory();
 
     @Override
     protected void init(Statement stat, HttpServletRequest req) throws SQLException {
         int phaseId = Integer.parseInt(req.getParameter("pid"));
         cspk = new CompSeasonPhaseKey(compSeasonKey, phaseId);
 
-        CompSeasonParticipantFactory<? extends CompSeasonParticipantKey,
-                ? extends CompSeasonPhaseParticipantKey,
-                ? extends Participant,
-                ? extends SuperKeyEntity,
-                ? extends SuperKeyEntity,
-                ? extends H2HMatchKey,
-                ? extends H2HMatch,
-                ? extends H2HMatchPartKey,
-                ? extends H2HMatchPart,
-                ? extends H2HMatchPartStatKey,
-                ? extends H2HMatchPartStat> factory = new com.sports.logic.calculation.DbCalculation(stat)
-                .getCompSeasonParticipantFactory(competitionId);
-
         CompSeasonPhaseParticipantManager<? extends CompSeasonParticipantKey,
                 ? extends CompSeasonPhaseParticipantKey,
                 ? extends SuperKeyEntity> csppm = factory.getPhaseParticManager(stat);
-        ParticipantManager<? extends Participant> pm = factory.getParticipantManager(stat);
+        ParticipantManager<P> pm = factory.getParticipantManager(stat);
 
         List<Integer> particIds = csppm.getParticipantsInCompSeasonPhases(Collections.singletonList(cspk));
         participants = pm.getParticipantList(particIds);

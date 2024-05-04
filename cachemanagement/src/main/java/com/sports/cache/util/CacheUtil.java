@@ -46,7 +46,7 @@ public class CacheUtil {
     }
 
     public static <T> T get(String cacheKeyAsString) {
-        return (T)memcachedClient.get(getFullKey(cacheKeyAsString));
+        return (T) memcachedClient.get(getFullKey(cacheKeyAsString));
     }
 
     public static void delete(String cacheKeyAsString) {

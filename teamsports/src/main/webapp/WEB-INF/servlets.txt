@@ -39,7 +39,8 @@ com.teamsports.servlet.html.ManageCompSeasonTeams
 com.sportservlet.ajax.ProcessManageCompSeasonPhase
 com.sportservlet.dispatch.PrepareProcessManageH2HMatch
 com.teamsports.servlet.ajax.ProcessManageTeamMatch
-com.teamsports.servlet.ajax.MatchMatrix
+com.sportservlet.dispatch.PrepareMatchMatrix
+com.teamsports.servlet.ajax.MatchMatrixTeam
 com.sportservlet.ajax.SeasonList
 com.teamsports.servlet.html.SportOverview
 com.teamsports.servlet.html.ManageCompSeasonTeam

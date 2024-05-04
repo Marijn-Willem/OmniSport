@@ -1,25 +1,30 @@
 package com.sports.calc.alcifo;
 
 import com.sports.entity.CompSeasonTeam;
+import com.sports.entity.EventPartTeam;
 import com.sports.entity.EventTeam;
-import com.sports.entity.key.CompSeasonEventKey;
-import com.sports.entity.key.CompSeasonTeamKey;
-import com.sports.entity.key.EventTeamKey;
-import com.sports.entity.manager.AlcifoParticipantManager;
-import com.sports.entity.manager.CompSeasonParticipantManager;
+import com.sports.entity.Team;
+import com.sports.entity.key.*;
 import com.sports.entity.manager.CompSeasonTeamManager;
 import com.sports.entity.manager.EventTeamManager;
+import com.sports.logic.factory.ParticipantType;
 
 import java.sql.Statement;
 
-public class EventTeamFactory implements AlcifoParticipantFactory {
+public class EventTeamFactory extends AlcifoParticipantFactory<CompSeasonTeamKey,
+        CompSeasonTeam,
+        Team,
+        EventTeamKey,
+        EventTeam,
+        EventPartTeamKey,
+        EventPartTeam> {
     @Override
-    public AlcifoParticipantManager<EventTeamKey, EventTeam> getManager(Statement stat) {
+    public EventTeamManager getManager(Statement stat) {
         return new EventTeamManager(stat);
     }
 
     @Override
-    public CompSeasonParticipantManager<CompSeasonTeamKey, CompSeasonTeam> getCompSeasonParticipantManager(Statement stat) {
+    public CompSeasonTeamManager getCompSeasonParticipantManager(Statement stat) {
         return new CompSeasonTeamManager(stat);
     }
 
@@ -34,12 +39,21 @@ public class EventTeamFactory implements AlcifoParticipantFactory {
     }
 
     @Override
-    public AlcifoPartParticipantFactory getEventPartParticipantFactory() {
+    public AlcifoPartParticipantFactory<CompSeasonTeamKey,
+            CompSeasonTeam,
+            Team,
+            EventTeamKey,
+            EventTeam,
+            EventPartTeamKey,
+            CompSeasonEventPartKey,
+            EventPartTeam,
+            EventPartTeamKey,
+            EventPartTeam> getEventPartParticipantFactory() {
         return new EventPartTeamFactory();
     }
 
     @Override
-    public AlcifoPartParticipantFactory getDisciplinePartParticipantFactory() {
-        return new DisciplinePartTeamFactory();
+    public ParticipantType getParticipantType() {
+        return ParticipantType.TEAM;
     }
 }

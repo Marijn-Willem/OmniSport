@@ -1,20 +1,28 @@
 package com.sports.calc.alcifo;
 
 import com.sports.entity.EventPartPersonSport;
+import com.sports.entity.EventPersonSport;
 import com.sports.entity.PersonSport;
-import com.sports.entity.key.CompSeasonEventPartKey;
-import com.sports.entity.key.EventPartPersonSportKey;
-import com.sports.entity.key.SuperKey;
-import com.sports.entity.manager.AlcifoPartParticipantManager;
+import com.sports.entity.SuperKeyEntity;
+import com.sports.entity.key.*;
 import com.sports.entity.manager.EventPartPersonSportManager;
 import com.sports.entity.manager.ParticipantManager;
 import com.sports.entity.manager.PersonSportManager;
 
 import java.sql.Statement;
 
-public class EventPartPersonSportFactory implements AlcifoPartParticipantFactory {
+public class EventPartPersonSportFactory extends AlcifoPartParticipantFactory<CompSeasonPersonSportKey,
+        SuperKeyEntity,
+        PersonSport,
+        EventPersonSportKey,
+        EventPersonSport,
+        EventPartPersonSportKey,
+        CompSeasonEventPartKey,
+        EventPartPersonSport,
+        EventPartPersonSportKey,
+        EventPartPersonSport> {
     @Override
-    public AlcifoPartParticipantManager<EventPartPersonSportKey, CompSeasonEventPartKey, EventPartPersonSport> getManager(Statement stat) {
+    public EventPartPersonSportManager getManager(Statement stat) {
         return new EventPartPersonSportManager(stat);
     }
 
@@ -24,13 +32,13 @@ public class EventPartPersonSportFactory implements AlcifoPartParticipantFactory
     }
 
     @Override
-    public EventPartPersonSportKey getKey(SuperKey partKey, int participantId) {
-        return new EventPartPersonSportKey((CompSeasonEventPartKey)partKey, participantId);
+    public EventPartPersonSportKey getKey(CompSeasonEventPartKey partKey, int participantId) {
+        return new EventPartPersonSportKey(partKey, participantId);
     }
 
     @Override
-    public CompSeasonEventPartKey getCompSeasonEventPartKey(SuperKey partKey) {
-        return (CompSeasonEventPartKey)partKey;
+    public CompSeasonEventPartKey getCompSeasonEventPartKey(CompSeasonEventPartKey partKey) {
+        return partKey;
     }
 
     @Override
@@ -39,7 +47,13 @@ public class EventPartPersonSportFactory implements AlcifoPartParticipantFactory
     }
 
     @Override
-    public AlcifoParticipantFactory getParticipantFactory() {
+    public AlcifoParticipantFactory<CompSeasonPersonSportKey,
+            SuperKeyEntity,
+            PersonSport,
+            EventPersonSportKey,
+            EventPersonSport,
+            EventPartPersonSportKey,
+            EventPartPersonSport> getParticipantFactory() {
         return new EventPersonSportFactory();
     }
 }

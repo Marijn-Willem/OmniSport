@@ -1,14 +1,23 @@
 package com.sports.calc.alcifo;
 
 import com.sports.entity.*;
+import com.sports.entity.key.AlcifoParticipantKey;
+import com.sports.entity.key.CompSeasonParticipantKey;
 import com.sports.entity.key.SportEventKey;
+import com.sports.entity.key.SuperKey;
 import com.sports.logic.util.Util;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class Calculation {
-    public static AlcifoParticipantFactory getAlcifoParticipantFactory(SportEvent sportEvent) {
+    public static AlcifoParticipantFactory<? extends CompSeasonParticipantKey,
+            ? extends SuperKeyEntity,
+            ? extends Participant,
+            ? extends AlcifoParticipantKey,
+            ? extends AlcifoParticipant,
+            ? extends SuperKey,
+            ? extends AlcifoPartParticipant> getAlcifoParticipantFactory(SportEvent sportEvent) {
         return sportEvent.isTeam() ? new EventTeamFactory() : new EventPersonSportFactory();
     }
 

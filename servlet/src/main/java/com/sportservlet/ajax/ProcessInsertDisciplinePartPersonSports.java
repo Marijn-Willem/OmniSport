@@ -1,18 +1,19 @@
 package com.sportservlet.ajax;
 
+import com.sports.calc.alcifo.DisciplinePartPersonSportFactory;
+import com.sports.entity.DisciplinePartPersonSport;
 import com.sports.entity.EventPartPersonSport;
 import com.sports.entity.key.CompSeasonEventPartKey;
+import com.sports.entity.key.DisciplinePartPersonSportKey;
 import com.sports.entity.key.EventDisciplinePartKey;
 import com.sports.entity.manager.EventPartPersonSportManager;
-import com.sports.calc.alcifo.AlcifoPartParticipantFactory;
-import com.sports.calc.alcifo.DisciplinePartPersonSportFactory;
-
 import jakarta.servlet.http.HttpServletRequest;
+
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.List;
 
-public class ProcessInsertDisciplinePartPersonSports extends ProcessInsertAlcifoPartParticipants<EventDisciplinePartKey> {
+public class ProcessInsertDisciplinePartPersonSports extends ProcessInsertAlcifoPartParticipants<DisciplinePartPersonSportKey, EventDisciplinePartKey, DisciplinePartPersonSport> {
     @Override
     EventDisciplinePartKey getPartKey(HttpServletRequest req) {
         int edpid = getIntValuedParameterValue(req, "edpid");
@@ -21,7 +22,7 @@ public class ProcessInsertDisciplinePartPersonSports extends ProcessInsertAlcifo
     }
 
     @Override
-    AlcifoPartParticipantFactory getFactory() {
+    DisciplinePartPersonSportFactory getFactory() {
         return new DisciplinePartPersonSportFactory();
     }
 
@@ -31,7 +32,7 @@ public class ProcessInsertDisciplinePartPersonSports extends ProcessInsertAlcifo
         List<EventPartPersonSport> eventPartPersonSports = new EventPartPersonSportManager(stat)
                 .getPartParticipantList(csepKey);
 
-        return eventPartPersonSports.size() > 0;
+        return !eventPartPersonSports.isEmpty();
     }
 
     @Override

@@ -1,36 +1,41 @@
 package com.sports.calc.alcifo;
 
-import com.sports.entity.DisciplinePartTeam;
-import com.sports.entity.Team;
+import com.sports.entity.*;
 import com.sports.entity.key.*;
-import com.sports.entity.manager.AlcifoPartParticipantManager;
 import com.sports.entity.manager.DisciplinePartTeamManager;
-import com.sports.entity.manager.ParticipantManager;
 import com.sports.entity.manager.TeamManager;
 
 import java.sql.Statement;
 
-public class DisciplinePartTeamFactory implements AlcifoPartParticipantFactory {
+public class DisciplinePartTeamFactory extends AlcifoPartParticipantFactory<CompSeasonTeamKey,
+        CompSeasonTeam,
+        Team,
+        EventTeamKey,
+        EventTeam,
+        DisciplinePartTeamKey,
+        EventDisciplinePartKey,
+        DisciplinePartTeam,
+        EventPartTeamKey,
+        EventPartTeam> {
     @Override
-    public AlcifoPartParticipantManager<DisciplinePartTeamKey, EventDisciplinePartKey, DisciplinePartTeam> getManager(Statement stat) {
+    public DisciplinePartTeamManager getManager(Statement stat) {
         return new DisciplinePartTeamManager(stat);
     }
 
     @Override
-    public ParticipantManager<Team> getParticipantManager(Statement stat) {
+    public TeamManager getParticipantManager(Statement stat) {
         return new TeamManager(stat);
     }
 
     @Override
-    public DisciplinePartTeamKey getKey(SuperKey partKey, int participantId) {
-        EventDisciplinePartKey edpKey = (EventDisciplinePartKey)partKey;
-        EventPartTeamKey eventPartTeamKey = new EventPartTeamKey(edpKey.getSuperKey(), participantId);
-        return new DisciplinePartTeamKey(eventPartTeamKey, edpKey.getEventDisciplinePartId());
+    public DisciplinePartTeamKey getKey(EventDisciplinePartKey partKey, int participantId) {
+        EventPartTeamKey eventPartTeamKey = new EventPartTeamKey(partKey.getSuperKey(), participantId);
+        return new DisciplinePartTeamKey(eventPartTeamKey, partKey.getEventDisciplinePartId());
     }
 
     @Override
-    public CompSeasonEventPartKey getCompSeasonEventPartKey(SuperKey partKey) {
-        return ((EventDisciplinePartKey)partKey).getSuperKey();
+    public CompSeasonEventPartKey getCompSeasonEventPartKey(EventDisciplinePartKey partKey) {
+        return partKey.getSuperKey();
     }
 
     @Override
@@ -39,7 +44,13 @@ public class DisciplinePartTeamFactory implements AlcifoPartParticipantFactory {
     }
 
     @Override
-    public AlcifoParticipantFactory getParticipantFactory() {
+    public AlcifoParticipantFactory<CompSeasonTeamKey,
+            CompSeasonTeam,
+            Team,
+            EventTeamKey,
+            EventTeam,
+            EventPartTeamKey,
+            EventPartTeam> getParticipantFactory() {
         return new EventTeamFactory();
     }
 }

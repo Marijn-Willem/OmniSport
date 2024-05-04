@@ -18,7 +18,7 @@ const standingLoader = new ElementLoader('tblStanding', function () {
 
 const matchMatrixLoader = new ElementLoader('tblMatchMatrix', function () {
     const pId = getPIdDId()[0];
-        return pId ? '/MatchMatrix?cid=' + cid + '&sid=' + sid + '&pid=' + getPIdDId()[0] + '&oc=' + oc : null;
+        return pId ? '/PrepareMatchMatrix?cid=' + cid + '&sid=' + sid + '&pid=' + getPIdDId()[0] + '&oc=' + oc : null;
     }, null);
 
 function init() {

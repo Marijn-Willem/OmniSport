@@ -7,7 +7,7 @@ import com.sports.entity.manager.*;
 
 import java.sql.Statement;
 
-public class CompSeasonDoubleFactory implements CompSeasonParticipantFactory<CompSeasonDoubleKey, CompSeasonPhaseDoubleKey, Double, SuperKeyEntity, SuperKeyEntity, DoublesMatchKey, DoublesMatch, DoublesMatchPartKey, DoublesMatchPart, DoublesMatchPartStatKey, DoublesMatchPartStat> {
+public class CompSeasonDoubleFactory extends CompSeasonParticipantFactory<CompSeasonDoubleKey, CompSeasonPhaseDoubleKey, Double, SuperKeyEntity, SuperKeyEntity, DoublesMatchKey, DoublesMatch, DoublesMatchPartKey, DoublesMatchPart, DoublesMatchPartStatKey, DoublesMatchPartStat> {
     @Override
     public DoublesMatchObjectFactory getH2HObjectFactory() {
         return new DoublesMatchObjectFactory();

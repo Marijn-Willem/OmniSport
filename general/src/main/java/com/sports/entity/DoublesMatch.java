@@ -136,16 +136,8 @@ public class DoublesMatch extends H2HMatch {
         setDouble2ncrId(participant2NcrId);
     }
 
-    public Integer getDouble1Id() {
-        return double1Id;
-    }
-
     public void setDouble1Id(Integer double1Id) {
         this.double1Id = double1Id;
-    }
-
-    public Integer getDouble2Id() {
-        return double2Id;
     }
 
     public void setDouble2Id(Integer double2Id) {

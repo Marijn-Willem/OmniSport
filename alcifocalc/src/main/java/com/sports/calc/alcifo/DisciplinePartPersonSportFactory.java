@@ -1,37 +1,42 @@
 package com.sports.calc.alcifo;
 
-import com.sports.entity.DisciplinePartPersonSport;
-import com.sports.entity.PersonSport;
+import com.sports.entity.*;
 import com.sports.entity.key.*;
-import com.sports.entity.manager.AlcifoPartParticipantManager;
 import com.sports.entity.manager.DisciplinePartPersonSportManager;
-import com.sports.entity.manager.ParticipantManager;
 import com.sports.entity.manager.PersonSportManager;
 
 import java.sql.Statement;
 
-public class DisciplinePartPersonSportFactory implements AlcifoPartParticipantFactory {
+public class DisciplinePartPersonSportFactory extends AlcifoPartParticipantFactory<CompSeasonPersonSportKey,
+        SuperKeyEntity,
+        PersonSport,
+        EventPersonSportKey,
+        EventPersonSport,
+        DisciplinePartPersonSportKey,
+        EventDisciplinePartKey,
+        DisciplinePartPersonSport,
+        EventPartPersonSportKey,
+        EventPartPersonSport> {
     @Override
-    public AlcifoPartParticipantManager<DisciplinePartPersonSportKey, EventDisciplinePartKey, DisciplinePartPersonSport> getManager(Statement stat) {
+    public DisciplinePartPersonSportManager getManager(Statement stat) {
         return new DisciplinePartPersonSportManager(stat);
     }
 
     @Override
-    public ParticipantManager<PersonSport> getParticipantManager(Statement stat) {
+    public PersonSportManager getParticipantManager(Statement stat) {
         return new PersonSportManager(stat);
     }
 
     @Override
-    public DisciplinePartPersonSportKey getKey(SuperKey partKey, int participantId) {
-        EventDisciplinePartKey edpKey = (EventDisciplinePartKey)partKey;
-        EventPartPersonSportKey eppsKey = new EventPartPersonSportKey(edpKey.getSuperKey(), participantId);
+    public DisciplinePartPersonSportKey getKey(EventDisciplinePartKey partKey, int participantId) {
+        EventPartPersonSportKey eppsKey = new EventPartPersonSportKey(partKey.getSuperKey(), participantId);
 
-        return new DisciplinePartPersonSportKey(eppsKey, edpKey.getEventDisciplinePartId());
+        return new DisciplinePartPersonSportKey(eppsKey, partKey.getEventDisciplinePartId());
     }
 
     @Override
-    public CompSeasonEventPartKey getCompSeasonEventPartKey(SuperKey partKey) {
-        return ((EventDisciplinePartKey)partKey).getSuperKey();
+    public CompSeasonEventPartKey getCompSeasonEventPartKey(EventDisciplinePartKey partKey) {
+        return partKey.getSuperKey();
     }
 
     @Override
@@ -40,7 +45,13 @@ public class DisciplinePartPersonSportFactory implements AlcifoPartParticipantFa
     }
 
     @Override
-    public AlcifoParticipantFactory getParticipantFactory() {
+    public AlcifoParticipantFactory<CompSeasonPersonSportKey,
+            SuperKeyEntity,
+            PersonSport,
+            EventPersonSportKey,
+            EventPersonSport,
+            EventPartPersonSportKey,
+            EventPartPersonSport> getParticipantFactory() {
         return new EventPersonSportFactory();
     }
 }

@@ -1,14 +1,14 @@
 package com.sportservlet.html;
 
-import com.sports.calc.alcifo.AlcifoPartParticipantFactory;
 import com.sports.calc.alcifo.DisciplinePartPersonSportFactory;
+import com.sports.entity.PersonSport;
 import com.sports.entity.key.EventDisciplinePartKey;
 import jakarta.servlet.http.HttpServletRequest;
 
 import java.io.IOException;
 import java.io.Writer;
 
-public abstract class ManageDisciplinePartPersonSports extends ManageAlcifoPartParticipants {
+public abstract class ManageDisciplinePartPersonSports extends ManageAlcifoPartParticipants<PersonSport, EventDisciplinePartKey> {
     @Override
     EventDisciplinePartKey getPartKey(HttpServletRequest req) {
         int edpid = getIntValuedParameterValue(req, "edpid");
@@ -17,7 +17,7 @@ public abstract class ManageDisciplinePartPersonSports extends ManageAlcifoPartP
     }
 
     @Override
-    AlcifoPartParticipantFactory getFactory() {
+    DisciplinePartPersonSportFactory getFactory() {
         return new DisciplinePartPersonSportFactory();
     }
 

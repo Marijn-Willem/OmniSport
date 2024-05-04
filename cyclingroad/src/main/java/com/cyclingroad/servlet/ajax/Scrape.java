@@ -2,12 +2,8 @@ package com.cyclingroad.servlet.ajax;
 
 import com.sports.calc.alcifo.Calculation;
 import com.sports.calc.cyclingroad.Scraper;
-import com.sports.entity.AlcifoPartParticipant;
-import com.sports.entity.CompSeasonEvent;
-import com.sports.entity.CompSeasonEventPart;
-import com.sports.entity.SportEvent;
-import com.sports.entity.key.CompSeasonEventKey;
-import com.sports.entity.key.CompSeasonEventPartKey;
+import com.sports.entity.*;
+import com.sports.entity.key.*;
 import com.sports.entity.manager.AlcifoPartParticipantManager;
 import com.sports.entity.manager.CompSeasonEventManager;
 import com.sports.entity.manager.CompSeasonEventPartManager;
@@ -34,14 +30,16 @@ public class Scrape extends SuperResponseServlet {
         CompSeasonEvent compSeasonEvent = new CompSeasonEventManager(stat).getEntityFromSuperKey(cseKey);
         SportEvent sportEvent = new SportEventManager(stat).getEntityFromSuperKey(compSeasonEvent.getSportEventKey());
 
-        AlcifoPartParticipantManager partParticipantManager = Calculation.getAlcifoParticipantFactory(sportEvent)
+        AlcifoPartParticipantManager<? extends SuperKey,
+                CompSeasonEventPartKey,
+                ? extends AlcifoPartParticipant> partParticipantManager = Calculation.getAlcifoParticipantFactory(sportEvent)
                 .getEventPartParticipantFactory().getManager(stat);
 
-        List<AlcifoPartParticipant> partParticipants = partParticipantManager.getPartParticipantList(csepKey);
+        List<? extends AlcifoPartParticipant> partParticipants = partParticipantManager.getPartParticipantList(csepKey);
 
         Writer w = resp.getWriter();
 
-        if (partParticipants.size() == 0) {
+        if (!partParticipants.isEmpty()) {
             CompSeasonEventPart compSeasonEventPart = new CompSeasonEventPartManager(stat).getCompSeasonEventPart(csepKey);
 
             String url = Util.concatStringsWithDelimiter(compSeasonEvent.getExternalSource(),
