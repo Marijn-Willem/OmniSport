@@ -39,7 +39,7 @@ public class Scrape extends SuperResponseServlet {
 
         Writer w = resp.getWriter();
 
-        if (!partParticipants.isEmpty()) {
+        if (partParticipants.isEmpty()) {
             CompSeasonEventPart compSeasonEventPart = new CompSeasonEventPartManager(stat).getCompSeasonEventPart(csepKey);
 
             String url = Util.concatStringsWithDelimiter(compSeasonEvent.getExternalSource(),
