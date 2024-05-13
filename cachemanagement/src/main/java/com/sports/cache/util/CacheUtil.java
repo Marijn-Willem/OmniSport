@@ -45,6 +45,7 @@ public class CacheUtil {
         memcachedClient.set(getFullKey(dataFragmentKey), cacheDuration, referenceSet);
     }
 
+    @SuppressWarnings("unchecked")
     public static <T> T get(String cacheKeyAsString) {
         return (T) memcachedClient.get(getFullKey(cacheKeyAsString));
     }
