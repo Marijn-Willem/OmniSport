@@ -25,7 +25,7 @@ public class Scraper {
     private static final Pattern patName = Pattern.compile("<a.*?>(.*?)</a>");
     private static final Pattern patRank = Pattern.compile("<td>(\\d+)</td>");
     private static final Pattern patNoRes = Pattern.compile("<td>([a-zA-Z]{3})</td>");
-    private static final Pattern patTimeAbs = Pattern.compile("<td class=\"time ar\"\\s*>\\s*([\\d:]+)");
+    private static final Pattern patTimeMain = Pattern.compile("<td class=\"time ar\"\\s*>\\s*([\\d:.]+)");
     private static final Pattern patTimeDiff = Pattern.compile("<div class=\"hide\">([\\d:]+)</div>");
 
     private static final int clientId = Client.clientIdProcyclingStats;
@@ -144,26 +144,32 @@ public class Scraper {
                                   Map<String, String> aliasNameMap, Map<String, Integer> ncrMap) {
         Matcher matRow = patTableRow.matcher(table);
         int millisLeader = 0;
+        boolean isLeader = true;
 
         while (matRow.find()) {
             String row = matRow.group();
             Matcher matName = patName.matcher(row);
             Matcher matRank = patRank.matcher(row);
             Matcher matNoRes = patNoRes.matcher(row);
-            Matcher matTimeAbs = patTimeAbs.matcher(row);
+            Matcher matTimeMain = patTimeMain.matcher(row);
             Matcher matTimeDiff = patTimeDiff.matcher(row);
 
             String name = matName.find() ? matName.group(1) : null;
             String rank = matRank.find() ? matRank.group(1) : null;
             String noRes = matNoRes.find() ? matNoRes.group(1) : null;
-            String timeAbs = matTimeAbs.find() ? matTimeAbs.group(1) : null;
-            String timeDiff = matTimeDiff.find() ? matTimeDiff.group(1) : null;
+            String timeMain = matTimeMain.find() ? matTimeMain.group(1) : null;
+            String timeDiff = null;
 
-            if (timeAbs != null)
-                millisLeader = Util.getMillisFromHMSString(timeAbs);
+            if (!isLeader)
+                timeDiff = matTimeDiff.find() ? matTimeDiff.group(1) : timeMain;
 
-            if (name != null)
+            if (isLeader && timeMain != null)
+                millisLeader = getMillisFromTimeString(timeMain);
+
+            if (name != null) {
                 appendEntity(name, rank, noRes, timeDiff, entityMap, aliasNameMap, millisLeader, ncrMap);
+                isLeader = false;
+            }
         }
     }
 
@@ -180,10 +186,8 @@ public class Scraper {
         else {
             int time = millisLeader;
 
-            if (timeDiff != null) {
-                String hmsString = (timeDiff.length() <= 5 ? "0:" : "") + timeDiff;
-                time += Util.getMillisFromHMSString(hmsString);
-            }
+            if (timeDiff != null)
+                time += getMillisFromTimeString(timeDiff);
 
             eventPartPersonSport.setPoints(time);
         }
@@ -272,6 +276,13 @@ public class Scraper {
             compSeasonEvent = new CompSeasonEventManager(stat).getEntityFromSuperKey(compSeasonEventPartKey.getSuperKey());
 
         return compSeasonEvent;
+    }
+
+    private int getMillisFromTimeString(String timeString) {
+        String hmsString = timeString.replace('.', ':');
+        hmsString = hmsString.length() <= 5 ? "0:" + hmsString : hmsString;
+
+        return Util.getMillisFromHMSString(hmsString);
     }
 
     private class UrlScraper implements ThreadWorker {
