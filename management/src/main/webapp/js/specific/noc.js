@@ -1,6 +1,8 @@
 const nocListLoader = new ElementLoader('nid', function () {
     return '/NocList';
-}, null);
+}, function () {
+    setElementValueFromInitStateVar('nid', nid);
+});
 
 function getProcessUrl() {
     const nid = getValueFromElementByName('inpUpd');

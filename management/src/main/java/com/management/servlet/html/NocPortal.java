@@ -2,6 +2,7 @@ package com.management.servlet.html;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+
 import java.io.IOException;
 import java.io.Writer;
 import java.sql.Statement;
@@ -10,6 +11,11 @@ public class NocPortal extends SuperHtmlServlet {
     @Override
     public void initSpecificProperties(HttpServletRequest req) {
         jsSpecificList.add("noc");
+    }
+
+    @Override
+    protected void processScriptTag(Statement stat, HttpServletRequest req, Writer w) throws IOException {
+        writeInitStateVarInScriptTag("nid", req, w);
     }
 
     @Override
