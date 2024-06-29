@@ -31,7 +31,8 @@ public class ManageCompSeasonTeamPersonSports extends SuperHtmlServlet {
 
     @Override
     public String getReturnPath(Statement stat, HttpServletRequest req) {
-        return "CompSeasonTeamPortal?" + compSeasonUrlParameters;
+        return "CompSeasonTeamPortal?" + compSeasonUrlParameters + "&tid=" +
+                getIntValuedParameterValue(req, "tid");
     }
 
     @Override

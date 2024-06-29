@@ -1,6 +1,8 @@
 const compSeasonTeamListLoader = new ElementLoader('tid', function () {
     return '/CompSeasonTeamList?cid=' + cid + '&sid=' + sid;
-}, null);
+}, function () {
+    setElementValueFromInitStateVar('tid', tid);
+});
 
 function loadCompSeasonTeams() {
     compSeasonTeamListLoader.loadElement();

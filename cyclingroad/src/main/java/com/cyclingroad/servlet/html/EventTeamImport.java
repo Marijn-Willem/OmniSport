@@ -8,7 +8,7 @@ import java.sql.Statement;
 public class EventTeamImport extends com.sportservlet.html.EventTeamImport {
     @Override
     public String getReturnPath(Statement stat, HttpServletRequest req) {
-        return "CompSeasonPortal?spid=" + Sport.sportIdCyclingRoad;
+        return "CompSeasonPortal?spid=" + Sport.sportIdCyclingRoad + "&" + compSeasonUrlParameters;
     }
 
     @Override

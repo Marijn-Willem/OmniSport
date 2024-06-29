@@ -22,6 +22,7 @@ public class CompSeasonTeamPortal extends SuperHtmlServlet {
     @Override
     protected void processScriptTag(Statement stat, HttpServletRequest req, Writer w) throws IOException {
         writeCompSeasonVarsInScriptTag(w);
+        writeInitStateVarInScriptTag("tid", req, w);
     }
 
     @Override
