@@ -35,6 +35,7 @@ public class Scraper {
         add("den");
         add("der");
         add("des");
+        add("del");
         add("dos");
         add("du");
         add("la");
