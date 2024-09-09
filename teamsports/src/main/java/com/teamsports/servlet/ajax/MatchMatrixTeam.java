@@ -49,7 +49,6 @@ public class MatchMatrixTeam extends com.sportservlet.ajax.MatchMatrixTeam {
         for (int i = 0; i < participants.size(); i++)
             participants.get(i).setSortIndex(i);
 
-        copyCompDivisionFieldsToTeams();
         applyActionOnSortedTeams(teamCompDivisionAction);
         setRowSpansOnCompDivisions(matchMatrix);
         copyCompDivisionFieldsToTeams();
@@ -90,7 +89,7 @@ public class MatchMatrixTeam extends com.sportservlet.ajax.MatchMatrixTeam {
     private void setRowSpansOnCompDivisions(List<List<List<H2HMatch>>> matchMatrix) {
         TeamCompDivisionAction teamCompDivisionAction = (team, compDivision) -> {
             List<List<H2HMatch>> matchesTeam = matchMatrix.get(team.getSortIndex());
-            int rowSpan = 0;
+            int rowSpan = 1;
 
             for (List<H2HMatch> matches : matchesTeam)
                 rowSpan = Math.max(rowSpan, matches.size());
