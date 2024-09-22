@@ -7,12 +7,14 @@ import com.sports.entity.key.CompSeasonPhaseKey;
 import com.sports.entity.manager.CompSeasonPhaseTeamManager;
 import com.sports.entity.manager.TeamManager;
 import com.sports.entity.manager.TeamMatchManager;
+import com.sports.logic.util.Util;
 import com.sportservlet.SuperResponseServlet;
 import com.teamsports.servlet.util.ServletUtil;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.io.Writer;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Collections;
@@ -45,7 +47,32 @@ public abstract class MatchList extends SuperResponseServlet {
         if (teamMap != null && teamMatchList != null) {
             teamMatchList.sort(new MatchDate());
 
-            ServletUtil.writeMatchTable(teamMatchList, cspk, teamMap, resp.getWriter());
+            writeMatchTable(teamMatchList, cspk, teamMap, resp.getWriter());
         }
+    }
+
+    private void writeMatchTable(List<TeamMatch> matchesSorted, CompSeasonPhaseKey compSeasonPhaseKey,
+                                 Map<Integer, Team> teamMap, Writer w) throws IOException {
+        String rule = "<tr><th>Home</th><th>Away</th><th colspan=\"2\">Score</th><th>Date</th></tr>\n";
+        w.append(rule);
+
+        for (TeamMatch teamMatch : matchesSorted) {
+            String onClick = " onclick=\"goToMatchTimeLine(" + compSeasonPhaseKey.getSepValues(", ") +
+                    ", " + teamMatch.getTeamMatchId() + ")\"";
+
+            rule = "<tr" + onClick + ">" +
+                    getTdInMatchTable(teamMatch.getTeamHomeId(), teamMap, teamMatch.isParticipant1Win()) +
+                    getTdInMatchTable(teamMatch.getTeamAwayId(), teamMap, teamMatch.isParticipant2Win()) +
+                    "<td>" + teamMatch.getScoreHome() + "</td>" +
+                    "<td>" + teamMatch.getScoreAway() + "</td>" +
+                    "<td>" + Util.convertEmptyDateTimeToDateString(teamMatch.getDate()) + "</td></tr>\n";
+
+            w.append(rule);
+        }
+    }
+
+    private String getTdInMatchTable(int id, Map<Integer, Team> teamMap, boolean isWinner) {
+        String name = ServletUtil.getTeamName(teamMap.get(id));
+        return "<td" + (isWinner ? " class=\"matchWinner\"" : "") + ">" + name + "</td>";
     }
 }

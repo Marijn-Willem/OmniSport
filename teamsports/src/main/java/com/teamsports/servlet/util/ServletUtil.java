@@ -2,14 +2,11 @@ package com.teamsports.servlet.util;
 
 import com.sports.calc.teamsports.Calculation;
 import com.sports.entity.Team;
-import com.sports.entity.TeamMatch;
-import com.sports.entity.key.CompSeasonPhaseKey;
 import com.sports.logic.util.Util;
 
 import java.io.IOException;
 import java.io.Writer;
 import java.util.List;
-import java.util.Map;
 
 public class ServletUtil {
     public static void writeStandingHeader(Writer w, boolean bonusPoints) throws IOException {
@@ -79,26 +76,7 @@ public class ServletUtil {
         w.append("<br/><table id=\"tblMatchMatrix\" border=\"1\">\n</table>\n");
     }
 
-    public static void writeMatchTable(List<TeamMatch> matchesSorted, CompSeasonPhaseKey compSeasonPhaseKey,
-                                       Map<Integer, Team> teamMap, Writer w) throws IOException {
-        String rule = "<tr><th>Home</th><th>Away</th><th colspan=\"2\">Score</th><th>Date</th></tr>\n";
-        w.append(rule);
-
-        for (TeamMatch teamMatch : matchesSorted) {
-            String onClick = " onclick=\"goToMatchTimeLine(" + compSeasonPhaseKey.getSepValues(", ") +
-                    ", " + teamMatch.getTeamMatchId() + ")\"";
-
-            rule = "<tr" + onClick + "><td>" + getTeamName(teamMap.get(teamMatch.getTeamHomeId())) + "</td>" +
-                    "<td>" + getTeamName(teamMap.get(teamMatch.getTeamAwayId())) + "</td>" +
-                    "<td>" + teamMatch.getScoreHome() + "</td>" +
-                    "<td>" + teamMatch.getScoreAway() + "</td>" +
-                    "<td>" + Util.convertEmptyDateTimeToDateString(teamMatch.getDate()) + "</td></tr>\n";
-
-            w.append(rule);
-        }
-    }
-
-    private static String getTeamName(Team team) {
+    public static String getTeamName(Team team) {
         String compDivisionName = team.getCompDivision() != null ? team.getCompDivision().getName() : null;
 
         return team.getDescription() + Util.getPrefixedStringOrEmptyString(
