@@ -22,7 +22,7 @@ import java.util.stream.Collectors;
 
 public class Scraper {
     private static final Pattern patTableRow = Pattern.compile("<tr.*?</tr>");
-    private static final Pattern patName = Pattern.compile("<a.*?>(.*?)</a>");
+    private static final Pattern patName = Pattern.compile("<a.*?>\\s*?(.*?)\\s*?</a>");
     private static final Pattern patRank = Pattern.compile("<td>(\\d+)</td>");
     private static final Pattern patNoRes = Pattern.compile("<td>([a-zA-Z]{3})</td>");
     private static final Pattern patTimeMain = Pattern.compile("<td class=\"time ar\"\\s*>\\s*([\\d:.]+)");
