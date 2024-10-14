@@ -29,7 +29,7 @@ public class ProcessInsertEventParticipantsFromCompSeason extends SuperResponseS
 
         String output;
 
-        if (participantIds.size() == 0) {
+        if (participantIds.isEmpty()) {
             new DbCalculation(stat).insertParticipantsFromCompSeason(compSeasonEventKey, compSeasonEvent);
             output = "Participants successfully inserted!";
         }

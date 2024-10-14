@@ -12,7 +12,7 @@ public class EventParticipantFromCompSeasonImport extends SuperEntityImport {
     @Override
     protected void processScriptTag(Statement stat, HttpServletRequest req, Writer w) throws IOException {
         writeCompSeasonVarsInScriptTag(w);
-        writeVarInScriptTag("eid", getIntValuedParameterValue(req, "eid"), w);
+        writeVarInScriptTag("cseid", getIntValuedParameterValue(req, "cseid"), w);
     }
 
     @Override
