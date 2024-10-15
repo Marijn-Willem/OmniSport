@@ -1,8 +1,8 @@
 package com.h2hsports.servlet.html;
 
 import com.sports.entity.manager.CompetitionManager;
-
 import jakarta.servlet.http.HttpServletRequest;
+
 import java.sql.SQLException;
 import java.sql.Statement;
 
@@ -16,7 +16,8 @@ public class ManageH2HMatch extends com.sportservlet.html.ManageH2HMatch {
             returnPath = "CompSeasonPortal?spid=" + spid + "&" + compSeasonUrlParameters;
         }
         else
-            returnPath = "MatchOverview?" + compSeasonUrlParameters;
+            returnPath = "MatchOverview?" + compSeasonUrlParameters + "&pid=" +
+                    getIntValuedParameterValue(req, "pid");
 
         return returnPath;
     }
