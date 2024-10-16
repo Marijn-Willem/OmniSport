@@ -5,7 +5,7 @@ COPY / /tmp/
 WORKDIR /tmp/
 RUN gradle war
 
-FROM tomcat:10.1.19-jdk21
+FROM tomcat:11.0.0-jdk21
 
 COPY --from=GRADLE_IMAGE /tmp/alcifosports/build/libs/alcifosports.war $CATALINA_HOME/webapps/alcifosports.war
 COPY --from=GRADLE_IMAGE /tmp/alias/build/libs/alias.war $CATALINA_HOME/webapps/alias.war
