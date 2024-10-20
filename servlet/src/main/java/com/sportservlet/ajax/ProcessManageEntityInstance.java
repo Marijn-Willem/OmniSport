@@ -15,6 +15,7 @@ abstract class ProcessManageEntityInstance<EIK extends EntityInstanceKey, EI ext
     private EntityInstanceFactory<EIK, EI> entityInstanceFactory;
 
     abstract EntityInstanceFactory<EIK, EI> getEntityInstanceFactory();
+    abstract void processSpecificFields(EI entityInstance, HttpServletRequest req);
 
     @Override
     protected void initSpecific(Statement stat, HttpServletRequest req) {
@@ -55,6 +56,7 @@ abstract class ProcessManageEntityInstance<EIK extends EntityInstanceKey, EI ext
         String nm = req.getParameter("nm");
 
         entity.setName(nm);
+        processSpecificFields(entity, req);
     }
 
     @Override

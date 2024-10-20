@@ -29,6 +29,11 @@ public class EquipeInstanceFactory extends EntityInstanceFactory<EquipeInstanceK
     }
 
     @Override
+    public String getManagePath() {
+        return "ManageEquipeInstance";
+    }
+
+    @Override
     public String getProcessManagePath() {
         return "ProcessManageEquipeInstance";
     }

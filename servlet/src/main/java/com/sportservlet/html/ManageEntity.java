@@ -8,16 +8,15 @@ import com.sports.entity.manager.LanguageManager;
 import com.sports.entity.manager.LocationRoleManager;
 import com.sports.entity.manager.NocManager;
 import com.sports.logic.util.Util;
-
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+
 import java.io.IOException;
 import java.io.Writer;
 import java.lang.Double;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.time.LocalDateTime;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;

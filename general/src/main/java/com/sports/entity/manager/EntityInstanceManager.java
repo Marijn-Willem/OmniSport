@@ -3,6 +3,7 @@ package com.sports.entity.manager;
 import com.sports.db.util.QueryUtil;
 import com.sports.entity.EntityInstance;
 import com.sports.entity.key.EntityInstanceKey;
+import com.sports.logic.util.Util;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -19,6 +20,8 @@ public abstract class EntityInstanceManager<S extends EntityInstanceKey, T exten
 
     abstract String getEntityName();
     abstract S getKey(int entityId, int instanceId);
+    abstract String[] getSpecificValueColumns();
+    abstract void fillSpecificPropertiesFromResultSet(ResultSet rs, T entityInstance) throws SQLException;
 
     public EntityInstanceManager(Statement stat) {
         super(stat);
@@ -77,11 +80,13 @@ public abstract class EntityInstanceManager<S extends EntityInstanceKey, T exten
 
     @Override
     String[] getValueColumns() {
-        return new String[] {
+        String[] genericColumns = new String[] {
                 "name",
                 "startdate",
                 "enddate"
         };
+
+        return Util.concatenateStringArrays(genericColumns, getSpecificValueColumns());
     }
 
     @Override
@@ -98,6 +103,8 @@ public abstract class EntityInstanceManager<S extends EntityInstanceKey, T exten
         entityInstance.setName(rs.getString("name"));
         entityInstance.setStartDate(QueryUtil.convertTimestampToDateTime(rs.getTimestamp("startdate")));
         entityInstance.setEndDate(QueryUtil.convertTimestampToDateTime(rs.getTimestamp("enddate")));
+
+        fillSpecificPropertiesFromResultSet(rs, entityInstance);
 
         return entityInstance;
     }

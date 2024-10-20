@@ -2,7 +2,6 @@ package com.sportservlet.html;
 
 import com.sports.entity.EntityInstance;
 import com.sports.entity.key.EntityInstanceKey;
-import com.sports.logic.calculation.Calculation;
 import com.sports.logic.factory.EntityInstanceFactory;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -12,7 +11,11 @@ import java.io.Writer;
 import java.sql.SQLException;
 import java.sql.Statement;
 
-public abstract class ManageEntityInstance extends ManageEntity {
+public abstract class ManageEntityInstance<S extends EntityInstanceKey, T extends EntityInstance> extends ManageEntity {
+    abstract EntityInstanceFactory<S, T> getFactory();
+    abstract String getServletNameReturnPath();
+    abstract void writeSpecificFields(Statement stat, T entityInstance, Writer w) throws SQLException, IOException;
+
     @Override
     protected void initSpecific(Statement stat, HttpServletRequest req) {}
 
@@ -26,9 +29,7 @@ public abstract class ManageEntityInstance extends ManageEntity {
         int eid = getIntValuedParameterValue(req, "eid");
         String enm = req.getParameter("enm");
 
-        String servletName = "Person".equals(enm) ? "EntityInstancePortalPerson" : "EntityInstancePortal";
-
-        return servletName + "?eid=" + eid + "&enm=" + enm;
+        return getServletNameReturnPath() + "?eid=" + eid + "&enm=" + enm;
     }
 
     @Override
@@ -51,16 +52,13 @@ public abstract class ManageEntityInstance extends ManageEntity {
         int eid = getIntValuedParameterValue(req, "eid");
         int eiid = getIntValuedParameterValue(req, "eiid");
 
-        EntityInstanceFactory<? extends EntityInstanceKey, ? extends EntityInstance> factory =
-                Calculation.getEntityInstanceFactory(req.getParameter("enm"));
-        assert factory != null;
-
-        EntityInstance entityInstance = factory.getEntity(stat, eid, eiid);
+        T entityInstance = getFactory().getEntity(stat, eid, eiid);
 
         Writer w = res.getWriter();
 
         writeTextFieldWithLabel("Name", "nm", entityInstance.getName(), w);
         writeDateTimeField("Start date", "sd", entityInstance.getStartDate(), true, w);
         writeDateTimeField("End date", "ed", entityInstance.getEndDate(), true, w);
+        writeSpecificFields(stat, entityInstance, w);
     }
 }

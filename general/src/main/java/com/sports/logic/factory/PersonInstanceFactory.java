@@ -30,6 +30,11 @@ public class PersonInstanceFactory extends EntityInstanceFactory<PersonInstanceK
     }
 
     @Override
+    public String getManagePath() {
+        return "ManagePersonInstance";
+    }
+
+    @Override
     public String getProcessManagePath() {
         return "ProcessManagePersonInstance";
     }

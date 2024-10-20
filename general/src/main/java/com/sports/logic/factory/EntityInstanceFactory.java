@@ -23,6 +23,7 @@ public abstract class EntityInstanceFactory<EIK extends EntityInstanceKey, EI ex
     public abstract EntityInstanceManager<EIK, EI> getManager(Statement stat);
     public abstract EI getInstance();
     public abstract EIK getKey(int entityId, int instanceId);
+    public abstract String getManagePath();
     public abstract String getProcessManagePath();
     public abstract List<CompSeasonKey> getCompSeasonsRelatedToEntity(int entityId, Statement stat) throws SQLException;
 

@@ -45,13 +45,10 @@ com.sportservlet.ajax.TeamListBySportGender
 com.cyclingroad.servlet.ajax.ProcessManageEventPartPersonSports
 com.cyclingroad.servlet.ajax.Scrape
 com.cyclingroad.servlet.html.EntityInstancePortalPerson
-com.cyclingroad.servlet.html.ManageEntityInstance
+com.sportservlet.dispatch.PrepareManageEntityInstance
+com.cyclingroad.servlet.html.ManagePersonInstance
 com.sportservlet.dispatch.PrepareEntityInstancePortalPerson
 com.sportservlet.ajax.EntityInstanceList
 com.sportservlet.ajax.ProcessInsertEntityInstance
 com.sportservlet.dispatch.PrepareProcessManageEntityInstance
-com.sportservlet.ajax.ProcessManageClubInstance
-com.sportservlet.ajax.ProcessManageEquipeInstance
-com.sportservlet.ajax.ProcessManageGeoInstance
-com.sportservlet.ajax.ProcessManageNocInstance
 com.sportservlet.ajax.ProcessManagePersonInstance

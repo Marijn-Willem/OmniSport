@@ -32,6 +32,11 @@ public class NocInstanceFactory extends EntityInstanceFactory<NocInstanceKey, No
     }
 
     @Override
+    public String getManagePath() {
+        return "ManageNocInstance";
+    }
+
+    @Override
     public String getProcessManagePath() {
         return "ProcessManageNocInstance";
     }

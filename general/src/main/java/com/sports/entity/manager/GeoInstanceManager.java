@@ -3,6 +3,7 @@ package com.sports.entity.manager;
 import com.sports.entity.GeoInstance;
 import com.sports.entity.key.GeoInstanceKey;
 
+import java.sql.ResultSet;
 import java.sql.Statement;
 
 public class GeoInstanceManager extends EntityInstanceManager<GeoInstanceKey, GeoInstance> {
@@ -24,4 +25,12 @@ public class GeoInstanceManager extends EntityInstanceManager<GeoInstanceKey, Ge
     GeoInstanceKey getKey(int entityId, int instanceId) {
         return new GeoInstanceKey(entityId, instanceId);
     }
+
+    @Override
+    String[] getSpecificValueColumns() {
+        return new String[0];
+    }
+
+    @Override
+    void fillSpecificPropertiesFromResultSet(ResultSet rs, GeoInstance entityInstance) { }
 }

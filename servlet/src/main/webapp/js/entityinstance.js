@@ -24,7 +24,7 @@ function goToManageEntityInstance() {
     const eiid = document.getElementById('eiid').value;
 
     if (!isEmptyOrNull(eiid))
-        window.location.href = path + '/ManageEntityInstance?eid=' + eid + '&eiid=' + eiid + '&enm=' + enm;
+        window.location.href = path + '/PrepareManageEntityInstance?eid=' + eid + '&eiid=' + eiid + '&enm=' + enm;
 }
 
 function getProcessUrl() {

@@ -1,6 +1,7 @@
 package com.sports.entity;
 
 import com.sports.db.util.QueryUtil;
+import com.sports.logic.util.Util;
 
 import java.time.LocalDateTime;
 
@@ -12,13 +13,17 @@ public abstract class EntityInstance extends SuperKeyAliasable {
     private int entityId;
     private int entityInstanceId;
 
+    abstract String[] getSpecificPropertiesInSQLStrings();
+
     @Override
     public String[] getPropertiesInSQLStrings() {
-        return new String[] {
+        String[] generalProps = {
                 QueryUtil.convertStringToDbValue(name),
                 QueryUtil.convertDateTimeToDbString(startDate),
                 QueryUtil.convertDateTimeToDbString(endDate)
         };
+
+        return Util.concatenateStringArrays(generalProps, getSpecificPropertiesInSQLStrings());
     }
 
     public int getEntityId() {

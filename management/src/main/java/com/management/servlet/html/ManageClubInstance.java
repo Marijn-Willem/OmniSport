@@ -1,8 +1,8 @@
-package com.h2hsports.servlet.html;
+package com.management.servlet.html;
 
 import jakarta.servlet.http.HttpServletRequest;
 
-public class ManageEntityInstance extends com.sportservlet.html.ManageEntityInstance {
+public class ManageClubInstance extends com.sportservlet.html.ManageClubInstance {
     @Override
     public void initSpecificProperties(HttpServletRequest req) {
         cssList.add("styling");

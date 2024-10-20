@@ -3,6 +3,7 @@ package com.sports.entity.manager;
 import com.sports.entity.NocInstance;
 import com.sports.entity.key.NocInstanceKey;
 
+import java.sql.ResultSet;
 import java.sql.Statement;
 
 public class NocInstanceManager extends EntityInstanceManager<NocInstanceKey, NocInstance> {
@@ -24,4 +25,12 @@ public class NocInstanceManager extends EntityInstanceManager<NocInstanceKey, No
     NocInstanceKey getKey(int entityId, int instanceId) {
         return new NocInstanceKey(entityId, instanceId);
     }
+
+    @Override
+    String[] getSpecificValueColumns() {
+        return new String[0];
+    }
+
+    @Override
+    void fillSpecificPropertiesFromResultSet(ResultSet rs, NocInstance entityInstance) { }
 }

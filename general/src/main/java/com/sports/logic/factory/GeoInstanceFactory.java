@@ -30,6 +30,11 @@ public class GeoInstanceFactory extends EntityInstanceFactory<GeoInstanceKey, Ge
     }
 
     @Override
+    public String getManagePath() {
+        return "ManageGeoInstance";
+    }
+
+    @Override
     public String getProcessManagePath() {
         return "ProcessManageGeoInstance";
     }

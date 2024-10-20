@@ -37,6 +37,7 @@ public class ManageGeo extends ManageEntity {
         cssList.add("styling");
     }
 
+    @Override
     protected void initAbstractProperties(HttpServletRequest req) {
 
     }
@@ -75,7 +76,7 @@ public class ManageGeo extends ManageEntity {
         writeSelectWithLabel("GeoType", "gtid", geoTypeMap, geo != null ? geo.getGeoTypeId() : null, w);
         writeTextFieldWithOnKeypress("Parent Geo", "pgn", parentGeo != null ? parentGeo.getOutputString() : null,
                 "handleChangePgn()", w);
-        w.append("<table id=\"tblPgn\" border=\"1\">\n</table>\n");
+        w.append("<table id=\"tblGn\" border=\"1\">\n</table>\n");
         writeGeoSpatialField("Coordinates", "coo", geo != null ? geo.getCoordinates() : null, w);
     }
 

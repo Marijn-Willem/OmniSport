@@ -6,7 +6,11 @@ com.management.servlet.html.ManageSportDiscipline
 com.management.servlet.html.EquipePortal
 com.management.servlet.html.SeasonPortal
 com.sportservlet.ajax.GeoNameList
-com.management.servlet.html.ManageEntityInstance
+com.sportservlet.dispatch.PrepareManageEntityInstance
+com.management.servlet.html.ManageClubInstance
+com.management.servlet.html.ManageEquipeInstance
+com.management.servlet.html.ManageGeoInstance
+com.management.servlet.html.ManageNocInstance
 com.management.servlet.html.GeoPortal
 com.management.servlet.ajax.ProcessManageEventPartName
 com.management.servlet.ajax.ProcessManageCompSeason
@@ -36,7 +40,6 @@ com.sportservlet.ajax.ProcessManageClubInstance
 com.sportservlet.ajax.ProcessManageEquipeInstance
 com.sportservlet.ajax.ProcessManageGeoInstance
 com.sportservlet.ajax.ProcessManageNocInstance
-com.sportservlet.ajax.ProcessManagePersonInstance
 com.management.servlet.html.CompDivisionPortal
 com.management.servlet.ajax.ProcessManageClient
 com.management.servlet.dispatch.PrepareEntityInstancePortalClub

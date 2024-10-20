@@ -79,7 +79,7 @@ public class GeoManager extends InstanceEntityManager<Geo, GeoInstanceKey, GeoIn
     public List<Geo> getGeosByUniqueFields(String name, int geoTypeId, List<Integer> parentGeoIds) throws SQLException {
         String[] whereClauses = new String[Math.max(parentGeoIds.size(), 1)];
 
-        if (parentGeoIds.size() == 0)
+        if (parentGeoIds.isEmpty())
             whereClauses[0] = getWhereClauseGeoFields(name, geoTypeId, null);
 
         for (int i = 0; i < parentGeoIds.size(); i++)

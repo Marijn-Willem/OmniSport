@@ -40,13 +40,10 @@ com.sportservlet.ajax.Standing
 com.sportservlet.ajax.PersonSearchList
 com.h2hsports.servlet.html.MatchOverview
 com.h2hsports.servlet.html.EntityInstancePortalPerson
-com.h2hsports.servlet.html.ManageEntityInstance
+com.sportservlet.dispatch.PrepareManageEntityInstance
+com.h2hsports.servlet.html.ManagePersonInstance
 com.sportservlet.dispatch.PrepareEntityInstancePortalPerson
 com.sportservlet.ajax.EntityInstanceList
 com.sportservlet.ajax.ProcessInsertEntityInstance
 com.sportservlet.dispatch.PrepareProcessManageEntityInstance
-com.sportservlet.ajax.ProcessManageClubInstance
-com.sportservlet.ajax.ProcessManageEquipeInstance
-com.sportservlet.ajax.ProcessManageGeoInstance
-com.sportservlet.ajax.ProcessManageNocInstance
 com.sportservlet.ajax.ProcessManagePersonInstance

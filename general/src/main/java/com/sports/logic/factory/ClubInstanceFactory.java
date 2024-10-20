@@ -32,6 +32,11 @@ public class ClubInstanceFactory extends EntityInstanceFactory<ClubInstanceKey, 
     }
 
     @Override
+    public String getManagePath() {
+        return "ManageClubInstance";
+    }
+
+    @Override
     public String getProcessManagePath() {
         return "ProcessManageClubInstance";
     }
