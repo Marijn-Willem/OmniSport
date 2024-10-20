@@ -4,14 +4,14 @@ import com.sports.db.util.QueryUtil;
 
 public class Club extends NamedIntEntity {
     private String name;
-    private Integer geoId;
+    private Integer countryGeoId;
 
     private int id;
 
     public String[] getPropertiesInSQLStrings() {
         return new String[] {
                 QueryUtil.convertStringToDbValue(name),
-                QueryUtil.convertIntegerToDbValue(geoId)
+                QueryUtil.convertIntegerToDbValue(countryGeoId)
         };
     }
 
@@ -23,12 +23,12 @@ public class Club extends NamedIntEntity {
         this.name = name;
     }
 
-    public Integer getGeoId() {
-        return geoId;
+    public Integer getCountryGeoId() {
+        return countryGeoId;
     }
 
-    public void setGeoId(Integer geoId) {
-        this.geoId = geoId;
+    public void setCountryGeoId(Integer countryGeoId) {
+        this.countryGeoId = countryGeoId;
     }
 
     public int getId() {

@@ -50,8 +50,8 @@ public class ManageClub extends ManageEntity {
 
         if (club != null || "i".equals(mode)) {
             writeTextFieldWithLabel("Name", "nm", club != null ? club.getName() : null, w);
-            writeSelectWithLabel("Geo", "geid",
-                    getGeoMapWithCountries(stat), club != null ? club.getGeoId() : null, w);
+            writeSelectWithLabel("Country Geo", "cogeid",
+                    getGeoMapWithCountries(stat), club != null ? club.getCountryGeoId() : null, w);
         }
         else
             dispatchToReturnPath(req, res);

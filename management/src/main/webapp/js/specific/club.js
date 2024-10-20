@@ -1,9 +1,9 @@
 function getProcessUrl() {
     const clid = getValueFromElementByName('inpUpd');
     const nm = getValueFromElementByName('nm');
-    const geid = getValueFromElementByName('geid');
+    const cogeid = getValueFromElementByName('cogeid');
 
-    return '/ProcessManageClub?clid=' + clid + '&nm=' + nm + '&geid=' + geid;
+    return '/ProcessManageClub?clid=' + clid + '&nm=' + nm + '&cogeid=' + cogeid;
 }
 
 function checkInput() {

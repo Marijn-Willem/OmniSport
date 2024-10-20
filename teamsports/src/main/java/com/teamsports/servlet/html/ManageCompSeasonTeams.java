@@ -41,12 +41,12 @@ public class ManageCompSeasonTeams extends SuperHtmlServlet {
         CompSeasonTeamManager cstm = new CompSeasonTeamManager(stat);
         List<CompSeasonTeam> compSeasonTeams = cstm.getTeamsInCompSeason(compSeasonKey);
 
-        if (compSeasonTeams.size() > 0)
+        if (!compSeasonTeams.isEmpty())
             dispatchToReturnPath(req, res);
         else {
             Competition competition = new CompetitionManager(stat).getCompetition(competitionId);
             // Competition assumed to be domestic
-            List<Integer> clubIds = new ClubManager(stat).getClubIdsFromGeo(competition.getGeoId());
+            List<Integer> clubIds = new ClubManager(stat).getClubIdsFromCountryGeo(competition.getGeoId());
 
             List<Team> relevantTeams = new TeamManager(stat).getTeamListForSportGenderClubs(competition.getSportId(),
                     competition.getGenderId(), clubIds);

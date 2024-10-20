@@ -22,7 +22,7 @@ public class ClubManager extends InstanceEntityManager<Club, ClubInstanceKey, Cl
     String[] getValueColumns() {
         return new String[] {
                 "name",
-                "geoid"
+                "countrygeoid"
         };
     }
 
@@ -31,7 +31,7 @@ public class ClubManager extends InstanceEntityManager<Club, ClubInstanceKey, Cl
 
         club.setId(rs.getInt("id"));
         club.setName(rs.getString("name"));
-        club.setGeoId(QueryUtil.getIntegerFromResultSet(rs, "geoid"));
+        club.setCountryGeoId(QueryUtil.getIntegerFromResultSet(rs, "countrygeoid"));
 
         return club;
     }
@@ -59,7 +59,7 @@ public class ClubManager extends InstanceEntityManager<Club, ClubInstanceKey, Cl
         return getEntityListNameLike(name);
     }
 
-    public List<Integer> getClubIdsFromGeo(int geoId) throws SQLException {
-        return getIdList("geoid = " + geoId);
+    public List<Integer> getClubIdsFromCountryGeo(int countryGeoId) throws SQLException {
+        return getIdList("countrygeoid = " + countryGeoId);
     }
 }

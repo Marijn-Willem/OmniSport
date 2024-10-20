@@ -23,9 +23,9 @@ public class ProcessManageClub extends ProcessManageIntEntity<Club> {
 
     protected void processEntityFromRequest(Statement stat, HttpServletRequest req) {
         String nm = req.getParameter("nm");
-        Integer geid = convertRequestParamToIdInteger(req, "geid");
+        Integer cogeid = convertRequestParamToIdInteger(req, "cogeid");
 
         entity.setName(nm);
-        entity.setGeoId(geid);
+        entity.setCountryGeoId(cogeid);
     }
 }
