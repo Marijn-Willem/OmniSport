@@ -2,6 +2,7 @@ package com.sportservlet.html;
 
 import com.sports.entity.ClubInstance;
 import com.sports.entity.Geo;
+import com.sports.entity.GeoType;
 import com.sports.entity.key.ClubInstanceKey;
 import com.sports.entity.manager.GeoManager;
 import com.sports.logic.calculation.DbCalculation;
@@ -26,6 +27,12 @@ public abstract class ManageClubInstance extends ManageEntityInstance<ClubInstan
     }
 
     @Override
+    protected void processScriptTag(Statement stat, HttpServletRequest req, Writer w) throws IOException, SQLException {
+        super.processScriptTag(stat, req, w);
+        writeVarInScriptTag("gtid", GeoType.geoTypeIdCity, w);
+    }
+
+    @Override
     void writeSpecificFields(Statement stat, ClubInstance entityInstance, Writer w) throws SQLException, IOException {
         Geo cityGeo = entityInstance.getCityGeoId() != null ?
                 new GeoManager(stat).getEntityFromId(entityInstance.getCityGeoId()) : null;
@@ -33,13 +40,14 @@ public abstract class ManageClubInstance extends ManageEntityInstance<ClubInstan
         if (cityGeo != null)
             new DbCalculation(stat).setGeoOutputStrings(Collections.singletonList(cityGeo));
 
-        writeTextFieldWithOnKeypress("City Geo", "cgn", cityGeo != null ? cityGeo.getOutputString() : null,
-                "handleChangeCgn()", w);
+        writeTextFieldWithOnKeypress("City Geo", "cign", cityGeo != null ? cityGeo.getOutputString() : null,
+                "handleChangeCign()", w);
         w.append("<table id=\"tblGn\" border=\"1\">\n</table>\n");
     }
 
     @Override
     protected void initAbstractProperties(HttpServletRequest req) {
+        super.initAbstractProperties(req);
         jsList.add("geo");
     }
 }

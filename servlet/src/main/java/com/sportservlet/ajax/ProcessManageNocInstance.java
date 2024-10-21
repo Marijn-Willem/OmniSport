@@ -5,6 +5,8 @@ import com.sports.entity.key.NocInstanceKey;
 import com.sports.logic.factory.NocInstanceFactory;
 import jakarta.servlet.http.HttpServletRequest;
 
+import java.sql.Statement;
+
 public class ProcessManageNocInstance extends ProcessManageEntityInstance<NocInstanceKey, NocInstance> {
     @Override
     NocInstanceFactory getEntityInstanceFactory() {
@@ -12,5 +14,5 @@ public class ProcessManageNocInstance extends ProcessManageEntityInstance<NocIns
     }
 
     @Override
-    void processSpecificFields(NocInstance entityInstance, HttpServletRequest req) { }
+    void processSpecificFields(Statement stat, NocInstance entityInstance, HttpServletRequest req) { }
 }

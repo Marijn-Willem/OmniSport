@@ -8,6 +8,7 @@ import com.sportservlet.flush.CacheFlusher;
 import com.sportservlet.flush.EntityInstanceFlusher;
 import jakarta.servlet.http.HttpServletRequest;
 
+import java.sql.SQLException;
 import java.sql.Statement;
 
 abstract class ProcessManageEntityInstance<EIK extends EntityInstanceKey, EI extends EntityInstance> extends ProcessManageSuperKeyEntity<EIK, EI> {
@@ -15,7 +16,7 @@ abstract class ProcessManageEntityInstance<EIK extends EntityInstanceKey, EI ext
     private EntityInstanceFactory<EIK, EI> entityInstanceFactory;
 
     abstract EntityInstanceFactory<EIK, EI> getEntityInstanceFactory();
-    abstract void processSpecificFields(EI entityInstance, HttpServletRequest req);
+    abstract void processSpecificFields(Statement stat, EI entityInstance, HttpServletRequest req) throws SQLException;
 
     @Override
     protected void initSpecific(Statement stat, HttpServletRequest req) {
@@ -52,11 +53,11 @@ abstract class ProcessManageEntityInstance<EIK extends EntityInstanceKey, EI ext
     }
 
     @Override
-    protected void processEntityFromRequest(Statement stat, HttpServletRequest req) {
+    protected void processEntityFromRequest(Statement stat, HttpServletRequest req) throws SQLException{
         String nm = req.getParameter("nm");
 
         entity.setName(nm);
-        processSpecificFields(entity, req);
+        processSpecificFields(stat, entity, req);
     }
 
     @Override

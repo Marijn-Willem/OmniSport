@@ -19,9 +19,11 @@ public class GeoNameList extends SuperResponseServlet {
     protected void processBody(Statement stat, HttpServletRequest req, HttpServletResponse resp)
             throws IOException, SQLException {
         String nm = req.getParameter("nm");
+        Integer gtId = Util.convertStringToInteger(req.getParameter("gtid"));
 
         GeoManager gm = new GeoManager(stat);
-        List<Geo> geoList = gm.getGeosFromNameLike(nm);
+        List<Geo> geoList = gm.getGeosFromNameLike(nm).stream().filter(x ->
+                gtId == null || x.getGeoTypeId() == gtId).toList();
 
         new DbCalculation(stat).setGeoOutputStrings(geoList);
 

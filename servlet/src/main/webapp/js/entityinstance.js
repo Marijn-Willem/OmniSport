@@ -30,8 +30,10 @@ function goToManageEntityInstance() {
 function getProcessUrl() {
     const eiid = getValueFromElementByName('inpUpd');
     const nm = getValueFromElementByName('nm');
+    const cign = getValueFromElementByNameOrNull('cign');
 
-    return '/PrepareProcessManageEntityInstance?eid=' + eid + '&eiid=' + eiid + '&nm=' + nm + '&enm=' + enm;
+    return '/PrepareProcessManageEntityInstance?eid=' + eid + '&eiid=' + eiid + '&nm=' + nm +
+        (!isEmptyOrNull(cign) ? '&cign=' + encodeURL(cign) : '') + '&enm=' + enm;
 }
 
 function checkInput() {

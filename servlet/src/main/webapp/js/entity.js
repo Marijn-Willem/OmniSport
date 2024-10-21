@@ -53,6 +53,10 @@ function getValueFromElementByName(name) {
     return document.getElementsByName(name)[0].value;
 }
 
+function getValueFromElementByNameOrNull(name) {
+    return document.getElementsByName(name).length > 0 ? getValueFromElementByName(name) : null;
+}
+
 function getValueFromCheckbox(name) {
     return document.getElementsByName(name)[0].checked;
 }

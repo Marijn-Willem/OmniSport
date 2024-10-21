@@ -5,6 +5,8 @@ import com.sports.entity.key.GeoInstanceKey;
 import com.sports.logic.factory.GeoInstanceFactory;
 import jakarta.servlet.http.HttpServletRequest;
 
+import java.sql.Statement;
+
 public class ProcessManageGeoInstance extends ProcessManageEntityInstance<GeoInstanceKey, GeoInstance> {
     @Override
     GeoInstanceFactory getEntityInstanceFactory() {
@@ -12,5 +14,5 @@ public class ProcessManageGeoInstance extends ProcessManageEntityInstance<GeoIns
     }
 
     @Override
-    void processSpecificFields(GeoInstance entityInstance, HttpServletRequest req) { }
+    void processSpecificFields(Statement stat, GeoInstance entityInstance, HttpServletRequest req) { }
 }

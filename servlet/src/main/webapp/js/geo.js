@@ -1,11 +1,11 @@
 let inpGn;
 
-function loadGeoNameList() {
+function loadGeoNameList(gtid) {
     const geoName = inpGn.value;
 
     if (!isEmptyOrNull(geoName))
         new ElementLoader('tblGn', function () {
-            return '/GeoNameList?nm=' + encodeURL(geoName);
+            return '/GeoNameList?nm=' + encodeURL(geoName) + (gtid !== null ? '&gtid=' + gtid : '');
         }, null).loadElement();
 }
 
@@ -19,9 +19,9 @@ function handleChangeGn() {
     loadGeoNameList();
 }
 
-function handleChangeCgn() {
-    inpGn = document.getElementsByName('cgn')[0];
-    loadGeoNameList();
+function handleChangeCign() {
+    inpGn = document.getElementsByName('cign')[0];
+    loadGeoNameList(gtid);
 }
 
 function handleClickGeoName(tblRow) {

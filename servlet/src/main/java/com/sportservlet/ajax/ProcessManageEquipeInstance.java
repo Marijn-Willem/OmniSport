@@ -5,6 +5,8 @@ import com.sports.entity.key.EquipeInstanceKey;
 import com.sports.logic.factory.EquipeInstanceFactory;
 import jakarta.servlet.http.HttpServletRequest;
 
+import java.sql.Statement;
+
 public class ProcessManageEquipeInstance extends ProcessManageEntityInstance<EquipeInstanceKey, EquipeInstance> {
     @Override
     EquipeInstanceFactory getEntityInstanceFactory() {
@@ -12,5 +14,5 @@ public class ProcessManageEquipeInstance extends ProcessManageEntityInstance<Equ
     }
 
     @Override
-    void processSpecificFields(EquipeInstance entityInstance, HttpServletRequest req) { }
+    void processSpecificFields(Statement stat,EquipeInstance entityInstance, HttpServletRequest req) { }
 }
