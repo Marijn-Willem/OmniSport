@@ -1,18 +1,15 @@
 package com.teamsports.servlet.ajax;
 
-import com.sports.calc.h2hsports.DbCalculation;
 import com.sports.entity.CompDivision;
 import com.sports.entity.CompSeasonPhase;
-import com.sports.entity.comparator.CompDivisionParentName;
 import com.sports.entity.comparator.CompSeasonPhaseRoundDescription;
 import com.sports.entity.key.CompSeasonPhaseKey;
-import com.sports.entity.manager.CompDivisionManager;
 import com.sports.entity.manager.CompSeasonPhaseManager;
 import com.sports.logic.util.Util;
 import com.sportservlet.SuperResponseServlet;
-
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+
 import java.io.IOException;
 import java.io.Writer;
 import java.sql.SQLException;
@@ -28,12 +25,11 @@ public class CompSeasonPhaseList extends SuperResponseServlet {
         boolean showDivisions = Boolean.parseBoolean(Util.convertEmptyString(req.getParameter("sd"), "true"));
         CompSeasonPhaseManager cspm = new CompSeasonPhaseManager(stat);
         List<CompSeasonPhase> compSeasonPhases = cspm.getCompSeasonPhases(compSeasonKey);
-        List<CompDivision> compDivisions = new CompDivisionManager(stat).getCompDivisions(competitionId);
+        List<CompDivision> compDivisions = new com.sports.calc.teamsports.DbCalculation(stat).getSortedCompDivisions(compSeasonKey);
         Map<CompSeasonPhaseKey, CompSeasonPhase> parentPhaseMap = getParentPhaseMap(cspm, compSeasonPhases);
 
-        new DbCalculation(stat).setPhaseDescriptionsFromTypes(compSeasonPhases);
+        new com.sports.calc.h2hsports.DbCalculation(stat).setPhaseDescriptionsFromTypes(compSeasonPhases);
         compSeasonPhases.sort(new CompSeasonPhaseRoundDescription());
-        compDivisions.sort(new CompDivisionParentName());
 
         Writer w = resp.getWriter();
 
