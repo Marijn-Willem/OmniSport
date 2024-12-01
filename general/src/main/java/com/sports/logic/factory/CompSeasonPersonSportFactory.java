@@ -38,6 +38,11 @@ public class CompSeasonPersonSportFactory extends CompSeasonParticipantFactory<C
     }
 
     @Override
+    public PersonSport getParticipant() {
+        return new PersonSport();
+    }
+
+    @Override
     public CompSeasonPersonSportKey getCompSeasonParticKey(CompSeasonKey csk, int specifId) {
         return new CompSeasonPersonSportKey(csk, specifId);
     }

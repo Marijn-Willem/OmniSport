@@ -2,7 +2,7 @@ package com.sports.logic.calculation;
 
 import com.sports.entity.*;
 import com.sports.entity.comparator.MatchActionMatch;
-import com.sports.entity.comparator.MatchId;
+import com.sports.entity.comparator.MatchActionMatchSort;
 import com.sports.entity.key.CompSeasonPhaseKey;
 import com.sports.entity.key.TeamMatchKey;
 import com.sports.entity.manager.TeamMatchActionManager;
@@ -15,6 +15,8 @@ import java.util.List;
 
 public class RugbyStandingProcessor extends TeamStandingProcessor {
     private final CompSeason compSeason;
+    private List<TeamMatchAction> matchActionList;
+    private int curMatchActionIndX;
 
     public RugbyStandingProcessor(Statement stat, CompSeasonPhaseKey cspk, CompSeason compSeason) {
         super(stat, cspk, Sport.sportIdRugby);
@@ -32,12 +34,8 @@ public class RugbyStandingProcessor extends TeamStandingProcessor {
     }
 
     @Override
-    protected void processSpecific() throws SQLException {
-        super.processSpecific();
-
-        int curMatchIndX = -1;
-        int triesHome = 0;
-        int triesAway = 0;
+    protected void setParticipantsAndMatches() throws SQLException {
+        super.setParticipantsAndMatches();
 
         List<TeamMatchKey> teamMatchKeys = new ArrayList<>();
 
@@ -45,34 +43,65 @@ public class RugbyStandingProcessor extends TeamStandingProcessor {
             teamMatchKeys.add(new TeamMatchKey(cspk.getSuperKey(), teamMatch.getSpecificId()));
 
         TeamMatchActionManager mam = new TeamMatchActionManager(stat);
-        List<TeamMatchAction> matchActionList = mam.getMatchActionsMatches(teamMatchKeys,
+        matchActionList = mam.getMatchActionsMatches(teamMatchKeys,
                 Arrays.asList(ActionType.actionTypeIdTry, ActionType.actionTypeIdPenaltyTry5,
                         ActionType.actionTypeIdPenaltyTry7));
 
-        h2HMatches.sort(new MatchId());
         matchActionList.sort(new MatchActionMatch());
 
-        if (!matchActionList.isEmpty())
-            curMatchIndX = getIndexNextMatch(0, matchActionList.get(0).getTeamMatchId());
+        int matchActionIndX = 0;
 
-        for (TeamMatchAction matchAction : matchActionList) {
-            if (matchAction.getTeamMatchId() != getTeamMatchFromIndex(h2HMatches, curMatchIndX).getTeamMatchId()) {
-                processBonusPointsMatch(curMatchIndX, triesHome, triesAway);
+        while (matchActionIndX < matchActionList.size()) {
+            int curMatchId = matchActionList.get(matchActionIndX).getTeamMatchId();
+
+            int matchSort = 0;
+
+            while (matchSort < h2HMatches.size() && h2HMatches.get(matchSort).getTeamMatchId() != curMatchId)
+                matchSort++;
+
+            TeamMatchAction curTeamMatchAction;
+
+            while (matchActionIndX < matchActionList.size() && (curTeamMatchAction = matchActionList.get(matchActionIndX)).getTeamMatchId() == curMatchId) {
+                curTeamMatchAction.setMatchSort(matchSort);
+                matchActionIndX++;
+            }
+        }
+
+        matchActionList.sort(new MatchActionMatchSort());
+    }
+
+    @Override
+    protected void processSpecificSnapshot(int curMatchSort) {
+        super.processSpecificSnapshot(curMatchSort);
+
+        int triesHome = 0;
+        int triesAway = 0;
+
+        TeamMatchAction prevTeamMatchAction = null;
+        TeamMatchAction curTeamMatchAction;
+
+        while (curMatchActionIndX < matchActionList.size() &&
+                (curTeamMatchAction = matchActionList.get(curMatchActionIndX)).getMatchSort() <= curMatchSort) {
+            if (prevTeamMatchAction != null && prevTeamMatchAction.getMatchSort() != curTeamMatchAction.getMatchSort()) {
+                processBonusPointsMatch(prevTeamMatchAction.getMatchSort(), triesHome, triesAway);
 
                 triesHome = 0;
                 triesAway = 0;
-
-                curMatchIndX = getIndexNextMatch(curMatchIndX, matchAction.getTeamMatchId());
             }
 
-            if (getTeamMatchFromIndex(h2HMatches, curMatchIndX).getTeamHomeId() == matchAction.getTeamId())
+            H2HMatch curMatch = h2HMatches.get(curTeamMatchAction.getMatchSort());
+
+            if (curMatch.getParticipant1Id() == curTeamMatchAction.getTeamId())
                 triesHome++;
             else
                 triesAway++;
+
+            prevTeamMatchAction = curTeamMatchAction;
+            curMatchActionIndX++;
         }
 
-        if (curMatchIndX > -1)
-            processBonusPointsMatch(curMatchIndX, triesHome, triesAway);
+        if (prevTeamMatchAction != null)
+            processBonusPointsMatch(prevTeamMatchAction.getMatchSort(), triesHome, triesAway);
     }
 
     @Override
@@ -95,8 +124,8 @@ public class RugbyStandingProcessor extends TeamStandingProcessor {
         }
     }
 
-    private void processBonusPointsMatch(int curMatchIndX, int triesHome, int triesAway) {
-        TeamMatch curMatch = h2HMatches.get(curMatchIndX);
+    private void processBonusPointsMatch(int curMatchSort, int triesHome, int triesAway) {
+        TeamMatch curMatch = h2HMatches.get(curMatchSort);
         int triesDiff = triesHome - triesAway;
         processBonusPoints(particMap.get(curMatch.getTeamHomeId()), triesHome, triesDiff);
         processBonusPoints(particMap.get(curMatch.getTeamAwayId()), triesAway, -triesDiff);
@@ -112,18 +141,5 @@ public class RugbyStandingProcessor extends TeamStandingProcessor {
             participant.addPoints(1);
             participant.addBonusPoint();
         }
-    }
-
-    private int getIndexNextMatch(int curIndX, int nextMatchId) {
-        int nextIndX = curIndX;
-
-        while (h2HMatches.get(nextIndX).getSpecificId() != nextMatchId)
-            nextIndX++;
-
-        return nextIndX;
-    }
-
-    private TeamMatch getTeamMatchFromIndex(List<TeamMatch> matches, int indX) {
-        return matches.get(indX);
     }
 }

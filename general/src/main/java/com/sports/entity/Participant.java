@@ -38,6 +38,21 @@ public abstract class Participant extends IntEntity implements DescribedEntity {
         return Util.concatenateStringArrays(generalProps, getSpecificPropertiesInSQLStrings());
     }
 
+    public void copyStandingFieldsTo(Participant participant) {
+        participant.setPoints(points);
+        participant.setPointsBehind(pointsBehind);
+        participant.setNoCountResultId(noCountResultId);
+        participant.setWins(wins);
+        participant.setDraws(draws);
+        participant.setLosses(losses);
+        participant.setScore(score);
+        participant.setScoreAgainst(scoreAgainst);
+        participant.setPlayed(played);
+        participant.setRank(rank);
+        participant.setStreak(streak);
+        participant.setGamesBehind(gamesBehind);
+    }
+
     public double getAverage() {
         return Calculation.getAverage(played, wins, draws);
     }

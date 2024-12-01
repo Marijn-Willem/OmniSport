@@ -9,6 +9,7 @@ public class TeamMatchAction extends SuperKeyEntity {
     private int teamId;
 
     private int teamMatchId;
+    private int matchSort;
 
     @Override
     public String[] getPropertiesInSQLStrings() {
@@ -58,5 +59,13 @@ public class TeamMatchAction extends SuperKeyEntity {
 
     public void setTeamMatchId(int teamMatchId) {
         this.teamMatchId = teamMatchId;
+    }
+
+    public int getMatchSort() {
+        return matchSort;
+    }
+
+    public void setMatchSort(int matchSort) {
+        this.matchSort = matchSort;
     }
 }

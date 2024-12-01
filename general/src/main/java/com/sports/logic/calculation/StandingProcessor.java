@@ -54,6 +54,8 @@ public abstract class StandingProcessor<PK extends CompSeasonParticipantKey,
 
     protected void processSpecific() throws SQLException {}
 
+    protected void processSpecificSnapshot(int curMatchSort) {}
+
     public List<P> getStanding() throws SQLException {
         List<P> standing = new ArrayList<>();
 

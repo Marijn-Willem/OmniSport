@@ -34,6 +34,7 @@ public abstract class CompSeasonParticipantFactory<PK extends CompSeasonParticip
     public abstract CompSeasonParticipantManager<PK, CSP> getCompSeasonParticipantManager(Statement stat);
     public abstract ParticipantManager<P> getParticipantManager(Statement stat);
     public abstract CompSeasonPhaseParticipantManager<PK, PPK, CSPP> getPhaseParticManager(Statement stat);
+    public abstract P getParticipant();
     public abstract PK getCompSeasonParticKey(CompSeasonKey csk, int specifId);
     public abstract PPK getPhaseParticKey(CompSeasonPhaseKey cspk, int specifId);
     public abstract ParticipantType getParticipantType();
