@@ -38,7 +38,11 @@ public abstract class Participant extends IntEntity implements DescribedEntity {
         return Util.concatenateStringArrays(generalProps, getSpecificPropertiesInSQLStrings());
     }
 
-    public void copyStandingFieldsTo(Participant participant) {
+    void copyStandingFieldsTo(Participant participant) {
+        participant.setDescription(description);
+        participant.setElo(elo);
+
+        participant.setId(id);
         participant.setPoints(points);
         participant.setPointsBehind(pointsBehind);
         participant.setNoCountResultId(noCountResultId);
@@ -124,10 +128,6 @@ public abstract class Participant extends IntEntity implements DescribedEntity {
         wins++;
     }
 
-    public void removeWin() {
-        wins--;
-    }
-
     public int getDraws() {
         return draws;
     }
@@ -140,10 +140,6 @@ public abstract class Participant extends IntEntity implements DescribedEntity {
         draws++;
     }
 
-    public void removeDraw() {
-        draws--;
-    }
-
     public int getLosses() {
         return losses;
     }
@@ -154,10 +150,6 @@ public abstract class Participant extends IntEntity implements DescribedEntity {
 
     public void addLoss() {
         losses++;
-    }
-
-    public void removeLoss() {
-        losses--;
     }
 
     public int getScore() {

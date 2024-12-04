@@ -29,11 +29,6 @@ public class CompSeasonDoubleFactory extends CompSeasonParticipantFactory<CompSe
     }
 
     @Override
-    public Double getParticipant() {
-        return new Double();
-    }
-
-    @Override
     public CompSeasonDoubleKey getCompSeasonParticKey(CompSeasonKey csk, int specifId) {
         return new CompSeasonDoubleKey(csk, specifId);
     }
@@ -51,5 +46,13 @@ public class CompSeasonDoubleFactory extends CompSeasonParticipantFactory<CompSe
     @Override
     public String getParticipantDescription() {
         return "Double";
+    }
+
+    @Override
+    public Double getCopyForStanding(Double participant) {
+        Double dbl = new Double();
+        participant.copyToForStanding(dbl);
+
+        return dbl;
     }
 }

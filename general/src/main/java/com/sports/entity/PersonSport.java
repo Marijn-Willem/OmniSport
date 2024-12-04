@@ -21,6 +21,13 @@ public class PersonSport extends Participant {
         return new PersonSportIdKey(personId, sportId);
     }
 
+    public void copyToForStanding(PersonSport other) {
+        other.setPersonId(personId);
+        other.setSportId(sportId);
+
+        copyStandingFieldsTo(other);
+    }
+
     public void setPersonId(int personId) {
         this.personId = personId;
     }

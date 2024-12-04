@@ -38,11 +38,6 @@ public class CompSeasonPersonSportFactory extends CompSeasonParticipantFactory<C
     }
 
     @Override
-    public PersonSport getParticipant() {
-        return new PersonSport();
-    }
-
-    @Override
     public CompSeasonPersonSportKey getCompSeasonParticKey(CompSeasonKey csk, int specifId) {
         return new CompSeasonPersonSportKey(csk, specifId);
     }
@@ -60,5 +55,13 @@ public class CompSeasonPersonSportFactory extends CompSeasonParticipantFactory<C
     @Override
     public String getParticipantDescription() {
         return "Person";
+    }
+
+    @Override
+    public PersonSport getCopyForStanding(PersonSport participant) {
+        PersonSport personSport = new PersonSport();
+        participant.copyToForStanding(personSport);
+
+        return personSport;
     }
 }

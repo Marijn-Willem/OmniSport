@@ -1,7 +1,6 @@
 package com.sports.logic.calculation;
 
 import com.sports.entity.*;
-import com.sports.entity.comparator.MatchDate;
 import com.sports.entity.comparator.ParticipantStanding;
 import com.sports.entity.comparator.SuperComparator;
 import com.sports.entity.key.*;
@@ -28,6 +27,20 @@ public abstract class StandingProcessor<PK extends CompSeasonParticipantKey,
         MP extends H2HMatchPart,
         MPSK extends H2HMatchPartStatKey,
         MPS extends H2HMatchPartStat> {
+    private final CompSeasonParticipantFactory<PK, PPK, P, CSP, CSPP, MK, M, MPK, MP, MPSK, MPS> factory;
+    private final SnapshotCreationChecker singleStandingChecker = new SnapshotCreationChecker() {
+        @Override
+        boolean checkCreate(M m1, M m2) {
+            return false;
+        }
+    };
+    private final SnapshotCreationChecker standingPerDateChecker = new SnapshotCreationChecker() {
+        @Override
+        boolean checkCreate(M m1, M m2) {
+            return m1.getDate() != m2.getDate();
+        }
+    };
+
     protected Statement stat;
     protected CompSeasonPhaseKey cspk;
     protected Map<Integer, P> particMap;
@@ -38,6 +51,8 @@ public abstract class StandingProcessor<PK extends CompSeasonParticipantKey,
     StandingProcessor(Statement stat, CompSeasonPhaseKey cspk) {
         this.stat = stat;
         this.cspk = cspk;
+
+        factory = getFactory();
     }
 
     public int getPointsWin() {
@@ -52,31 +67,19 @@ public abstract class StandingProcessor<PK extends CompSeasonParticipantKey,
         return new ParticipantStanding<>();
     }
 
-    protected void processSpecific() throws SQLException {}
-
-    protected void processSpecificSnapshot(int curMatchSort) {}
+    protected void processSpecificSnapshot(int curMatchSort) throws SQLException {}
 
     public List<P> getStanding() throws SQLException {
-        List<P> standing = new ArrayList<>();
+        List<List<P>> standingSnapshots = getStandingSnapshots(singleStandingChecker);
 
-        setParticipantsAndMatches();
-        h2HMatches.sort(new MatchDate());
+        return standingSnapshots.size() == 1 ? standingSnapshots.get(0) : new ArrayList<>();
+    }
 
-        for (M match : h2HMatches)
-            processH2HMatch(match);
-
-        processSpecific();
-
-        for (Map.Entry<Integer, P> me : particMap.entrySet())
-            standing.add(me.getValue());
-
-        Calculation.sortParticipantsAndSetRankBasedFields(standing, getComparator());
-
-        return standing;
+    public List<List<P>> getStandingsPerDate() throws SQLException {
+        return getStandingSnapshots(standingPerDateChecker);
     }
 
     protected void setParticipantsAndMatches() throws SQLException {
-        CompSeasonParticipantFactory<PK, PPK, P, CSP, CSPP, MK, M, MPK, MP, MPSK, MPS> factory = getFactory();
         CompSeasonPhaseParticipantManager<PK, PPK, CSPP> csppm = factory.getPhaseParticManager(stat);
         ParticipantManager<P> pm = factory.getParticipantManager(stat);
         H2HMatchManager<MK, M> h2hMM = factory.getH2HObjectFactory().getManager(stat);
@@ -98,6 +101,40 @@ public abstract class StandingProcessor<PK extends CompSeasonParticipantKey,
             if (partic2 != null)
                 processParticipant(h2HMatch, partic2, false);
         }
+    }
+
+    private List<List<P>> getStandingSnapshots(SnapshotCreationChecker checker) throws SQLException {
+        List<List<P>> snapshots = new ArrayList<>();
+
+        setParticipantsAndMatches();
+
+        M prevMatch = null;
+
+        for (int i = 0; i < h2HMatches.size(); i++) {
+            M h2HMatch = h2HMatches.get(i);
+            processH2HMatch(h2HMatch);
+
+            if (prevMatch != null && checker.checkCreate(prevMatch, h2HMatch))
+                snapshots.add(getSnapshot(i - 1));
+
+            prevMatch = h2HMatch;
+        }
+
+        if (!h2HMatches.isEmpty())
+            snapshots.add(getSnapshot(h2HMatches.size() - 1));
+
+        return snapshots;
+    }
+
+    private List<P> getSnapshot(int curMatchSort) throws SQLException {
+        processSpecificSnapshot(curMatchSort);
+        List<P> standing = new ArrayList<>() {{
+            for (Map.Entry<Integer, P> me : particMap.entrySet())
+                add(factory.getCopyForStanding(me.getValue()));
+        }};
+
+        Calculation.sortParticipantsAndSetRankBasedFields(standing, getComparator());
+        return standing;
     }
 
     private void processParticipant(M h2HMatch, P participant, boolean isP1) {
@@ -131,5 +168,9 @@ public abstract class StandingProcessor<PK extends CompSeasonParticipantKey,
         int streakSig = (int)Math.signum(currentStreak);
 
         return (scoreDiffSig == streakSig ? currentStreak : 0) + scoreDiffSig;
+    }
+
+    private abstract class SnapshotCreationChecker {
+        abstract boolean checkCreate(M m1, M m2);
     }
 }

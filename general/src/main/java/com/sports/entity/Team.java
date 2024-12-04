@@ -3,8 +3,6 @@ package com.sports.entity;
 import com.sports.db.util.QueryUtil;
 import com.sports.logic.calculation.Calculation;
 
-import java.time.LocalDateTime;
-
 public class Team extends Participant {
     private Integer clubId;
     private Integer nocId;
@@ -14,8 +12,6 @@ public class Team extends Participant {
 
     private int bonusPoints;
     private boolean hasCup;
-    private LocalDateTime startDate;
-    private LocalDateTime endDate;
     private CompDivision compDivision;
     private int playedParentDivision;
     private int winsParentDivision;
@@ -24,6 +20,25 @@ public class Team extends Participant {
     private int winsDivision;
     private int drawsDivision;
     private int sortIndex;
+
+    public void copyToForStanding(Team other) {
+        other.setClubId(clubId);
+        other.setNocId(nocId);
+        other.setEquipeId(equipeId);
+        other.setSportId(sportId);
+        other.setGenderId(genderId);
+
+        other.setBonusPoints(bonusPoints);
+        other.setCompDivision(compDivision);
+        other.setPlayedParentDivision(playedParentDivision);
+        other.setWinsParentDivision(winsParentDivision);
+        other.setDrawsParentDivision(drawsParentDivision);
+        other.setPlayedDivision(playedDivision);
+        other.setWinsDivision(winsDivision);
+        other.setDrawsDivision(drawsDivision);
+
+        copyStandingFieldsTo(other);
+    }
 
     public double getParentDivisionAverage() {
         return Calculation.getAverage(playedParentDivision, winsParentDivision, drawsParentDivision);
@@ -61,6 +76,10 @@ public class Team extends Participant {
         return bonusPoints;
     }
 
+    public void setBonusPoints(int bonusPoints) {
+        this.bonusPoints = bonusPoints;
+    }
+
     public void addBonusPoint() {
         bonusPoints++;
     }
@@ -71,22 +90,6 @@ public class Team extends Participant {
 
     public void setHasCup(boolean hasCup) {
         this.hasCup = hasCup;
-    }
-
-    public LocalDateTime getStartDate() {
-        return startDate;
-    }
-
-    public void setStartDate(LocalDateTime startDate) {
-        this.startDate = startDate;
-    }
-
-    public LocalDateTime getEndDate() {
-        return endDate;
-    }
-
-    public void setEndDate(LocalDateTime endDate) {
-        this.endDate = endDate;
     }
 
     public int getSportId() {
@@ -115,25 +118,49 @@ public class Team extends Participant {
 
     public int getPlayedParentDivision() { return playedParentDivision; }
 
+    public void setPlayedParentDivision(int playedParentDivision) {
+        this.playedParentDivision = playedParentDivision;
+    }
+
     public void addPlayedParentDivision() { playedParentDivision++; }
 
     public int getWinsParentDivision() { return winsParentDivision; }
+
+    public void setWinsParentDivision(int winsParentDivision) {
+        this.winsParentDivision = winsParentDivision;
+    }
 
     public void addWinParentDivision() { winsParentDivision++; }
 
     public int getDrawsParentDivision() { return drawsParentDivision; }
 
+    public void setDrawsParentDivision(int drawsParentDivision) {
+        this.drawsParentDivision = drawsParentDivision;
+    }
+
     public void addDrawParentDivision() { drawsParentDivision++; }
 
     public int getPlayedDivision() { return playedDivision; }
+
+    public void setPlayedDivision(int playedDivision) {
+        this.playedDivision = playedDivision;
+    }
 
     public void addPlayedDivision() { playedDivision++; }
 
     public int getWinsDivision() { return winsDivision; }
 
+    public void setWinsDivision(int winsDivision) {
+        this.winsDivision = winsDivision;
+    }
+
     public void addWinDivision() { winsDivision++; }
 
     public int getDrawsDivision() { return drawsDivision; }
+
+    public void setDrawsDivision(int drawsDivision) {
+        this.drawsDivision = drawsDivision;
+    }
 
     public void addDrawDivision() { drawsDivision++; }
 

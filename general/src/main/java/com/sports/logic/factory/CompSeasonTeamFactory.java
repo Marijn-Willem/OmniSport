@@ -28,11 +28,6 @@ public class CompSeasonTeamFactory extends CompSeasonParticipantFactory<CompSeas
     }
 
     @Override
-    public Team getParticipant() {
-        return new Team();
-    }
-
-    @Override
     public CompSeasonTeamKey getCompSeasonParticKey(CompSeasonKey csk, int specifId) {
         return new CompSeasonTeamKey(csk, specifId);
     }
@@ -50,5 +45,13 @@ public class CompSeasonTeamFactory extends CompSeasonParticipantFactory<CompSeas
     @Override
     public String getParticipantDescription() {
         return "Team";
+    }
+
+    @Override
+    public Team getCopyForStanding(Team participant) {
+        Team team = new Team();
+        participant.copyToForStanding(team);
+
+        return team;
     }
 }

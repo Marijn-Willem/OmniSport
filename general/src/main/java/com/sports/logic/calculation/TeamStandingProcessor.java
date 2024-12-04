@@ -31,24 +31,30 @@ public class TeamStandingProcessor extends StandingProcessor<CompSeasonTeamKey,
     private final Map<Integer, CompSeasonTeam> compSeasonTeamMap = new HashMap<>();
     private final Map<Integer, CompDivision> compDivisionMap = new HashMap<>();
 
+    private boolean isTeamsInitialized;
+
     public TeamStandingProcessor(Statement stat, CompSeasonPhaseKey cspk, int sportId) {
         super(stat, cspk);
         this.sportId = sportId;
     }
 
     @Override
-    protected void processSpecific() throws SQLException {
-        List<CompSeasonPhaseTeamKey> keys = particMap.keySet().stream().map(x -> new CompSeasonPhaseTeamKey(cspk, x))
-                .collect(Collectors.toList());
+    protected void processSpecificSnapshot(int curMatchSort) throws SQLException {
+        if (!isTeamsInitialized) {
+            List<CompSeasonPhaseTeamKey> keys = particMap.keySet().stream().map(x -> new CompSeasonPhaseTeamKey(cspk, x))
+                    .collect(Collectors.toList());
 
-        List<CompSeasonPhaseTeam> phaseTeams = new CompSeasonPhaseTeamManager(stat).getCompSeasonPhaseTeams(keys);
+            List<CompSeasonPhaseTeam> phaseTeams = new CompSeasonPhaseTeamManager(stat).getCompSeasonPhaseTeams(keys);
 
-        phaseTeams.forEach(x -> particMap.get(x.getTeamId()).addPoints(x.getPointsCorrection()));
+            phaseTeams.forEach(x -> particMap.get(x.getTeamId()).addPoints(x.getPointsCorrection()));
 
-        CompSeasonPhase compSeasonPhase = new CompSeasonPhaseManager(stat).getCompSeasonPhase(cspk);
+            CompSeasonPhase compSeasonPhase = new CompSeasonPhaseManager(stat).getCompSeasonPhase(cspk);
 
-        if (compSeasonPhase.isHasDivisionStandings())
-            new DbCalculation(stat).addCompDivisionsToTeams(particMap.values().stream().toList(), cspk.getSuperKey());
+            if (compSeasonPhase.isHasDivisionStandings())
+                new DbCalculation(stat).addCompDivisionsToTeams(particMap.values().stream().toList(), cspk.getSuperKey());
+
+            isTeamsInitialized = true;
+        }
     }
 
     @Override

@@ -34,11 +34,11 @@ public abstract class CompSeasonParticipantFactory<PK extends CompSeasonParticip
     public abstract CompSeasonParticipantManager<PK, CSP> getCompSeasonParticipantManager(Statement stat);
     public abstract ParticipantManager<P> getParticipantManager(Statement stat);
     public abstract CompSeasonPhaseParticipantManager<PK, PPK, CSPP> getPhaseParticManager(Statement stat);
-    public abstract P getParticipant();
     public abstract PK getCompSeasonParticKey(CompSeasonKey csk, int specifId);
     public abstract PPK getPhaseParticKey(CompSeasonPhaseKey cspk, int specifId);
     public abstract ParticipantType getParticipantType();
     public abstract String getParticipantDescription();
+    public abstract P getCopyForStanding(P participant);
 
     public void deletePhaseParticipants(Statement stat, CompSeasonPhaseKey cspk, List<Integer> participantIds)
             throws SQLException  {

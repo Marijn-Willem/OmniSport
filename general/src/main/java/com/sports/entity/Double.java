@@ -20,6 +20,13 @@ public class Double extends Participant {
         return new DoublePersonSport1PersonSport2Key(personSport1Id, personSport2Id);
     }
 
+    public void copyToForStanding(Double other) {
+        other.setPersonSport1Id(personSport1Id);
+        other.setPersonSport2Id(personSport2Id);
+
+        copyStandingFieldsTo(other);
+    }
+
     public int getPersonSport1Id() {
         return personSport1Id;
     }
