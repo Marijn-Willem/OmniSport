@@ -1,18 +1,18 @@
 TestOneParameter
-clientId
+competitionId
 
 TestTwoParameters
 competitionId
-clientId
+seasonId
 
 TestThreeParameters
 competitionId
 seasonId
-clientId
+compSeasonPhaseId
 
 TestFiveParameters
 competitionId
 seasonId
 compSeasonEventId
 compSeasonEventPartId
-clientId
+eventDisciplinePartId

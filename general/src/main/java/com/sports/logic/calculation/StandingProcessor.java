@@ -1,6 +1,7 @@
 package com.sports.logic.calculation;
 
 import com.sports.entity.*;
+import com.sports.entity.comparator.MatchDate;
 import com.sports.entity.comparator.ParticipantStanding;
 import com.sports.entity.comparator.SuperComparator;
 import com.sports.entity.key.*;
@@ -8,6 +9,7 @@ import com.sports.entity.manager.CompSeasonPhaseParticipantManager;
 import com.sports.entity.manager.H2HMatchManager;
 import com.sports.entity.manager.ParticipantManager;
 import com.sports.logic.factory.CompSeasonParticipantFactory;
+import com.sports.logic.util.Util;
 
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -33,11 +35,21 @@ public abstract class StandingProcessor<PK extends CompSeasonParticipantKey,
         boolean checkCreate(M m1, M m2) {
             return false;
         }
+
+        @Override
+        StandingContext<P> getStandingContext(M match, List<P> standing) {
+            return new StandingContext<>(null, standing);
+        }
     };
     private final SnapshotCreationChecker standingPerDateChecker = new SnapshotCreationChecker() {
         @Override
         boolean checkCreate(M m1, M m2) {
-            return m1.getDate() != m2.getDate();
+            return !Util.compareNullableObjects(m1.getDate(), m2.getDate());
+        }
+
+        @Override
+        StandingContext<P> getStandingContext(M match, List<P> standing) {
+            return new StandingContext<>(match.getDate(), standing);
         }
     };
 
@@ -69,13 +81,13 @@ public abstract class StandingProcessor<PK extends CompSeasonParticipantKey,
 
     protected void processSpecificSnapshot(int curMatchSort) throws SQLException {}
 
-    public List<P> getStanding() throws SQLException {
-        List<List<P>> standingSnapshots = getStandingSnapshots(singleStandingChecker);
+    public StandingContext<P> getStanding() throws SQLException {
+        List<StandingContext<P>> standingSnapshots = getStandingSnapshots(singleStandingChecker);
 
-        return standingSnapshots.size() == 1 ? standingSnapshots.get(0) : new ArrayList<>();
+        return standingSnapshots.size() == 1 ? standingSnapshots.get(0) : new StandingContext<>(null, new ArrayList<>());
     }
 
-    public List<List<P>> getStandingsPerDate() throws SQLException {
+    public List<StandingContext<P>> getStandingsPerDate() throws SQLException {
         return getStandingSnapshots(standingPerDateChecker);
     }
 
@@ -88,6 +100,7 @@ public abstract class StandingProcessor<PK extends CompSeasonParticipantKey,
         particMap = pm.getParticipantMap(particIds);
         particMap.forEach((k, v) -> v.setPoints(0));
         h2HMatches = h2hMM.getPlayedMatchesInCompSeasonPhase(cspk);
+        h2HMatches.sort(new MatchDate());
     }
 
     protected void processH2HMatch(M h2HMatch) {
@@ -103,8 +116,8 @@ public abstract class StandingProcessor<PK extends CompSeasonParticipantKey,
         }
     }
 
-    private List<List<P>> getStandingSnapshots(SnapshotCreationChecker checker) throws SQLException {
-        List<List<P>> snapshots = new ArrayList<>();
+    private List<StandingContext<P>> getStandingSnapshots(SnapshotCreationChecker checker) throws SQLException {
+        List<StandingContext<P>> snapshots = new ArrayList<>();
 
         setParticipantsAndMatches();
 
@@ -112,21 +125,21 @@ public abstract class StandingProcessor<PK extends CompSeasonParticipantKey,
 
         for (int i = 0; i < h2HMatches.size(); i++) {
             M h2HMatch = h2HMatches.get(i);
-            processH2HMatch(h2HMatch);
 
             if (prevMatch != null && checker.checkCreate(prevMatch, h2HMatch))
-                snapshots.add(getSnapshot(i - 1));
+                snapshots.add(getSnapshot(i - 1, checker));
 
+            processH2HMatch(h2HMatch);
             prevMatch = h2HMatch;
         }
 
         if (!h2HMatches.isEmpty())
-            snapshots.add(getSnapshot(h2HMatches.size() - 1));
+            snapshots.add(getSnapshot(h2HMatches.size() - 1, checker));
 
         return snapshots;
     }
 
-    private List<P> getSnapshot(int curMatchSort) throws SQLException {
+    private StandingContext<P> getSnapshot(int curMatchSort, SnapshotCreationChecker checker) throws SQLException {
         processSpecificSnapshot(curMatchSort);
         List<P> standing = new ArrayList<>() {{
             for (Map.Entry<Integer, P> me : particMap.entrySet())
@@ -134,7 +147,8 @@ public abstract class StandingProcessor<PK extends CompSeasonParticipantKey,
         }};
 
         Calculation.sortParticipantsAndSetRankBasedFields(standing, getComparator());
-        return standing;
+
+        return checker.getStandingContext(h2HMatches.get(curMatchSort), standing);
     }
 
     private void processParticipant(M h2HMatch, P participant, boolean isP1) {
@@ -172,5 +186,6 @@ public abstract class StandingProcessor<PK extends CompSeasonParticipantKey,
 
     private abstract class SnapshotCreationChecker {
         abstract boolean checkCreate(M m1, M m2);
+        abstract StandingContext<P> getStandingContext(M match, List<P> standing);
     }
 }

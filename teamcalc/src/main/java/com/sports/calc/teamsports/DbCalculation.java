@@ -5,6 +5,7 @@ import com.sports.entity.comparator.*;
 import com.sports.entity.key.*;
 import com.sports.entity.manager.*;
 import com.sports.logic.calculation.Calculation;
+import com.sports.logic.calculation.StandingContext;
 import com.sports.logic.util.Util;
 
 import java.io.IOException;
@@ -26,7 +27,13 @@ public record DbCalculation(Statement stat) {
 
     public List<Team> getDivisionStanding(CompSeasonPhaseKey cspk, CompDivisionKey csd) throws SQLException {
         int sportId = new CompetitionManager(stat).getCompetition(cspk.getCompetitionId()).getSportId();
-        return new DivisionStandingProcessor(stat, cspk, sportId, csd).getStanding();
+        return new DivisionStandingProcessor(stat, cspk, sportId, csd).getStanding().standing();
+    }
+
+    public List<StandingContext<Team>> getDivisionStandingPerDate(CompSeasonPhaseKey cspk, CompDivisionKey csd)
+            throws SQLException {
+        int sportId = new CompetitionManager(stat).getCompetition(cspk.getCompetitionId()).getSportId();
+        return new DivisionStandingProcessor(stat, cspk, sportId, csd).getStandingsPerDate();
     }
 
     public List<Team> getCrocoCupStanding(int competitionId) throws SQLException {

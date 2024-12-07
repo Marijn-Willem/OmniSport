@@ -2,7 +2,6 @@ package com.sports.calc.teamsports;
 
 import com.sports.entity.Team;
 import com.sports.entity.TeamMatch;
-import com.sports.entity.comparator.MatchDate;
 import com.sports.entity.key.CompDivisionKey;
 import com.sports.entity.key.CompSeasonPhaseKey;
 import com.sports.entity.manager.ParticipantManager;
@@ -35,6 +34,5 @@ public class DivisionStandingProcessor extends TeamStandingProcessor {
                 particMap.containsKey(x.getTeamHomeId()) || particMap.containsKey(x.getTeamAwayId())).toList();
         h2HMatches.clear();
         h2HMatches.addAll(relevantMatches);
-        h2HMatches.sort(new MatchDate());
     }
 }

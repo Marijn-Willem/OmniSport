@@ -146,9 +146,12 @@ public class Util {
      * @return <code>true</code> if they are equal and <code>false</code> otherwise
      */
     public static boolean compareIntegers(Integer igr1, Integer igr2) {
-        return igr1 == null && igr2 == null || igr1 != null && igr1.equals(igr2);
+        return compareNullableObjects(igr1, igr2);
     }
 
+    public static boolean compareNullableObjects(Object o1, Object o2) {
+        return o1 == null && o2 == null || o1 != null && o1.equals(o2);
+    }
     /**
      * Compares two integers. They are considered unequal when both are <code>NULL</code>
      * @param igr1 the first integer

@@ -159,7 +159,14 @@ public record DbCalculation(Statement stat) {
     public List<? extends Participant> getParticipantStandingCompSeasonPhase(CompSeasonPhaseKey cspk)
             throws SQLException {
         return getCompSeasonParticipantFactory(cspk.getCompetitionId()).getH2HObjectFactory()
-                .getStandingProcessor(stat, cspk).getStanding();
+                .getStandingProcessor(stat, cspk).getStanding().standing();
+    }
+
+
+    public List<? extends StandingContext<? extends Participant>> getParticipantStandingCompSeasonPhasePerDate(CompSeasonPhaseKey cspk)
+            throws SQLException {
+        return getCompSeasonParticipantFactory(cspk.getCompetitionId()).getH2HObjectFactory()
+                .getStandingProcessor(stat, cspk).getStandingsPerDate();
     }
 
     public void dedoublePersons(int personFromId, int personToId) throws SQLException {

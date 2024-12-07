@@ -65,7 +65,7 @@ public class JsonUtil {
             sb.append(",");
         }
 
-        if (fragments.size() > 0)
+        if (!fragments.isEmpty())
             sb.append(getFragmentAsEntry(fragments.get(fragments.size() - 1)));
 
         sb.append("]");
@@ -78,10 +78,6 @@ public class JsonUtil {
                 getEntry("id", genderId) + "," +
                         getEntry("name", Gender.getGenderNameFromId(genderId))
         );
-    }
-
-    public static String getEmptyResponse() {
-        return "{}";
     }
 
     public static String encloseContent(String name, String content) {

@@ -81,10 +81,6 @@ public class XmlUtil {
         return encloseContent(listTagName, sb.toString());
     }
 
-    public static String getEmptyResponse() {
-        return "<?xml version=\"1.0\" encoding=\"utf-8\"?><result/>";
-    }
-
     public static String getOpeningTag(String name) {
         return "<?xml version=\"1.0\" encoding=\"utf-8\"?><" + name +
                 " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\">";

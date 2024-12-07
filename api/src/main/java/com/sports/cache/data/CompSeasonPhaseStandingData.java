@@ -3,9 +3,7 @@ package com.sports.cache.data;
 import com.sports.cache.key.CacheDataKey;
 import com.sports.cache.key.CompSeasonPhaseStandingKey;
 import com.sports.cache.util.DataFragmentUtil;
-import com.sports.entity.CompSeasonPhase;
 import com.sports.entity.key.CompSeasonPhaseKey;
-import com.sports.entity.manager.CompSeasonPhaseManager;
 import com.sports.logic.calculation.DbCalculation;
 
 import java.sql.SQLException;
@@ -23,11 +21,10 @@ public class CompSeasonPhaseStandingData extends StandingData {
 
     @Override
     public void fill(Statement stat) throws SQLException {
-        CompSeasonPhaseKey compSeasonPhaseKey = getCompSeasonPhaseKey();
-        CompSeasonPhase compSeasonPhase = new CompSeasonPhaseManager(stat).getCompSeasonPhase(compSeasonPhaseKey);
-
-        if (compSeasonPhase != null && compSeasonPhase.isHasStanding()) {
+        if (isCompSeasonPhaseWithStanding(stat)) {
+            CompSeasonPhaseKey compSeasonPhaseKey = getCompSeasonPhaseKey();
             boolean isDomesticUSA = isDomesticUSA(stat);
+
             new DbCalculation(stat).getParticipantStandingCompSeasonPhase(compSeasonPhaseKey).forEach(x ->
                 standingParticipants.add(
                         new StandingParticipantFragment(compSeasonPhaseKey.getSuperKey(), x, clientId, isDomesticUSA)
