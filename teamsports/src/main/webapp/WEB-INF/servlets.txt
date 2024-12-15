@@ -49,3 +49,6 @@ com.teamsports.servlet.ajax.ProcessManageCompSeasonTeams
 com.teamsports.servlet.ajax.Standing
 com.teamsports.servlet.ajax.MatchListTeam
 com.teamsports.servlet.dispatch.PrepareManageCompSeasonPhaseTeams
+com.teamsports.servlet.ajax.CompSeasonPhaseTeamCorrectionList
+com.teamsports.servlet.html.ManageCompSeasonPhaseTeamCorrection
+com.teamsports.servlet.ajax.ProcessManageCompSeasonPhaseTeamCorrection
