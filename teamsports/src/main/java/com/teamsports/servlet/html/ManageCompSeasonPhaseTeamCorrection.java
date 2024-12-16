@@ -32,8 +32,11 @@ public class ManageCompSeasonPhaseTeamCorrection extends ManageEntity {
     }
 
     @Override
-    protected String getBasicReturnPath(Statement stat, HttpServletRequest req) throws SQLException {
-        return "";
+    protected String getBasicReturnPath(Statement stat, HttpServletRequest req) {
+        int pid = getIntValuedParameterValue(req, "pid");
+        int tid = getIntValuedParameterValue(req, "tid");
+
+        return "CompSeasonPhaseTeamCorrectionPortal?" + compSeasonUrlParameters + "&pid=" + pid + "&tid=" + tid;
     }
 
     @Override

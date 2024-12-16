@@ -23,7 +23,7 @@ public class CompSeasonPhaseTeamCorrectionKey extends SuperKey {
 
     @Override
     public String getWhereClause() {
-        return compSeasonPhaseTeamKey.getWhereClause() + " AND compseasonphasecorrectionid = " +
+        return compSeasonPhaseTeamKey.getWhereClause() + " AND compseasonphaseteamcorrectionid = " +
                 compSeasonPhaseTeamCorrectionId;
     }
 

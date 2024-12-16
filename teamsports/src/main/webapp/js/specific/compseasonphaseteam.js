@@ -18,15 +18,3 @@ function handleSend() {
         document.getElementById('btnSend').style.display = 'none';
     }
 }
-
-function getProcessUrl() {
-    const pc = getValueFromElementByName('pc');
-
-    return '/ProcessManageCompSeasonPhaseTeam?cid=' + cid + '&sid=' + sid + '&pid=' + pid + '&tid=' + tid + '&pc=' + pc;
-}
-
-function checkInput() {
-    const pc = getValueFromElementByName('pc');
-
-    return doCheckAndAlert(!isNaN(pc), 'Points correction must be an integer!');
-}

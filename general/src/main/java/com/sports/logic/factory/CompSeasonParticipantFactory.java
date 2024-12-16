@@ -14,26 +14,25 @@ public abstract class CompSeasonParticipantFactory<PK extends CompSeasonParticip
         PPK extends CompSeasonPhaseParticipantKey,
         P extends Participant,
         CSP extends SuperKeyEntity,
-        CSPP extends SuperKeyEntity,
         MK extends H2HMatchKey,
         M extends H2HMatch,
         MPK extends H2HMatchPartKey,
         MP extends H2HMatchPart,
         MPSK extends H2HMatchPartStatKey,
         MPS extends H2HMatchPartStat> {
-    private CompSeasonPhaseParticipantManager<PK, PPK, CSPP> manager;
+    private CompSeasonPhaseParticipantManager<PK, PPK> manager;
 
-    private CompSeasonPhaseParticipantManager<PK, PPK, CSPP> getCachedManager(Statement stat) {
+    private CompSeasonPhaseParticipantManager<PK, PPK> getCachedManager(Statement stat) {
         if (manager == null)
             manager = getPhaseParticManager(stat);
 
         return manager;
     }
 
-    public abstract H2HObjectFactory<PK, PPK, P, CSP, CSPP, MK, M, MPK, MP, MPSK, MPS> getH2HObjectFactory();
+    public abstract H2HObjectFactory<PK, PPK, P, CSP, MK, M, MPK, MP, MPSK, MPS> getH2HObjectFactory();
     public abstract CompSeasonParticipantManager<PK, CSP> getCompSeasonParticipantManager(Statement stat);
     public abstract ParticipantManager<P> getParticipantManager(Statement stat);
-    public abstract CompSeasonPhaseParticipantManager<PK, PPK, CSPP> getPhaseParticManager(Statement stat);
+    public abstract CompSeasonPhaseParticipantManager<PK, PPK> getPhaseParticManager(Statement stat);
     public abstract PK getCompSeasonParticKey(CompSeasonKey csk, int specifId);
     public abstract PPK getPhaseParticKey(CompSeasonPhaseKey cspk, int specifId);
     public abstract ParticipantType getParticipantType();

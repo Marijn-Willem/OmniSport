@@ -11,7 +11,6 @@ public class ProcessManagePersonMatch extends ProcessManageH2HMatch<PersonMatchK
             ? extends CompSeasonPhaseParticipantKey,
             ? extends Participant,
             ? extends SuperKeyEntity,
-            ? extends SuperKeyEntity,
             PersonMatchKey,
             PersonMatch,
             ? extends H2HMatchPartKey,

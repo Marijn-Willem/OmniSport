@@ -1,6 +1,5 @@
 package com.sports.entity.manager;
 
-import com.sports.entity.SuperKeyEntity;
 import com.sports.entity.key.CompSeasonDoubleKey;
 import com.sports.entity.key.CompSeasonPhaseDoubleKey;
 
@@ -8,8 +7,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
-public class CompSeasonPhaseDoubleManager extends CompSeasonPhaseParticipantManager<CompSeasonDoubleKey,
-        CompSeasonPhaseDoubleKey, SuperKeyEntity> {
+public class CompSeasonPhaseDoubleManager extends CompSeasonPhaseParticipantManager<CompSeasonDoubleKey, CompSeasonPhaseDoubleKey> {
     public CompSeasonPhaseDoubleManager(Statement stat) {
         super(stat);
     }

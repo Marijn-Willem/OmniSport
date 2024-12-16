@@ -19,7 +19,6 @@ public class MatchListParticipantData extends MatchListData {
 			? extends CompSeasonPhaseParticipantKey,
 			? extends Participant,
 			? extends SuperKeyEntity,
-			? extends SuperKeyEntity,
 			MK,
 			M,
 			? extends H2HMatchPartKey,

@@ -6,7 +6,7 @@ import com.sports.entity.manager.*;
 
 import java.sql.Statement;
 
-public class CompSeasonTeamFactory extends CompSeasonParticipantFactory<CompSeasonTeamKey, CompSeasonPhaseTeamKey, Team, CompSeasonTeam, CompSeasonPhaseTeam, TeamMatchKey, TeamMatch, TeamMatchPartKey, TeamMatchPart, H2HMatchPartStatKey, H2HMatchPartStat> {
+public class CompSeasonTeamFactory extends CompSeasonParticipantFactory<CompSeasonTeamKey, CompSeasonPhaseTeamKey, Team, CompSeasonTeam, TeamMatchKey, TeamMatch, TeamMatchPartKey, TeamMatchPart, H2HMatchPartStatKey, H2HMatchPartStat> {
     @Override
     public TeamMatchObjectFactory getH2HObjectFactory() {
         return new TeamMatchObjectFactory();
@@ -23,7 +23,7 @@ public class CompSeasonTeamFactory extends CompSeasonParticipantFactory<CompSeas
     }
 
     @Override
-    public CompSeasonPhaseParticipantManager<CompSeasonTeamKey, CompSeasonPhaseTeamKey, CompSeasonPhaseTeam> getPhaseParticManager(Statement stat) {
+    public CompSeasonPhaseParticipantManager<CompSeasonTeamKey, CompSeasonPhaseTeamKey> getPhaseParticManager(Statement stat) {
         return new CompSeasonPhaseTeamManager(stat);
     }
 

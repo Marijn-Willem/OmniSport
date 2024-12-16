@@ -1,6 +1,6 @@
-const correctionLoader = new ElementLoader('csptcid', function () {
+const correctionLoader = new ElementLoader('selCsptcid', function () {
     return '/CompSeasonPhaseTeamCorrectionList?cid=' + cid + '&sid=' + sid + '&pid=' + pid + '&tid=' + tid;
-}, null);
+}, function () { setElementValueFromInitStateVar('selCsptcid', csptcid); });
 
 function getProcessUrl() {
     const csptcid = getValueFromElementByName('inpUpd');
@@ -14,7 +14,7 @@ function getProcessUrl() {
 function checkInput() {
     const dt = getValueFromElementByName('dt');
 
-    return doCheckAndAlert(testDate(dt), 'Invalid date');
+    return doCheckAndAlert(testDate(dt) || testDateTime(dt), 'Invalid date');
 }
 
 function loadCorrections() {
@@ -22,9 +22,14 @@ function loadCorrections() {
 }
 
 function goToManageCompSeasonPhaseTeamCorrection() {
-    const csptcid = document.getElementById('csptcid').value;
+    const csptcid = document.getElementById('selCsptcid').value;
 
     if (!isEmptyOrNull(csptcid))
         goToUrl('ManageCompSeasonPhaseTeamCorrection', 'cid=' + cid + '&sid=' + sid + '&pid=' + pid +
-            '&tid=' + tid + 'csptcid=' + csptcid);
+            '&tid=' + tid + '&csptcid=' + csptcid);
+}
+
+function goToInsertCompSeasonPhaseTeamCorrection() {
+    goToUrl('ManageCompSeasonPhaseTeamCorrection', 'cid=' + cid + '&sid=' + sid + '&pid=' + pid +
+        '&tid=' + tid + '&md=i');
 }

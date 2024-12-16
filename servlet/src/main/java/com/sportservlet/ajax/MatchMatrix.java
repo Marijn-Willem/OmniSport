@@ -26,7 +26,6 @@ public abstract class MatchMatrix<P extends Participant> extends SuperResponseSe
             ? extends CompSeasonPhaseParticipantKey,
             P,
             ? extends SuperKeyEntity,
-            ? extends SuperKeyEntity,
             ? extends H2HMatchKey,
             ? extends H2HMatch,
             ? extends H2HMatchPartKey,
@@ -37,7 +36,6 @@ public abstract class MatchMatrix<P extends Participant> extends SuperResponseSe
     protected abstract CompSeasonParticipantFactory<? extends CompSeasonParticipantKey,
             ? extends CompSeasonPhaseParticipantKey,
             P,
-            ? extends SuperKeyEntity,
             ? extends SuperKeyEntity,
             ? extends H2HMatchKey,
             ? extends H2HMatch,
@@ -52,8 +50,7 @@ public abstract class MatchMatrix<P extends Participant> extends SuperResponseSe
         cspk = new CompSeasonPhaseKey(compSeasonKey, phaseId);
 
         CompSeasonPhaseParticipantManager<? extends CompSeasonParticipantKey,
-                ? extends CompSeasonPhaseParticipantKey,
-                ? extends SuperKeyEntity> csppm = factory.getPhaseParticManager(stat);
+                ? extends CompSeasonPhaseParticipantKey> csppm = factory.getPhaseParticManager(stat);
         ParticipantManager<P> pm = factory.getParticipantManager(stat);
 
         List<Integer> particIds = csppm.getParticipantsInCompSeasonPhases(Collections.singletonList(cspk));

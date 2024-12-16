@@ -10,7 +10,6 @@ public class PersonStandingProcessor extends StandingProcessor<CompSeasonPersonS
         CompSeasonPhasePersonSportKey,
         PersonSport,
         SuperKeyEntity,
-        SuperKeyEntity,
         PersonMatchKey,
         PersonMatch,
         PersonMatchPartKey,

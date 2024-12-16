@@ -25,11 +25,9 @@ com.teamsports.servlet.html.MatchOverview
 com.sportservlet.ajax.ProcessManageCompSeasonTeam
 com.teamsports.servlet.html.CompSeasonTeamPortal
 com.sportservlet.ajax.AddParticipantsToCompSeasonPhase
-com.teamsports.servlet.ajax.ProcessManageCompSeasonPhaseTeam
 com.teamsports.servlet.html.ManageCompSeasonDivisions
 com.teamsports.servlet.html.CompSeasonPhaseTeamList
 com.teamsports.servlet.html.KnockoutMain
-com.teamsports.servlet.html.ManageCompSeasonPhaseTeam
 com.sportservlet.ajax.CreateKnockoutMatches
 com.teamsports.servlet.html.TeamMatchActionImport
 com.teamsports.servlet.html.CompSeasonPhasePortal
@@ -52,3 +50,4 @@ com.teamsports.servlet.dispatch.PrepareManageCompSeasonPhaseTeams
 com.teamsports.servlet.ajax.CompSeasonPhaseTeamCorrectionList
 com.teamsports.servlet.html.ManageCompSeasonPhaseTeamCorrection
 com.teamsports.servlet.ajax.ProcessManageCompSeasonPhaseTeamCorrection
+com.teamsports.servlet.html.CompSeasonPhaseTeamCorrectionPortal

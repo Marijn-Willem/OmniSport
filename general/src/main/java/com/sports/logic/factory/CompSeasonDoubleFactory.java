@@ -7,7 +7,7 @@ import com.sports.entity.manager.*;
 
 import java.sql.Statement;
 
-public class CompSeasonDoubleFactory extends CompSeasonParticipantFactory<CompSeasonDoubleKey, CompSeasonPhaseDoubleKey, Double, SuperKeyEntity, SuperKeyEntity, DoublesMatchKey, DoublesMatch, DoublesMatchPartKey, DoublesMatchPart, DoublesMatchPartStatKey, DoublesMatchPartStat> {
+public class CompSeasonDoubleFactory extends CompSeasonParticipantFactory<CompSeasonDoubleKey, CompSeasonPhaseDoubleKey, Double, SuperKeyEntity, DoublesMatchKey, DoublesMatch, DoublesMatchPartKey, DoublesMatchPart, DoublesMatchPartStatKey, DoublesMatchPartStat> {
     @Override
     public DoublesMatchObjectFactory getH2HObjectFactory() {
         return new DoublesMatchObjectFactory();
@@ -24,7 +24,7 @@ public class CompSeasonDoubleFactory extends CompSeasonParticipantFactory<CompSe
     }
 
     @Override
-    public CompSeasonPhaseParticipantManager<CompSeasonDoubleKey, CompSeasonPhaseDoubleKey, SuperKeyEntity> getPhaseParticManager(Statement stat) {
+    public CompSeasonPhaseParticipantManager<CompSeasonDoubleKey, CompSeasonPhaseDoubleKey> getPhaseParticManager(Statement stat) {
         return new CompSeasonPhaseDoubleManager(stat);
     }
 

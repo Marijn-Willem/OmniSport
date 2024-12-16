@@ -14,7 +14,6 @@ class DoubleDedoubler extends CompSeasonParticipantDedoubler<CompSeasonDoubleKey
         CompSeasonPhaseDoubleKey,
         Double,
         SuperKeyEntity,
-        SuperKeyEntity,
         DoublesMatchKey,
         DoublesMatch,
         DoublesMatchPartKey,

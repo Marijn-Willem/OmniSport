@@ -13,7 +13,6 @@ public class DoublesMatchObjectFactory extends H2HObjectFactory<CompSeasonDouble
         CompSeasonPhaseDoubleKey,
         Double,
         SuperKeyEntity,
-        SuperKeyEntity,
         DoublesMatchKey,
         DoublesMatch,
         DoublesMatchPartKey,

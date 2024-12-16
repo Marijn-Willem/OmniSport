@@ -13,13 +13,11 @@ import java.sql.Statement;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 public class TeamStandingProcessor extends StandingProcessor<CompSeasonTeamKey,
         CompSeasonPhaseTeamKey,
         Team,
         CompSeasonTeam,
-        CompSeasonPhaseTeam,
         TeamMatchKey,
         TeamMatch,
         TeamMatchPartKey,
@@ -41,13 +39,6 @@ public class TeamStandingProcessor extends StandingProcessor<CompSeasonTeamKey,
     @Override
     protected void processSpecificSnapshot(int curMatchSort) throws SQLException {
         if (!isTeamsInitialized) {
-            List<CompSeasonPhaseTeamKey> keys = particMap.keySet().stream().map(x -> new CompSeasonPhaseTeamKey(cspk, x))
-                    .collect(Collectors.toList());
-
-            List<CompSeasonPhaseTeam> phaseTeams = new CompSeasonPhaseTeamManager(stat).getCompSeasonPhaseTeams(keys);
-
-            phaseTeams.forEach(x -> particMap.get(x.getTeamId()).addPoints(x.getPointsCorrection()));
-
             CompSeasonPhase compSeasonPhase = new CompSeasonPhaseManager(stat).getCompSeasonPhase(cspk);
 
             if (compSeasonPhase.isHasDivisionStandings())

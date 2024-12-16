@@ -41,7 +41,7 @@ public class CompSeasonPhaseTeamList extends SuperHtmlServlet {
         Writer w = res.getWriter();
 
         for (Team team : teamList) {
-            String href = "ManageCompSeasonPhaseTeam?" + compSeasonUrlParameters + "&pid=" + pid + "&tid=" + team.getId();
+            String href = "CompSeasonPhaseTeamCorrectionPortal?" + compSeasonUrlParameters + "&pid=" + pid + "&tid=" + team.getId();
             writeLink(href, team.getDescription(), w);
         }
     }

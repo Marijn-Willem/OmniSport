@@ -13,9 +13,8 @@ import java.util.Collections;
 import java.util.List;
 
 public abstract class CompSeasonPhaseParticipantManager<R extends CompSeasonParticipantKey,
-        S extends CompSeasonPhaseParticipantKey,
-        T extends SuperKeyEntity>
-        extends SuperKeySuperManager<S, T> {
+        S extends CompSeasonPhaseParticipantKey>
+        extends SuperKeySuperManager<S, SuperKeyEntity> {
     abstract String getSpecificIdColumn();
 
     CompSeasonPhaseParticipantManager(Statement stat) {
@@ -38,7 +37,7 @@ public abstract class CompSeasonPhaseParticipantManager<R extends CompSeasonPart
     }
 
     @Override
-    T getInstanceFromResultSet(ResultSet rs) throws SQLException {
+    SuperKeyEntity getInstanceFromResultSet(ResultSet rs) throws SQLException {
         return null;
     }
 
@@ -69,17 +68,8 @@ public abstract class CompSeasonPhaseParticipantManager<R extends CompSeasonPart
     public List<S> getPhaseParticipants(List<R> cspKeys) throws SQLException {
         List<S> phaseParticipants = new ArrayList<>();
 
-        if (cspKeys.size() > 0)
+        if (!cspKeys.isEmpty())
             phaseParticipants = getSuperKeyList(getConditionsKeyList(cspKeys));
-
-        return phaseParticipants;
-    }
-
-    public List<S> getPhaseParticipantsInPhases(List<CompSeasonPhaseKey> phaseKeys) throws SQLException {
-        List<S> phaseParticipants = new ArrayList<>();
-
-        if (phaseKeys.size() > 0)
-            phaseParticipants = getSuperKeyList(getConditionsKeyList(phaseKeys));
 
         return phaseParticipants;
     }

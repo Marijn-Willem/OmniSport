@@ -44,7 +44,6 @@ public abstract class ManageParticipantsCompSeasonPhase extends SuperHtmlServlet
                 ? extends CompSeasonPhaseParticipantKey,
                 ? extends Participant,
                 ? extends SuperKeyEntity,
-                ? extends SuperKeyEntity,
                 ? extends H2HMatchKey,
                 ? extends H2HMatch,
                 ? extends H2HMatchPartKey,
@@ -56,8 +55,7 @@ public abstract class ManageParticipantsCompSeasonPhase extends SuperHtmlServlet
         CompSeasonParticipantManager<? extends CompSeasonParticipantKey, ? extends SuperKeyEntity> cspm =
                 factory.getCompSeasonParticipantManager(stat);
         CompSeasonPhaseParticipantManager<? extends CompSeasonParticipantKey,
-                ? extends CompSeasonPhaseParticipantKey,
-                ? extends SuperKeyEntity> csppm = factory.getPhaseParticManager(stat);
+                ? extends CompSeasonPhaseParticipantKey> csppm = factory.getPhaseParticManager(stat);
 
         Set<Integer> idsInPhase = new HashSet<>() {{
             if (csp != null)

@@ -12,7 +12,6 @@ public abstract class H2HObjectFactory<PK extends CompSeasonParticipantKey,
         PPK extends CompSeasonPhaseParticipantKey,
         P extends Participant,
         CSP extends SuperKeyEntity,
-        CSPP extends SuperKeyEntity,
         MK extends H2HMatchKey,
         M extends H2HMatch,
         MPK extends H2HMatchPartKey,
@@ -31,7 +30,7 @@ public abstract class H2HObjectFactory<PK extends CompSeasonParticipantKey,
     public abstract H2HMatchManager<MK, M> getManager(Statement stat);
     public abstract MK getKey(CompSeasonKey compSeasonKey, int specifId);
     public abstract M getMatch();
-    public abstract StandingProcessor<PK, PPK, P, CSP, CSPP, MK, M, MPK, MP, MPSK, MPS> getStandingProcessor(Statement stat, CompSeasonPhaseKey cspk) throws SQLException;
+    public abstract StandingProcessor<PK, PPK, P, CSP, MK, M, MPK, MP, MPSK, MPS> getStandingProcessor(Statement stat, CompSeasonPhaseKey cspk) throws SQLException;
     public abstract H2HPartObjectFactory<MPK, MP, MPSK, MPS> getPartObjectFactory();
     public abstract String getProcessManagePath();
 

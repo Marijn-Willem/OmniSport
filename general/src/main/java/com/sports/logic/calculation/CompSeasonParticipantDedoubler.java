@@ -17,7 +17,6 @@ abstract class CompSeasonParticipantDedoubler<PK extends CompSeasonParticipantKe
         PPK extends CompSeasonPhaseParticipantKey,
         P extends Participant,
         CSP extends SuperKeyEntity,
-        CSPP extends SuperKeyEntity,
         MK extends H2HMatchKey,
         M extends H2HMatch,
         MPK extends H2HMatchPartKey,
@@ -27,7 +26,7 @@ abstract class CompSeasonParticipantDedoubler<PK extends CompSeasonParticipantKe
     Statement stat;
     List<PK> cspKeysFrom;
 
-    abstract CompSeasonParticipantFactory<PK, PPK, P, CSP, CSPP, MK, M, MPK, MP, MPSK, MPS> getFactory();
+    abstract CompSeasonParticipantFactory<PK, PPK, P, CSP, MK, M, MPK, MP, MPSK, MPS> getFactory();
 
     CompSeasonParticipantDedoubler(Statement stat) {
         this.stat = stat;
@@ -38,11 +37,11 @@ abstract class CompSeasonParticipantDedoubler<PK extends CompSeasonParticipantKe
     }
 
     public void dedouble(int pFromId, int pToId) throws SQLException {
-        CompSeasonParticipantFactory<PK, PPK, P, CSP, CSPP, MK, M, MPK, MP, MPSK, MPS> factory = getFactory();
-        H2HObjectFactory<PK, PPK, P, CSP, CSPP, MK, M, MPK, MP, MPSK, MPS> h2hObjectFactory = factory.getH2HObjectFactory();
+        CompSeasonParticipantFactory<PK, PPK, P, CSP, MK, M, MPK, MP, MPSK, MPS> factory = getFactory();
+        H2HObjectFactory<PK, PPK, P, CSP, MK, M, MPK, MP, MPSK, MPS> h2hObjectFactory = factory.getH2HObjectFactory();
 
         CompSeasonParticipantManager<PK, CSP> cspm = factory.getCompSeasonParticipantManager(stat);
-        CompSeasonPhaseParticipantManager<PK, PPK, CSPP> csppm = factory.getPhaseParticManager(stat);
+        CompSeasonPhaseParticipantManager<PK, PPK> csppm = factory.getPhaseParticManager(stat);
         H2HMatchManager<MK, M> mm = h2hObjectFactory.getManager(stat);
         H2HMatchPartStatManager<MPSK, MPS> mpsm = h2hObjectFactory.getPartObjectFactory().getPartStatObjectFactory().getStatManager(stat);
 

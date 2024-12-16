@@ -41,7 +41,6 @@ public class H2HMatchPartFragment extends WritableFragment {
                 ? extends CompSeasonPhaseParticipantKey,
                 ? extends Participant,
                 ? extends SuperKeyEntity,
-                ? extends SuperKeyEntity,
                 ? extends H2HMatchKey,
                 ? extends H2HMatch,
                 ? extends com.sports.entity.key.H2HMatchPartKey,

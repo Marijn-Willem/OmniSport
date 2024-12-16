@@ -19,7 +19,6 @@ class PersonSportDedoubler extends CompSeasonParticipantDedoubler<CompSeasonPers
         CompSeasonPhasePersonSportKey,
         PersonSport,
         SuperKeyEntity,
-        SuperKeyEntity,
         PersonMatchKey,
         PersonMatch,
         PersonMatchPartKey,

@@ -11,7 +11,6 @@ public class DoubleStandingProcessor extends StandingProcessor<CompSeasonDoubleK
         CompSeasonPhaseDoubleKey,
         Double,
         SuperKeyEntity,
-        SuperKeyEntity,
         DoublesMatchKey,
         DoublesMatch,
         DoublesMatchPartKey,

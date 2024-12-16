@@ -12,6 +12,7 @@ public class CompSeasonPhaseTeamCorrectionPortal extends SuperHtmlServlet {
     protected void processScriptTag(Statement stat, HttpServletRequest req, Writer w) throws IOException {
         writeCompSeasonPhaseVarsInScriptTag(req, w);
         writeVarInScriptTag("tid", getIntValuedParameterValue(req, "tid"), w);
+        writeInitStateVarInScriptTag("csptcid", req, w);
     }
 
     @Override
@@ -35,8 +36,8 @@ public class CompSeasonPhaseTeamCorrectionPortal extends SuperHtmlServlet {
     protected void processHtmlBody(Statement stat, HttpServletRequest req, HttpServletResponse res) throws IOException {
         Writer w = res.getWriter();
 
-        w.append("<select id=\"csptcid\">\n</select>\n");
-        w.append("<br/><input type=\"button\" onclick=\"goToManageCompSeasonPhaseTeamCorrection();\" value=\"Manage Correction\" />\n");
-        w.append("<br/><input type=\"button\" onclick=\"goToInsertCompSeasonPhaseTeamCorrection();\" value=\"Insert Correction\" />\n");
+        w.append("<select id=\"selCsptcid\">\n</select><br/>\n");
+        w.append("<input type=\"button\" onclick=\"goToManageCompSeasonPhaseTeamCorrection();\" value=\"Manage Correction\" /><br/>\n");
+        w.append("<input type=\"button\" onclick=\"goToInsertCompSeasonPhaseTeamCorrection();\" value=\"Insert Correction\" /><br/>\n");
     }
 }

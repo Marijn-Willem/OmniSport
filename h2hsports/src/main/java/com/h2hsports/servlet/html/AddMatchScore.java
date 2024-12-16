@@ -27,7 +27,6 @@ public class AddMatchScore extends SuperHtmlServlet {
             ? extends CompSeasonPhaseParticipantKey,
             ? extends Participant,
             ? extends SuperKeyEntity,
-            ? extends SuperKeyEntity,
             ? extends H2HMatchKey,
             ? extends H2HMatch,
             ? extends H2HMatchPartKey,
@@ -38,7 +37,6 @@ public class AddMatchScore extends SuperHtmlServlet {
     private H2HObjectFactory<? extends CompSeasonParticipantKey,
             ? extends CompSeasonPhaseParticipantKey,
             ? extends Participant,
-            ? extends SuperKeyEntity,
             ? extends SuperKeyEntity,
             ? extends H2HMatchKey,
             ? extends H2HMatch,
@@ -139,8 +137,7 @@ public class AddMatchScore extends SuperHtmlServlet {
 
     private Map<Integer, ? extends Participant> getParticipantMap(Statement stat) throws SQLException {
         CompSeasonPhaseParticipantManager<? extends CompSeasonParticipantKey,
-                ? extends CompSeasonPhaseParticipantKey,
-                ? extends SuperKeyEntity> csppm = factory.getPhaseParticManager(stat);
+                ? extends CompSeasonPhaseParticipantKey> csppm = factory.getPhaseParticManager(stat);
         ParticipantManager<? extends Participant> pm = factory.getParticipantManager(stat);
 
         List<Integer> particIds = csppm.getParticipantIds(compSeasonPhaseKey);

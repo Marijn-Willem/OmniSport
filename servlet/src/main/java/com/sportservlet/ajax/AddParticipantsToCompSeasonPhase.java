@@ -41,7 +41,6 @@ public class AddParticipantsToCompSeasonPhase extends SuperResponseServlet {
                     ? extends CompSeasonPhaseParticipantKey,
                     ? extends Participant,
                     ? extends SuperKeyEntity,
-                    ? extends SuperKeyEntity,
                     ? extends H2HMatchKey,
                     ? extends H2HMatch,
                     ? extends H2HMatchPartKey,
@@ -50,8 +49,7 @@ public class AddParticipantsToCompSeasonPhase extends SuperResponseServlet {
                     ? extends H2HMatchPartStat> factory = new DbCalculation(stat).getCompSeasonParticipantFactory(competitionId);
 
             CompSeasonPhaseParticipantManager<? extends CompSeasonParticipantKey,
-                    ? extends CompSeasonPhaseParticipantKey,
-                    ? extends SuperKeyEntity> csppm = factory.getPhaseParticManager(stat);
+                    ? extends CompSeasonPhaseParticipantKey> csppm = factory.getPhaseParticManager(stat);
             List<Integer> curPartIds = csppm.getParticipantIds(cspk);
 
             List<Integer> partIdsToDel = Util.getElementsLeftNotInRight(curPartIds, partIds);

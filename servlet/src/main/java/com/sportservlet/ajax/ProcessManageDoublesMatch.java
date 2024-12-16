@@ -11,7 +11,6 @@ public class ProcessManageDoublesMatch extends ProcessManageH2HMatch<DoublesMatc
             ? extends CompSeasonPhaseParticipantKey,
             ? extends Participant,
             ? extends SuperKeyEntity,
-            ? extends SuperKeyEntity,
             DoublesMatchKey,
             DoublesMatch,
             ? extends H2HMatchPartKey,

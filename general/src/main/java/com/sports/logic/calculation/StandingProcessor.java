@@ -22,14 +22,13 @@ public abstract class StandingProcessor<PK extends CompSeasonParticipantKey,
         PPK extends CompSeasonPhaseParticipantKey,
         P extends Participant,
         CSP extends SuperKeyEntity,
-        CSPP extends SuperKeyEntity,
         MK extends H2HMatchKey,
         M extends H2HMatch,
         MPK extends H2HMatchPartKey,
         MP extends H2HMatchPart,
         MPSK extends H2HMatchPartStatKey,
         MPS extends H2HMatchPartStat> {
-    private final CompSeasonParticipantFactory<PK, PPK, P, CSP, CSPP, MK, M, MPK, MP, MPSK, MPS> factory;
+    private final CompSeasonParticipantFactory<PK, PPK, P, CSP, MK, M, MPK, MP, MPSK, MPS> factory;
     private final SnapshotCreationChecker singleStandingChecker = new SnapshotCreationChecker() {
         @Override
         boolean checkCreate(M m1, M m2) {
@@ -58,7 +57,7 @@ public abstract class StandingProcessor<PK extends CompSeasonParticipantKey,
     protected Map<Integer, P> particMap;
     protected List<M> h2HMatches;
 
-    protected abstract CompSeasonParticipantFactory<PK, PPK, P, CSP, CSPP, MK, M, MPK, MP, MPSK, MPS> getFactory();
+    protected abstract CompSeasonParticipantFactory<PK, PPK, P, CSP, MK, M, MPK, MP, MPSK, MPS> getFactory();
 
     StandingProcessor(Statement stat, CompSeasonPhaseKey cspk) {
         this.stat = stat;
@@ -92,7 +91,7 @@ public abstract class StandingProcessor<PK extends CompSeasonParticipantKey,
     }
 
     protected void setParticipantsAndMatches() throws SQLException {
-        CompSeasonPhaseParticipantManager<PK, PPK, CSPP> csppm = factory.getPhaseParticManager(stat);
+        CompSeasonPhaseParticipantManager<PK, PPK> csppm = factory.getPhaseParticManager(stat);
         ParticipantManager<P> pm = factory.getParticipantManager(stat);
         H2HMatchManager<MK, M> h2hMM = factory.getH2HObjectFactory().getManager(stat);
 
