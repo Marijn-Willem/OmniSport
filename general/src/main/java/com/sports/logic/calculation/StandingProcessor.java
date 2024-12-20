@@ -78,7 +78,7 @@ public abstract class StandingProcessor<PK extends CompSeasonParticipantKey,
         return new ParticipantStanding<>();
     }
 
-    protected void processSpecificSnapshot(int curMatchSort) throws SQLException {}
+    protected void processSpecificSnapshot(int curMatchSort) {}
 
     public StandingContext<P> getStanding() throws SQLException {
         List<StandingContext<P>> standingSnapshots = getStandingSnapshots(singleStandingChecker);

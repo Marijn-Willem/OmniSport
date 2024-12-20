@@ -72,6 +72,8 @@ public class RugbyStandingProcessor extends TeamStandingProcessor {
 
     @Override
     protected void processSpecificSnapshot(int curMatchSort) {
+        super.processSpecificSnapshot(curMatchSort);
+
         int triesHome = 0;
         int triesAway = 0;
 

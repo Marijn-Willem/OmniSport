@@ -1,6 +1,7 @@
 package com.sports.logic.calculation;
 
 import com.sports.entity.*;
+import com.sports.entity.comparator.CompSeasonPhaseTeamCorrectionDate;
 import com.sports.entity.comparator.ParticipantStandingUSA;
 import com.sports.entity.comparator.SuperComparator;
 import com.sports.entity.key.*;
@@ -10,6 +11,8 @@ import com.sports.logic.util.Util;
 
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -28,8 +31,7 @@ public class TeamStandingProcessor extends StandingProcessor<CompSeasonTeamKey,
 
     private final Map<Integer, CompSeasonTeam> compSeasonTeamMap = new HashMap<>();
     private final Map<Integer, CompDivision> compDivisionMap = new HashMap<>();
-
-    private boolean isTeamsInitialized;
+    private final Map<Integer, List<CompSeasonPhaseTeamCorrection>> teamCorrectionMap = new HashMap<>();
 
     public TeamStandingProcessor(Statement stat, CompSeasonPhaseKey cspk, int sportId) {
         super(stat, cspk);
@@ -37,15 +39,21 @@ public class TeamStandingProcessor extends StandingProcessor<CompSeasonTeamKey,
     }
 
     @Override
-    protected void processSpecificSnapshot(int curMatchSort) throws SQLException {
-        if (!isTeamsInitialized) {
-            CompSeasonPhase compSeasonPhase = new CompSeasonPhaseManager(stat).getCompSeasonPhase(cspk);
+    protected void processSpecificSnapshot(int curMatchSort) {
+        LocalDateTime matchDate = h2HMatches.get(curMatchSort).getDate();
 
-            if (compSeasonPhase.isHasDivisionStandings())
-                new DbCalculation(stat).addCompDivisionsToTeams(particMap.values().stream().toList(), cspk.getSuperKey());
+        if (matchDate != null)
+            for (Map.Entry<Integer, List<CompSeasonPhaseTeamCorrection>> me : teamCorrectionMap.entrySet()) {
+                List<CompSeasonPhaseTeamCorrection> correctionsUsed = new ArrayList<>();
+                me.getValue().forEach(x -> {
+                    if (!x.getDate().isAfter(matchDate)) {
+                        particMap.get(me.getKey()).addPoints(x.getPointsCorrection());
+                        correctionsUsed.add(x);
+                    }
+                });
 
-            isTeamsInitialized = true;
-        }
+                correctionsUsed.forEach(x -> me.getValue().remove(x));
+            }
     }
 
     @Override
@@ -62,6 +70,25 @@ public class TeamStandingProcessor extends StandingProcessor<CompSeasonTeamKey,
                 .toList();
         new CompDivisionManager(stat).getCompDivisionList(compDivisionKeys).forEach(x ->
                 compDivisionMap.put(x.getCompDivisionId(), x));
+
+        CompSeasonPhase compSeasonPhase = new CompSeasonPhaseManager(stat).getCompSeasonPhase(cspk);
+
+        if (compSeasonPhase.isHasDivisionStandings())
+            new DbCalculation(stat).addCompDivisionsToTeams(particMap.values().stream().toList(), cspk.getSuperKey());
+
+        List<CompSeasonPhaseTeamCorrection> correctionList = new CompSeasonPhaseTeamCorrectionManager(stat)
+                .getCorrectionsForCompSeasonPhase(cspk);
+
+        correctionList.sort(new CompSeasonPhaseTeamCorrectionDate());
+
+        correctionList.forEach(x -> {
+            int teamId = x.getTeamId();
+
+            if (!teamCorrectionMap.containsKey(teamId))
+                teamCorrectionMap.put(teamId, new ArrayList<>());
+
+            teamCorrectionMap.get(teamId).add(x);
+        });
     }
 
     @Override
