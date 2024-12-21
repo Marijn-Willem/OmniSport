@@ -12,10 +12,7 @@ import com.sports.logic.util.Util;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class TeamStandingProcessor extends StandingProcessor<CompSeasonTeamKey,
         CompSeasonPhaseTeamKey,
@@ -31,7 +28,7 @@ public class TeamStandingProcessor extends StandingProcessor<CompSeasonTeamKey,
 
     private final Map<Integer, CompSeasonTeam> compSeasonTeamMap = new HashMap<>();
     private final Map<Integer, CompDivision> compDivisionMap = new HashMap<>();
-    private final Map<Integer, List<CompSeasonPhaseTeamCorrection>> teamCorrectionMap = new HashMap<>();
+    private final Map<Integer, Queue<CompSeasonPhaseTeamCorrection>> teamCorrectionMap = new HashMap<>();
 
     public TeamStandingProcessor(Statement stat, CompSeasonPhaseKey cspk, int sportId) {
         super(stat, cspk);
@@ -43,16 +40,13 @@ public class TeamStandingProcessor extends StandingProcessor<CompSeasonTeamKey,
         LocalDateTime matchDate = h2HMatches.get(curMatchSort).getDate();
 
         if (matchDate != null)
-            for (Map.Entry<Integer, List<CompSeasonPhaseTeamCorrection>> me : teamCorrectionMap.entrySet()) {
-                List<CompSeasonPhaseTeamCorrection> correctionsUsed = new ArrayList<>();
-                me.getValue().forEach(x -> {
-                    if (!x.getDate().isAfter(matchDate)) {
-                        particMap.get(me.getKey()).addPoints(x.getPointsCorrection());
-                        correctionsUsed.add(x);
-                    }
-                });
+            for (Map.Entry<Integer, Queue<CompSeasonPhaseTeamCorrection>> me : teamCorrectionMap.entrySet()) {
+                Queue<CompSeasonPhaseTeamCorrection> queue = me.getValue();
 
-                correctionsUsed.forEach(x -> me.getValue().remove(x));
+                while (!queue.isEmpty() && !queue.peek().getDate().isAfter(matchDate)) {
+                    CompSeasonPhaseTeamCorrection csptc = queue.remove();
+                    particMap.get(me.getKey()).addPoints(csptc.getPointsCorrection());
+                }
             }
     }
 
@@ -85,7 +79,7 @@ public class TeamStandingProcessor extends StandingProcessor<CompSeasonTeamKey,
             int teamId = x.getTeamId();
 
             if (!teamCorrectionMap.containsKey(teamId))
-                teamCorrectionMap.put(teamId, new ArrayList<>());
+                teamCorrectionMap.put(teamId, new LinkedList<>());
 
             teamCorrectionMap.get(teamId).add(x);
         });
