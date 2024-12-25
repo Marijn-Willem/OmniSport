@@ -1,6 +1,6 @@
-const clientListLoader = new ElementLoader('cnid', function () {
+const clientListLoader = new ElementLoader('selCnid', function () {
     return '/ClientList';
-}, null);
+}, function () { setElementValueFromInitStateVar('selCnid', cnid); });
 
 function getProcessUrl() {
     const cnid = getValueFromElementByName('inpUpd');
@@ -21,12 +21,12 @@ function loadClientList() {
 }
 
 function goToManageClient() {
-    const cnid = document.getElementById('cnid').value;
+    const cnid = document.getElementById('selCnid').value;
 
-    if (cnid !== null)
-        window.location.href = path + '/ManageClient?cnid=' + cnid;
+    if (!isEmptyOrNull(cnid))
+        goToUrl('ManageClient', 'cnid=' + cnid);
 }
 
 function goToAddClient() {
-    window.location.href = path + '/ManageClient?md=i';
+    goToUrl('ManageClient', 'md=i');
 }
