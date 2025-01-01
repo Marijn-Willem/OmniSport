@@ -14,17 +14,17 @@ import java.util.*;
 
 public abstract class SuperKeySuperManager<S extends SuperKey, T extends SuperKeyEntity> extends SuperManager<T> {
     abstract S getSuperKeyFromResultSet(ResultSet rs) throws SQLException;
-    private SuperKeySuperManager superManager;
+    private SuperKeySuperManager<? extends SuperKey, ? extends SuperKeyEntity> superManager;
 
     public SuperKeySuperManager(Statement stat) {
         super(stat);
     }
 
-    SuperKeySuperManager getSuperManager() {
+    SuperKeySuperManager<? extends SuperKey, ? extends SuperKeyEntity> getSuperManager() {
         return null;
     }
 
-    SuperKeySuperManager getCachedSuperManager() {
+    SuperKeySuperManager<? extends SuperKey, ? extends SuperKeyEntity> getCachedSuperManager() {
         if (superManager == null)
             superManager = getSuperManager();
 
@@ -57,12 +57,12 @@ public abstract class SuperKeySuperManager<S extends SuperKey, T extends SuperKe
     }
 
     <K extends SuperKey> void delete(Collection<K> superKeys) throws SQLException {
-        if (superKeys.size() > 0)
+        if (!superKeys.isEmpty())
             delete(getConditionsKeyList(superKeys));
     }
 
     void insert(Map<S, T> insertMap) throws SQLException {
-        if (insertMap.size() > 0) {
+        if (!insertMap.isEmpty()) {
             String calNowString = QueryUtil.convertDateTimeToDbString(LocalDateTime.now());
 
             String[] selects = new String[insertMap.size()];
@@ -107,7 +107,7 @@ public abstract class SuperKeySuperManager<S extends SuperKey, T extends SuperKe
     <K extends SuperKey> Map<S, T> getSuperKeyEntityMapFromSuperKeys(List<K> superKeys) throws SQLException {
         Map<S, T> map = new HashMap<>();
 
-        if (superKeys.size() > 0)
+        if (!superKeys.isEmpty())
             map = getSuperKeyEntityMap(getConditionsKeyList(superKeys));
 
         return map;
@@ -136,7 +136,7 @@ public abstract class SuperKeySuperManager<S extends SuperKey, T extends SuperKe
     <K extends EntityKeyWithParent> List<T> getChildEntities(List<K> keyList, String whereCondition) throws SQLException {
         List<T> entityList = new ArrayList<>();
 
-        if (keyList.size() > 0) {
+        if (!keyList.isEmpty()) {
             String whereClause = "(" + getConditionsKeyListParent(keyList) + ")";
             whereClause = Util.concatStringsWithDelimiter(whereClause, whereCondition, " AND ");
 

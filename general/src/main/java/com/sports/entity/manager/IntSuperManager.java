@@ -58,7 +58,7 @@ public abstract class IntSuperManager<T extends IntEntity> extends SuperManager<
     }
 
     void update(Map<Integer, ? extends Entity> map) throws SQLException {
-        if (map.size() > 0) {
+        if (!map.isEmpty()) {
             String calNowString = QueryUtil.convertDateTimeToDbString(LocalDateTime.now());
 
             for (Map.Entry<Integer, ? extends Entity> me : map.entrySet())
@@ -75,7 +75,7 @@ public abstract class IntSuperManager<T extends IntEntity> extends SuperManager<
     void processAfterUpdate(int id) throws SQLException { }
 
     void insertIdEntities(List<T> entities, int idStart) throws SQLException {
-        if (entities.size() > 0) {
+        if (!entities.isEmpty()) {
             String calNowString = QueryUtil.convertDateTimeToDbString(LocalDateTime.now());
 
             String[] selects = new String[entities.size()];
@@ -109,9 +109,9 @@ public abstract class IntSuperManager<T extends IntEntity> extends SuperManager<
     }
 
     List<T> getEntityListFromIds(Collection<Integer> idList) throws SQLException {
-        List<T> entityList = new ArrayList<T>();
+        List<T> entityList = new ArrayList<>();
 
-        if (idList.size() > 0)
+        if (!idList.isEmpty())
             entityList = getEntityList("id IN (" + getCommaSepIntList(idList) + ")");
 
         return entityList;
@@ -120,7 +120,7 @@ public abstract class IntSuperManager<T extends IntEntity> extends SuperManager<
     Map<Integer, T> getEntityMapFromIds(List<Integer> idList) throws SQLException {
         Map<Integer, T> entityMap = new HashMap<>();
 
-        if (idList.size() > 0) {
+        if (!idList.isEmpty()) {
             ResultSet rs = stat.executeQuery(getGenericQuery("id IN (" + getCommaSepIntList(idList) + ")"));
 
             while (rs.next())

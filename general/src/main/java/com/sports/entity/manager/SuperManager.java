@@ -47,7 +47,7 @@ public abstract class SuperManager<T extends Entity> {
     }
 
     void insert(List<? extends SuperKey> lst) throws SQLException {
-        if (lst.size() > 0) {
+        if (!lst.isEmpty()) {
             String calNowString = QueryUtil.convertDateTimeToDbString(LocalDateTime.now());
 
             String[] queryParts = new String[lst.size()];
@@ -63,7 +63,7 @@ public abstract class SuperManager<T extends Entity> {
     }
 
     void updateEntityMap(Map<? extends SuperKey, ? extends Entity> map) throws SQLException {
-        if (map.size() > 0) {
+        if (!map.isEmpty()) {
             String calNowString = QueryUtil.convertDateTimeToDbString(LocalDateTime.now());
 
             for (Map.Entry<? extends SuperKey, ? extends Entity> me : map.entrySet())
@@ -140,42 +140,59 @@ public abstract class SuperManager<T extends Entity> {
     }
 
     String getCommaSepStringList(List<String> strList) {
-        String commaSepList = "";
+        StringBuilder commaSepList = new StringBuilder();
 
-        for (String str : strList)
-            commaSepList += ("".equals(commaSepList) ? "" : ", ") + QueryUtil.convertStringToDbValue(str);
+        for (String str : strList) {
+            commaSepList.append(commaSepList.isEmpty() ? "" : ", ");
+            commaSepList.append(QueryUtil.convertStringToDbValue(str));
+        }
 
-        return commaSepList;
+        return commaSepList.toString();
     }
 
     String getConditionsKeyList(Collection<? extends SuperKey> keyList) {
-        String conditions = "";
+        StringBuilder conditions = new StringBuilder();
 
-        for (SuperKey key : keyList)
-            conditions += (!"".equals(conditions) ? " OR " : "") +
-                    "(" + key.getWhereClause() + ")";
+        for (SuperKey key : keyList) {
+            if (!conditions.isEmpty())
+                conditions.append(" OR ");
 
-        return conditions;
+            conditions.append("(");
+            conditions.append(key.getWhereClause());
+            conditions.append(")");
+        }
+
+        return conditions.toString();
     }
 
     String getConditionsKeyListParent(List<? extends EntityKeyWithParent> keyWithParents) {
-        String conditions = "";
+        StringBuilder conditions = new StringBuilder();
 
-        for (EntityKeyWithParent keyWithParent : keyWithParents)
-            conditions += (!"".equals(conditions) ? " OR " : "") +
-                    "(" + keyWithParent.getWhereClauseParent() + ")";
+        for (EntityKeyWithParent keyWithParent : keyWithParents) {
+            if (!conditions.isEmpty())
+                conditions.append(" OR ");
 
-        return conditions;
+            conditions.append("(");
+            conditions.append(keyWithParent.getWhereClauseParent());
+            conditions.append(")");
+        }
+
+        return conditions.toString();
     }
 
     String getWhiteSpaceSepStringList(List<? extends SuperKey> keyList) {
-        String whiteSpaceSepList = "";
+        StringBuilder whiteSpaceSepList = new StringBuilder();
 
-        for (SuperKey key : keyList)
-            whiteSpaceSepList += (!"".equals(whiteSpaceSepList) ? ", " : "") +
-                    "'" + key.getWhiteSpaceSepValues() + "'";
+        for (SuperKey key : keyList) {
+            if (!whiteSpaceSepList.isEmpty())
+                whiteSpaceSepList.append(" OR ");
 
-        return whiteSpaceSepList;
+            whiteSpaceSepList.append("'");
+            whiteSpaceSepList.append(key.getWhiteSpaceSepValues());
+            whiteSpaceSepList.append("'");
+        }
+
+        return whiteSpaceSepList.toString();
     }
 
     String getGenericQuery(String whereClause) {
@@ -200,7 +217,7 @@ public abstract class SuperManager<T extends Entity> {
     List<T> getEntityListFromSuperKeys(Collection<? extends SuperKey> superKeys) throws SQLException {
         List<T> entityList = new ArrayList<>();
 
-        if (superKeys.size() > 0)
+        if (!superKeys.isEmpty())
             entityList = getEntityList("(" + getConditionsKeyList(superKeys) + ")");
 
         return entityList;
