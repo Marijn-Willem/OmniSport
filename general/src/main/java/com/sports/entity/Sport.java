@@ -2,20 +2,15 @@ package com.sports.entity;
 
 import com.sports.db.util.QueryUtil;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-
 public class Sport extends IntAliasable {
-    public static final int sportIdFootball = 1;
-    public static final int sportIdRugby = 2;
-    public static final int sportIdHockey = 3;
-    public static final int sportIdSpeedSkating = 5;
-    public static final int sportIdDarts = 6;
-    public static final int sportIdCyclingRoad = 9;
-    public static final int sportIdBasketball = 10;
-    public static final int sportIdAmericanFootball = 11;
+    public static final int sportIdFootball = -1;
+    public static final int sportIdRugby = -2;
+    public static final int sportIdHockey = -3;
+    public static final int sportIdSpeedSkating = -4;
+    public static final int sportIdDarts = -5;
+    public static final int sportIdCyclingRoad = -6;
+    public static final int sportIdBasketball = -7;
+    public static final int sportIdAmericanFootball = -8;
 
     public static final String sportNameFootball = "Football";
     public static final String sportNameRugby = "Rugby";
@@ -41,41 +36,15 @@ public class Sport extends IntAliasable {
     }
 
     public static String getNameFromId(int id) {
-        switch (id) {
-            case sportIdFootball: return sportNameFootball;
-            case sportIdRugby: return sportNameRugby;
-            case sportIdHockey: return sportNameHockey;
-            case sportIdBasketball: return sportNameBasketball;
-            case sportIdAmericanFootball: return sportNameAmericanFootball;
-            case sportIdCyclingRoad: return sportNameCyclingRoad;
-            default: return null;
-        }
-    }
-
-    public static int getIdFromName(String sportName) {
-        if (sportNameFootball.equals(sportName))
-            return sportIdFootball;
-        else if (sportNameRugby.equals(sportName))
-            return sportIdRugby;
-        else if (sportNameHockey.equals(sportName))
-            return sportIdHockey;
-        else if (sportNameBasketball.equals(sportName))
-            return sportIdBasketball;
-        else if (sportNameAmericanFootball.equals(sportName))
-            return sportIdAmericanFootball;
-        else if (sportNameCyclingRoad.equals(sportName))
-            return sportIdCyclingRoad;
-
-        return 0;
-    }
-
-    public static List<Integer> getActionTypeIdsGoals(int id) {
-        switch (id) {
-            case sportIdFootball: return Collections.singletonList(ActionType.actionTypeIdGoal);
-            case sportIdHockey: return Arrays.asList(ActionType.actionTypeIdPenalty,
-                    ActionType.actionTypeIdFieldgoal, ActionType.actionTypeIdPencorner);
-            default: return new ArrayList<Integer>();
-        }
+        return switch (id) {
+            case sportIdFootball -> sportNameFootball;
+            case sportIdRugby -> sportNameRugby;
+            case sportIdHockey -> sportNameHockey;
+            case sportIdBasketball -> sportNameBasketball;
+            case sportIdAmericanFootball -> sportNameAmericanFootball;
+            case sportIdCyclingRoad -> sportNameCyclingRoad;
+            default -> null;
+        };
     }
 
     public int getAliasEntityId() {

@@ -76,7 +76,7 @@ public abstract class SuperManager<T extends Entity> {
 
     int getNewInt(String colName, String whereClause) throws SQLException {
         String query = "SELECT MAX(" + colName + ") AS maxVal FROM " + getTableName() +
-                (whereClause != null ? " WHERE " + whereClause : "");
+                " WHERE " + Util.concatStringsWithDelimiter(whereClause, colName + " > 0", " AND ");
 
         ResultSet rs = stat.executeQuery(query);
         if (rs.next())

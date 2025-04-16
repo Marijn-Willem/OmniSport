@@ -6,15 +6,15 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class StatType extends IntAliasable {
-    public static final int statTypeScoreId = 1;
-    public static final int statTypeMisDubId = 2;
-    public static final int statTypeThrowId = 3;
+    public static final int statTypeScoreId = -1;
+    public static final int statTypeMisDubId = -2;
+    public static final int statTypeThrowId = -3;
 
     private static final String statTypeScoreName = "Score";
     private static final String statTypeMisDubName = "Missed doubles";
     private static final String statTypeThrowName = "Throw";
 
-    public static final Map<String, Integer> nameIdMap = new HashMap<String, Integer>() {{
+    public static final Map<String, Integer> nameIdMap = new HashMap<>() {{
         put(statTypeScoreName, statTypeScoreId);
         put(statTypeMisDubName, statTypeMisDubId);
         put(statTypeThrowName, statTypeThrowId);

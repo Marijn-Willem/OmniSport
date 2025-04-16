@@ -31,7 +31,7 @@ public abstract class SuperHtmlServlet extends com.sportservlet.html.SuperHtmlSe
     @Override
     protected void processHtmlBody(Statement stat, HttpServletRequest req, HttpServletResponse res)
             throws IOException, SQLException {
-        Integer aeid = Util.convertStringToInteger(Util.convertNullStringToEmpty(req.getParameter("aeid")));
+        Integer aeid = Util.convertStringToNegativeInteger(Util.convertNullStringToEmpty(req.getParameter("aeid")));
         ServletUtil.writeEntityList(aeid, res.getWriter());
 
         processSpecific(req, res);

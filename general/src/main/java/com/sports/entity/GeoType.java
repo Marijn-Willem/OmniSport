@@ -3,8 +3,8 @@ package com.sports.entity;
 import com.sports.db.util.QueryUtil;
 
 public class GeoType extends IntEntity implements NamedEntity {
-    public static final int geoTypeIdCountry = 1;
-    public static final int geoTypeIdCity = 2;
+    public static final int geoTypeIdCountry = -1;
+    public static final int geoTypeIdCity = -2;
 
     private String name;
 

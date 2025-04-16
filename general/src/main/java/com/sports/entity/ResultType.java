@@ -7,11 +7,11 @@ public class ResultType extends IntEntity {
     private static final String resultTypeNameTime = "Time";
     private static final String resultTypeNameDistance = "Distance";
 
-    public static final int resultTypeIdPoints = 1;
-    public static final int resultTypeIdTime = 2;
-    public static final int resultTypeIdDistance = 3;
+    public static final int resultTypeIdPoints = -1;
+    public static final int resultTypeIdTime = -2;
+    public static final int resultTypeIdDistance = -3;
 
-    public static final LinkedHashMap<Integer, String> resultTypeLinkedHashMap = new LinkedHashMap<Integer, String>() {{
+    public static final LinkedHashMap<Integer, String> resultTypeLinkedHashMap = new LinkedHashMap<>() {{
         put(resultTypeIdPoints, resultTypeNamePoints);
         put(resultTypeIdTime, resultTypeNameTime);
         put(resultTypeIdDistance, resultTypeNameDistance);

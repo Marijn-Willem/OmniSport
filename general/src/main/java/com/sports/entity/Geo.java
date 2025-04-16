@@ -4,7 +4,7 @@ import com.sports.db.type.Point;
 import com.sports.db.util.QueryUtil;
 
 public class Geo extends NamedIntEntity {
-    public static final int geoIdUSA = 27;
+    public static final int geoIdUSA = -1;
 
     private String name;
     private int geoTypeId;

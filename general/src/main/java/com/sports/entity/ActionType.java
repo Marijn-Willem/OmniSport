@@ -6,16 +6,16 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class ActionType extends IntAliasable {
-    public static final int actionTypeIdGoal = 1;
-    public static final int actionTypeIdOwnGoal = 2;
-    public static final int actionTypeIdTry = 3;
-    public static final int actionTypeIdConversion = 4;
-    public static final int actionTypeIdPenalty = 5;
-    public static final int actionTypeIdDropgoal = 6;
-    public static final int actionTypeIdFieldgoal = 7;
-    public static final int actionTypeIdPencorner = 8;
-    public static final int actionTypeIdPenaltyTry5 = 9;
-    public static final int actionTypeIdPenaltyTry7 = 10;
+    public static final int actionTypeIdGoal = -1;
+    public static final int actionTypeIdOwnGoal = -2;
+    public static final int actionTypeIdTry = -3;
+    public static final int actionTypeIdConversion = -4;
+    public static final int actionTypeIdPenalty = -5;
+    public static final int actionTypeIdDropgoal = -6;
+    public static final int actionTypeIdFieldgoal = -7;
+    public static final int actionTypeIdPencorner = -8;
+    public static final int actionTypeIdPenaltyTry5 = -9;
+    public static final int actionTypeIdPenaltyTry7 = -10;
 
     private static final String actionTypeNameGoal = "Goal";
     private static final String actionTypeNameOwnGoal = "Own goal";

@@ -3,7 +3,7 @@ package com.sports.entity;
 import com.sports.db.util.QueryUtil;
 
 public class NoCountResult extends NamedIntEntity {
-    public static final int noCountResultIdDNF = 1;
+    public static final int noCountResultIdDNF = -1;
 
     private String name;
 

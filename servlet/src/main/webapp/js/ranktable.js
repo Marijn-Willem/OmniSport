@@ -1,6 +1,6 @@
 const timeRegex = /\b\d{1,3}:\d{2}:\d{2}\b/
-const resultTypeIdPoints = 1;
-const resultTypeIdTime = 2;
+const resultTypeIdPoints = -1;
+const resultTypeIdTime = -2;
 
 let arrangeMode = false;
 let arrangeIndX = 0;

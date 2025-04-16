@@ -46,6 +46,13 @@ public class Util {
         return Integer.parseInt(str);
     }
 
+    public static Integer convertStringToNegativeInteger(String str) {
+        if (!isNumericIncludingNegative(convertNullStringToEmpty(str)))
+            return null;
+
+        return Integer.parseInt(str);
+    }
+
     public static String convertDateTimeToString(LocalDateTime dtTm) {
         return convertDateTimeToDateString(dtTm) +
                 " " +
@@ -259,6 +266,12 @@ public class Util {
         }
 
         return false;
+    }
+
+    public static boolean isNumericIncludingNegative(String str) {
+        String strCheck = !isEmptyString(str) && str.charAt(0) == '-' ? str.substring(1) : str;
+
+        return isNumeric(strCheck);
     }
 
     public static String convertEmptyString(String str, String altStr) {
