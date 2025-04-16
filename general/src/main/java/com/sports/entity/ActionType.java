@@ -28,7 +28,7 @@ public class ActionType extends IntAliasable {
     private static final String actionTypeNamePenaltyTry5 = "Penalty try (5)";
     private static final String actionTypeNamePenaltyTry7 = "Penalty try (7)";
 
-    public static final Map<String, Integer> nameIdMap = new HashMap<String, Integer>() {{
+    public static final Map<String, Integer> nameIdMap = new HashMap<>() {{
         put(actionTypeNameGoal, actionTypeIdGoal);
         put(actionTypeNameOwnGoal, actionTypeIdOwnGoal);
         put(actionTypeNameTry, actionTypeIdTry);
@@ -53,19 +53,19 @@ public class ActionType extends IntAliasable {
     }
 
     public static String getNameFromId(int id) {
-        switch (id) {
-            case actionTypeIdGoal: return actionTypeNameGoal;
-            case actionTypeIdOwnGoal: return actionTypeNameOwnGoal;
-            case actionTypeIdTry: return actionTypeNameTry;
-            case actionTypeIdConversion: return actionTypeNameConversion;
-            case actionTypeIdPenalty: return actionTypeNamePenalty;
-            case actionTypeIdDropgoal: return actionTypeNameDropgoal;
-            case actionTypeIdFieldgoal: return actionTypeNameFieldgoal;
-            case actionTypeIdPencorner: return actionTypeNamePencorner;
-            case actionTypeIdPenaltyTry5: return actionTypeNamePenaltyTry5;
-            case actionTypeIdPenaltyTry7: return actionTypeNamePenaltyTry7;
-            default: return null;
-        }
+        return switch (id) {
+            case actionTypeIdGoal -> actionTypeNameGoal;
+            case actionTypeIdOwnGoal -> actionTypeNameOwnGoal;
+            case actionTypeIdTry -> actionTypeNameTry;
+            case actionTypeIdConversion -> actionTypeNameConversion;
+            case actionTypeIdPenalty -> actionTypeNamePenalty;
+            case actionTypeIdDropgoal -> actionTypeNameDropgoal;
+            case actionTypeIdFieldgoal -> actionTypeNameFieldgoal;
+            case actionTypeIdPencorner -> actionTypeNamePencorner;
+            case actionTypeIdPenaltyTry5 -> actionTypeNamePenaltyTry5;
+            case actionTypeIdPenaltyTry7 -> actionTypeNamePenaltyTry7;
+            default -> null;
+        };
     }
 
     public int getAliasEntityId() {
