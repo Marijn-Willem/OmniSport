@@ -8,6 +8,8 @@ public class PhaseType extends IntAliasable {
     private Integer parentId;
     private boolean isParent;
 
+    public static final int phaseTypeIdPlayNight = -1;
+
     @Override
     public int getAliasEntityId() {
         return AliasEntity.aliasEntityIdPhaseType;

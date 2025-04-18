@@ -1,15 +1,14 @@
 package com.sports.calc.darts;
 
 import com.sports.calc.darts.stat.StatObject;
-import com.sports.entity.PersonMatch;
-import com.sports.entity.PersonMatchPart;
-import com.sports.entity.PersonMatchPartStat;
-import com.sports.entity.StatType;
+import com.sports.entity.*;
+import com.sports.entity.comparator.H2HMatchKnockoutOrderDate;
+import com.sports.entity.key.CompSeasonKey;
+import com.sports.entity.key.CompSeasonPhaseKey;
 import com.sports.entity.key.PersonMatchKey;
 import com.sports.entity.key.PersonMatchPartKey;
-import com.sports.entity.manager.PersonMatchManager;
-import com.sports.entity.manager.PersonMatchPartManager;
-import com.sports.entity.manager.PersonMatchPartStatManager;
+import com.sports.entity.manager.*;
+import com.sports.logic.calculation.StandingContext;
 
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -101,6 +100,17 @@ public record DbCalculation(Statement stat) {
         return statObject;
     }
 
+    public List<StandingContext<PersonSport>> getPremierLeagueStanding(CompSeasonKey compSeasonKey) throws SQLException {
+        List<CompSeasonPhase> compSeasonPhases = new CompSeasonPhaseManager(stat).getPhasesByCompSeasonAndPhaseTypes(compSeasonKey,
+                getPhaseTypeIdsPlayNights());
+
+        List<CompSeasonPhaseKey> compSeasonPhaseKeys = compSeasonPhases.stream().map(CompSeasonPhase::getCompSeasonPhaseKey).toList();
+
+        List<PersonMatch> personMatches = new PersonMatchManager(stat).getMatchesInCompSeasonPhases(compSeasonPhaseKeys);
+
+        return Collections.emptyList();
+    }
+
     private void fillStatObjectWithLegStats(StatObject statObject, PersonMatchPartStatManager pmpsm,
                                             List<PersonMatchPartKey> legKeys, int personSport1Id) throws SQLException {
         List<PersonMatchPartStat> legStats = pmpsm.getPersonMatchPartStats(legKeys,
@@ -144,5 +154,9 @@ public record DbCalculation(Statement stat) {
                 }
             }
         }
+    }
+
+    private List<Integer> getPhaseTypeIdsPlayNights() throws SQLException {
+        return new PhaseTypeManager(stat).getChildIds(PhaseType.phaseTypeIdPlayNight);
     }
 }

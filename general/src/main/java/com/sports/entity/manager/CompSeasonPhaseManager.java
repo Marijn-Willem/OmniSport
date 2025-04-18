@@ -132,7 +132,7 @@ public class CompSeasonPhaseManager extends SuperKeySuperManager<CompSeasonPhase
     }
 
     public void insertCompSeasonPhases(List<CompSeasonPhase> compSeasonPhases) throws SQLException {
-        Map<CompSeasonPhaseKey, CompSeasonPhase> insertMap = new HashMap<CompSeasonPhaseKey, CompSeasonPhase>();
+        Map<CompSeasonPhaseKey, CompSeasonPhase> insertMap = new HashMap<>();
 
         for (CompSeasonPhase csp : compSeasonPhases)
             insertMap.put(csp.getCompSeasonPhaseKey(), csp);
@@ -146,6 +146,13 @@ public class CompSeasonPhaseManager extends SuperKeySuperManager<CompSeasonPhase
 
     public List<CompSeasonPhase> getChildCompSeasonPhases(List<CompSeasonPhaseKey> keys) throws SQLException {
         return getChildEntities(keys);
+    }
+
+    public List<CompSeasonPhase> getPhasesByCompSeasonAndPhaseTypes(CompSeasonKey compSeasonKey, List<Integer> phaseTypeIds)
+            throws SQLException {
+        return !phaseTypeIds.isEmpty() ?
+                getEntityList(compSeasonKey.getWhereClause() + " AND phasetypeid IN (" + getCommaSepIntList(phaseTypeIds) + ")") :
+                Collections.emptyList();
     }
 
     public void delete(CompSeasonPhaseKey cspk) throws SQLException {

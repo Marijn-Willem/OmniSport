@@ -15,6 +15,8 @@ public class Competition extends IntAliasable {
     private boolean isDomestic;
     private Integer geoId;
 
+    public static final int competitionIdDartsPremierLeague = -1;
+
     @Override
     public String[] getPropertiesInSQLStrings() {
         return new String[] {
