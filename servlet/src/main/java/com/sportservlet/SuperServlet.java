@@ -56,7 +56,7 @@ public abstract class SuperServlet extends HttpServlet {
     }
 
     private void setCommonParameters(HttpServletRequest req) {
-        competitionId = Util.convertStringToInteger(req.getParameter("cid"));
+        competitionId = Util.convertStringToNegativeInteger(req.getParameter("cid"));
         seasonId = Util.convertStringToInteger(req.getParameter("sid"));
 
         if (competitionId != null && seasonId != null) {

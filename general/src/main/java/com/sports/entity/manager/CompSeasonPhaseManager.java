@@ -86,6 +86,11 @@ public class CompSeasonPhaseManager extends SuperKeySuperManager<CompSeasonPhase
         return getChildEntities(Collections.singletonList(parentKey));
     }
 
+    public List<CompSeasonPhase> getPhaseListFromParents(List<CompSeasonPhaseKey> parentKeys)
+        throws SQLException {
+        return getChildEntities(parentKeys);
+    }
+
     public List<CompSeasonPhase> getNonFinishedPhasesFromParent(CompSeasonPhaseKey parentKey) throws SQLException {
         return getChildEntities(Collections.singletonList(parentKey), "NOT(finished)");
     }

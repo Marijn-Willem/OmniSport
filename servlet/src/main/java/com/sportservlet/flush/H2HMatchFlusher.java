@@ -74,6 +74,11 @@ public class H2HMatchFlusher extends CacheFlusher {
                 addAll(replicateForClientsWithRights(new EncounterListReplicator(
                         h2HMatch.getParticipant1Id(), h2HMatch.getParticipant2Id(), factory.getParticipantType()),
                         h2HMatchKey.getSuperKey(), stat));
+
+            if (h2HMatchKey.getCompetitionId() == Competition.competitionIdDartsPremierLeague) {
+                addAll(replicateForClientsWithRights(new DartsPremierLeagueStandingReplicator(), h2HMatchKey.getSuperKey(), stat));
+                addAll(replicateForClientsWithRights(new DartsPremierLeagueStandingEvolutionReplicator(), h2HMatchKey.getSuperKey(), stat));
+            }
         }};
     }
 
@@ -124,7 +129,7 @@ public class H2HMatchFlusher extends CacheFlusher {
         }
 
         @Override
-        CacheKey getCacheKeyForClientCompSeason(ClientCompSeasonKey clientCompSeasonKey) {
+        CompSeasonPhaseParticipantListKey getCacheKeyForClientCompSeason(ClientCompSeasonKey clientCompSeasonKey) {
             return new CompSeasonPhaseParticipantListKey(clientCompSeasonKey.getCompetitionId(),
                     clientCompSeasonKey.getSeasonId(),
                     compSeasonPhaseId,
@@ -159,6 +164,20 @@ public class H2HMatchFlusher extends CacheFlusher {
                     return new EncounterListTeamKey(participantIdMin, participantIdMax, clientId);
                 }
             }
+        }
+    }
+
+    private static class DartsPremierLeagueStandingReplicator extends ClientReplicator {
+        @Override
+        DartsPremierLeagueStandingKey getCacheKeyForClientCompSeason(ClientCompSeasonKey clientCompSeasonKey) {
+            return new DartsPremierLeagueStandingKey(clientCompSeasonKey.getSeasonId(), clientCompSeasonKey.getSeasonId());
+        }
+    }
+
+    private static class DartsPremierLeagueStandingEvolutionReplicator extends ClientReplicator {
+        @Override
+        DartsPremierLeagueStandingEvolutionKey getCacheKeyForClientCompSeason(ClientCompSeasonKey clientCompSeasonKey) {
+            return new DartsPremierLeagueStandingEvolutionKey(clientCompSeasonKey.getSeasonId(), clientCompSeasonKey.getClientId());
         }
     }
 }
