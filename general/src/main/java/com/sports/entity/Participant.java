@@ -14,6 +14,7 @@ public abstract class Participant extends IntEntity implements DescribedEntity {
     private Integer points;
     private Integer pointsBehind;
     private Integer noCountResultId;
+    private int winsMain;
     private int wins;
     private int draws;
     private int losses;
@@ -46,6 +47,7 @@ public abstract class Participant extends IntEntity implements DescribedEntity {
         participant.setPoints(points);
         participant.setPointsBehind(pointsBehind);
         participant.setNoCountResultId(noCountResultId);
+        participant.setWinsMain(winsMain);
         participant.setWins(wins);
         participant.setDraws(draws);
         participant.setLosses(losses);
@@ -114,6 +116,18 @@ public abstract class Participant extends IntEntity implements DescribedEntity {
 
     public void setNoCountResultId(Integer noCountResultId) {
         this.noCountResultId = noCountResultId;
+    }
+
+    public int getWinsMain() {
+        return winsMain;
+    }
+
+    public void setWinsMain(int winsMain) {
+        this.winsMain = winsMain;
+    }
+
+    public void addWinMain() {
+        winsMain++;
     }
 
     public int getWins() {

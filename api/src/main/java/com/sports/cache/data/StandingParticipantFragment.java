@@ -30,6 +30,7 @@ public class StandingParticipantFragment extends WritableFragment {
     private final int points;
     private final int score;
     private final int scoreAgainst;
+    private final int winsMain;
     private final double average;
     private final double averageConference;
     private final double averageDivision;
@@ -52,6 +53,7 @@ public class StandingParticipantFragment extends WritableFragment {
         points = participant.getPoints();
         score = participant.getScore();
         scoreAgainst = participant.getScoreAgainst();
+        winsMain = participant.getWinsMain();
         average = participant.getAverage();
         averageConference = isDomesticUSA ? ((Team)participant).getParentDivisionAverage() : 0.0;
         averageDivision = isDomesticUSA ? ((Team)participant).getDivisionAverage() : 0.0;
@@ -89,7 +91,8 @@ public class StandingParticipantFragment extends WritableFragment {
                 XmlUtil.getTag("losses", losses) +
                 XmlUtil.getTag("points", points) +
                 XmlUtil.getTag("score", score) +
-                XmlUtil.getTag("scoreAgainst", scoreAgainst);
+                XmlUtil.getTag("scoreAgainst", scoreAgainst) +
+                XmlUtil.getTag("winsMain", winsMain);
     }
 
     private String toJsonGeneral() {
@@ -101,7 +104,8 @@ public class StandingParticipantFragment extends WritableFragment {
                 JsonUtil.getEntry("losses", losses) + "," +
                 JsonUtil.getEntry("points", points) + "," +
                 JsonUtil.getEntry("score", score) + "," +
-                JsonUtil.getEntry("scoreAgainst", scoreAgainst);
+                JsonUtil.getEntry("scoreAgainst", scoreAgainst) + "," +
+                JsonUtil.getEntry("winsMain", winsMain);
     }
 
     private String toXMLUSA() {

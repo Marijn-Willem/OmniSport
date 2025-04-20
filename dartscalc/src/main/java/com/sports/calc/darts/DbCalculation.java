@@ -253,6 +253,8 @@ public record DbCalculation(Statement stat) {
             }
 
             v.addPoints(points);
+            if (points == 5)
+                v.addWinMain();
             v.copyToForStanding(standingParticipant);
 
             standing.add(standingParticipant);
