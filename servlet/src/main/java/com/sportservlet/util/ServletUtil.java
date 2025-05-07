@@ -15,16 +15,6 @@ public class ServletUtil {
         w.append("</option>\n");
     }
 
-    public static void writeLink(String path, String href, String text, Writer w) throws IOException {
-        w.append("<a href=\"");
-        w.append(path);
-        w.append("/");
-        w.append(href);
-        w.append("\">");
-        w.append(text);
-        w.append("</a><br/>\n");
-    }
-
     public static void writeGenericGoToButton(String url, String parameters, String text, Writer w) throws IOException {
         w.append("<input type=\"button\" onclick=\"goToUrl('");
         w.append(url);

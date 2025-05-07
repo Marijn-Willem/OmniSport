@@ -50,7 +50,7 @@ public abstract class TeamSelectServlet extends SuperHtmlServlet implements Abst
             ServletUtil.writeOption(me.getKey(), me.getValue(), w);
         w.append("</select><br/>\n");
 
-        w.append("<select id=\"tid\">\n<select><br/>\n");
+        w.append("<select id=\"tid\">\n</select><br/>\n");
         processSpecific(req, res);
     }
 }

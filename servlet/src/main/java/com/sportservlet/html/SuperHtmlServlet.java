@@ -135,7 +135,7 @@ public abstract class SuperHtmlServlet extends SuperResponseServlet {
 
     protected void writeInitStateVarInScriptTag(String name, HttpServletRequest req, Writer w) throws IOException {
         String valAsString = req.getParameter(name);
-        writeVarNameAndValue(name, Util.convertStringToInteger(valAsString), w);
+        writeVarNameAndValue(name, Util.convertStringToNegativeInteger(valAsString), w);
     }
 
     protected void writeLink(String href, String text, Writer w) throws IOException {
