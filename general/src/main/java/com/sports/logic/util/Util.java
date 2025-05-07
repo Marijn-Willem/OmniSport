@@ -268,12 +268,6 @@ public class Util {
         return false;
     }
 
-    public static boolean isNumericIncludingNegative(String str) {
-        String strCheck = !isEmptyString(str) && str.charAt(0) == '-' ? str.substring(1) : str;
-
-        return isNumeric(strCheck);
-    }
-
     public static String convertEmptyString(String str, String altStr) {
         if (isEmptyString(str))
             return altStr;
@@ -305,5 +299,11 @@ public class Util {
 
     private static String padZeroesToString(String str, int lengthTot) {
         return padCharacter(str, '0', lengthTot);
+    }
+
+    private static boolean isNumericIncludingNegative(String str) {
+        String strCheck = !isEmptyString(str) && str.charAt(0) == '-' ? str.substring(1) : str;
+
+        return isNumeric(strCheck);
     }
 }
