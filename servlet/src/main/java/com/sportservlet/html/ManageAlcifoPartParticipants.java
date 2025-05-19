@@ -46,6 +46,10 @@ public abstract class ManageAlcifoPartParticipants<P extends Participant, PK ext
 
     void writeSpecificScriptTagVars(HttpServletRequest req, Writer w) throws IOException { }
 
+    String getNameString(P participant) {
+        return participant.getDescription();
+    }
+
     @Override
     protected void initProperties(HttpServletRequest req) {
         jsList.add("general");
@@ -81,13 +85,13 @@ public abstract class ManageAlcifoPartParticipants<P extends Participant, PK ext
 
         Writer w = res.getWriter();
 
-        w.append("<table id=\"tblPt\">\n");
+        w.append("<table class=\"alcifo_part\" id=\"tblPt\">\n");
         w.append("<tr><th>Rank</th><th>Name</th><th>Points</th><th>NoCountResult</th></tr>\n");
-        for (Participant participant : participants)
+        for (P participant : participants)
             writeTableRow(participant, sd.getResultTypeId(), stat, w);
         w.append("</table>\n");
 
-        w.append("<table class=\"button_container\">\n");
+        w.append("<table class=\"alcifo_part button_container\">\n");
         w.append("<tr><td><input type=\"button\" onclick=\"sortRank();\" value=\"Sort by rank\" /></td>");
         w.append("<td><input type=\"button\" onclick=\"sortPoints();\" value=\"Sort by points\" /></td><td/></tr>\n");
         w.append("<tr><td><input type=\"button\" onclick=\"setRanks();\" value=\"Set ranks\" /></td>");
@@ -106,7 +110,7 @@ public abstract class ManageAlcifoPartParticipants<P extends Participant, PK ext
         w.append("<div id=\"divPt\"></div>\n");
     }
 
-    private void writeTableRow(Participant participant, int resultType, Statement stat, Writer w)
+    private void writeTableRow(P participant, int resultType, Statement stat, Writer w)
             throws SQLException, IOException {
         String pointsString = participant.getPoints() != null ? formatPoints(participant.getPoints(), resultType) : "";
 
@@ -115,7 +119,7 @@ public abstract class ManageAlcifoPartParticipants<P extends Participant, PK ext
         w.append("\"><td><input type=\"text\" value=\"");
         w.append(Util.convertIntegerToString(participant.getRank()));
         w.append("\" /></td><td>");
-        w.append(participant.getDescription());
+        w.append(getNameString(participant));
         w.append("</td><td><input type=\"text\" value=\"");
         w.append(pointsString);
         w.append("\" /></td><td><input type=\"text\" value=\"");

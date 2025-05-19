@@ -6,5 +6,6 @@ h3, h1, div, input, table, span, select {margin-left: 40%}
 table input, span input, span select, div table, div div, div input, div select {margin-left: 0}
 table.button_container tr {background-color: transparent}
 table.click_through {font-size: 18px}
+table.alcifo_part {margin-left: 20%}
 .personWinner {font-weight: bold}
 input.ntf {width: 25px}

@@ -1,14 +1,15 @@
 package com.sports.entity.manager;
 
 import com.sports.entity.SuperKeyEntity;
-import com.sports.entity.key.*;
+import com.sports.entity.key.CompSeasonKey;
+import com.sports.entity.key.CompSeasonPersonSportKey;
+import com.sports.entity.key.CompSeasonTeamKey;
+import com.sports.entity.key.CompSeasonTeamPersonSportKey;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 public class CompSeasonTeamPersonSportManager extends SuperKeySuperManager<CompSeasonTeamPersonSportKey, SuperKeyEntity> {
     public CompSeasonTeamPersonSportManager(Statement stat) {
@@ -58,11 +59,6 @@ public class CompSeasonTeamPersonSportManager extends SuperKeySuperManager<CompS
 
     public void deleteTeamPersonSports(List<CompSeasonPersonSportKey> compSeasonPersonSportKeys) throws SQLException {
         delete(compSeasonPersonSportKeys);
-    }
-
-    public void insertNonExistingTeamPersonSports(Set<CompSeasonTeamPersonSportKey> compSeasonTeamPersonSportKeys)
-        throws SQLException {
-        insertNonExistingKeys(compSeasonTeamPersonSportKeys);
     }
 
     public List<CompSeasonTeamPersonSportKey> getKeysForCompSeasonPerson(CompSeasonPersonSportKey key)
