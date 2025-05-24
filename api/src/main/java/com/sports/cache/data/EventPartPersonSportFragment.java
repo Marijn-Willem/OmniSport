@@ -14,8 +14,8 @@ public class EventPartPersonSportFragment extends AlcifoParticipantFragment {
 
     public EventPartPersonSportFragment(int competitionId, int seasonId, int compSeasonEventId, int compSeasonEventPartId,
                                         PersonSport participant, int resultTypeId, Integer resultTypePrecisionId,
-                                        int clientId) {
-        super(competitionId, seasonId, participant, resultTypeId, resultTypePrecisionId, clientId);
+                                        int clientId, int nestingLevel, boolean isInList) {
+        super(competitionId, seasonId, participant, resultTypeId, resultTypePrecisionId, clientId, nestingLevel, isInList);
         this.compSeasonEventId = compSeasonEventId;
         this.compSeasonEventPartId = compSeasonEventPartId;
         this.personId = participant.getPersonId();

@@ -2,10 +2,7 @@ package com.sports.cache.data;
 
 import com.sports.cache.key.CacheDataKey;
 import com.sports.cache.key.SportListKey;
-import com.sports.cache.util.ClientSportFilter;
-import com.sports.cache.util.DataFragmentUtil;
-import com.sports.cache.util.JsonUtil;
-import com.sports.cache.util.XmlUtil;
+import com.sports.cache.util.*;
 import com.sports.entity.Sport;
 import com.sports.entity.comparator.NamedEntityName;
 import com.sports.entity.manager.SportManager;
@@ -36,7 +33,7 @@ public class SportListData extends OutputData {
 
         ClientSportFilter filter = new ClientSportFilter(clientId, getCacheKey(), stat);
         sportList.stream()
-                .map(x -> new SportFragment(x.getId(), clientId))
+                .map(x -> new SportFragment(x.getId(), clientId, DataFragmentUtil.getLevelForNestedList(nestingLevel), true))
                 .filter(filter::isElementAllowed)
                 .forEach(sportFragments::add);
 
@@ -56,5 +53,10 @@ public class SportListData extends OutputData {
     @Override
     public String toJson() {
         return "{" + JsonUtil.getArray("sportList", sportFragments) + "}";
+    }
+
+    @Override
+    public String toYaml() {
+        return new YamlUtil(nestingLevel).getArray("sportList", sportFragments);
     }
 }

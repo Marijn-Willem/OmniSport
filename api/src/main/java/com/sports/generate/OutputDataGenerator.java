@@ -21,6 +21,7 @@ public class OutputDataGenerator {
             createOutputData(lineGroup);
             createRestXml(lineGroup);
             createRestJson(lineGroup);
+            createRestYaml(lineGroup);
         }
     }
 
@@ -30,6 +31,10 @@ public class OutputDataGenerator {
 
     private static void createRestJson(List<String> lineGroup) throws IOException {
         createRestFile(lineGroup, "json", "APPLICATION_JSON + \";charset=\\\"UTF-8\\\"\"");
+    }
+
+    private static void createRestYaml(List<String> lineGroup) throws IOException {
+        createRestFile(lineGroup, "yaml", "TEXT_PLAIN + \";charset=\\\"UTF-8\\\"\"");
     }
 
     private static void createOutputData(List<String> lineGroup) throws IOException {
@@ -93,16 +98,11 @@ public class OutputDataGenerator {
         GenerateUtil.appendWithNewLine("\t}", bw);
         bw.newLine();
 
-        GenerateUtil.appendWithNewLine("\t@Override", bw);
-        GenerateUtil.appendWithNewLine("\tpublic String toXML() {", bw);
-        GenerateUtil.appendWithNewLine("\t\treturn null;", bw);
-        GenerateUtil.appendWithNewLine("\t}", bw);
+        writeOutputMethod("toXML", bw);
         bw.newLine();
-
-        GenerateUtil.appendWithNewLine("\t@Override", bw);
-        GenerateUtil.appendWithNewLine("\tpublic String toJson() {", bw);
-        GenerateUtil.appendWithNewLine("\t\treturn null;", bw);
-        GenerateUtil.appendWithNewLine("\t}", bw);
+        writeOutputMethod("toJson", bw);
+        bw.newLine();
+        writeOutputMethod("toYaml", bw);
         GenerateUtil.appendWithNewLine("}", bw);
 
         bw.flush();
@@ -185,6 +185,15 @@ public class OutputDataGenerator {
 
         bw.flush();
         bw.close();
+    }
+
+    private static void writeOutputMethod(String methodName, BufferedWriter bw) throws IOException {
+        GenerateUtil.appendWithNewLine("\t@Override", bw);
+        bw.append("\tpublic String ");
+        bw.append(methodName);
+        GenerateUtil.appendWithNewLine("() {", bw);
+        GenerateUtil.appendWithNewLine("\t\treturn null;", bw);
+        GenerateUtil.appendWithNewLine("\t}", bw);
     }
 
     private static void writeParameter(int whiteSpaces, String parameter, BufferedWriter bw) throws IOException {

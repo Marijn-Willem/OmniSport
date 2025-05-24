@@ -5,6 +5,7 @@ import com.sports.cache.key.DisciplinePartKey;
 import com.sports.cache.util.AliasUtil;
 import com.sports.cache.util.JsonUtil;
 import com.sports.cache.util.XmlUtil;
+import com.sports.cache.util.YamlUtil;
 import com.sports.entity.DisciplinePart;
 import com.sports.entity.key.SportDisciplineKey;
 import com.sports.entity.manager.DisciplinePartManager;
@@ -20,7 +21,9 @@ public class DisciplinePartFragment extends WritableFragment {
 
     private String name;
 
-    public DisciplinePartFragment(int sportId, int sportDisciplineId, int disciplinePartId, int clientId) {
+    public DisciplinePartFragment(int sportId, int sportDisciplineId, int disciplinePartId, int clientId, int nestingLevel) {
+        super(nestingLevel, true);
+
         this.sportId = sportId;
         this.sportDisciplineId = sportDisciplineId;
         this.disciplinePartId = disciplinePartId;
@@ -50,5 +53,10 @@ public class DisciplinePartFragment extends WritableFragment {
     @Override
     public String toJson() {
         return JsonUtil.getEntry("name", name);
+    }
+
+    @Override
+    public String toYaml() {
+        return new YamlUtil(nestingLevel).getEntry("name", name, isInList);
     }
 }

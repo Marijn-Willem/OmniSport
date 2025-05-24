@@ -5,6 +5,7 @@ import com.sports.cache.key.GeoKey;
 import com.sports.cache.util.DataFragmentUtil;
 import com.sports.cache.util.JsonUtil;
 import com.sports.cache.util.XmlUtil;
+import com.sports.cache.util.YamlUtil;
 
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -12,8 +13,8 @@ import java.sql.Statement;
 public class GeoFragment extends GeoAsParentFragment {
     private GeoAsParentFragment parentGeo;
 
-    public GeoFragment(int geoId) {
-        super(geoId);
+    public GeoFragment(int geoId, int nestingLevel) {
+        super(geoId, nestingLevel);
     }
 
     @Override
@@ -26,7 +27,8 @@ public class GeoFragment extends GeoAsParentFragment {
         super.fill(stat);
         if (parentGeoId != null)
             parentGeo = DataFragmentUtil.getFilledDataFragment(
-                    new GeoAsParentFragment(parentGeoId), getCacheDataKey(), stat);
+                    new GeoAsParentFragment(parentGeoId, DataFragmentUtil.getLevelForNestedFragment(nestingLevel)),
+                    getCacheDataKey(), stat);
     }
 
     @Override
@@ -37,5 +39,10 @@ public class GeoFragment extends GeoAsParentFragment {
     @Override
     public String toJson() {
         return super.toJson() + "," + JsonUtil.getNullableFragmentAsEntry("parentGeo", parentGeo);
+    }
+
+    @Override
+    public String toYaml() {
+        return super.toYaml() + new YamlUtil(nestingLevel).getNullableFragmentAsEntry("parentGeo", parentGeo);
     }
 }

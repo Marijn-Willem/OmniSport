@@ -5,6 +5,7 @@ import com.sports.cache.key.ParticipantKey;
 import com.sports.cache.util.DataFragmentUtil;
 import com.sports.cache.util.JsonUtil;
 import com.sports.cache.util.XmlUtil;
+import com.sports.cache.util.YamlUtil;
 import com.sports.entity.*;
 import com.sports.entity.key.*;
 import com.sports.logic.calculation.DbCalculation;
@@ -23,7 +24,10 @@ public class ParticipantFragment extends WritableFragment {
     private DoubleFragment doubleFragment;
     private CompSeasonTeamWithDivisionFragment teamFragment;
 
-    public ParticipantFragment(int competitionId, int seasonId, int participantId, int clientId) {
+    public ParticipantFragment(int competitionId, int seasonId, int participantId,
+                               int clientId, int nestingLevel, boolean isInList) {
+        super(nestingLevel, isInList);
+
         this.competitionId = competitionId;
         this.seasonId = seasonId;
         this.participantId = participantId;
@@ -49,13 +53,16 @@ public class ParticipantFragment extends WritableFragment {
                 ? extends H2HMatchPartStat> factory =
                 new DbCalculation(stat).getCompSeasonParticipantFactory(competitionId);
 
+        int nestingLevelNested = DataFragmentUtil.getLevelForNestedFragment(nestingLevel);
+
         switch (factory.getParticipantType()) {
             case PERSON_SPORT -> personSportFragment = DataFragmentUtil.getFilledDataFragment(
-                    new PersonSportFragment(competitionId, seasonId, participantId, clientId), getCacheDataKey(), stat);
+                    new PersonSportFragment(competitionId, seasonId, participantId, clientId, nestingLevelNested, false),
+                    getCacheDataKey(), stat);
             case DOUBLE -> doubleFragment = DataFragmentUtil.getFilledDataFragment(
-                    new DoubleFragment(competitionId, seasonId, participantId, clientId), getCacheDataKey(), stat);
+                    new DoubleFragment(competitionId, seasonId, participantId, clientId, nestingLevelNested), getCacheDataKey(), stat);
             case TEAM -> teamFragment = DataFragmentUtil.getFilledDataFragment(
-                    new CompSeasonTeamWithDivisionFragment(competitionId, seasonId, participantId, clientId),
+                    new CompSeasonTeamWithDivisionFragment(competitionId, seasonId, participantId, clientId, nestingLevelNested),
                     getCacheDataKey(), stat);
         }
     }
@@ -72,5 +79,14 @@ public class ParticipantFragment extends WritableFragment {
         return JsonUtil.getNullableFragmentAsEntry("personSport", personSportFragment) + "," +
                 JsonUtil.getNullableFragmentAsEntry("double", doubleFragment) + "," +
                 JsonUtil.getNullableFragmentAsEntry("team", teamFragment);
+    }
+
+    @Override
+    public String toYaml() {
+        YamlUtil yamlUtil = new YamlUtil(nestingLevel);
+
+        return yamlUtil.getNullableFragmentAsEntry("personSport", personSportFragment, isInList) +
+                yamlUtil.getNullableFragmentAsEntry("double", doubleFragment) +
+                yamlUtil.getNullableFragmentAsEntry("team", teamFragment);
     }
 }

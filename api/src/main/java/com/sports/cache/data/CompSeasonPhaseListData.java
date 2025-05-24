@@ -34,7 +34,8 @@ public class CompSeasonPhaseListData extends OutputData {
         List<CompSeasonPhase> compSeasonPhases = new CompSeasonPhaseManager(stat).getCompSeasonPhases(compSeasonKey);
         new DbCalculation(stat).setPhaseDescriptionsFromTypes(compSeasonPhases);
         compSeasonPhases.sort(new CompSeasonPhaseRoundDescription());
-        compSeasonPhases.forEach(x -> compSeasonPhaseFragments.add(new CompSeasonPhaseFragment(x, clientId)));
+        compSeasonPhases.forEach(x -> compSeasonPhaseFragments.add(
+                new CompSeasonPhaseFragment(x, clientId, DataFragmentUtil.getLevelForNestedList(nestingLevel), true)));
 
         DataFragmentUtil.fillDataFragments(compSeasonPhaseFragments, getCacheKey());
     }
@@ -58,5 +59,10 @@ public class CompSeasonPhaseListData extends OutputData {
     @Override
     public String toJson() {
         return "{" + JsonUtil.getArray("compSeasonPhaseList", compSeasonPhaseFragments) + "}";
+    }
+
+    @Override
+    public String toYaml() {
+        return new YamlUtil(nestingLevel).getArray("compSeasonPhaseList", compSeasonPhaseFragments);
     }
 }

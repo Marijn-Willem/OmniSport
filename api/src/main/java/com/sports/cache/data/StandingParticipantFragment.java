@@ -5,6 +5,7 @@ import com.sports.cache.key.StandingParticipantKey;
 import com.sports.cache.util.DataFragmentUtil;
 import com.sports.cache.util.JsonUtil;
 import com.sports.cache.util.XmlUtil;
+import com.sports.cache.util.YamlUtil;
 import com.sports.calc.teamsports.Calculation;
 import com.sports.entity.Participant;
 import com.sports.entity.Team;
@@ -21,13 +22,13 @@ public class StandingParticipantFragment extends WritableFragment {
     private final int clientId;
     private final boolean isDomesticUSA;
 
-    private final int rank;
+    private final Integer rank;
     private ParticipantFragment participantFragment;
     private final int played;
     private final int wins;
     private final int draws;
     private final int losses;
-    private final int points;
+    private final Integer points;
     private final int score;
     private final int scoreAgainst;
     private final int winsMain;
@@ -38,7 +39,9 @@ public class StandingParticipantFragment extends WritableFragment {
     private final double gamesBehind;
 
     public StandingParticipantFragment(CompSeasonKey compSeasonKey, Participant participant, int clientId,
-                                       boolean isDomesticUSA) {
+                                       int nestingLevel, boolean isDomesticUSA) {
+        super(nestingLevel, true);
+
         this.competitionId = compSeasonKey.getCompetitionId();
         this.seasonId = compSeasonKey.getSeasonId();
         this.participantId = participant.getId();
@@ -69,7 +72,8 @@ public class StandingParticipantFragment extends WritableFragment {
     @Override
     void fill(Statement stat) throws SQLException {
         participantFragment = DataFragmentUtil.getFilledDataFragment(
-                new ParticipantFragment(competitionId, seasonId, participantId, clientId), getCacheDataKey(), stat);
+                new ParticipantFragment(competitionId, seasonId, participantId, clientId, nestingLevel, false),
+                getCacheDataKey(), stat);
     }
 
     @Override
@@ -80,6 +84,11 @@ public class StandingParticipantFragment extends WritableFragment {
     @Override
     public String toJson() {
         return isDomesticUSA ? toJsonUSA() : toJsonGeneral();
+    }
+
+    @Override
+    public String toYaml() {
+        return isDomesticUSA ? toYamlUSA() : toYamlGeneral();
     }
 
     private String toXMLGeneral() {
@@ -108,6 +117,21 @@ public class StandingParticipantFragment extends WritableFragment {
                 JsonUtil.getEntry("winsMain", winsMain);
     }
 
+    private String toYamlGeneral() {
+        YamlUtil yamlUtil = new YamlUtil(nestingLevel);
+
+        return yamlUtil.getEntry("rank", rank, isInList) +
+                participantFragment.toYaml() +
+                yamlUtil.getEntry("played", played) +
+                yamlUtil.getEntry("wins", wins) +
+                yamlUtil.getEntry("draws", draws) +
+                yamlUtil.getEntry("losses", losses) +
+                yamlUtil.getEntry("points", points) +
+                yamlUtil.getEntry("score", score) +
+                yamlUtil.getEntry("scoreAgainst", scoreAgainst) +
+                yamlUtil.getEntry("winsMain", winsMain);
+    }
+
     private String toXMLUSA() {
         return XmlUtil.getTag("rank", rank) +
                 participantFragment.toXML() +
@@ -128,5 +152,18 @@ public class StandingParticipantFragment extends WritableFragment {
                 JsonUtil.getEntry("averageDivision", Util.getDoubleAsStringWith3Digits(averageDivision)) + "," +
                 JsonUtil.getEntry("streak", Calculation.getStreakAsString(streak)) + "," +
                 JsonUtil.getEntry("gamesBehind", Util.getDoubleAsStringWith2Digits(gamesBehind));
+    }
+
+    private String toYamlUSA() {
+        YamlUtil yamlUtil = new YamlUtil(nestingLevel);
+
+        return yamlUtil.getEntry("rank", rank, isInList) +
+                participantFragment.toYaml() +
+                yamlUtil.getEntry("played", played) +
+                yamlUtil.getEntry("average", Util.getDoubleAsStringWith3Digits(average)) +
+                yamlUtil.getEntry("averageConference", Util.getDoubleAsStringWith3Digits(averageConference)) +
+                yamlUtil.getEntry("averageDivision", Util.getDoubleAsStringWith3Digits(averageDivision)) +
+                yamlUtil.getEntry("streak", Calculation.getStreakAsString(streak)) +
+                yamlUtil.getEntry("gamesBehind", Util.getDoubleAsStringWith2Digits(gamesBehind));
     }
 }

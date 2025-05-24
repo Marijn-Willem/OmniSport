@@ -5,6 +5,7 @@ import com.sports.cache.key.SpeedSkatingRankingPersonKey;
 import com.sports.cache.util.DescribedEntityUtil;
 import com.sports.cache.util.JsonUtil;
 import com.sports.cache.util.XmlUtil;
+import com.sports.cache.util.YamlUtil;
 import com.sports.entity.PersonSport;
 import com.sports.entity.key.CompSeasonKey;
 import com.sports.logic.util.Util;
@@ -26,7 +27,10 @@ public class SpeedSkatingRankingPersonFragment extends WritableFragment {
     private String description;
 
     public SpeedSkatingRankingPersonFragment(int competitionId, int seasonId, int compSeasonEventId,
-                                             int compSeasonEventPartId, PersonSport personSport, int clientId) {
+                                             int compSeasonEventPartId, PersonSport personSport,
+                                             int clientId, int nestingLevel) {
+        super(nestingLevel, true);
+
         this.competitionId = competitionId;
         this.seasonId = seasonId;
         this.compSeasonEventId = compSeasonEventId;
@@ -68,5 +72,15 @@ public class SpeedSkatingRankingPersonFragment extends WritableFragment {
                 JsonUtil.getEntry("description", description) + "," +
                 JsonUtil.getEntry("rank", rank) + "," +
                 JsonUtil.getEntry("points", Util.getDoubleAsStringWith3Digits(resultPoints));
+    }
+
+    @Override
+    public String toYaml() {
+        YamlUtil yamlUtil = new YamlUtil(nestingLevel);
+
+        return yamlUtil.getEntry("id", personId, isInList) +
+                yamlUtil.getEntry("description", description) +
+                yamlUtil.getEntry("rank", rank) +
+                yamlUtil.getEntry("points", Util.getDoubleAsStringWith3Digits(resultPoints));
     }
 }

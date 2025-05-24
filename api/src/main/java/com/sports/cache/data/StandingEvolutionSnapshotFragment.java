@@ -5,6 +5,7 @@ import com.sports.cache.key.StandingEvolutionSnapshotKey;
 import com.sports.cache.util.DataFragmentUtil;
 import com.sports.cache.util.JsonUtil;
 import com.sports.cache.util.XmlUtil;
+import com.sports.cache.util.YamlUtil;
 import com.sports.entity.Participant;
 import com.sports.entity.key.CompSeasonKey;
 import com.sports.logic.calculation.StandingContext;
@@ -23,8 +24,10 @@ public class StandingEvolutionSnapshotFragment extends WritableFragment {
 
     private final List<StandingParticipantFragment> standingParticipantFragments = new ArrayList<>();
 
-    public StandingEvolutionSnapshotFragment(int competitionId, int seasonId, int compSeasonPhaseId, int clientId,
+    public StandingEvolutionSnapshotFragment(int competitionId, int seasonId, int compSeasonPhaseId, int clientId, int nestingLevel,
                                              boolean isDomesticUSA, StandingContext<? extends Participant> standingContext) {
+        super(nestingLevel, true);
+
         this.competitionId = competitionId;
         this.seasonId = seasonId;
         this.compSeasonPhaseId = compSeasonPhaseId;
@@ -32,8 +35,9 @@ public class StandingEvolutionSnapshotFragment extends WritableFragment {
         date = standingContext.date();
 
         CompSeasonKey compSeasonKey = new CompSeasonKey(competitionId, seasonId);
+        int nestingLevelList = DataFragmentUtil.getLevelForNestedList(nestingLevel);
         standingParticipantFragments.addAll(standingContext.standing().stream().map(x ->
-                new StandingParticipantFragment(compSeasonKey, x, clientId, isDomesticUSA)).toList());
+                new StandingParticipantFragment(compSeasonKey, x, clientId, nestingLevelList, isDomesticUSA)).toList());
     }
 
     @Override
@@ -46,6 +50,14 @@ public class StandingEvolutionSnapshotFragment extends WritableFragment {
     public String toJson() {
         return JsonUtil.getEntry("date", date) + "," +
                 JsonUtil.getArray("participantList", standingParticipantFragments);
+    }
+
+    @Override
+    public String toYaml() {
+        YamlUtil yamlUtil = new YamlUtil(nestingLevel);
+
+        return yamlUtil.getEntry("date", date, isInList) +
+                yamlUtil.getArray("participantList", standingParticipantFragments);
     }
 
     @Override

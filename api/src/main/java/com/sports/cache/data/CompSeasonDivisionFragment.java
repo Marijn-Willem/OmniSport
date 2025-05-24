@@ -5,6 +5,7 @@ import com.sports.cache.key.CompSeasonDivisionKey;
 import com.sports.cache.util.DataFragmentUtil;
 import com.sports.cache.util.JsonUtil;
 import com.sports.cache.util.XmlUtil;
+import com.sports.cache.util.YamlUtil;
 import com.sports.entity.Team;
 import com.sports.entity.comparator.DescribedEntityDescription;
 import com.sports.entity.key.CompSeasonKey;
@@ -24,8 +25,8 @@ public class CompSeasonDivisionFragment extends CompDivisionFragment {
 
     private final List<CompSeasonParticipantFragment> teamFragments = new ArrayList<>();
 
-    public CompSeasonDivisionFragment(int competitionId, int seasonId, int compDivisionId, int clientId) {
-        super(competitionId, compDivisionId);
+    public CompSeasonDivisionFragment(int competitionId, int seasonId, int compDivisionId, int clientId, int nestingLevel) {
+        super(competitionId, compDivisionId, nestingLevel, true);
         this.seasonId = seasonId;
         this.clientId = clientId;
     }
@@ -46,7 +47,8 @@ public class CompSeasonDivisionFragment extends CompDivisionFragment {
         teams.sort(new DescribedEntityDescription());
 
         teamFragments.addAll(teams.stream().map(x ->
-                new CompSeasonParticipantFragment(competitionId, seasonId, x.getId(), clientId)).toList());
+                new CompSeasonParticipantFragment(competitionId, seasonId, x.getId(), clientId,
+                        DataFragmentUtil.getLevelForNestedList(nestingLevel), true)).toList());
 
         DataFragmentUtil.fillDataFragments(teamFragments, getCacheDataKey());
     }
@@ -64,5 +66,10 @@ public class CompSeasonDivisionFragment extends CompDivisionFragment {
     @Override
     public String toJson() {
         return super.toJson() + "," + JsonUtil.getArray("teamList", teamFragments);
+    }
+
+    @Override
+    public String toYaml() {
+        return super.toYaml() + new YamlUtil(nestingLevel).getArray("teamList", teamFragments);
     }
 }

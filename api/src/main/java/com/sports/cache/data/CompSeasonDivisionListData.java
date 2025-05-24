@@ -5,6 +5,7 @@ import com.sports.cache.key.CompSeasonDivisionListKey;
 import com.sports.cache.util.DataFragmentUtil;
 import com.sports.cache.util.JsonUtil;
 import com.sports.cache.util.XmlUtil;
+import com.sports.cache.util.YamlUtil;
 import com.sports.calc.teamsports.DbCalculation;
 import com.sports.entity.CompDivision;
 import com.sports.entity.key.CompSeasonKey;
@@ -38,8 +39,8 @@ public class CompSeasonDivisionListData extends OutputData {
 		List<CompDivision> sortedCompDivisions = new DbCalculation(stat).getSortedCompDivisions(compSeasonKey);
 
 		compDivisionFragments.addAll(sortedCompDivisions.stream()
-				.map(x -> new CompSeasonDivisionFragment(competitionId, seasonId, x.getCompDivisionId(), clientId))
-				.toList());
+				.map(x -> new CompSeasonDivisionFragment(competitionId, seasonId, x.getCompDivisionId(), clientId,
+						DataFragmentUtil.getLevelForNestedList(nestingLevel))).toList());
 
 		DataFragmentUtil.fillDataFragments(compDivisionFragments, getCacheKey());
 	}
@@ -58,5 +59,10 @@ public class CompSeasonDivisionListData extends OutputData {
 	@Override
 	public String toJson() {
 		return "{" + JsonUtil.getArray("compDivisionList", compDivisionFragments) + "}";
+	}
+
+	@Override
+	public String toYaml() {
+		return new YamlUtil(nestingLevel).getArray("compDivisionList", compDivisionFragments);
 	}
 }

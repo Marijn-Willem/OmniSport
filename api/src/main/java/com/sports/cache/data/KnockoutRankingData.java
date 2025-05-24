@@ -5,6 +5,7 @@ import com.sports.cache.key.KnockoutRankingKey;
 import com.sports.cache.util.DataFragmentUtil;
 import com.sports.cache.util.JsonUtil;
 import com.sports.cache.util.XmlUtil;
+import com.sports.cache.util.YamlUtil;
 import com.sports.calc.h2hsports.DbCalculation;
 import com.sports.entity.*;
 import com.sports.entity.key.*;
@@ -51,7 +52,8 @@ public class KnockoutRankingData extends OutputData {
 				new com.sports.logic.calculation.DbCalculation(stat).getCompSeasonParticipantFactory(competitionId);
 
 		participantFragments.addAll(new DbCalculation(stat).getKnockoutPhaseRanking(cspKey, factory).stream().map(x ->
-				new CompSeasonParticipantWithRankFragment(competitionId, seasonId, x, clientId)).toList());
+				new CompSeasonParticipantWithRankFragment(competitionId, seasonId, x, clientId,
+						DataFragmentUtil.getLevelForNestedList(nestingLevel))).toList());
 
 		DataFragmentUtil.fillDataFragments(participantFragments, getCacheKey());
 	}
@@ -69,5 +71,10 @@ public class KnockoutRankingData extends OutputData {
 	@Override
 	public String toJson() {
 		return "{" +  JsonUtil.getArray("ranking", participantFragments) + "}";
+	}
+
+	@Override
+	public String toYaml() {
+		return new YamlUtil(nestingLevel).getArray("ranking", participantFragments);
 	}
 }

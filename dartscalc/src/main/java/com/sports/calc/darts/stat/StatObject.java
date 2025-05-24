@@ -53,6 +53,16 @@ public class StatObject {
                 p2Throw180, p2Throw140, p2Throw100);
     }
 
+    public String getPerson1StatsYamlEntries(int nestingLevel) {
+        return getPersonStatsYamlEntries(p1Score, p1Legs, p1ThrowTot, p1ThrowDartTot, p1MisDub,
+                p1Throw180, p1Throw140, p1Throw100, nestingLevel);
+    }
+
+    public String getPerson2StatsYamlEntries(int nestingLevel) {
+        return getPersonStatsYamlEntries(p2Score, p2Legs, p2ThrowTot, p2ThrowDartTot, p2MisDub,
+                p2Throw180, p2Throw140, p2Throw100, nestingLevel);
+    }
+
     private String getPersonStatsXmlTags(int score, int legs, int throwTot, int throwDartTot, int misDub,
                                          int throw180, int throw140, int throw100) {
         return "<score>" + score + "</score><average>" +
@@ -63,12 +73,24 @@ public class StatObject {
     }
 
     private String getPersonStatsJsonEntries(int score, int legs, int throwTot, int throwDartTot, int misDub,
-                                            int throw180, int throw140, int throw100) {
+                                             int throw180, int throw140, int throw100) {
         return "\"score\":" + score + ",\"average\":\"" +
                 getFormattedAverage(throwTot, throwDartTot) +
                 "\",\"checkOutAverage\":\"" + getCheckOutString(legs, misDub) +
                 "\",\"score180\":" +
                 throw180 + ",\"score140\":" + throw140 + ",\"score100\":" + throw100;
+    }
+
+    private String getPersonStatsYamlEntries(int score, int legs, int throwTot, int throwDartTot, int misDub,
+                                             int throw180, int throw140, int throw100, int nestingLevel) {
+        String prefix = Util.padCharacter("", ' ', nestingLevel);
+
+        return formatYamlEntry("score: " + score, prefix) +
+                formatYamlEntry("average: " + getFormattedAverage(throwTot, throwDartTot), prefix) +
+                formatYamlEntry("checkOutAverage: " + getCheckOutString(legs, misDub), prefix) +
+                formatYamlEntry("score180: " + throw180, prefix) +
+                formatYamlEntry("score140: " + throw140, prefix) +
+                formatYamlEntry("score100: " + throw100, prefix);
     }
 
     private String getCheckOutString(int legs, int misDub) {
@@ -82,6 +104,10 @@ public class StatObject {
 
     private String getFormattedAverage(int throwTot, int throwDartTot) {
         return Util.getDoubleAsStringWith2Digits(throwDartTot > 0 ? 3.0 * (double)throwTot / (double)throwDartTot : 0.0);
+    }
+
+    private String formatYamlEntry(String entry, String prefix) {
+        return prefix + entry + "\n";
     }
 
     public void increaseP1Score() {

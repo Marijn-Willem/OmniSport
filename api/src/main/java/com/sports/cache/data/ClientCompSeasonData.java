@@ -55,6 +55,11 @@ public class ClientCompSeasonData extends OutputData {
         return null;
     }
 
+    @Override
+    public String toYaml() {
+        return null;
+    }
+
     public Set<CompSeasonFragment> getCompSeasonFragments() {
         return compSeasonFragments;
     }

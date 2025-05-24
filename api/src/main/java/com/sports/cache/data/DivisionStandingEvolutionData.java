@@ -32,7 +32,8 @@ public class DivisionStandingEvolutionData extends StandingEvolutionData {
 
 			new DbCalculation(stat).getDivisionStandingPerDate(compSeasonPhaseKey, compDivisionKey).forEach(x ->
 					snapshotFragments.add(
-							new StandingEvolutionSnapshotFragment(competitionId, seasonId, compSeasonPhaseId, clientId, isDomesticUSA, x)
+							new StandingEvolutionSnapshotFragment(competitionId, seasonId, compSeasonPhaseId, clientId,
+									nestingLevelList, isDomesticUSA, x)
 					)
 			);
 

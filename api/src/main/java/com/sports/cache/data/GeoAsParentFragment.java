@@ -5,6 +5,7 @@ import com.sports.cache.key.GeoAsParentKey;
 import com.sports.cache.util.DataFragmentUtil;
 import com.sports.cache.util.JsonUtil;
 import com.sports.cache.util.XmlUtil;
+import com.sports.cache.util.YamlUtil;
 import com.sports.db.type.Point;
 import com.sports.entity.Geo;
 import com.sports.entity.manager.GeoManager;
@@ -21,7 +22,9 @@ public class GeoAsParentFragment extends WritableFragment {
 
     Integer parentGeoId;
 
-    public GeoAsParentFragment(int geoId) {
+    public GeoAsParentFragment(int geoId, int nestingLevel) {
+        super(nestingLevel, false);
+
         this.geoId = geoId;
     }
 
@@ -36,7 +39,8 @@ public class GeoAsParentFragment extends WritableFragment {
 
         name = geo.getName();
         geoTypeFragment = DataFragmentUtil.getFilledDataFragment(
-                new GeoTypeFragment(geo.getGeoTypeId()), getCacheDataKey(), stat);
+                new GeoTypeFragment(geo.getGeoTypeId(), DataFragmentUtil.getLevelForNestedFragment(nestingLevel)),
+                getCacheDataKey(), stat);
         coordinates = geo.getCoordinates();
 
         parentGeoId = geo.getParentGeoId();
@@ -56,5 +60,15 @@ public class GeoAsParentFragment extends WritableFragment {
                 JsonUtil.getEntry("name", name) + "," +
                 JsonUtil.getFragmentAsEntry("geoType", geoTypeFragment) + "," +
                 JsonUtil.getEntry("link", coordinates);
+    }
+
+    @Override
+    public String toYaml() {
+        YamlUtil yamlUtil = new YamlUtil(nestingLevel);
+
+        return yamlUtil.getEntry("id", geoId) +
+                yamlUtil.getEntry("name", name) +
+                yamlUtil.getFragmentAsEntry("geoType", geoTypeFragment) +
+                yamlUtil.getEntry("link", coordinates);
     }
 }

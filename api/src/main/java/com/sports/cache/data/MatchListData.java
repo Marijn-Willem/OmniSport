@@ -5,6 +5,7 @@ import com.sports.cache.key.MatchListKey;
 import com.sports.cache.util.DataFragmentUtil;
 import com.sports.cache.util.JsonUtil;
 import com.sports.cache.util.XmlUtil;
+import com.sports.cache.util.YamlUtil;
 import com.sports.entity.*;
 import com.sports.entity.comparator.CompSeasonPhaseRoundDescription;
 import com.sports.entity.comparator.MatchDate;
@@ -44,7 +45,8 @@ public class MatchListData extends OutputData {
 
 	MatchListPhaseFragment getMatchListPhaseFragment(int competitionId, int seasonId, int compSeasonPhaseId,
 													 List<H2HMatch> h2HMatches) {
-		return new MatchListPhaseFragment(competitionId, seasonId, compSeasonPhaseId, h2HMatches, clientId);
+		return new MatchListPhaseFragment(competitionId, seasonId, compSeasonPhaseId, h2HMatches, clientId,
+				DataFragmentUtil.getLevelForNestedList(nestingLevel));
 	}
 
 	public MatchListData(int competitionId, int seasonId, Integer clientId) {
@@ -113,5 +115,10 @@ public class MatchListData extends OutputData {
 	@Override
 	public String toJson() {
 		return "{" + JsonUtil.getArray("compSeasonPhaseList", matchListPhaseFragmentList) + "}";
+	}
+
+	@Override
+	public String toYaml() {
+		return new YamlUtil(nestingLevel).getArray("compSeasonPhaseList", matchListPhaseFragmentList);
 	}
 }

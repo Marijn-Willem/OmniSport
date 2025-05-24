@@ -5,6 +5,7 @@ import com.sports.cache.key.PhaseTypeAsParentKey;
 import com.sports.cache.util.AliasUtil;
 import com.sports.cache.util.JsonUtil;
 import com.sports.cache.util.XmlUtil;
+import com.sports.cache.util.YamlUtil;
 import com.sports.entity.PhaseType;
 import com.sports.entity.manager.PhaseTypeManager;
 
@@ -20,7 +21,9 @@ public class PhaseTypeAsParentFragment extends WritableFragment {
 
     Integer parentId;
 
-    public PhaseTypeAsParentFragment(int phaseTypeId, int clientId) {
+    public PhaseTypeAsParentFragment(int phaseTypeId, int clientId, int nestingLevel) {
+        super(nestingLevel, false);
+
         this.phaseTypeId = phaseTypeId;
         this.clientId = clientId;
     }
@@ -49,5 +52,13 @@ public class PhaseTypeAsParentFragment extends WritableFragment {
     public String toJson() {
         return JsonUtil.getEntry("name", name) + "," +
                 JsonUtil.getEntry("isParent", isParent);
+    }
+
+    @Override
+    public String toYaml() {
+        YamlUtil yamlUtil = new YamlUtil(nestingLevel);
+
+        return yamlUtil.getEntry("name", name) +
+                yamlUtil.getEntry("isParent", isParent);
     }
 }

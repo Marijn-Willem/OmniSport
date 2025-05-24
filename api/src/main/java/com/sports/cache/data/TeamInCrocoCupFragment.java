@@ -5,6 +5,7 @@ import com.sports.cache.key.TeamInCrocoCupKey;
 import com.sports.cache.util.DescribedEntityUtil;
 import com.sports.cache.util.JsonUtil;
 import com.sports.cache.util.XmlUtil;
+import com.sports.cache.util.YamlUtil;
 import com.sports.entity.Team;
 
 import java.sql.SQLException;
@@ -21,7 +22,9 @@ public class TeamInCrocoCupFragment extends WritableFragment {
     private final Integer points;
     private final boolean showMatches;
 
-    public TeamInCrocoCupFragment(Team team, int clientId, boolean showMatches) {
+    public TeamInCrocoCupFragment(Team team, int clientId, boolean showMatches, int nestingLevel, boolean isInList) {
+        super(nestingLevel, isInList);
+
         this.teamId = team.getId();
         this.clientId = clientId;
         this.description = team.getDescription();
@@ -62,5 +65,15 @@ public class TeamInCrocoCupFragment extends WritableFragment {
                 JsonUtil.getEntry("description", description) + "," +
                 JsonUtil.getEntry("elo", elo) +
                 (showMatches ? "," + JsonUtil.getEntry("matches", points) : "");
+    }
+
+    @Override
+    public String toYaml() {
+        YamlUtil yamlUtil = new YamlUtil(nestingLevel);
+
+        return yamlUtil.getEntry("id", teamId, isInList) +
+                yamlUtil.getEntry("description", description) +
+                yamlUtil.getEntry("elo", elo) +
+                (showMatches ? yamlUtil.getEntry("matches", points) : "");
     }
 }

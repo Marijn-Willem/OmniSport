@@ -2,10 +2,7 @@ package com.sports.cache.data;
 
 import com.sports.cache.key.CacheDataKey;
 import com.sports.cache.key.CyclingRoadPersonResultsKey;
-import com.sports.cache.util.ClientCyclingRoadPersonResultFilter;
-import com.sports.cache.util.DataFragmentUtil;
-import com.sports.cache.util.JsonUtil;
-import com.sports.cache.util.XmlUtil;
+import com.sports.cache.util.*;
 import com.sports.calc.cyclingroad.DbCalculation;
 import com.sports.entity.EventPartPersonSport;
 import com.sports.entity.key.CompSeasonEventKey;
@@ -49,7 +46,7 @@ public class CyclingRoadPersonResultsData extends OutputData {
 					return new CyclingRoadPersonResultFragment(
 							compSeasonKey.getCompetitionId(), compSeasonKey.getSeasonId(), cseKey.getCompSeasonEventId(),
 							csepKey.getCompSeasonEventPartId(), personSportId, x.getRank(), x.getNoCountResultId(),
-							x.getEventDate(), clientId);
+							x.getEventDate(), clientId, DataFragmentUtil.getLevelForNestedList(nestingLevel));
 				})
 				.filter(filter::isElementAllowed)
 				.toList()
@@ -74,5 +71,10 @@ public class CyclingRoadPersonResultsData extends OutputData {
 		return "{" +
 				JsonUtil.getArray("personResults", cyclingRoadPersonResultFragmentList) +
 				"}";
+	}
+
+	@Override
+	public String toYaml() {
+		return new YamlUtil(nestingLevel).getArray("personResults", cyclingRoadPersonResultFragmentList);
 	}
 }

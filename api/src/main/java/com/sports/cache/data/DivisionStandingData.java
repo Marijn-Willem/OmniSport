@@ -32,7 +32,8 @@ public class DivisionStandingData extends StandingData {
 
             new DbCalculation(stat).getDivisionStanding(compSeasonPhaseKey, compDivisionKey).forEach(x ->
                 standingParticipants.add(
-                        new StandingParticipantFragment(compSeasonPhaseKey.getSuperKey(), x, clientId, isDomesticUSA)
+                        new StandingParticipantFragment(compSeasonPhaseKey.getSuperKey(), x, clientId,
+                                nestingLevelList, isDomesticUSA)
                 )
             );
 

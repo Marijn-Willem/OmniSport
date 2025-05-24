@@ -32,7 +32,9 @@ public class CyclingRoadPersonResultFragment extends WritableFragment {
 
     public CyclingRoadPersonResultFragment(int competitionId, int seasonId, int compSeasonEventId, int compSeasonEventPartId,
                                            int personSportId, Integer rank, Integer noCountResultId, LocalDateTime date,
-                                           int clientId) {
+                                           int clientId, int nestingLevel) {
+        super(nestingLevel, true);
+
         this.competitionId = competitionId;
         this.seasonId = seasonId;
         this.compSeasonEventId = compSeasonEventId;
@@ -66,8 +68,8 @@ public class CyclingRoadPersonResultFragment extends WritableFragment {
                 .getCompSeasonEventPartString(compSeasonEventPart);
 
         if (noCountResultId != null)
-            noCountResultFragment = DataFragmentUtil.getFilledDataFragment(new NoCountResultFragment(noCountResultId),
-                    getCacheDataKey(), stat);
+            noCountResultFragment = DataFragmentUtil.getFilledDataFragment(new NoCountResultFragment(noCountResultId,
+                            DataFragmentUtil.getLevelForNestedFragment(nestingLevel)), getCacheDataKey(), stat);
     }
 
     @Override
@@ -90,6 +92,19 @@ public class CyclingRoadPersonResultFragment extends WritableFragment {
                 JsonUtil.getEntry("date", date) + "," +
                 JsonUtil.getEntry("rank", rank) + "," +
                 JsonUtil.getNullableFragmentAsEntry("noCountResult", noCountResultFragment);
+    }
+
+    @Override
+    public String toYaml() {
+        YamlUtil yamlUtil = new YamlUtil(nestingLevel);
+
+        return yamlUtil.getEntry("competitionId", competitionId, isInList) +
+                yamlUtil.getEntry("competition", competitionName) +
+                yamlUtil.getEntry("compSeasonEventId", compSeasonEventId) +
+                yamlUtil.getEntry("compSeasonEventPart", eventPartName) +
+                yamlUtil.getEntry("date", date) +
+                yamlUtil.getEntry("rank", rank) +
+                yamlUtil.getNullableFragmentAsEntry("noCountResult", noCountResultFragment);
     }
 
     public CompSeasonKey getCompSeasonKey() {

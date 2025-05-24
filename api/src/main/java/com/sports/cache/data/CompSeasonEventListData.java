@@ -5,6 +5,7 @@ import com.sports.cache.key.CompSeasonEventListKey;
 import com.sports.cache.util.DataFragmentUtil;
 import com.sports.cache.util.JsonUtil;
 import com.sports.cache.util.XmlUtil;
+import com.sports.cache.util.YamlUtil;
 import com.sports.calc.alcifo.Calculation;
 import com.sports.entity.CompSeasonEvent;
 import com.sports.entity.SportEvent;
@@ -47,7 +48,7 @@ public class CompSeasonEventListData extends OutputData {
 		compSeasonEvents.sort(new CompSeasonEventNameGenderId());
 
 		compSeasonEventFragments.addAll(compSeasonEvents.stream().map(x -> new CompSeasonEventFragment(
-				compSeasonKey, x, clientId)).toList());
+				compSeasonKey, x, clientId, DataFragmentUtil.getLevelForNestedList(nestingLevel))).toList());
 
 		DataFragmentUtil.fillDataFragments(compSeasonEventFragments, getCacheKey());
 	}
@@ -66,5 +67,10 @@ public class CompSeasonEventListData extends OutputData {
 	@Override
 	public String toJson() {
 		return "{" + JsonUtil.getArray("compSeasonEventList", compSeasonEventFragments) + "}";
+	}
+
+	@Override
+	public String toYaml() {
+		return new YamlUtil(nestingLevel).getArray("compSeasonEventList", compSeasonEventFragments);
 	}
 }

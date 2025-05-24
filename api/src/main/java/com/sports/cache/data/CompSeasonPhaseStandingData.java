@@ -27,7 +27,7 @@ public class CompSeasonPhaseStandingData extends StandingData {
 
             new DbCalculation(stat).getParticipantStandingCompSeasonPhase(compSeasonPhaseKey).forEach(x ->
                 standingParticipants.add(
-                        new StandingParticipantFragment(compSeasonPhaseKey.getSuperKey(), x, clientId, isDomesticUSA)
+                        new StandingParticipantFragment(compSeasonPhaseKey.getSuperKey(), x, clientId, nestingLevelList, isDomesticUSA)
                 )
             );
 

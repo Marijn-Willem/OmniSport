@@ -5,6 +5,7 @@ import com.sports.cache.key.CompSeasonTeamListKey;
 import com.sports.cache.util.DataFragmentUtil;
 import com.sports.cache.util.JsonUtil;
 import com.sports.cache.util.XmlUtil;
+import com.sports.cache.util.YamlUtil;
 import com.sports.entity.Team;
 import com.sports.entity.comparator.DescribedEntityDescription;
 import com.sports.entity.key.CompSeasonKey;
@@ -42,7 +43,8 @@ public class CompSeasonTeamListData extends OutputData {
 		teamList.sort(new DescribedEntityDescription());
 
 		teamFragments.addAll(teamList.stream().map(x ->
-				new CompSeasonTeamWithPersonSportsFragment(competitionId, seasonId, x.getId(), clientId)).toList());
+				new CompSeasonTeamWithPersonSportsFragment(competitionId, seasonId, x.getId(), clientId,
+						DataFragmentUtil.getLevelForNestedList(nestingLevel))).toList());
 
 		DataFragmentUtil.fillDataFragments(teamFragments, getCacheKey());
 	}
@@ -60,5 +62,10 @@ public class CompSeasonTeamListData extends OutputData {
 	@Override
 	public String toJson() {
 		return "{" + JsonUtil.getArray("teamList", teamFragments) + "}";
+	}
+
+	@Override
+	public String toYaml() {
+		return new YamlUtil(nestingLevel).getArray("teamList", teamFragments);
 	}
 }

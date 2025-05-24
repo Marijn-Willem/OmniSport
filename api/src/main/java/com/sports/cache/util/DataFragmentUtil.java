@@ -13,6 +13,8 @@ import java.util.Arrays;
 import java.util.List;
 
 public class DataFragmentUtil {
+    private static final int nestingLevelOffset = 2;
+
     public static <T extends DataFragment> T getFilledDataFragment(T dataFragment, CacheDataKey cacheDataKey, Statement stat)
         throws SQLException {
         dataFragment.fill(cacheDataKey, stat);
@@ -48,6 +50,14 @@ public class DataFragmentUtil {
         }
 
         return cachedOutputData;
+    }
+
+    public static int getLevelForNestedFragment(int nestingLevel) {
+        return nestingLevel + nestingLevelOffset;
+    }
+
+    public static int getLevelForNestedList(int nestingLevel) {
+        return nestingLevel + 2 * nestingLevelOffset;
     }
 
     private static class FilledOutputDataExecutor extends DatabaseExecutor {

@@ -5,6 +5,7 @@ import com.sports.cache.key.EventPartLocationKey;
 import com.sports.cache.util.DataFragmentUtil;
 import com.sports.cache.util.JsonUtil;
 import com.sports.cache.util.XmlUtil;
+import com.sports.cache.util.YamlUtil;
 import com.sports.db.type.Point;
 import com.sports.entity.EventPartLocation;
 import com.sports.entity.key.CompSeasonEventKey;
@@ -27,7 +28,9 @@ public class EventPartLocationFragment extends WritableFragment {
     private LocationRoleFragment locationRoleFragment;
 
     public EventPartLocationFragment(int competitionId, int seasonId, int compSeasonEventId,
-                                     int compSeasonEventPartId, int eventPartLocationId) {
+                                     int compSeasonEventPartId, int eventPartLocationId, int nestingLevel) {
+        super(nestingLevel, true);
+
         this.competitionId = competitionId;
         this.seasonId = seasonId;
         this.compSeasonEventId = compSeasonEventId;
@@ -52,13 +55,16 @@ public class EventPartLocationFragment extends WritableFragment {
 
         EventPartLocation eventPartLocation = new EventPartLocationManager(stat).getEntityFromSuperKey(eplKey);
 
+        int nestingLevelFragment = DataFragmentUtil.getLevelForNestedFragment(nestingLevel);
+
         if (eventPartLocation.getGeoId() != null)
-            geoFragment = DataFragmentUtil.getFilledDataFragment(new GeoFragment(eventPartLocation.getGeoId()),
-                    getCacheDataKey(), stat);
+            geoFragment = DataFragmentUtil.getFilledDataFragment(new GeoFragment(eventPartLocation.getGeoId(),
+                            nestingLevelFragment), getCacheDataKey(), stat);
 
         coordinates = eventPartLocation.getCoordinates();
         locationRoleFragment = DataFragmentUtil.getFilledDataFragment(
-                new LocationRoleFragment(eventPartLocation.getLocationRoleId()), getCacheDataKey(), stat);
+                new LocationRoleFragment(eventPartLocation.getLocationRoleId(), nestingLevelFragment),
+                getCacheDataKey(), stat);
     }
 
     @Override
@@ -75,5 +81,15 @@ public class EventPartLocationFragment extends WritableFragment {
                 JsonUtil.getNullableFragmentAsEntry("geo", geoFragment) + "," +
                 JsonUtil.getEntry("link", coordinates) + "," +
                 JsonUtil.getFragmentAsEntry("locationRole", locationRoleFragment);
+    }
+
+    @Override
+    public String toYaml() {
+        YamlUtil yamlUtil = new YamlUtil(nestingLevel);
+
+        return yamlUtil.getEntry("eventPartLocationId", eventPartLocationId, isInList) +
+                yamlUtil.getNullableFragmentAsEntry("geo", geoFragment) +
+                yamlUtil.getEntry("link", coordinates) +
+                yamlUtil.getFragmentAsEntry("locationRole", locationRoleFragment);
     }
 }

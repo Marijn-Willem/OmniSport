@@ -5,6 +5,7 @@ import com.sports.cache.key.CompSeasonEventPartListKey;
 import com.sports.cache.util.DataFragmentUtil;
 import com.sports.cache.util.JsonUtil;
 import com.sports.cache.util.XmlUtil;
+import com.sports.cache.util.YamlUtil;
 import com.sports.entity.CompSeasonEventPart;
 import com.sports.entity.comparator.OrderableOrder;
 import com.sports.entity.key.CompSeasonEventKey;
@@ -49,7 +50,7 @@ public class CompSeasonEventPartListData extends OutputData {
 
 		fragmentList.addAll(compSeasonEventParts.stream().map(x ->
 				new CompSeasonEventPartFragment(competitionId, seasonId, compSeasonEventId,
-						x.getCompSeasonEventPartId(), clientId)).toList());
+						x.getCompSeasonEventPartId(), clientId, DataFragmentUtil.getLevelForNestedList(nestingLevel))).toList());
 
 		DataFragmentUtil.fillDataFragments(fragmentList, getCacheKey());
 	}
@@ -68,5 +69,10 @@ public class CompSeasonEventPartListData extends OutputData {
 	@Override
 	public String toJson() {
 		return "{" + JsonUtil.getArray("compSeasonEventPartList", fragmentList) + "}";
+	}
+
+	@Override
+	public String toYaml() {
+		return new YamlUtil(nestingLevel).getArray("compSeasonEventPartList", fragmentList);
 	}
 }

@@ -5,6 +5,7 @@ import com.sports.cache.key.MatchListPhaseKey;
 import com.sports.cache.util.DataFragmentUtil;
 import com.sports.cache.util.JsonUtil;
 import com.sports.cache.util.XmlUtil;
+import com.sports.cache.util.YamlUtil;
 import com.sports.entity.key.CompSeasonKey;
 import com.sports.entity.key.CompSeasonPhaseKey;
 import com.sports.entity.CompSeasonPhase;
@@ -26,13 +27,18 @@ public class MatchListPhaseFragment extends WritableFragment {
     private final List<H2HMatchFragment> h2HMatchFragments = new ArrayList<>();
 
     public MatchListPhaseFragment(int competitionId, int seasonId, int compSeasonPhaseId,
-                                  List<H2HMatch> h2HMatches, int clientId) {
+                                  List<H2HMatch> h2HMatches, int clientId, int nestingLevel) {
+        super(nestingLevel, true);
+
         this.competitionId = competitionId;
         this.seasonId = seasonId;
         this.compSeasonPhaseId = compSeasonPhaseId;
         this.clientId = clientId;
 
-        h2HMatchFragments.addAll(h2HMatches.stream().map(x -> new H2HMatchFragment(x, clientId)).toList());
+        int nestingLevelList = DataFragmentUtil.getLevelForNestedList(nestingLevel);
+
+        h2HMatchFragments.addAll(h2HMatches.stream().map(x ->
+                new H2HMatchFragment(x, clientId, nestingLevelList)).toList());
     }
 
     @Override
@@ -47,7 +53,8 @@ public class MatchListPhaseFragment extends WritableFragment {
         CompSeasonPhase compSeasonPhase = new CompSeasonPhaseManager(stat).getCompSeasonPhase(compSeasonPhaseKey);
 
         compSeasonPhaseFragment = DataFragmentUtil.getFilledDataFragment(
-                new CompSeasonPhaseFragment(compSeasonPhase, clientId), getCacheDataKey(), stat);
+                new CompSeasonPhaseFragment(compSeasonPhase, clientId, nestingLevel, true),
+                getCacheDataKey(), stat);
         DataFragmentUtil.fillDataFragments(h2HMatchFragments, getCacheDataKey());
     }
 
@@ -61,5 +68,11 @@ public class MatchListPhaseFragment extends WritableFragment {
     public String toJson() {
         return compSeasonPhaseFragment.toJson() + "," +
                 JsonUtil.getArray("matchList", h2HMatchFragments);
+    }
+
+    @Override
+    public String toYaml() {
+        return compSeasonPhaseFragment.toYaml() +
+                new YamlUtil(nestingLevel).getArray("matchList", h2HMatchFragments);
     }
 }

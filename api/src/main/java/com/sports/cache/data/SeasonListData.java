@@ -5,6 +5,7 @@ import com.sports.cache.key.SeasonListKey;
 import com.sports.cache.util.DataFragmentUtil;
 import com.sports.cache.util.JsonUtil;
 import com.sports.cache.util.XmlUtil;
+import com.sports.cache.util.YamlUtil;
 import com.sports.entity.CompSeason;
 import com.sports.entity.Season;
 import com.sports.entity.comparator.OrderableOrder;
@@ -50,10 +51,12 @@ public class SeasonListData extends OutputData {
         List<Season> seasons = new SeasonManager(stat).getSeasonList(seasonIds);
         seasons.sort(new OrderableOrder());
 
+        int nestingLevelList = DataFragmentUtil.getLevelForNestedList(nestingLevel);
+
         seasons.forEach(x -> {
             CompSeason compSeason = csMap.get(new CompSeasonKey(competitionId, x.getId()));
             compSeason.setSeasonName(x.getName());
-            seasonFragments.add(new SeasonFragment(compSeason));
+            seasonFragments.add(new SeasonFragment(compSeason, nestingLevelList));
         });
 
         DataFragmentUtil.fillDataFragments(seasonFragments, getCacheKey());
@@ -72,5 +75,10 @@ public class SeasonListData extends OutputData {
     @Override
     public String toJson() {
         return "{" + JsonUtil.getArray("seasonList", seasonFragments) + "}";
+    }
+
+    @Override
+    public String toYaml() {
+        return new YamlUtil(nestingLevel).getArray("seasonList", seasonFragments);
     }
 }

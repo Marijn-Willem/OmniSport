@@ -5,6 +5,7 @@ import com.sports.cache.key.EventPartNameKey;
 import com.sports.cache.util.AliasUtil;
 import com.sports.cache.util.JsonUtil;
 import com.sports.cache.util.XmlUtil;
+import com.sports.cache.util.YamlUtil;
 import com.sports.entity.EventPartName;
 import com.sports.entity.manager.EventPartNameManager;
 
@@ -17,7 +18,9 @@ public class EventPartNameFragment extends WritableFragment {
 
     private String name;
 
-    public EventPartNameFragment(int eventPartNameId, int clientId) {
+    public EventPartNameFragment(int eventPartNameId, int clientId, int nestingLevel) {
+        super(nestingLevel, false);
+
         this.eventPartNameId = eventPartNameId;
         this.clientId = clientId;
     }
@@ -42,5 +45,10 @@ public class EventPartNameFragment extends WritableFragment {
     @Override
     public String toJson() {
         return JsonUtil.getEntry("name", name);
+    }
+
+    @Override
+    public String toYaml() {
+        return new YamlUtil(nestingLevel).getEntry("name", name);
     }
 }

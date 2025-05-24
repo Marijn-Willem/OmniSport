@@ -5,6 +5,7 @@ import com.sports.cache.key.CompSeasonPhaseKey;
 import com.sports.cache.util.DataFragmentUtil;
 import com.sports.cache.util.JsonUtil;
 import com.sports.cache.util.XmlUtil;
+import com.sports.cache.util.YamlUtil;
 import com.sports.entity.CompSeasonPhase;
 
 import java.sql.SQLException;
@@ -29,7 +30,9 @@ public class CompSeasonPhaseFragment extends WritableFragment {
     private final Integer bestOfDec;
     private final PhaseTypeFragment phaseTypeFragment;
 
-    public CompSeasonPhaseFragment(CompSeasonPhase compSeasonPhase, int clientId) {
+    public CompSeasonPhaseFragment(CompSeasonPhase compSeasonPhase, int clientId, int nestingLevel, boolean isInList) {
+        super(nestingLevel, isInList);
+
         com.sports.entity.key.CompSeasonPhaseKey compSeasonPhaseKey = compSeasonPhase.getCompSeasonPhaseKey();
 
         competitionId = compSeasonPhaseKey.getCompetitionId();
@@ -47,7 +50,8 @@ public class CompSeasonPhaseFragment extends WritableFragment {
         bestOf1 = compSeasonPhase.getBestOf1();
         bestOf2 = compSeasonPhase.getBestOf2();
         bestOfDec = compSeasonPhase.getBestOfDec();
-        phaseTypeFragment = new PhaseTypeFragment(compSeasonPhase.getPhaseTypeId(), clientId);
+        phaseTypeFragment = new PhaseTypeFragment(compSeasonPhase.getPhaseTypeId(), clientId,
+                DataFragmentUtil.getLevelForNestedFragment(nestingLevel));
     }
 
     @Override
@@ -92,5 +96,24 @@ public class CompSeasonPhaseFragment extends WritableFragment {
                 JsonUtil.getEntry("bestOf2", bestOf2) + "," +
                 JsonUtil.getEntry("bestOfDec", bestOfDec) + "," +
                 JsonUtil.getFragmentAsEntry("phaseType", phaseTypeFragment);
+    }
+
+    @Override
+    public String toYaml() {
+        YamlUtil yamlUtil = new YamlUtil(nestingLevel);
+
+        return yamlUtil.getEntry("compSeasonPhaseId", compSeasonPhaseId, isInList) +
+                yamlUtil.getEntry("parentPhaseId", parentPhaseId) +
+                yamlUtil.getEntry("round", round) +
+                yamlUtil.getEntry("knockoutParent", knockoutParent) +
+                yamlUtil.getEntry("startDate", startDate) +
+                yamlUtil.getEntry("endDate", endDate) +
+                yamlUtil.getEntry("finished", finished) +
+                yamlUtil.getEntry("hasStanding", hasStanding) +
+                yamlUtil.getEntry("hasDivisionStandings", hasDivisionStandings) +
+                yamlUtil.getEntry("bestOf1", bestOf1) +
+                yamlUtil.getEntry("bestOf2", bestOf2) +
+                yamlUtil.getEntry("bestOfDec", bestOfDec) +
+                yamlUtil.getFragmentAsEntry("phaseType", phaseTypeFragment);
     }
 }

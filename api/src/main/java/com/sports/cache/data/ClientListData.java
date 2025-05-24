@@ -5,6 +5,7 @@ import com.sports.cache.key.ClientListKey;
 import com.sports.cache.util.DataFragmentUtil;
 import com.sports.cache.util.JsonUtil;
 import com.sports.cache.util.XmlUtil;
+import com.sports.cache.util.YamlUtil;
 import com.sports.entity.Client;
 import com.sports.entity.comparator.NamedEntityName;
 import com.sports.entity.manager.ClientManager;
@@ -28,7 +29,8 @@ public class ClientListData extends OutputData {
         List<Client> clientList = new ArrayList<>(new ClientManager(stat).getClientList());
         clientList.sort(new NamedEntityName());
 
-        clientList.forEach(x -> clientsSorted.add(new ClientFragment(x)));
+        clientList.forEach(x -> clientsSorted.add(
+                new ClientFragment(x, DataFragmentUtil.getLevelForNestedList(nestingLevel), true)));
         DataFragmentUtil.fillDataFragments(clientsSorted, getCacheKey());
 
         clientsSorted.forEach(x -> {
@@ -51,6 +53,11 @@ public class ClientListData extends OutputData {
     @Override
     public String toJson() {
         return "{" + JsonUtil.getArray("clientList", clientsSorted) + "}";
+    }
+
+    @Override
+    public String toYaml() {
+        return new YamlUtil(nestingLevel).getArray("clientList", clientsSorted);
     }
 
     public ClientFragment getValidatedClient(String name, String passWord) {

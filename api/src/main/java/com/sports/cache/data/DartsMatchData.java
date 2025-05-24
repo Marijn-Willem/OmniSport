@@ -5,6 +5,7 @@ import com.sports.cache.key.DartsMatchKey;
 import com.sports.cache.util.DataFragmentUtil;
 import com.sports.cache.util.JsonUtil;
 import com.sports.cache.util.XmlUtil;
+import com.sports.cache.util.YamlUtil;
 import com.sports.entity.PersonMatch;
 import com.sports.entity.PersonMatchPart;
 import com.sports.entity.Sport;
@@ -25,6 +26,7 @@ public class DartsMatchData extends OutputData {
     private final int seasonId;
     private final int personMatchId;
     private final Integer clientId;
+    private final int nestingLevelNested = DataFragmentUtil.getLevelForNestedFragment(nestingLevel);
 
     private boolean isValidOutput;
     private PersonSportFragment personSport1;
@@ -65,13 +67,15 @@ public class DartsMatchData extends OutputData {
                 person1Win = personMatch.isParticipant1Win();
                 person1Start = personMatch.isPerson1Start();
                 matchStats = DataFragmentUtil.getFilledDataFragment(
-                        new DartsMatchStatsFragment(competitionId, seasonId, personMatchId), getCacheKey(), stat);
+                        new DartsMatchStatsFragment(competitionId, seasonId, personMatchId,
+                                DataFragmentUtil.getLevelForNestedFragment(nestingLevelNested)), getCacheKey(), stat);
 
                 List<PersonMatchPart> sets = new PersonMatchPartManager(stat).getPersonMatchPartsWithoutParent(personMatchKey);
                 sets.sort(new PersonMatchPartId());
 
                 sets.forEach(x -> setStats.add(
-                                new DartsSetStatsFragment(competitionId, seasonId, personMatchId, x.getPersonMatchPartId())
+                                new DartsSetStatsFragment(competitionId, seasonId, personMatchId, x.getPersonMatchPartId(),
+                                        DataFragmentUtil.getLevelForNestedList(nestingLevelNested))
                         )
                 );
 
@@ -110,12 +114,27 @@ public class DartsMatchData extends OutputData {
                         JsonUtil.getArray("setStats", setStats)) + "}";
     }
 
+    @Override
+    public String toYaml() {
+        YamlUtil yamlUtilNested = new YamlUtil(nestingLevelNested);
+
+        return new YamlUtil(nestingLevel).getEntryHeader("dartsMatch") +
+                yamlUtilNested.getNullableFragmentAsEntry("personSport1", personSport1) +
+                yamlUtilNested.getNullableFragmentAsEntry("personSport2", personSport2) +
+                yamlUtilNested.getEntry("finished", finished) +
+                yamlUtilNested.getEntry("person1Win", person1Win) +
+                yamlUtilNested.getEntry("person1Start", person1Start) +
+                yamlUtilNested.getFragmentAsEntry("matchStats", matchStats) +
+                yamlUtilNested.getArray("setStats", setStats);
+    }
+
     private PersonSportFragment getFilledPersonSportFragment(PersonMatchKey personMatchKey,
                                                              Integer personSportId,
                                                              Statement stat) throws SQLException {
         if (personSportId != null) {
             PersonSportFragment personSportFragment = new PersonSportFragment(
-                    personMatchKey.getCompetitionId(), personMatchKey.getSeasonId(), personSportId, clientId);
+                    personMatchKey.getCompetitionId(), personMatchKey.getSeasonId(), personSportId, clientId,
+                    DataFragmentUtil.getLevelForNestedFragment(nestingLevelNested), false);
 
             return DataFragmentUtil.getFilledDataFragment(personSportFragment, getCacheKey(), stat);
         }

@@ -3,6 +3,7 @@ package com.sports.cache.data;
 import com.sports.cache.key.CacheKey;
 import com.sports.cache.util.JsonUtil;
 import com.sports.cache.util.XmlUtil;
+import com.sports.cache.util.YamlUtil;
 import com.sports.entity.CompSeason;
 import com.sports.entity.key.CompSeasonKey;
 import com.sports.entity.manager.CompSeasonManager;
@@ -22,6 +23,12 @@ public class CompSeasonFragment extends WritableFragment {
     private String seasonName;
 
     public CompSeasonFragment(CompSeasonKey compSeasonKey) {
+        this(compSeasonKey, 0, false);
+    }
+
+    public CompSeasonFragment(CompSeasonKey compSeasonKey, int nestingLevel, boolean isInList) {
+        super(nestingLevel, isInList);
+
         this.competitionId = compSeasonKey.getCompetitionId();
         this.seasonId = compSeasonKey.getSeasonId();
     }
@@ -63,6 +70,15 @@ public class CompSeasonFragment extends WritableFragment {
         return JsonUtil.getEntry("competitionName", competitionName) + "," +
                 JsonUtil.getEntry("seasonName", seasonName) + "," +
                 JsonUtil.getEntry("startDate", startDate);
+    }
+
+    @Override
+    public String toYaml() {
+        YamlUtil yamlUtil = new YamlUtil(nestingLevel);
+
+        return yamlUtil.getEntry("competitionName", competitionName, isInList) +
+                yamlUtil.getEntry("seasonName", seasonName) +
+                yamlUtil.getEntry("startDate", startDate);
     }
 
     public int getCompetitionId() {

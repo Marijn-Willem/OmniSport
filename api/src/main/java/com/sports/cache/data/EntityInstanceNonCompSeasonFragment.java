@@ -3,6 +3,7 @@ package com.sports.cache.data;
 import com.sports.cache.key.CacheKey;
 import com.sports.cache.key.EntityInstanceNonCompSeasonKey;
 import com.sports.entity.EntityInstance;
+import com.sports.entity.key.EntityInstanceKey;
 import com.sports.logic.calculation.Calculation;
 import com.sports.logic.factory.EntityInstanceFactory;
 
@@ -27,7 +28,8 @@ public class EntityInstanceNonCompSeasonFragment extends DataFragment {
 
     @Override
     void fill(Statement stat) throws SQLException {
-        EntityInstanceFactory factory = Calculation.getEntityInstanceFactory(entityName);
+        EntityInstanceFactory<? extends EntityInstanceKey, ? extends EntityInstance> factory =
+                Calculation.getEntityInstanceFactory(entityName);
 
         if (factory != null)
             entityInstance = factory.getManager(stat).getInstanceOnDateTime(entityId, null);

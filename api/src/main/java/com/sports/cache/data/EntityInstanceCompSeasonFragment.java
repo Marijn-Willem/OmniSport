@@ -5,6 +5,7 @@ import com.sports.cache.key.EntityInstanceCompSeasonKey;
 import com.sports.cache.util.DataFragmentUtil;
 import com.sports.entity.EntityInstance;
 import com.sports.entity.key.CompSeasonKey;
+import com.sports.entity.key.EntityInstanceKey;
 import com.sports.logic.calculation.Calculation;
 import com.sports.logic.factory.EntityInstanceFactory;
 
@@ -35,7 +36,8 @@ public class EntityInstanceCompSeasonFragment extends DataFragment {
         LocalDateTime startDate = DataFragmentUtil.getFilledDataFragment(
                 new CompSeasonFragment(compSeasonKey), getCacheDataKey(), stat).getStartDate();
 
-        EntityInstanceFactory factory = Calculation.getEntityInstanceFactory(entityName);
+        EntityInstanceFactory<? extends EntityInstanceKey, ? extends EntityInstance> factory =
+                Calculation.getEntityInstanceFactory(entityName);
         entityInstance = factory.getManager(stat).getInstanceOnDateTime(entityId, startDate);
     }
 

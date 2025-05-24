@@ -5,6 +5,7 @@ import com.sports.cache.key.EventPersonSportListKey;
 import com.sports.cache.util.DataFragmentUtil;
 import com.sports.cache.util.JsonUtil;
 import com.sports.cache.util.XmlUtil;
+import com.sports.cache.util.YamlUtil;
 import com.sports.entity.PersonSport;
 import com.sports.entity.comparator.DescribedEntityDescription;
 import com.sports.entity.key.CompSeasonEventKey;
@@ -46,8 +47,11 @@ public class EventPersonSportListData extends OutputData {
 		List<PersonSport> personSports = new PersonSportManager(stat).getParticipantList(personSportIds);
 		personSports.sort(new DescribedEntityDescription());
 
+		int nestingLevelList = DataFragmentUtil.getLevelForNestedList(nestingLevel);
+
 		eventPersonSportFragments.addAll(personSports.stream().map(x ->
-				new EventPersonSportFragment(competitionId, seasonId, compSeasonEventId, x.getId(), clientId)).toList());
+				new EventPersonSportFragment(competitionId, seasonId, compSeasonEventId, x.getId(), clientId, nestingLevelList))
+				.toList());
 
 		DataFragmentUtil.fillDataFragments(eventPersonSportFragments, getCacheKey());
 	}
@@ -67,5 +71,10 @@ public class EventPersonSportListData extends OutputData {
 	public String toJson() {
 		return "{" + JsonUtil.getArray("eventPersonSportList",
 				eventPersonSportFragments) + "}";
+	}
+
+	@Override
+	public String toYaml() {
+		return new YamlUtil(nestingLevel).getArray("eventPersonSportList", eventPersonSportFragments);
 	}
 }

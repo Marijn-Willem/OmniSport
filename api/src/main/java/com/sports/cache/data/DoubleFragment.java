@@ -22,7 +22,9 @@ public class DoubleFragment extends WritableFragment {
     private PersonSportFragment personSport2Fragment;
     private int elo;
 
-    public DoubleFragment(int competitionId, int seasonId, int doubleId, int clientId) {
+    public DoubleFragment(int competitionId, int seasonId, int doubleId, int clientId, int nestingLevel) {
+        super(nestingLevel, false);
+
         this.competitionId = competitionId;
         this.seasonId = seasonId;
         this.doubleId = doubleId;
@@ -40,10 +42,14 @@ public class DoubleFragment extends WritableFragment {
         CompSeasonDoubleKey compSeasonDoubleKey = new CompSeasonDoubleKey(compSeasonKey, doubleId);
         Double dbl = new DoubleManager(stat).getDouble(compSeasonDoubleKey.getDoubleId());
 
+        int nestingLevelFragment = DataFragmentUtil.getLevelForNestedFragment(nestingLevel);
+
         personSport1Fragment = DataFragmentUtil.getFilledDataFragment(
-                new PersonSportFragment(competitionId, seasonId, dbl.getPersonSport1Id(), clientId), getCacheDataKey(), stat);
+                new PersonSportFragment(competitionId, seasonId, dbl.getPersonSport1Id(), clientId, nestingLevelFragment, false),
+                getCacheDataKey(), stat);
         personSport2Fragment = DataFragmentUtil.getFilledDataFragment(
-                new PersonSportFragment(competitionId, seasonId, dbl.getPersonSport2Id(), clientId), getCacheDataKey(), stat);
+                new PersonSportFragment(competitionId, seasonId, dbl.getPersonSport2Id(), clientId, nestingLevelFragment, false),
+                getCacheDataKey(), stat);
         description = new DescribedEntityUtil(clientId, getCacheDataKey(), stat).getDoubleString(dbl, compSeasonKey);
         elo = dbl.getElo();
     }
@@ -64,5 +70,16 @@ public class DoubleFragment extends WritableFragment {
                 JsonUtil.getFragmentAsEntry("personSport1", personSport1Fragment) + "," +
                 JsonUtil.getFragmentAsEntry("personSport2", personSport2Fragment) + "," +
                 JsonUtil.getEntry("elo", elo);
+    }
+
+    @Override
+    public String toYaml() {
+        YamlUtil yamlUtil = new YamlUtil(nestingLevel);
+
+        return yamlUtil.getEntry("id", doubleId) +
+                yamlUtil.getEntry("description", description) +
+                yamlUtil.getFragmentAsEntry("personSport1", personSport1Fragment) +
+                yamlUtil.getFragmentAsEntry("personSport2", personSport2Fragment) +
+                yamlUtil.getEntry("elo", elo);
     }
 }

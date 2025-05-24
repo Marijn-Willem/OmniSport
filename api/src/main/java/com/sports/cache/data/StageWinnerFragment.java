@@ -5,6 +5,7 @@ import com.sports.cache.key.StageWinnerKey;
 import com.sports.cache.util.DataFragmentUtil;
 import com.sports.cache.util.JsonUtil;
 import com.sports.cache.util.XmlUtil;
+import com.sports.cache.util.YamlUtil;
 import com.sports.calc.alcifo.DbCalculation;
 import com.sports.entity.*;
 import com.sports.entity.key.*;
@@ -25,7 +26,9 @@ public class StageWinnerFragment extends WritableFragment {
     private CompSeasonTeamFragment compSeasonTeamFragment;
 
     public StageWinnerFragment(int competitionId, int seasonId, int compSeasonEventId, int participantId,
-                               int stage, int clientId) {
+                               int stage, int clientId, int nestingLevel) {
+        super(nestingLevel, true);
+
         this.competitionId = competitionId;
         this.seasonId = seasonId;
         this.compSeasonEventId = compSeasonEventId;
@@ -54,13 +57,17 @@ public class StageWinnerFragment extends WritableFragment {
                 new DbCalculation(stat).getCompSeasonParticipantFactory(new CompSeasonEventKey(new CompSeasonKey(competitionId, seasonId),
                         compSeasonEventId));
 
+        int nestingLevelNested = DataFragmentUtil.getLevelForNestedFragment(nestingLevel);
+
         switch (factory.getParticipantType()) {
             case PERSON_SPORT ->
                 personSportFragment = DataFragmentUtil.getFilledDataFragment(
-                        new PersonSportFragment(competitionId, seasonId, participantId, clientId), getCacheDataKey(), stat);
+                        new PersonSportFragment(competitionId, seasonId, participantId, clientId, nestingLevelNested, false),
+                        getCacheDataKey(), stat);
             case TEAM ->
                 compSeasonTeamFragment = DataFragmentUtil.getFilledDataFragment(
-                        new CompSeasonTeamFragment(competitionId, seasonId, participantId, clientId), getCacheDataKey(), stat);
+                        new CompSeasonTeamFragment(competitionId, seasonId, participantId, clientId, nestingLevelNested),
+                        getCacheDataKey(), stat);
             case DOUBLE -> {
             }
         }
@@ -78,5 +85,14 @@ public class StageWinnerFragment extends WritableFragment {
         return JsonUtil.getEntry("stage", stage) + "," +
                 JsonUtil.getNullableFragmentAsEntry("personSport", personSportFragment) + "," +
                 JsonUtil.getNullableFragmentAsEntry("team", compSeasonTeamFragment);
+    }
+
+    @Override
+    public String toYaml() {
+        YamlUtil yamlUtil = new YamlUtil(nestingLevel);
+
+        return yamlUtil.getEntry("stage", stage, isInList) +
+                yamlUtil.getNullableFragmentAsEntry("personSport", personSportFragment) +
+                yamlUtil.getNullableFragmentAsEntry("team", compSeasonTeamFragment);
     }
 }

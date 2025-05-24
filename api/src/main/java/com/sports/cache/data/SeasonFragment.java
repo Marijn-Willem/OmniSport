@@ -4,6 +4,7 @@ import com.sports.cache.key.CacheKey;
 import com.sports.cache.key.CompSeasonKey;
 import com.sports.cache.util.JsonUtil;
 import com.sports.cache.util.XmlUtil;
+import com.sports.cache.util.YamlUtil;
 import com.sports.entity.CompSeason;
 
 import java.sql.Statement;
@@ -16,7 +17,9 @@ public class SeasonFragment extends WritableFragment {
     private final LocalDateTime startDate;
     private final LocalDateTime endDate;
 
-    public SeasonFragment(CompSeason compSeason) {
+    public SeasonFragment(CompSeason compSeason, int nestingLevel) {
+        super(nestingLevel, true);
+
         this.competitionId = compSeason.getCompetitionId();
         this.seasonId = compSeason.getSeasonId();
         this.name = compSeason.getSeasonName();
@@ -48,5 +51,15 @@ public class SeasonFragment extends WritableFragment {
                 JsonUtil.getEntry("name", name) + "," +
                 JsonUtil.getEntry("startdate", startDate) + "," +
                 JsonUtil.getEntry("enddate", endDate);
+    }
+
+    @Override
+    public String toYaml() {
+        YamlUtil yamlUtil = new YamlUtil(nestingLevel);
+
+        return yamlUtil.getEntry("id", seasonId, isInList) +
+                yamlUtil.getEntry("name", name) +
+                yamlUtil.getEntry("startdate", startDate) +
+                yamlUtil.getEntry("enddate", endDate);
     }
 }

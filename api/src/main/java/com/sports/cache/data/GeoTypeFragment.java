@@ -4,6 +4,7 @@ import com.sports.cache.key.CacheKey;
 import com.sports.cache.key.GeoTypeKey;
 import com.sports.cache.util.JsonUtil;
 import com.sports.cache.util.XmlUtil;
+import com.sports.cache.util.YamlUtil;
 import com.sports.entity.GeoType;
 import com.sports.entity.manager.GeoTypeManager;
 
@@ -15,7 +16,9 @@ public class GeoTypeFragment extends WritableFragment {
 
     private String name;
 
-    public GeoTypeFragment(int geoTypeId) {
+    public GeoTypeFragment(int geoTypeId, int nestingLevel) {
+        super(nestingLevel, false);
+
         this.geoTypeId = geoTypeId;
     }
 
@@ -41,5 +44,13 @@ public class GeoTypeFragment extends WritableFragment {
     public String toJson() {
         return JsonUtil.getEntry("id", geoTypeId) + "," +
                 JsonUtil.getEntry("name", name);
+    }
+
+    @Override
+    public String toYaml() {
+        YamlUtil yamlUtil = new YamlUtil(nestingLevel);
+
+        return yamlUtil.getEntry("id", geoTypeId) +
+                yamlUtil.getEntry("name", name);
     }
 }

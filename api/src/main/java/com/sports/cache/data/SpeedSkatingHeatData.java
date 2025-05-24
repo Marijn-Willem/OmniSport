@@ -5,6 +5,7 @@ import com.sports.cache.key.SpeedSkatingHeatKey;
 import com.sports.cache.util.DataFragmentUtil;
 import com.sports.cache.util.JsonUtil;
 import com.sports.cache.util.XmlUtil;
+import com.sports.cache.util.YamlUtil;
 import com.sports.entity.EventPartPersonSport;
 import com.sports.entity.Sport;
 import com.sports.entity.comparator.EventPartPersonPersonId;
@@ -25,6 +26,7 @@ public class SpeedSkatingHeatData extends OutputData {
     private final int compSeasonEventPartId;
     private final int heat;
     private final Integer clientId;
+    private final int nestingLevelNested = DataFragmentUtil.getLevelForNestedFragment(nestingLevel);
 
     private SpSkHeatPersonSportFragment personSport1Fragment;
     private SpSkHeatPersonSportFragment personSport2Fragment;
@@ -59,13 +61,15 @@ public class SpeedSkatingHeatData extends OutputData {
             eventPartPersonSports.sort(new EventPartPersonPersonId());
 
             if (eventPartPersonSports.size() == 2) {
+                int nestingLevelFragment = DataFragmentUtil.getLevelForNestedFragment(nestingLevelNested);
+
                 personSport1Fragment = DataFragmentUtil.getFilledDataFragment(new SpSkHeatPersonSportFragment(
                         competitionId, seasonId, compSeasonEventId, compSeasonEventPartId, heat,
-                        eventPartPersonSports.get(0).getPersonSportId(), clientId
+                        eventPartPersonSports.get(0).getPersonSportId(), clientId, nestingLevelFragment
                 ), getCacheKey(), stat);
                 personSport2Fragment = DataFragmentUtil.getFilledDataFragment(new SpSkHeatPersonSportFragment(
                         competitionId, seasonId, compSeasonEventId, compSeasonEventPartId, heat,
-                        eventPartPersonSports.get(1).getPersonSportId(), clientId
+                        eventPartPersonSports.get(1).getPersonSportId(), clientId, nestingLevelFragment
                 ), getCacheKey(), stat);
             }
         }
@@ -89,5 +93,15 @@ public class SpeedSkatingHeatData extends OutputData {
         return "{" + JsonUtil.encloseContent("heat",
                 JsonUtil.getFragmentAsEntry("personSport1", personSport1Fragment) + "," +
                 JsonUtil.getFragmentAsEntry("personSport2", personSport2Fragment)) + "}";
+    }
+
+    @Override
+    public String toYaml() {
+        YamlUtil yamlUtil = new YamlUtil(nestingLevel);
+        YamlUtil yamlUtilNested = new YamlUtil(nestingLevelNested);
+
+        return yamlUtil.getEntryHeader("heat") +
+                yamlUtilNested.getFragmentAsEntry("personSport1", personSport1Fragment) +
+                yamlUtilNested.getFragmentAsEntry("personSport2", personSport2Fragment);
     }
 }

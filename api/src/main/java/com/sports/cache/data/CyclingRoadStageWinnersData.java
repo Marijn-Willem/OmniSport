@@ -5,6 +5,7 @@ import com.sports.cache.key.CyclingRoadStageWinnersKey;
 import com.sports.cache.util.DataFragmentUtil;
 import com.sports.cache.util.JsonUtil;
 import com.sports.cache.util.XmlUtil;
+import com.sports.cache.util.YamlUtil;
 import com.sports.entity.*;
 import com.sports.entity.comparator.CompSeasonEventPartStage;
 import com.sports.entity.key.CompSeasonEventKey;
@@ -109,6 +110,11 @@ public class CyclingRoadStageWinnersData extends OutputData {
 		return "{" + JsonUtil.getArray("stageWinnerList", stageWinnerFragments) + "}";
 	}
 
+	@Override
+	public String toYaml() {
+		return new YamlUtil(nestingLevel).getArray("stageWinnerList", stageWinnerFragments);
+	}
+
 	private CompSeasonEvent getCompSeasonEventForSportsEvent(List<CompSeasonEvent> compSeasonEvents, SportEventKey seKey) {
 		for (CompSeasonEvent compSeasonEvent : compSeasonEvents)
 			if (seKey.equals(compSeasonEvent.getSportEventKey()))
@@ -126,10 +132,13 @@ public class CyclingRoadStageWinnersData extends OutputData {
 			CompSeasonEventPartKey csepKey = new CompSeasonEventPartKey(cseKey, compSeasonEventPart.getCompSeasonEventPartId());
 			T partParticipant = partParticipantMap.get(csepKey);
 
-			if (partParticipant != null)
+			if (partParticipant != null) {
+				int nestingLevelList = DataFragmentUtil.getLevelForNestedList(nestingLevel);
+
 				stageWinnerFragments.add(new StageWinnerFragment(competitionId, seasonId,
 						cseKey.getCompSeasonEventId(), partParticipant.getParticipantId(),
-						compSeasonEventPart.getStage(), clientId));
+						compSeasonEventPart.getStage(), clientId, nestingLevelList));
+			}
 		}
 	}
 }

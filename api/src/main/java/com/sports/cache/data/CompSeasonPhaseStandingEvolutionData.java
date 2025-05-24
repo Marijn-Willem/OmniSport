@@ -25,7 +25,8 @@ public class CompSeasonPhaseStandingEvolutionData extends StandingEvolutionData 
 
 			new DbCalculation(stat).getParticipantStandingCompSeasonPhasePerDate(getCompSeasonPhaseKey())
 					.forEach(x -> snapshotFragments.add(
-							new StandingEvolutionSnapshotFragment(competitionId, seasonId, compSeasonPhaseId, clientId, isDomesticUSA, x)
+							new StandingEvolutionSnapshotFragment(competitionId, seasonId, compSeasonPhaseId, clientId,
+									nestingLevelList, isDomesticUSA, x)
 						)
 					);
 

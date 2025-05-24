@@ -5,6 +5,7 @@ import com.sports.cache.key.H2HMatchKey;
 import com.sports.cache.util.DataFragmentUtil;
 import com.sports.cache.util.JsonUtil;
 import com.sports.cache.util.XmlUtil;
+import com.sports.cache.util.YamlUtil;
 import com.sports.entity.H2HMatch;
 
 import java.sql.SQLException;
@@ -16,6 +17,7 @@ public class H2HMatchFragment extends WritableFragment {
     private final int seasonId;
     private final int matchId;
     private final int clientId;
+    private final int nestingLevelFragment;
 
     private final ParticipantFragment participant1Fragment;
     private final ParticipantFragment participant2Fragment;
@@ -27,11 +29,14 @@ public class H2HMatchFragment extends WritableFragment {
     private final Integer knockoutOrder;
     private final LocalDateTime date;
 
-    public H2HMatchFragment(H2HMatch h2HMatch, int clientId) {
+    public H2HMatchFragment(H2HMatch h2HMatch, int clientId, int nestingLevel) {
+        super(nestingLevel, true);
+
         competitionId = h2HMatch.getCompSeasonPhaseKey().getCompetitionId();
         seasonId = h2HMatch.getCompSeasonPhaseKey().getSeasonId();
         matchId = h2HMatch.getSpecificId();
         this.clientId = clientId;
+        nestingLevelFragment = DataFragmentUtil.getLevelForNestedFragment(nestingLevel);
 
         participant1Fragment = getParticipantFragment(h2HMatch.getParticipant1Id());
         participant2Fragment = getParticipantFragment(h2HMatch.getParticipant2Id());
@@ -39,8 +44,8 @@ public class H2HMatchFragment extends WritableFragment {
         score2 = h2HMatch.getScore1_2();
         Integer ncr1 = h2HMatch.getParticipant1NcrId();
         Integer ncr2 = h2HMatch.getParticipant2NcrId();
-        noCountResult1Fragment = ncr1 != null ? new NoCountResultFragment(ncr1) : null;
-        noCountResult2Fragment = ncr2 != null ? new NoCountResultFragment(ncr2) : null;
+        noCountResult1Fragment = ncr1 != null ? new NoCountResultFragment(ncr1, nestingLevelFragment) : null;
+        noCountResult2Fragment = ncr2 != null ? new NoCountResultFragment(ncr2, nestingLevelFragment) : null;
         finished = h2HMatch.isFinished();
         knockoutOrder = h2HMatch.getKnockoutOrder();
         date = h2HMatch.getDate();
@@ -94,7 +99,24 @@ public class H2HMatchFragment extends WritableFragment {
                 JsonUtil.getEntry("date", date);
     }
 
+    @Override
+    public String toYaml() {
+        YamlUtil yamlUtil = new YamlUtil(nestingLevel);
+
+        return yamlUtil.getEntry("matchId", matchId, isInList) +
+                yamlUtil.getNullableFragmentAsEntry("participant1", participant1Fragment) +
+                yamlUtil.getNullableFragmentAsEntry("participant2", participant2Fragment) +
+                yamlUtil.getEntry("score1", score1) +
+                yamlUtil.getEntry("score2", score2) +
+                yamlUtil.getNullableFragmentAsEntry("noCountResult1", noCountResult1Fragment) +
+                yamlUtil.getNullableFragmentAsEntry("noCountResult2", noCountResult2Fragment) +
+                yamlUtil.getEntry("finished", finished) +
+                yamlUtil.getEntry("knockoutOrder", knockoutOrder) +
+                yamlUtil.getEntry("date", date);
+    }
+
     private ParticipantFragment getParticipantFragment(Integer participantId) {
-        return participantId != null ? new ParticipantFragment(competitionId, seasonId, participantId, clientId) : null;
+        return participantId != null ?
+                new ParticipantFragment(competitionId, seasonId, participantId, clientId, nestingLevelFragment, false) : null;
     }
 }

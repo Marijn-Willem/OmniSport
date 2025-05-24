@@ -5,6 +5,7 @@ import com.sports.cache.key.LanguageKey;
 import com.sports.cache.util.DataFragmentUtil;
 import com.sports.cache.util.JsonUtil;
 import com.sports.cache.util.XmlUtil;
+import com.sports.cache.util.YamlUtil;
 
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -12,8 +13,8 @@ import java.sql.Statement;
 public class LanguageFragment extends LanguageAsFallbackFragment {
     private LanguageAsFallbackFragment languageAsFallbackFragment;
 
-    public LanguageFragment(int id) {
-        super(id);
+    public LanguageFragment(int id, int nestingLevel) {
+        super(id, nestingLevel);
     }
 
     @Override
@@ -21,7 +22,8 @@ public class LanguageFragment extends LanguageAsFallbackFragment {
         super.fill(stat);
         if (fallBackLanguageId != null)
             languageAsFallbackFragment = DataFragmentUtil.getFilledDataFragment(
-                    new LanguageAsFallbackFragment(fallBackLanguageId), getCacheDataKey(), stat);
+                    new LanguageAsFallbackFragment(fallBackLanguageId,
+                            DataFragmentUtil.getLevelForNestedFragment(nestingLevel)), getCacheDataKey(), stat);
     }
 
     @Override
@@ -32,6 +34,12 @@ public class LanguageFragment extends LanguageAsFallbackFragment {
     @Override
     public String toJson() {
         return super.toJson() + "," + JsonUtil.getNullableFragmentAsEntry("fallbackLanguage", languageAsFallbackFragment);
+    }
+
+    @Override
+    public String toYaml() {
+        return super.toYaml() + new YamlUtil(nestingLevel)
+                .getNullableFragmentAsEntry("fallbackLanguage", languageAsFallbackFragment);
     }
 
     @Override

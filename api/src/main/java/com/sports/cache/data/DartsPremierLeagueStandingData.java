@@ -30,7 +30,8 @@ public class DartsPremierLeagueStandingData extends StandingData {
 
 		if (standingContext != null)
 			standingContext.standing().forEach(x -> standingParticipants.add(
-					new StandingParticipantFragment(compSeasonKey, x, clientId, false)));
+					new StandingParticipantFragment(compSeasonKey, x, clientId,
+							nestingLevelList, false)));
 
 		DataFragmentUtil.fillDataFragments(standingParticipants, getCacheKey());
 	}

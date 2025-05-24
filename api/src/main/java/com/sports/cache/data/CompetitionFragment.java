@@ -5,6 +5,7 @@ import com.sports.cache.key.CompetitionKey;
 import com.sports.cache.util.DataFragmentUtil;
 import com.sports.cache.util.JsonUtil;
 import com.sports.cache.util.XmlUtil;
+import com.sports.cache.util.YamlUtil;
 import com.sports.entity.Competition;
 import com.sports.entity.manager.CompetitionManager;
 
@@ -24,6 +25,11 @@ public class CompetitionFragment extends WritableFragment {
     private int sportId;
 
     public CompetitionFragment(int competitionId) {
+        this(competitionId, 0);
+    }
+
+    public CompetitionFragment(int competitionId, int nestingLevel) {
+        super(nestingLevel, true);
         this.competitionId = competitionId;
     }
 
@@ -44,8 +50,8 @@ public class CompetitionFragment extends WritableFragment {
        sportId = competition.getSportId();
 
        if (geoId != null)
-           geoFragment = DataFragmentUtil.getFilledDataFragment(new GeoFragment(geoId),
-                   getCacheDataKey(), stat);
+           geoFragment = DataFragmentUtil.getFilledDataFragment(new GeoFragment(geoId,
+                           DataFragmentUtil.getLevelForNestedFragment(nestingLevel)), getCacheDataKey(), stat);
     }
 
     @Override
@@ -66,6 +72,18 @@ public class CompetitionFragment extends WritableFragment {
                 JsonUtil.getEntry("h2hDouble", h2hDouble) + "," +
                 JsonUtil.getEntry("isDomestic", isDomestic) + "," +
                 JsonUtil.getNullableFragmentAsEntry("geo", geoFragment);
+    }
+
+    @Override
+    public String toYaml() {
+        YamlUtil yamlUtil = new YamlUtil(nestingLevel);
+
+        return yamlUtil.getEntry("id", competitionId, isInList) +
+                yamlUtil.getEntry("name", name) +
+                yamlUtil.getGenderYaml(genderId) +
+                yamlUtil.getEntry("h2hDouble", h2hDouble) +
+                yamlUtil.getEntry("isDomestic", isDomestic) +
+                yamlUtil.getNullableFragmentAsEntry("geo", geoFragment);
     }
 
     public int getCompetitionId() {

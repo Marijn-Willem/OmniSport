@@ -5,6 +5,7 @@ import com.sports.cache.key.CompSeasonEventKey;
 import com.sports.cache.util.DataFragmentUtil;
 import com.sports.cache.util.JsonUtil;
 import com.sports.cache.util.XmlUtil;
+import com.sports.cache.util.YamlUtil;
 import com.sports.entity.CompSeasonEvent;
 import com.sports.entity.key.CompSeasonKey;
 
@@ -22,7 +23,9 @@ public class CompSeasonEventFragment extends WritableFragment {
     private final int sportEventId;
     private SportEventFragment sportEventFragment;
 
-    public CompSeasonEventFragment(CompSeasonKey compSeasonKey, CompSeasonEvent compSeasonEvent, int clientId) {
+    public CompSeasonEventFragment(CompSeasonKey compSeasonKey, CompSeasonEvent compSeasonEvent, int clientId, int nestingLevel) {
+        super(nestingLevel, true);
+
         competitionId = compSeasonKey.getCompetitionId();
         seasonId = compSeasonKey.getSeasonId();
         compSeasonEventId = compSeasonEvent.getCompSeasonEventId();
@@ -40,8 +43,8 @@ public class CompSeasonEventFragment extends WritableFragment {
 
     @Override
     void fill(Statement stat) throws SQLException {
-        sportEventFragment = DataFragmentUtil.getFilledDataFragment(new SportEventFragment(sportId, sportEventId, clientId),
-                getCacheDataKey(), stat);
+        sportEventFragment = DataFragmentUtil.getFilledDataFragment(new SportEventFragment(sportId, sportEventId, clientId,
+                        DataFragmentUtil.getLevelForNestedFragment(nestingLevel)), getCacheDataKey(), stat);
     }
 
     @Override
@@ -56,5 +59,14 @@ public class CompSeasonEventFragment extends WritableFragment {
         return JsonUtil.getEntry("compSeasonEventId", compSeasonEventId) + "," +
                 JsonUtil.getGenderJson(genderId) + "," +
                 JsonUtil.getFragmentAsEntry("sportEvent", sportEventFragment);
+    }
+
+    @Override
+    public String toYaml() {
+        YamlUtil yamlUtil = new YamlUtil(nestingLevel);
+
+        return yamlUtil.getEntry("compSeasonEventId", compSeasonEventId, isInList) +
+                yamlUtil.getGenderYaml(genderId) +
+                yamlUtil.getFragmentAsEntry("sportEvent", sportEventFragment);
     }
 }

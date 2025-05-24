@@ -2,10 +2,7 @@ package com.sports.cache.data;
 
 import com.sports.cache.key.CacheKey;
 import com.sports.cache.key.CompSeasonEventPartKey;
-import com.sports.cache.util.DataFragmentUtil;
-import com.sports.cache.util.DescribedEntityUtil;
-import com.sports.cache.util.JsonUtil;
-import com.sports.cache.util.XmlUtil;
+import com.sports.cache.util.*;
 import com.sports.entity.CompSeasonEventPart;
 import com.sports.entity.key.CompSeasonEventKey;
 import com.sports.entity.key.CompSeasonKey;
@@ -35,7 +32,9 @@ public class CompSeasonEventPartFragment extends WritableFragment {
     private final List<EventPartLocationFragment> eventPartLocationFragments = new ArrayList<>();
 
     public CompSeasonEventPartFragment(int competitionId, int seasonId, int compSeasonEventId,
-                                       int compSeasonEventPartId, int clientId) {
+                                       int compSeasonEventPartId, int clientId, int nestingLevel) {
+        super(nestingLevel, true);
+
         this.competitionId = competitionId;
         this.seasonId = seasonId;
         this.compSeasonEventId = compSeasonEventId;
@@ -66,20 +65,23 @@ public class CompSeasonEventPartFragment extends WritableFragment {
         stage = compSeasonEventPart.getStage();
         date = compSeasonEventPart.getDate();
 
+        int nestingLevelFragment = DataFragmentUtil.getLevelForNestedFragment(nestingLevel);
+        int nestingLevelList = DataFragmentUtil.getLevelForNestedList(nestingLevel);
+
         int sportId = new CompetitionManager(stat).getCompetition(competitionId).getSportId();
         sportDisciplineFragment = DataFragmentUtil.getFilledDataFragment(
-                new SportDisciplineFragment(sportId, compSeasonEventPart.getSportDisciplineId(), clientId),
+                new SportDisciplineFragment(sportId, compSeasonEventPart.getSportDisciplineId(), clientId, nestingLevelFragment),
                 getCacheDataKey(), stat);
 
         if (compSeasonEventPart.getEventPartNameId() != null)
             eventPartNameFragment = DataFragmentUtil.getFilledDataFragment(
-                    new EventPartNameFragment(compSeasonEventPart.getEventPartNameId(), clientId),
+                    new EventPartNameFragment(compSeasonEventPart.getEventPartNameId(), clientId, nestingLevelFragment),
                     getCacheDataKey(), stat);
 
         eventPartLocationFragments.addAll(
                 new EventPartLocationManager(stat).getEventPartLocations(compSeasonEventPartKey).stream().map(x ->
                 new EventPartLocationFragment(competitionId, seasonId, compSeasonEventId, compSeasonEventPartId,
-                        x.getEventPartLocationId())).toList());
+                        x.getEventPartLocationId(), nestingLevelList)).toList());
 
         DataFragmentUtil.fillDataFragments(eventPartLocationFragments, getCacheDataKey());
     }
@@ -107,5 +109,19 @@ public class CompSeasonEventPartFragment extends WritableFragment {
                 JsonUtil.getFragmentAsEntry("sportDiscipline", sportDisciplineFragment) + "," +
                 JsonUtil.getNullableFragmentAsEntry("eventPartName", eventPartNameFragment) + "," +
                 JsonUtil.getArray("eventPartLocationList", eventPartLocationFragments);
+    }
+
+    @Override
+    public String toYaml() {
+        YamlUtil yamlUtil = new YamlUtil(nestingLevel);
+
+        return yamlUtil.getEntry("compSeasonEventPartId", compSeasonEventPartId, isInList) +
+                yamlUtil.getEntry("description", description) +
+                yamlUtil.getEntry("order", order) +
+                yamlUtil.getEntry("stage", stage) +
+                yamlUtil.getEntry("date", date) +
+                yamlUtil.getFragmentAsEntry("sportDiscipline", sportDisciplineFragment) +
+                yamlUtil.getNullableFragmentAsEntry("eventPartName", eventPartNameFragment) +
+                yamlUtil.getArray("eventPartLocationList", eventPartLocationFragments);
     }
 }

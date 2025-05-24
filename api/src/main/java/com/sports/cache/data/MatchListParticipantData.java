@@ -2,6 +2,7 @@ package com.sports.cache.data;
 
 import com.sports.cache.key.CacheDataKey;
 import com.sports.cache.key.MatchListParticipantKey;
+import com.sports.cache.util.DataFragmentUtil;
 import com.sports.entity.*;
 import com.sports.entity.key.*;
 import com.sports.entity.manager.H2HMatchManager;
@@ -35,7 +36,7 @@ public class MatchListParticipantData extends MatchListData {
 	MatchListPhaseFragment getMatchListPhaseFragment(int competitionId, int seasonId, int compSeasonPhaseId,
 													 List<H2HMatch> h2HMatches) {
 		return new MatchListPhaseParticipantFragment(competitionId, seasonId, compSeasonPhaseId, h2HMatches,
-				participantId, clientId);
+				participantId, clientId, DataFragmentUtil.getLevelForNestedList(nestingLevel));
 	}
 
 	public MatchListParticipantData(int competitionId, int seasonId, int participantId, Integer clientId) {

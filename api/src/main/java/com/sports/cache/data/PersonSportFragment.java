@@ -5,6 +5,7 @@ import com.sports.cache.key.PersonSportKey;
 import com.sports.cache.util.DescribedEntityUtil;
 import com.sports.cache.util.JsonUtil;
 import com.sports.cache.util.XmlUtil;
+import com.sports.cache.util.YamlUtil;
 import com.sports.entity.PersonSport;
 import com.sports.entity.key.CompSeasonKey;
 import com.sports.entity.key.CompSeasonPersonSportKey;
@@ -24,7 +25,10 @@ public class PersonSportFragment extends WritableFragment {
     private String description;
     private int elo;
 
-    public PersonSportFragment(int competitionId, int seasonId, int personSportId, int clientId) {
+    public PersonSportFragment(int competitionId, int seasonId, int personSportId,
+                               int clientId, int nestingLevel, boolean isInList) {
+        super(nestingLevel, isInList);
+
         this.competitionId = competitionId;
         this.seasonId = seasonId;
         this.personSportId = personSportId;
@@ -62,5 +66,14 @@ public class PersonSportFragment extends WritableFragment {
         return JsonUtil.getEntry("id", personSportId) + "," +
                 JsonUtil.getEntry("description", description) + "," +
                 JsonUtil.getEntry("elo", elo);
+    }
+
+    @Override
+    public String toYaml() {
+        YamlUtil yamlUtil = new YamlUtil(nestingLevel);
+
+        return yamlUtil.getEntry("id", personSportId, isInList) +
+                yamlUtil.getEntry("description", description) +
+                yamlUtil.getEntry("elo", elo);
     }
 }

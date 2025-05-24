@@ -3,6 +3,7 @@ package com.sports.cache.data;
 import com.sports.cache.util.DataFragmentUtil;
 import com.sports.cache.util.JsonUtil;
 import com.sports.cache.util.XmlUtil;
+import com.sports.cache.util.YamlUtil;
 import com.sports.entity.*;
 import com.sports.entity.comparator.DescribedEntityDescription;
 import com.sports.entity.key.*;
@@ -55,8 +56,10 @@ public abstract class ParticipantListData extends OutputData {
             List<? extends Participant> participants = factory.getParticipantManager(stat).getParticipantList(participantIds);
             participants.sort(new DescribedEntityDescription());
 
+            int nestingLevelList = DataFragmentUtil.getLevelForNestedList(nestingLevel);
+
             participantFragments.addAll(participants.stream().map(x ->
-                    new ParticipantFragment(competitionId, seasonId, x.getId(), clientId)).toList());
+                    new ParticipantFragment(competitionId, seasonId, x.getId(), clientId, nestingLevelList, true)).toList());
 
             DataFragmentUtil.fillDataFragments(participantFragments, getCacheKey());
         }
@@ -76,5 +79,10 @@ public abstract class ParticipantListData extends OutputData {
     @Override
     public String toJson() {
         return "{" + JsonUtil.getArray("participantList", participantFragments) + "}";
+    }
+
+    @Override
+    public String toYaml() {
+        return new YamlUtil(nestingLevel).getArray("participantList", participantFragments);
     }
 }

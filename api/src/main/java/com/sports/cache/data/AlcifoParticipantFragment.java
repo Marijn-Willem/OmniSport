@@ -1,9 +1,6 @@
 package com.sports.cache.data;
 
-import com.sports.cache.util.DataFragmentUtil;
-import com.sports.cache.util.DescribedEntityUtil;
-import com.sports.cache.util.JsonUtil;
-import com.sports.cache.util.XmlUtil;
+import com.sports.cache.util.*;
 import com.sports.calc.alcifo.Calculation;
 import com.sports.entity.Participant;
 import com.sports.entity.PersonSport;
@@ -31,7 +28,9 @@ public abstract class AlcifoParticipantFragment extends WritableFragment {
     private NoCountResultFragment noCountResultFragment;
 
     public AlcifoParticipantFragment(int competitionId, int seasonId, Participant participant, int resultTypeId,
-                                     Integer resultTypePrecisionId, int clientId) {
+                                     Integer resultTypePrecisionId, int clientId, int nestingLevel, boolean isInList) {
+        super(nestingLevel, isInList);
+
         this.competitionId = competitionId;
         this.seasonId = seasonId;
         participantId = participant.getId();
@@ -48,8 +47,8 @@ public abstract class AlcifoParticipantFragment extends WritableFragment {
     void fill(Statement stat) throws SQLException {
         description = getDescription(stat);
         if (noCountResultId != null)
-            noCountResultFragment = DataFragmentUtil.getFilledDataFragment(new NoCountResultFragment(noCountResultId),
-                    getCacheDataKey(), stat);
+            noCountResultFragment = DataFragmentUtil.getFilledDataFragment(new NoCountResultFragment(noCountResultId,
+                            DataFragmentUtil.getLevelForNestedFragment(nestingLevel)), getCacheDataKey(), stat);
     }
 
     @Override
@@ -70,6 +69,18 @@ public abstract class AlcifoParticipantFragment extends WritableFragment {
                 JsonUtil.getEntry("points", getPointsString(points)) + "," +
                 JsonUtil.getEntry("pointsBehind", getPointsString(pointsBehind)) + "," +
                 JsonUtil.getNullableFragmentAsEntry("noCountResult", noCountResultFragment);
+    }
+
+    @Override
+    public String toYaml() {
+        YamlUtil yamlUtil = new YamlUtil(nestingLevel);
+
+        return yamlUtil.getEntry("id", participantId, isInList) +
+                yamlUtil.getEntry("description", description) +
+                yamlUtil.getEntry("rank", rank) +
+                yamlUtil.getEntry("points", getPointsString(points)) +
+                yamlUtil.getEntry("pointsBehind", getPointsString(pointsBehind)) +
+                yamlUtil.getNullableFragmentAsEntry("noCountResult", noCountResultFragment);
     }
 
     String getDescriptionPersonSport(int personId, Statement stat) throws SQLException {

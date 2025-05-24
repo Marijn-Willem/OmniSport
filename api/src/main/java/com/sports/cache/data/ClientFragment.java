@@ -5,6 +5,7 @@ import com.sports.cache.key.ClientKey;
 import com.sports.cache.util.DataFragmentUtil;
 import com.sports.cache.util.JsonUtil;
 import com.sports.cache.util.XmlUtil;
+import com.sports.cache.util.YamlUtil;
 import com.sports.entity.Client;
 
 import java.sql.SQLException;
@@ -20,6 +21,12 @@ public class ClientFragment extends WritableFragment {
     private LanguageFragment languageFragment;
 
     public ClientFragment(Client client) {
+        this(client, 0, false);
+    }
+
+    public ClientFragment(Client client, int nestingLevel, boolean isInList) {
+        super(nestingLevel, isInList);
+
         id = client.getId();
         name = client.getName();
         passWord = client.getPassWord();
@@ -36,7 +43,8 @@ public class ClientFragment extends WritableFragment {
     void fill(Statement stat) throws SQLException {
         if (languageId != null)
             languageFragment = DataFragmentUtil.getFilledDataFragment(
-                    new LanguageFragment(languageId), getCacheDataKey(), stat);
+                    new LanguageFragment(languageId, DataFragmentUtil.getLevelForNestedFragment(nestingLevel)),
+                    getCacheDataKey(), stat);
     }
 
     @Override
@@ -55,6 +63,17 @@ public class ClientFragment extends WritableFragment {
                 JsonUtil.getEntry("passWord", passWord) + "," +
                 JsonUtil.getNullableFragmentAsEntry("language", languageFragment) + "," +
                 JsonUtil.getEntry("isAdmin", isAdmin);
+    }
+
+    @Override
+    public String toYaml() {
+        YamlUtil yamlUtil = new YamlUtil(nestingLevel);
+
+        return yamlUtil.getEntry("id", id, isInList) +
+                yamlUtil.getEntry("name", name) +
+                yamlUtil.getEntry("passWord", passWord) +
+                yamlUtil.getNullableFragmentAsEntry("language", languageFragment) +
+                yamlUtil.getEntry("isAdmin", isAdmin);
     }
 
     public int getId() {

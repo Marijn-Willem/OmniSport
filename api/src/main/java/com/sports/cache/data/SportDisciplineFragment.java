@@ -2,10 +2,7 @@ package com.sports.cache.data;
 
 import com.sports.cache.key.CacheKey;
 import com.sports.cache.key.SportDisciplineKey;
-import com.sports.cache.util.AliasUtil;
-import com.sports.cache.util.DataFragmentUtil;
-import com.sports.cache.util.JsonUtil;
-import com.sports.cache.util.XmlUtil;
+import com.sports.cache.util.*;
 import com.sports.entity.SportDiscipline;
 import com.sports.entity.manager.SportDisciplineManager;
 
@@ -20,7 +17,9 @@ public class SportDisciplineFragment extends WritableFragment {
     private String name;
     private ResultTypeFragment resultTypeFragment;
 
-    public SportDisciplineFragment(int sportId, int sportDisciplineId, int clientId) {
+    public SportDisciplineFragment(int sportId, int sportDisciplineId, int clientId, int nestingLevel) {
+        super(nestingLevel, false);
+
         this.sportId = sportId;
         this.sportDisciplineId = sportDisciplineId;
         this.clientId = clientId;
@@ -42,7 +41,8 @@ public class SportDisciplineFragment extends WritableFragment {
                 .getAliasableAsClientSpecificString(sportDiscipline, sdKey);
 
         resultTypeFragment = DataFragmentUtil.getFilledDataFragment(new ResultTypeFragment(
-                sportDiscipline.getResultTypeId()), getCacheDataKey(), stat);
+                sportDiscipline.getResultTypeId(), DataFragmentUtil.getLevelForNestedFragment(nestingLevel)),
+                getCacheDataKey(), stat);
     }
 
     @Override
@@ -57,5 +57,14 @@ public class SportDisciplineFragment extends WritableFragment {
         return JsonUtil.getEntry("sportDisciplineId", sportDisciplineId) + "," +
                 JsonUtil.getEntry("name", name) + "," +
                 JsonUtil.getFragmentAsEntry("resultType", resultTypeFragment);
+    }
+
+    @Override
+    public String toYaml() {
+        YamlUtil yamlUtil = new YamlUtil(nestingLevel);
+
+        return yamlUtil.getEntry("sportDisciplineId", sportDisciplineId) +
+                yamlUtil.getEntry("name", name) +
+                yamlUtil.getFragmentAsEntry("resultType", resultTypeFragment);
     }
 }

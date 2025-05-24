@@ -57,7 +57,7 @@ public abstract class EncounterListData extends OutputData {
             LinkedHashMap<Integer, List<H2HMatch>> cspMatchMap = getCompSeasonPhaseMatchMap(h2HMatches, compSeasonPhases);
 
             MatchListCompSeasonFragment fragment = new MatchListCompSeasonFragment(x.getCompetitionId(), x.getSeasonId(),
-                    clientId, cspMatchMap);
+                    clientId, cspMatchMap, DataFragmentUtil.getLevelForNestedList(nestingLevel));
 
             if (filter.isElementAllowed(fragment))
                 matchListCompSeasonFragmentList.add(fragment);
@@ -80,6 +80,11 @@ public abstract class EncounterListData extends OutputData {
     @Override
     public String toJson() {
         return "{" + JsonUtil.getArray("compSeasonList", matchListCompSeasonFragmentList) + "}";
+    }
+
+    @Override
+    public String toYaml() {
+        return new YamlUtil(nestingLevel).getArray("compSeasonList", matchListCompSeasonFragmentList);
     }
 
     private LinkedHashMap<Integer, List<H2HMatch>> getCompSeasonPhaseMatchMap(List<H2HMatch> matchesCompSeason,

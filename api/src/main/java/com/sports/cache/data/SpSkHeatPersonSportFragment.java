@@ -5,6 +5,7 @@ import com.sports.cache.key.SpSkHeatPersonSportKey;
 import com.sports.cache.util.DataFragmentUtil;
 import com.sports.cache.util.JsonUtil;
 import com.sports.cache.util.XmlUtil;
+import com.sports.cache.util.YamlUtil;
 import com.sports.calc.alcifo.Calculation;
 import com.sports.entity.DisciplinePartPersonSport;
 import com.sports.entity.EventDisciplinePart;
@@ -33,7 +34,9 @@ public class SpSkHeatPersonSportFragment extends WritableFragment {
     private final List<Integer> lapTimes = new ArrayList<>();
 
     public SpSkHeatPersonSportFragment(int competitionId, int seasonId, int compSeasonEventId, int compSeasonEventPartId,
-                                       int heat, int personSportId, int clientId) {
+                                       int heat, int personSportId, int clientId, int nestingLevel) {
+        super(nestingLevel, false);
+
         this.competitionId = competitionId;
         this.seasonId = seasonId;
         this.compSeasonEventId = compSeasonEventId;
@@ -52,7 +55,8 @@ public class SpSkHeatPersonSportFragment extends WritableFragment {
     @Override
     void fill(Statement stat) throws SQLException {
         personSportFragment = DataFragmentUtil.getFilledDataFragment(
-                new PersonSportFragment(competitionId, seasonId, personSportId, clientId), getCacheDataKey(), stat);
+                new PersonSportFragment(competitionId, seasonId, personSportId, clientId, nestingLevel, false),
+                getCacheDataKey(), stat);
 
         List<EventDisciplinePart> eventDisciplineParts = DataFragmentUtil.getFilledDataFragment(
                 new EventDisciplinePartListFragment(competitionId, seasonId, Sport.sportIdSpeedSkating, compSeasonEventId, compSeasonEventPartId),
@@ -77,8 +81,11 @@ public class SpSkHeatPersonSportFragment extends WritableFragment {
             EventDisciplinePart eventDisciplinePart = eventDisciplineParts.get(i);
             DisciplinePartPersonSport disciplinePartPersonSport = disciplinePartPersonSports.get(i);
 
+            int nestedLevelList = DataFragmentUtil.getLevelForNestedList(nestingLevel);
+
             disciplinePartFragments.add(new DisciplinePartFragment(Sport.sportIdSpeedSkating,
-                    eventDisciplinePart.getSportDisciplineId(), eventDisciplinePart.getDisciplinePartId(), clientId));
+                    eventDisciplinePart.getSportDisciplineId(), eventDisciplinePart.getDisciplinePartId(), clientId,
+                    nestedLevelList));
 
             int points = disciplinePartPersonSport.getPoints();
 
@@ -121,12 +128,25 @@ public class SpSkHeatPersonSportFragment extends WritableFragment {
         return sb.toString();
     }
 
+    @Override
+    public String toYaml() {
+        StringBuilder sb = new StringBuilder(personSportFragment.toYaml());
+        sb.append(new YamlUtil(nestingLevel).getEntryHeader("laps"));
+
+        YamlUtil yamlUtilLap = new YamlUtil(DataFragmentUtil.getLevelForNestedList(nestingLevel));
+
+        for (int i = 0; i < disciplinePartFragments.size(); i++)
+            sb.append(getLapYaml(i, yamlUtilLap));
+
+        return sb.toString();
+    }
+
     private String getLapXML(int indX) {
-        return "<lap>" +
-                disciplinePartFragments.get(indX).toXML() +
+        String enclosedContent = disciplinePartFragments.get(indX).toXML() +
                 XmlUtil.getTag("cumTime", cumulativeTimes.get(indX)) +
-                XmlUtil.getTag("lapTime", lapTimes.get(indX)) +
-                "</lap>";
+                XmlUtil.getTag("lapTime", lapTimes.get(indX));
+
+        return XmlUtil.encloseContent("lap", enclosedContent);
     }
 
     private String getLapJson(int indX) {
@@ -135,5 +155,11 @@ public class SpSkHeatPersonSportFragment extends WritableFragment {
                 JsonUtil.getEntry("cumTime", cumulativeTimes.get(indX)) + "," +
                 JsonUtil.getEntry("lapTime", lapTimes.get(indX)) +
                 "}";
+    }
+
+    private String getLapYaml(int indX, YamlUtil yamlUtil) {
+        return disciplinePartFragments.get(indX).toYaml() +
+                yamlUtil.getEntry("cumTime", cumulativeTimes.get(indX)) +
+                yamlUtil.getEntry("lapTime", lapTimes.get(indX));
     }
 }

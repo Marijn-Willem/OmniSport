@@ -5,6 +5,7 @@ import com.sports.cache.key.SportEventKey;
 import com.sports.cache.util.AliasUtil;
 import com.sports.cache.util.JsonUtil;
 import com.sports.cache.util.XmlUtil;
+import com.sports.cache.util.YamlUtil;
 import com.sports.entity.SportEvent;
 import com.sports.entity.manager.SportEventManager;
 
@@ -20,7 +21,9 @@ public class SportEventFragment extends WritableFragment {
     private boolean isPointsAsc;
     private String name;
 
-    public SportEventFragment(int sportId, int sportEventId, int clientId) {
+    public SportEventFragment(int sportId, int sportEventId, int clientId, int nestingLevel) {
+        super(nestingLevel, false);
+
         this.sportId = sportId;
         this.sportEventId = sportEventId;
         this.clientId = clientId;
@@ -55,5 +58,15 @@ public class SportEventFragment extends WritableFragment {
                 JsonUtil.getEntry("name", name) + "," +
                 JsonUtil.getEntry("isTeam", isTeam) + "," +
                 JsonUtil.getEntry("isPointsAsc", isPointsAsc);
+    }
+
+    @Override
+    public String toYaml() {
+        YamlUtil yamlUtil = new YamlUtil(nestingLevel);
+
+        return yamlUtil.getEntry("sportEventId", sportEventId) +
+                yamlUtil.getEntry("name", name) +
+                yamlUtil.getEntry("isTeam", isTeam) +
+                yamlUtil.getEntry("isPointsAsc", isPointsAsc);
     }
 }

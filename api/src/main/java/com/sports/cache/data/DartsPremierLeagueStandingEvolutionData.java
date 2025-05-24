@@ -23,7 +23,7 @@ public class DartsPremierLeagueStandingEvolutionData extends StandingEvolutionDa
 	public void fill(Statement stat) throws SQLException {
 		new DbCalculation(stat).getPremierLeagueStandingPerDate(seasonId).forEach(context ->
 				snapshotFragments.add(new StandingEvolutionSnapshotFragment(
-						competitionId, seasonId, 0, clientId, false, context)
+						competitionId, seasonId, 0, clientId, nestingLevelList, false, context)
 				));
 
 		DataFragmentUtil.fillDataFragments(snapshotFragments, getCacheKey());

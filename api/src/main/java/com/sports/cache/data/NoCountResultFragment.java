@@ -4,6 +4,7 @@ import com.sports.cache.key.CacheKey;
 import com.sports.cache.key.NoCountResultKey;
 import com.sports.cache.util.JsonUtil;
 import com.sports.cache.util.XmlUtil;
+import com.sports.cache.util.YamlUtil;
 import com.sports.entity.NoCountResult;
 import com.sports.entity.manager.NoCountResultManager;
 
@@ -15,7 +16,9 @@ public class NoCountResultFragment extends WritableFragment {
 
     private String name;
 
-    public NoCountResultFragment(int noCountResultId) {
+    public NoCountResultFragment(int noCountResultId, int nestingLevel) {
+        super(nestingLevel, false);
+
         this.noCountResultId = noCountResultId;
     }
 
@@ -38,5 +41,10 @@ public class NoCountResultFragment extends WritableFragment {
     @Override
     public String toJson() {
         return JsonUtil.getEntry("name", name);
+    }
+
+    @Override
+    public String toYaml() {
+        return new YamlUtil(nestingLevel).getEntry("name", name);
     }
 }

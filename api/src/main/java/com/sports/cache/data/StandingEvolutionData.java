@@ -2,6 +2,7 @@ package com.sports.cache.data;
 
 import com.sports.cache.util.JsonUtil;
 import com.sports.cache.util.XmlUtil;
+import com.sports.cache.util.YamlUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,6 +22,11 @@ public abstract class StandingEvolutionData extends AbstractStandingData {
     @Override
     public String toJson() {
         return "{ " + JsonUtil.getArray("snapshotList", snapshotFragments) + " }";
+    }
+
+    @Override
+    public String toYaml() {
+        return new YamlUtil(nestingLevel).getArray("snapshotList", snapshotFragments);
     }
 
     @Override

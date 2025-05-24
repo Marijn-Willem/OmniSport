@@ -3,6 +3,7 @@ package com.sports.cache.data;
 import com.sports.cache.util.DataFragmentUtil;
 import com.sports.cache.util.JsonUtil;
 import com.sports.cache.util.XmlUtil;
+import com.sports.cache.util.YamlUtil;
 import com.sports.entity.PersonSport;
 import com.sports.entity.comparator.DescribedEntityDescription;
 import com.sports.entity.key.CompSeasonKey;
@@ -19,8 +20,8 @@ import java.util.List;
 public class CompSeasonTeamWithPersonSportsFragment extends CompSeasonParticipantFragment {
     private final List<PersonSportFragment> personSportFragments = new ArrayList<>();
 
-    public CompSeasonTeamWithPersonSportsFragment(int competitionId, int seasonId, int teamId, int clientId) {
-        super(competitionId, seasonId, teamId, clientId);
+    public CompSeasonTeamWithPersonSportsFragment(int competitionId, int seasonId, int teamId, int clientId, int nestingLevel) {
+        super(competitionId, seasonId, teamId, clientId, nestingLevel, true);
     }
 
     @Override
@@ -38,8 +39,10 @@ public class CompSeasonTeamWithPersonSportsFragment extends CompSeasonParticipan
         List<PersonSport> personSports = new PersonSportManager(stat).getParticipantList(personSportIds);
         personSports.sort(new DescribedEntityDescription());
 
+        int nestingLevelList = DataFragmentUtil.getLevelForNestedList(nestingLevel);
+
         personSportFragments.addAll(personSports.stream().map(x ->
-                new PersonSportFragment(competitionId, seasonId, x.getId(), clientId)).toList());
+                new PersonSportFragment(competitionId, seasonId, x.getId(), clientId, nestingLevelList, true)).toList());
 
         DataFragmentUtil.fillDataFragments(personSportFragments, getCacheDataKey());
     }
@@ -53,5 +56,10 @@ public class CompSeasonTeamWithPersonSportsFragment extends CompSeasonParticipan
     @Override
     public String toJson() {
         return super.toJson() + "," + JsonUtil.getArray("personSportList", personSportFragments);
+    }
+
+    @Override
+    public String toYaml() {
+        return super.toYaml() + new YamlUtil(nestingLevel).getArray("personSportList", personSportFragments);
     }
 }

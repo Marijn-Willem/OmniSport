@@ -4,6 +4,7 @@ import com.sports.cache.key.CacheKey;
 import com.sports.cache.key.LanguageAsFallbackKey;
 import com.sports.cache.util.JsonUtil;
 import com.sports.cache.util.XmlUtil;
+import com.sports.cache.util.YamlUtil;
 import com.sports.entity.Language;
 import com.sports.entity.manager.LanguageManager;
 
@@ -15,7 +16,9 @@ public class LanguageAsFallbackFragment extends WritableFragment {
     private String name;
     Integer fallBackLanguageId;
 
-    public LanguageAsFallbackFragment(int id) {
+    public LanguageAsFallbackFragment(int id, int nestingLevel) {
+        super(nestingLevel, false);
+
         this.id = id;
     }
 
@@ -28,6 +31,14 @@ public class LanguageAsFallbackFragment extends WritableFragment {
     public String toJson() {
         return JsonUtil.getEntry("id", id) + "," +
                 JsonUtil.getEntry("name", name);
+    }
+
+    @Override
+    public String toYaml() {
+        YamlUtil yamlUtil = new YamlUtil(nestingLevel);
+
+        return yamlUtil.getEntry("id", id) +
+                yamlUtil.getEntry("name", name);
     }
 
     @Override

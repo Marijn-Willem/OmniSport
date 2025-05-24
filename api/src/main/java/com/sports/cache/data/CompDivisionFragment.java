@@ -3,6 +3,7 @@ package com.sports.cache.data;
 import com.sports.cache.key.CacheKey;
 import com.sports.cache.util.JsonUtil;
 import com.sports.cache.util.XmlUtil;
+import com.sports.cache.util.YamlUtil;
 import com.sports.entity.CompDivision;
 import com.sports.entity.key.CompDivisionKey;
 import com.sports.entity.manager.CompDivisionManager;
@@ -14,7 +15,9 @@ public class CompDivisionFragment extends WritableFragment {
     final int competitionId;
     final int compDivisionId;
 
-    public CompDivisionFragment(int competitionId, int compDivisionId) {
+    public CompDivisionFragment(int competitionId, int compDivisionId, int nestingLevel, boolean isInList) {
+        super(nestingLevel, isInList);
+        
         this.competitionId = competitionId;
         this.compDivisionId = compDivisionId;
     }
@@ -48,5 +51,14 @@ public class CompDivisionFragment extends WritableFragment {
         return JsonUtil.getEntry("compDivisionId", compDivisionId) + "," +
                 JsonUtil.getEntry("name", name) + "," +
                 JsonUtil.getEntry("parentDivisionId", parentDivisionId);
+    }
+
+    @Override
+    public String toYaml() {
+        YamlUtil yamlUtil = new YamlUtil(nestingLevel);
+
+        return yamlUtil.getEntry("compDivisionId", compDivisionId, isInList) +
+                yamlUtil.getEntry("name", name) +
+                yamlUtil.getEntry("parentDivisionId", parentDivisionId);
     }
 }

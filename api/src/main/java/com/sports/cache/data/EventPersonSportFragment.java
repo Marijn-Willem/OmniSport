@@ -5,6 +5,7 @@ import com.sports.cache.key.EventPersonSportKey;
 import com.sports.cache.util.DataFragmentUtil;
 import com.sports.cache.util.JsonUtil;
 import com.sports.cache.util.XmlUtil;
+import com.sports.cache.util.YamlUtil;
 import com.sports.entity.key.CompSeasonKey;
 import com.sports.entity.key.CompSeasonPersonSportKey;
 import com.sports.entity.key.CompSeasonTeamPersonSportKey;
@@ -24,7 +25,10 @@ public class EventPersonSportFragment extends WritableFragment {
     private PersonSportFragment personSportFragment;
     private CompSeasonTeamFragment compSeasonTeamFragment;
 
-    public EventPersonSportFragment(int competitionId, int seasonId, int compSeasonEventId, int personSportId, int clientId) {
+    public EventPersonSportFragment(int competitionId, int seasonId, int compSeasonEventId, int personSportId,
+                                    int clientId, int nestingLevel) {
+        super(nestingLevel, true);
+
         this.competitionId = competitionId;
         this.seasonId = seasonId;
         this.compSeasonEventId = compSeasonEventId;
@@ -39,8 +43,11 @@ public class EventPersonSportFragment extends WritableFragment {
 
     @Override
     void fill(Statement stat) throws SQLException {
+        int nestingLevelFragment = DataFragmentUtil.getLevelForNestedFragment(nestingLevel);
+
         personSportFragment = DataFragmentUtil.getFilledDataFragment(
-                new PersonSportFragment(competitionId, seasonId, personSportId, clientId), getCacheDataKey(), stat);
+                new PersonSportFragment(competitionId, seasonId, personSportId, clientId, nestingLevelFragment, false),
+                getCacheDataKey(), stat);
 
         CompSeasonPersonSportKey cspsKey = new CompSeasonPersonSportKey(new CompSeasonKey(competitionId, seasonId),
                 personSportId);
@@ -52,7 +59,8 @@ public class EventPersonSportFragment extends WritableFragment {
             int teamId = cstpsKeys.get(0).getSuperKey().getSpecificId();
 
             compSeasonTeamFragment = DataFragmentUtil.getFilledDataFragment(
-                    new CompSeasonTeamFragment(competitionId, seasonId, teamId, clientId), getCacheDataKey(), stat);
+                    new CompSeasonTeamFragment(competitionId, seasonId, teamId, clientId, nestingLevelFragment),
+                    getCacheDataKey(), stat);
         }
     }
 
@@ -66,5 +74,13 @@ public class EventPersonSportFragment extends WritableFragment {
     public String toJson() {
         return JsonUtil.getFragmentAsEntry("personSport", personSportFragment) + "," +
                 JsonUtil.getNullableFragmentAsEntry("team", compSeasonTeamFragment);
+    }
+
+    @Override
+    public String toYaml() {
+        YamlUtil yamlUtil = new YamlUtil(nestingLevel);
+
+        return yamlUtil.getFragmentAsEntry("personSport", personSportFragment, isInList) +
+                yamlUtil.getNullableFragmentAsEntry("team", compSeasonTeamFragment);
     }
 }

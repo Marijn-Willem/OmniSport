@@ -5,6 +5,7 @@ import com.sports.cache.key.SpeedSkatingTotalRankingKey;
 import com.sports.cache.util.DataFragmentUtil;
 import com.sports.cache.util.JsonUtil;
 import com.sports.cache.util.XmlUtil;
+import com.sports.cache.util.YamlUtil;
 import com.sports.calc.speedskating.DbCalculation;
 import com.sports.entity.*;
 import com.sports.entity.key.CompSeasonEventKey;
@@ -58,11 +59,13 @@ public class SpeedSkatingTotalRankingData extends OutputData {
 				CompSeasonEventPartKey compSeasonEventPartKey = new CompSeasonEventPartKey(compSeasonEventKey,
 						compSeasonEventPartId);
 
+				int nestingLevelList = DataFragmentUtil.getLevelForNestedList(nestingLevel);
+
 				List<PersonSport> ranking = new DbCalculation(stat).getTotalRanking(compSeasonEventPartKey);
 
 				rankingPersonFragments.addAll(ranking.stream().map(x ->
 						new SpeedSkatingRankingPersonFragment(competitionId, seasonId, compSeasonEventId,
-								compSeasonEventPartId, x, clientId)).toList());
+								compSeasonEventPartId, x, clientId, nestingLevelList)).toList());
 
 				DataFragmentUtil.fillDataFragments(rankingPersonFragments, getCacheKey());
 			}
@@ -83,5 +86,10 @@ public class SpeedSkatingTotalRankingData extends OutputData {
 	@Override
 	public String toJson() {
 		return "{" + JsonUtil.getArray("ranking", rankingPersonFragments) + "}";
+	}
+
+	@Override
+	public String toYaml() {
+		return new YamlUtil(nestingLevel).getArray("ranking", rankingPersonFragments);
 	}
 }

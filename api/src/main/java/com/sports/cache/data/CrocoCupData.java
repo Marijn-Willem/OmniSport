@@ -5,6 +5,7 @@ import com.sports.cache.key.CrocoCupKey;
 import com.sports.cache.util.DataFragmentUtil;
 import com.sports.cache.util.JsonUtil;
 import com.sports.cache.util.XmlUtil;
+import com.sports.cache.util.YamlUtil;
 import com.sports.calc.teamsports.DbCalculation;
 import com.sports.entity.Team;
 
@@ -16,6 +17,7 @@ import java.util.List;
 public class CrocoCupData extends OutputData {
     private final int competitionId;
     private final Integer clientId;
+    private final int nestingLevelNested = DataFragmentUtil.getLevelForNestedFragment(nestingLevel);
 
     private TeamInCrocoCupFragment holder;
     private final List<TeamInCrocoCupFragment> standing = new ArrayList<>();
@@ -33,12 +35,16 @@ public class CrocoCupData extends OutputData {
     @Override
     public void fill(Statement stat) throws SQLException {
         List<Team> cupStanding = new DbCalculation(stat).getCrocoCupStanding(competitionId);
+        int nestingLevelFragment = DataFragmentUtil.getLevelForNestedFragment(nestingLevelNested);
+        int nestingLevelList = DataFragmentUtil.getLevelForNestedList(nestingLevelNested);
+
         cupStanding.forEach(x -> {
-            TeamInCrocoCupFragment standingFragment = new TeamInCrocoCupFragment(x, clientId, true);
+            TeamInCrocoCupFragment standingFragment = new TeamInCrocoCupFragment(x, clientId, true,
+                    nestingLevelList, true);
             standing.add(standingFragment);
 
             if (x.isHasCup())
-                holder = new TeamInCrocoCupFragment(x, clientId, false);
+                holder = new TeamInCrocoCupFragment(x, clientId, false, nestingLevelFragment, false);
         });
 
         DataFragmentUtil.fillDataFragments(standing, getCacheKey());
@@ -63,5 +69,15 @@ public class CrocoCupData extends OutputData {
                 JsonUtil.getNullableFragmentAsEntry("holder", holder) + "," +
                 JsonUtil.getArray("standing", standing) +
                 "}}";
+    }
+
+    @Override
+    public String toYaml() {
+        YamlUtil yamlUtil = new YamlUtil(nestingLevel);
+        YamlUtil yamlUtilNested = new YamlUtil(nestingLevelNested);
+
+        return yamlUtil.getEntryHeader("crocoCup") +
+                yamlUtilNested.getNullableFragmentAsEntry("holder", holder) +
+                yamlUtilNested.getArray("standing", standing);
     }
 }

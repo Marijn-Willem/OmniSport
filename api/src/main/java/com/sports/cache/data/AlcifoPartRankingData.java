@@ -3,6 +3,7 @@ package com.sports.cache.data;
 import com.sports.cache.util.DataFragmentUtil;
 import com.sports.cache.util.JsonUtil;
 import com.sports.cache.util.XmlUtil;
+import com.sports.cache.util.YamlUtil;
 import com.sports.calc.alcifo.AlcifoPartParticipantFactory;
 import com.sports.calc.alcifo.AlcifoParticipantFactory;
 import com.sports.calc.alcifo.Calculation;
@@ -68,6 +69,11 @@ public abstract class AlcifoPartRankingData<PK extends SuperKey> extends OutputD
     }
 
     @Override
+    public String toYaml() {
+        return new YamlUtil(nestingLevel).getArray("ranking", fragments);
+    }
+
+    @Override
     public void fill(Statement stat) throws SQLException {
         CompSeasonEventPartKey csepKey = new CompSeasonEventPartKey(
                 new CompSeasonEventKey(
@@ -107,9 +113,11 @@ public abstract class AlcifoPartRankingData<PK extends SuperKey> extends OutputD
                                                   Integer resultTypePrecisionId) {
         if (participant instanceof PersonSport)
             return new EventPartPersonSportFragment(competitionId, seasonId, compSeasonEventId, compSeasonEventPartId,
-                    (PersonSport) participant, resultTypeId, resultTypePrecisionId, clientId);
+                    (PersonSport) participant, resultTypeId, resultTypePrecisionId, clientId,
+                    DataFragmentUtil.getLevelForNestedList(nestingLevel), true);
         else
             return new EventPartTeamFragment(competitionId, seasonId, compSeasonEventId, compSeasonEventPartId,
-                    (Team) participant, resultTypeId, resultTypePrecisionId, clientId);
+                    (Team) participant, resultTypeId, resultTypePrecisionId, clientId,
+                    DataFragmentUtil.getLevelForNestedList(nestingLevel), true);
     }
 }

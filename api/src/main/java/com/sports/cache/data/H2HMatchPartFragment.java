@@ -4,6 +4,7 @@ import com.sports.cache.key.CacheKey;
 import com.sports.cache.key.H2HMatchPartKey;
 import com.sports.cache.util.JsonUtil;
 import com.sports.cache.util.XmlUtil;
+import com.sports.cache.util.YamlUtil;
 import com.sports.entity.*;
 import com.sports.entity.key.*;
 import com.sports.logic.calculation.DbCalculation;
@@ -23,7 +24,9 @@ public class H2HMatchPartFragment extends WritableFragment {
     private Integer parentMatchPartId;
     private boolean finished;
 
-    public H2HMatchPartFragment(int competitionId, int seasonId, int matchId, int specificId) {
+    public H2HMatchPartFragment(int competitionId, int seasonId, int matchId, int specificId, int nestingLevel) {
+        super(nestingLevel, true);
+
         this.competitionId = competitionId;
         this.seasonId = seasonId;
         this.matchId = matchId;
@@ -73,5 +76,14 @@ public class H2HMatchPartFragment extends WritableFragment {
         return JsonUtil.getEntry("name", name) + "," +
                 JsonUtil.getEntry("parentMatchPartId", parentMatchPartId) + "," +
                 JsonUtil.getEntry("finished", finished);
+    }
+
+    @Override
+    public String toYaml() {
+        YamlUtil yamlUtil = new YamlUtil(nestingLevel);
+
+        return yamlUtil.getEntry("name", name, isInList) +
+                yamlUtil.getEntry("parentMatchPartId", parentMatchPartId) +
+                yamlUtil.getEntry("finished", finished);
     }
 }

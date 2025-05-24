@@ -4,6 +4,7 @@ import com.sports.cache.key.CacheKey;
 import com.sports.cache.key.LocationRoleKey;
 import com.sports.cache.util.JsonUtil;
 import com.sports.cache.util.XmlUtil;
+import com.sports.cache.util.YamlUtil;
 import com.sports.entity.LocationRole;
 import com.sports.entity.manager.LocationRoleManager;
 
@@ -15,7 +16,9 @@ public class LocationRoleFragment extends WritableFragment {
 
     private String name;
 
-    public LocationRoleFragment(int locationRoleId) {
+    public LocationRoleFragment(int locationRoleId, int nestingLevel) {
+        super(nestingLevel, false);
+
         this.locationRoleId = locationRoleId;
     }
 
@@ -41,5 +44,13 @@ public class LocationRoleFragment extends WritableFragment {
     public String toJson() {
         return JsonUtil.getEntry("id", locationRoleId) + "," +
                 JsonUtil.getEntry("name", name);
+    }
+
+    @Override
+    public String toYaml() {
+        YamlUtil yamlUtil = new YamlUtil(nestingLevel);
+
+        return yamlUtil.getEntry("id", locationRoleId) +
+                yamlUtil.getEntry("name", name);
     }
 }

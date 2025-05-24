@@ -10,8 +10,8 @@ public class MatchListPhaseParticipantFragment extends MatchListPhaseFragment {
     private final int participantId;
 
     public MatchListPhaseParticipantFragment(int competitionId, int seasonId, int compSeasonPhaseId,
-                                             List<H2HMatch> h2HMatches, int participantId, int clientId) {
-        super(competitionId, seasonId, compSeasonPhaseId, h2HMatches, clientId);
+                                             List<H2HMatch> h2HMatches, int participantId, int clientId, int nestingLevel) {
+        super(competitionId, seasonId, compSeasonPhaseId, h2HMatches, clientId, nestingLevel);
         this.participantId = participantId;
     }
 
