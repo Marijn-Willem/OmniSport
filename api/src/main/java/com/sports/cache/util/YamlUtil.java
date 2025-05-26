@@ -19,7 +19,7 @@ public class YamlUtil {
         prefixStartListItem = Util.padCharacter("- ", ' ', nestingLevel);
         prefixDefault = Util.padCharacter("", ' ', nestingLevel);
         emptyArrayMarker = Util.padCharacter("- ", ' ',
-                nestingLevel + DataFragmentUtil.getLevelForNestedFragment(nestingLevel));
+                DataFragmentUtil.getLevelForNestedList(nestingLevel));
     }
 
     public String getEntry(String name, String value, boolean isStartListItem) {
