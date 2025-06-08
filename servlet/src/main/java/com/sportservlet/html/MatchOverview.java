@@ -47,7 +47,7 @@ public abstract class MatchOverview extends SuperHtmlServlet implements Abstract
         new DbCalculation(stat).setPhaseDescriptionsFromTypes(compSeasonPhases);
         compSeasonPhases.sort(new CompSeasonPhaseRoundDescription());
 
-        int initSelIndX = 0;
+        int initSelIndX = compSeasonPhases.size() - 1;
 
         for (int i = 0; i < compSeasonPhases.size(); i++)
             if (!compSeasonPhases.get(i).isFinished()) {
