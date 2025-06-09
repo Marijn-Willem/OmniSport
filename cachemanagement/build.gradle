@@ -1,7 +1,3 @@
 plugins {
     id 'sports.general'
 }
-
-dependencies {
-	implementation 'net.spy:spymemcached:2.12.3'
-}
