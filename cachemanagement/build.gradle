@@ -1,3 +1,7 @@
 plugins {
     id 'sports.general'
 }
+
+dependencies {
+    implementation 'org.mapdb:mapdb:3.1.0'
+}

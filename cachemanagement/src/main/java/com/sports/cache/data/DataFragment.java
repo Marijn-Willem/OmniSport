@@ -14,7 +14,7 @@ public abstract class DataFragment {
 
     public void fill(CacheDataKey cacheDataKey, Statement stat) throws SQLException {
         this.cacheDataKey = cacheDataKey;
-        CacheUtil.updateDataFragmentReferences(getCacheKey().getStringRepresentation(), cacheDataKey);
+        CacheUtil.updateDataFragmentReferences(getCacheKey(), cacheDataKey);
         fill(stat);
     }
 

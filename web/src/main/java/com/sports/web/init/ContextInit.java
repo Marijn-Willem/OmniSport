@@ -21,12 +21,10 @@ public class ContextInit implements ServletContextListener {
         if (dbType != null)
             QueryUtil.setDbType(dbType);
 
-        String memHost = System.getenv( "OMNISPORT_MEMHOST");
-        String memPort = System.getenv( "OMNISPORT_MEMPORT");
         String memGroupId = servletContextEvent.getServletContext().getInitParameter("MEM_GROUPID");
 
         try {
-            CacheUtil.setConfiguration(memGroupId, memHost, Integer.parseInt(memPort));
+            CacheUtil.setConfiguration(memGroupId);
             Class.forName(QueryUtil.getDriverName()).getDeclaredConstructor().newInstance();
         } catch (Exception e) {
             e.printStackTrace();

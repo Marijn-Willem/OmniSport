@@ -39,7 +39,7 @@ public class DataFragmentUtil {
     }
 
     public static <T extends OutputData> T getFilledOutputData(T outputData, CacheDataKey cacheDataKey) {
-        T cachedOutputData = CacheUtil.get(outputData.getCacheKey().getStringRepresentation());
+        T cachedOutputData = CacheUtil.get(outputData.getCacheKey());
 
         if (cachedOutputData == null) {
             new FilledOutputDataExecutor(outputData).execute();

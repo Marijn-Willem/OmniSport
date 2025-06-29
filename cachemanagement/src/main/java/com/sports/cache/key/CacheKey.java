@@ -13,12 +13,10 @@ public abstract class CacheKey implements Serializable {
                 getSpecificKeyPart(), "|");
     }
     public void delete() {
-        String stringRepresentation = getStringRepresentation();
-
-        Set<CacheDataKey> referenceSet = CacheUtil.get(stringRepresentation);
+        Set<CacheDataKey> referenceSet = CacheUtil.get(this);
         if (referenceSet != null)
             referenceSet.forEach(CacheDataKey::delete);
 
-        CacheUtil.delete(stringRepresentation);
+        CacheUtil.delete(this);
     }
 }

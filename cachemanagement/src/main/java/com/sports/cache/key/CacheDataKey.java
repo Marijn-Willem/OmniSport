@@ -12,6 +12,6 @@ public abstract class CacheDataKey extends CacheKey {
         if (metaKey != null)
             metaKey.delete();
 
-        CacheUtil.delete(getStringRepresentation());
+        CacheUtil.delete(this);
     }
 }
