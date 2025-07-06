@@ -287,6 +287,12 @@ public class Util {
         return googleMapsUrl + "@" + point.x() + "," + point.y() + ",17z";
     }
 
+    public static String encodeURL(String url) {
+        return url
+                .replace("|", "%7C")
+                .replace("&", "%26");
+    }
+
     public static String padCharacter(String str, char c, int lengthTot) {
         int nrChars = lengthTot - str.length();
 

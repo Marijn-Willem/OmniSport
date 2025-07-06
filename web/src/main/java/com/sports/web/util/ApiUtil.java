@@ -15,8 +15,10 @@ public class ApiUtil {
     }
 
     public static String getCacheDeleteUrl(CacheKey cacheKey) {
-        return Util.concatStrings(new String[] {
+        String urlUnencoded = Util.concatStrings(new String[] {
                 apiUrl, "delete", cacheKey.getSpecificDeleteUrlPart(),
                 cacheKey.getStringRepresentation(), apiClient, apiPw }, "/");
+
+        return Util.encodeURL(urlUnencoded);
     }
 }
