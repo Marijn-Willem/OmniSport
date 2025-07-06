@@ -22,11 +22,10 @@ import java.util.stream.Collectors;
 
 public class Scraper {
     private static final Pattern patTableRow = Pattern.compile("<tr.*?</tr>");
-    private static final Pattern patName = Pattern.compile("<a.*?>\\s*?(.*?)\\s*?</a>");
+    private static final Pattern patName = Pattern.compile("<a.*?><span.*?>(.*?)</span>\\s*(.*?)</a>");
     private static final Pattern patRank = Pattern.compile("<td>(\\d+)</td>");
     private static final Pattern patNoRes = Pattern.compile("<td>([a-zA-Z]{3})</td>");
     private static final Pattern patTimeMain = Pattern.compile("<td class=\"time ar\"\\s*>\\s*([\\d:.]+)");
-    private static final Pattern patTimeDiff = Pattern.compile("<div class=\"hide\">([\\d:]+)</div>");
 
     private static final int clientId = Client.clientIdProcyclingStats;
 
@@ -154,28 +153,26 @@ public class Scraper {
             Matcher matRank = patRank.matcher(row);
             Matcher matNoRes = patNoRes.matcher(row);
             Matcher matTimeMain = patTimeMain.matcher(row);
-            Matcher matTimeDiff = patTimeDiff.matcher(row);
 
-            String name = matName.find() ? matName.group(1) : null;
+            boolean isName = matName.find();
+            String nameLast = isName ? matName.group(1) : null;
+            String nameFirst = isName ? matName.group(2) : null;
             String rank = matRank.find() ? matRank.group(1) : null;
             String noRes = matNoRes.find() ? matNoRes.group(1) : null;
             String timeMain = matTimeMain.find() ? matTimeMain.group(1) : null;
             String timeDiff = null;
 
-            if (!isLeader)
-                timeDiff = matTimeDiff.find() ? matTimeDiff.group(1) : timeMain;
-
             if (isLeader && timeMain != null)
                 millisLeader = getMillisFromTimeString(timeMain);
 
-            if (name != null) {
-                appendEntity(name, rank, noRes, timeDiff, entityMap, aliasNameMap, millisLeader, ncrMap);
+            if (nameLast != null && nameFirst != null) {
+                appendEntity(nameLast, nameFirst, rank, noRes, timeDiff, entityMap, aliasNameMap, millisLeader, ncrMap);
                 isLeader = false;
             }
         }
     }
 
-    private void appendEntity(String name, String rank, String noRes, String timeDiff,
+    private void appendEntity(String nameLast, String nameFirst, String rank, String noRes, String timeDiff,
                               Map<String, EventPartPersonSport> entityMap, Map<String, String> aliasNameMap,
                               int millisLeader, Map<String, Integer> ncrMap) {
         EventPartPersonSport eventPartPersonSport = new EventPartPersonSport();
@@ -194,30 +191,26 @@ public class Scraper {
             eventPartPersonSport.setPoints(time);
         }
 
-        String formattedName = formatName(name);
+        String formattedName = formatName(nameLast, nameFirst);
         String key = aliasNameMap.getOrDefault(formattedName, formattedName);
 
         entityMap.put(key, eventPartPersonSport);
     }
 
-    private String formatName(String name) {
-        String[] split = name.split(" ");
-
-        int indX = 0;
-
-        while (indX < split.length && isFullUpperCase(split[indX]))
-            indX++;
+    private String formatName(String nameLast, String nameFirst) {
+        String[] nameFirstSplit = nameFirst.split(" ");
+        String[] nameLastSplit = nameLast.split(" ");
 
         StringBuilder sb = new StringBuilder();
 
-        for (int i = indX; i < split.length; i++) {
-            sb.append(formatNamePart(split[i]));
+        for (String namePart : nameFirstSplit) {
+            sb.append(formatNamePart(namePart));
             sb.append(" ");
         }
 
-        for (int i = 0; i < indX; i++) {
-            sb.append(formatNamePart(split[i]));
-            if (i < indX - 1)
+        for (int i = 0; i < nameLastSplit.length; i++) {
+            sb.append(formatNamePart(nameLastSplit[i]));
+            if (i < nameLastSplit.length - 1)
                 sb.append(" ");
         }
 
@@ -244,16 +237,6 @@ public class Scraper {
         }
 
         return sb.toString();
-    }
-
-    private boolean isFullUpperCase(String namePart) {
-        for (int i = 0; i < namePart.length(); i++) {
-            char c = namePart.charAt(i);
-            if (Character.toUpperCase(c) != c)
-                return false;
-        }
-
-        return true;
     }
 
     private Map<String, String> getAliasNameMap(Statement stat) throws SQLException {
