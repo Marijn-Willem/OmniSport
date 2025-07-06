@@ -145,6 +145,7 @@ public class Scraper {
                                   Map<String, String> aliasNameMap, Map<String, Integer> ncrMap) {
         Matcher matRow = patTableRow.matcher(table);
         int millisLeader = 0;
+        int millisMainLast = 0;
         boolean isLeader = true;
 
         while (matRow.find()) {
@@ -160,21 +161,26 @@ public class Scraper {
             String rank = matRank.find() ? matRank.group(1) : null;
             String noRes = matNoRes.find() ? matNoRes.group(1) : null;
             String timeMain = matTimeMain.find() ? matTimeMain.group(1) : null;
-            String timeDiff = null;
 
-            if (isLeader && timeMain != null)
-                millisLeader = getMillisFromTimeString(timeMain);
+            if (timeMain != null) {
+                int millisMain = getMillisFromTimeString(timeMain);
+
+                if (isLeader)
+                    millisLeader = millisMain;
+                else
+                    millisMainLast = millisMain;
+            }
 
             if (nameLast != null && nameFirst != null) {
-                appendEntity(nameLast, nameFirst, rank, noRes, timeDiff, entityMap, aliasNameMap, millisLeader, ncrMap);
+                appendEntity(nameLast, nameFirst, rank, noRes, entityMap, aliasNameMap, millisLeader, millisMainLast, ncrMap);
                 isLeader = false;
             }
         }
     }
 
-    private void appendEntity(String nameLast, String nameFirst, String rank, String noRes, String timeDiff,
+    private void appendEntity(String nameLast, String nameFirst, String rank, String noRes,
                               Map<String, EventPartPersonSport> entityMap, Map<String, String> aliasNameMap,
-                              int millisLeader, Map<String, Integer> ncrMap) {
+                              int millisLeader, int millisMainLast, Map<String, Integer> ncrMap) {
         EventPartPersonSport eventPartPersonSport = new EventPartPersonSport();
 
         if (rank != null)
@@ -182,14 +188,8 @@ public class Scraper {
 
         if (noRes != null)
             eventPartPersonSport.setNoCountResultId(ncrMap.get(noRes));
-        else {
-            int time = millisLeader;
-
-            if (timeDiff != null)
-                time += getMillisFromTimeString(timeDiff);
-
-            eventPartPersonSport.setPoints(time);
-        }
+        else
+            eventPartPersonSport.setPoints(millisLeader + millisMainLast);
 
         String formattedName = formatName(nameLast, nameFirst);
         String key = aliasNameMap.getOrDefault(formattedName, formattedName);
