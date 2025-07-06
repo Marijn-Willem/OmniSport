@@ -24,7 +24,7 @@ public class ClientCompSeasonData extends OutputData {
     }
 
     @Override
-    public CacheDataKey getCacheKey() {
+    public CacheDataKey getCacheDataKey() {
         return new ClientCompSeasonKey(clientId);
     }
 
@@ -35,7 +35,7 @@ public class ClientCompSeasonData extends OutputData {
                 .stream().map(CompSeasonFragment::new)
                 .collect(Collectors.toList());
 
-        DataFragmentUtil.fillDataFragments(fragmentList, getCacheKey());
+        DataFragmentUtil.fillDataFragments(fragmentList, getCacheDataKey());
 
         compSeasonFragments.addAll(fragmentList);
     }

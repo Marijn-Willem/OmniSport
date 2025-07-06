@@ -35,7 +35,7 @@ public class CyclingRoadStageWinnersData extends OutputData {
 	}
 
 	@Override
-	public CacheDataKey getCacheKey() {
+	public CacheDataKey getCacheDataKey() {
 		return new CyclingRoadStageWinnersKey(competitionId, seasonId, clientId);
 	}
 
@@ -91,7 +91,7 @@ public class CyclingRoadStageWinnersData extends OutputData {
 				addFragment(cseKeyStageTeam, x, eventPartTeamMap);
 			});
 
-			DataFragmentUtil.fillDataFragments(stageWinnerFragments, getCacheKey());
+			DataFragmentUtil.fillDataFragments(stageWinnerFragments, getCacheDataKey());
 		}
 	}
 

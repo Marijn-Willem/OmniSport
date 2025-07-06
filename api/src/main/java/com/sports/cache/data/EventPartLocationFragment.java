@@ -1,6 +1,6 @@
 package com.sports.cache.data;
 
-import com.sports.cache.key.CacheKey;
+import com.sports.cache.key.CacheFragmentKey;
 import com.sports.cache.key.EventPartLocationKey;
 import com.sports.cache.util.DataFragmentUtil;
 import com.sports.cache.util.JsonUtil;
@@ -39,7 +39,7 @@ public class EventPartLocationFragment extends WritableFragment {
     }
 
     @Override
-    public CacheKey getCacheKey() {
+    public CacheFragmentKey getCacheFragmentKey() {
         return new EventPartLocationKey(competitionId, seasonId, compSeasonEventId,
                 compSeasonEventPartId, eventPartLocationId);
     }

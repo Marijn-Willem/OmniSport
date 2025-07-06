@@ -56,7 +56,7 @@ public class MatchListData extends OutputData {
 	}
 
 	@Override
-	public CacheDataKey getCacheKey() {
+	public CacheDataKey getCacheDataKey() {
 		return new MatchListKey(competitionId, seasonId, clientId);
 	}
 
@@ -98,7 +98,7 @@ public class MatchListData extends OutputData {
 						matchesByCompSeasonPhase.get(compSeasonPhaseId)));
 		});
 
-		DataFragmentUtil.fillDataFragments(matchListPhaseFragmentList, getCacheKey());
+		DataFragmentUtil.fillDataFragments(matchListPhaseFragmentList, getCacheDataKey());
 	}
 
 	@Override

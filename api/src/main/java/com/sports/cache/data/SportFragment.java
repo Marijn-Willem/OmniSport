@@ -1,6 +1,6 @@
 package com.sports.cache.data;
 
-import com.sports.cache.key.CacheKey;
+import com.sports.cache.key.CacheFragmentKey;
 import com.sports.cache.key.SportKey;
 import com.sports.cache.util.AliasUtil;
 import com.sports.cache.util.JsonUtil;
@@ -28,7 +28,7 @@ public class SportFragment extends WritableFragment {
     }
 
     @Override
-    public CacheKey getCacheKey() {
+    public CacheFragmentKey getCacheFragmentKey() {
         return new SportKey(sportId);
     }
 

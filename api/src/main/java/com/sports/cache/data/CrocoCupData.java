@@ -28,7 +28,7 @@ public class CrocoCupData extends OutputData {
     }
 
     @Override
-    public CacheDataKey getCacheKey() {
+    public CacheDataKey getCacheDataKey() {
         return new CrocoCupKey(competitionId, clientId);
     }
 
@@ -47,7 +47,7 @@ public class CrocoCupData extends OutputData {
                 holder = new TeamInCrocoCupFragment(x, clientId, false, nestingLevelFragment, false);
         });
 
-        DataFragmentUtil.fillDataFragments(standing, getCacheKey());
+        DataFragmentUtil.fillDataFragments(standing, getCacheDataKey());
     }
 
     @Override

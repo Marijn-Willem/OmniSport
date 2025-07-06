@@ -15,7 +15,7 @@ public class CompetitionFlusher extends CacheFlusher {
     }
 
     @Override
-    protected List<CacheKey> getCacheKeys(Statement stat) {
+    public List<CacheKey> generateCacheKeys(Statement stat) {
         return Collections.singletonList(new CompetitionKey(competitionId));
     }
 }

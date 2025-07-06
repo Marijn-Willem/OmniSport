@@ -1,6 +1,6 @@
 package com.sports.cache.data;
 
-import com.sports.cache.key.CacheKey;
+import com.sports.cache.key.CacheFragmentKey;
 import com.sports.cache.key.TeamInCrocoCupKey;
 import com.sports.cache.util.DescribedEntityUtil;
 import com.sports.cache.util.JsonUtil;
@@ -36,7 +36,7 @@ public class TeamInCrocoCupFragment extends WritableFragment {
     }
 
     @Override
-    public CacheKey getCacheKey() {
+    public CacheFragmentKey getCacheFragmentKey() {
         return new TeamInCrocoCupKey(teamId);
     }
 

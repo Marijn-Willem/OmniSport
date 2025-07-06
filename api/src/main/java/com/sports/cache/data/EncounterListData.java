@@ -48,7 +48,7 @@ public abstract class EncounterListData extends OutputData {
 
         Map<CompSeasonKey, List<CompSeasonPhase>> compSeasonPhaseMap = getCompSeasonPhaseMap(encounterMap, stat);
 
-        MatchListCompSeasonFilter filter = new MatchListCompSeasonFilter(clientId, getCacheKey(), stat);
+        MatchListCompSeasonFilter filter = new MatchListCompSeasonFilter(clientId, getCacheDataKey(), stat);
 
         compSeasons.forEach((x) -> {
             CompSeasonKey csKey = new CompSeasonKey(x.getCompetitionId(), x.getSeasonId());
@@ -63,7 +63,7 @@ public abstract class EncounterListData extends OutputData {
                 matchListCompSeasonFragmentList.add(fragment);
         });
 
-        DataFragmentUtil.fillDataFragments(matchListCompSeasonFragmentList, getCacheKey());
+        DataFragmentUtil.fillDataFragments(matchListCompSeasonFragmentList, getCacheDataKey());
     }
 
     @Override

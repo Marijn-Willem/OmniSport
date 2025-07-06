@@ -1,6 +1,6 @@
 package com.sports.cache.data;
 
-import com.sports.cache.key.CacheKey;
+import com.sports.cache.key.CacheFragmentKey;
 import com.sports.cache.key.DartsMatchStatsKey;
 import com.sports.calc.darts.DbCalculation;
 import com.sports.calc.darts.stat.StatObject;
@@ -24,7 +24,7 @@ public class DartsMatchStatsFragment extends DartsStatsFragment {
     }
 
     @Override
-    public CacheKey getCacheKey() {
+    public CacheFragmentKey getCacheFragmentKey() {
         return new DartsMatchStatsKey(competitionId, seasonId, personMatchId);
     }
 

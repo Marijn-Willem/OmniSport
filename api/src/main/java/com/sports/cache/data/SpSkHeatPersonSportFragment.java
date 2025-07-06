@@ -1,6 +1,6 @@
 package com.sports.cache.data;
 
-import com.sports.cache.key.CacheKey;
+import com.sports.cache.key.CacheFragmentKey;
 import com.sports.cache.key.SpSkHeatPersonSportKey;
 import com.sports.cache.util.DataFragmentUtil;
 import com.sports.cache.util.JsonUtil;
@@ -47,7 +47,7 @@ public class SpSkHeatPersonSportFragment extends WritableFragment {
     }
 
     @Override
-    public CacheKey getCacheKey() {
+    public CacheFragmentKey getCacheFragmentKey() {
         return new SpSkHeatPersonSportKey(competitionId, seasonId, compSeasonEventId, compSeasonEventPartId,
                 heat, personSportId);
     }

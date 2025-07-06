@@ -22,7 +22,7 @@ public class SportListData extends OutputData {
     }
 
     @Override
-    public CacheDataKey getCacheKey() {
+    public CacheDataKey getCacheDataKey() {
         return new SportListKey(clientId);
     }
 
@@ -31,13 +31,13 @@ public class SportListData extends OutputData {
         List<Sport> sportList = new SportManager(stat).getFullSportList();
         sportList.sort(new NamedEntityName());
 
-        ClientSportFilter filter = new ClientSportFilter(clientId, getCacheKey(), stat);
+        ClientSportFilter filter = new ClientSportFilter(clientId, getCacheDataKey(), stat);
         sportList.stream()
                 .map(x -> new SportFragment(x.getId(), clientId, DataFragmentUtil.getLevelForNestedList(nestingLevel), true))
                 .filter(filter::isElementAllowed)
                 .forEach(sportFragments::add);
 
-        DataFragmentUtil.fillDataFragments(sportFragments, getCacheKey());
+        DataFragmentUtil.fillDataFragments(sportFragments, getCacheDataKey());
     }
 
     @Override

@@ -1,6 +1,6 @@
 package com.sports.cache.data;
 
-import com.sports.cache.key.CacheKey;
+import com.sports.cache.key.CacheFragmentKey;
 import com.sports.cache.key.EventDisciplinePartListKey;
 import com.sports.calc.alcifo.DbCalculation;
 import com.sports.entity.CompSeasonEventPart;
@@ -35,7 +35,7 @@ public class EventDisciplinePartListFragment extends DataFragment {
     }
 
     @Override
-    public CacheKey getCacheKey() {
+    public CacheFragmentKey getCacheFragmentKey() {
         return new EventDisciplinePartListKey(competitionId, seasonId, sportId, compSeasonEventId, compSeasonEventPartId);
     }
 

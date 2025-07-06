@@ -23,7 +23,7 @@ public class EntityInstanceFlusher extends CacheFlusher {
     }
 
     @Override
-    protected List<CacheKey> getCacheKeys(Statement stat) throws SQLException {
+    public List<CacheKey> generateCacheKeys(Statement stat) throws SQLException {
         EntityInstanceFactory<? extends EntityInstanceKey, ? extends EntityInstance> factory =
                 Calculation.getEntityInstanceFactory(entityName);
         assert factory != null;

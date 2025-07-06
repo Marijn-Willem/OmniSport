@@ -1,6 +1,6 @@
 package com.sports.cache.key;
 
-public class CompetitionKey extends CacheKey {
+public class CompetitionKey extends CacheFragmentKey {
     private final int competitionId;
 
     public CompetitionKey(int competitionId) {

@@ -45,7 +45,7 @@ public class DartsMatchData extends OutputData {
     }
 
     @Override
-    public CacheDataKey getCacheKey() {
+    public CacheDataKey getCacheDataKey() {
         return new DartsMatchKey(competitionId, seasonId, personMatchId, clientId);
     }
 
@@ -68,7 +68,7 @@ public class DartsMatchData extends OutputData {
                 person1Start = personMatch.isPerson1Start();
                 matchStats = DataFragmentUtil.getFilledDataFragment(
                         new DartsMatchStatsFragment(competitionId, seasonId, personMatchId,
-                                DataFragmentUtil.getLevelForNestedFragment(nestingLevelNested)), getCacheKey(), stat);
+                                DataFragmentUtil.getLevelForNestedFragment(nestingLevelNested)), getCacheDataKey(), stat);
 
                 List<PersonMatchPart> sets = new PersonMatchPartManager(stat).getPersonMatchPartsWithoutParent(personMatchKey);
                 sets.sort(new PersonMatchPartId());
@@ -79,7 +79,7 @@ public class DartsMatchData extends OutputData {
                         )
                 );
 
-                DataFragmentUtil.fillDataFragments(setStats, getCacheKey());
+                DataFragmentUtil.fillDataFragments(setStats, getCacheDataKey());
             }
         }
     }
@@ -136,7 +136,7 @@ public class DartsMatchData extends OutputData {
                     personMatchKey.getCompetitionId(), personMatchKey.getSeasonId(), personSportId, clientId,
                     DataFragmentUtil.getLevelForNestedFragment(nestingLevelNested), false);
 
-            return DataFragmentUtil.getFilledDataFragment(personSportFragment, getCacheKey(), stat);
+            return DataFragmentUtil.getFilledDataFragment(personSportFragment, getCacheDataKey(), stat);
         }
 
         return null;

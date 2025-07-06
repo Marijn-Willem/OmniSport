@@ -1,6 +1,6 @@
 package com.sports.cache.data;
 
-import com.sports.cache.key.CacheKey;
+import com.sports.cache.key.CacheFragmentKey;
 import com.sports.cache.key.H2HMatchPartKey;
 import com.sports.cache.util.JsonUtil;
 import com.sports.cache.util.XmlUtil;
@@ -34,7 +34,7 @@ public class H2HMatchPartFragment extends WritableFragment {
     }
 
     @Override
-    public CacheKey getCacheKey() {
+    public CacheFragmentKey getCacheFragmentKey() {
         return new H2HMatchPartKey(competitionId, seasonId, matchId, specificId);
     }
 

@@ -1,6 +1,6 @@
 package com.sports.cache.data;
 
-import com.sports.cache.key.CacheKey;
+import com.sports.cache.key.CacheFragmentKey;
 import com.sports.cache.key.CyclingRoadPersonResultKey;
 import com.sports.cache.util.*;
 import com.sports.entity.CompSeasonEventPart;
@@ -47,7 +47,7 @@ public class CyclingRoadPersonResultFragment extends WritableFragment {
     }
 
     @Override
-    public CacheKey getCacheKey() {
+    public CacheFragmentKey getCacheFragmentKey() {
         return new CyclingRoadPersonResultKey(competitionId, seasonId, compSeasonEventId, compSeasonEventPartId, personSportId);
     }
 

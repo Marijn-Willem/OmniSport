@@ -1,6 +1,6 @@
 package com.sports.cache.key;
 
-public class ClientKey extends CacheKey {
+public class ClientKey extends CacheFragmentKey {
     private final int clientId;
 
     public ClientKey(int clientId) {

@@ -16,7 +16,7 @@ public class TeamFlusher extends CacheFlusher {
     }
 
     @Override
-    protected List<CacheKey> getCacheKeys(Statement stat) throws SQLException {
+    public List<CacheKey> generateCacheKeys(Statement stat) throws SQLException {
         return Collections.singletonList(new TeamInCrocoCupKey(teamId));
     }
 }

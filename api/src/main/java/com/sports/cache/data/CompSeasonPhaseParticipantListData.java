@@ -19,7 +19,7 @@ public class CompSeasonPhaseParticipantListData extends ParticipantListData {
 	}
 
 	@Override
-	public CacheDataKey getCacheKey() {
+	public CacheDataKey getCacheDataKey() {
 		return new CompSeasonPhaseParticipantListKey(competitionId, seasonId, compSeasonPhaseId, clientId);
 	}
 

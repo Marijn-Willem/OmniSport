@@ -25,7 +25,7 @@ public class H2HMatchFlusher extends CacheFlusher {
     }
 
     @Override
-    protected List<CacheKey> getCacheKeys(Statement stat) throws SQLException {
+    public List<CacheKey> generateCacheKeys(Statement stat) throws SQLException {
         CompSeasonParticipantFactory<? extends CompSeasonParticipantKey,
                 ? extends CompSeasonPhaseParticipantKey,
                 ? extends Participant,

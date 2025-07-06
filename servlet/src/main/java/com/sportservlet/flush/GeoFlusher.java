@@ -16,7 +16,7 @@ public class GeoFlusher extends CacheFlusher {
     }
 
     @Override
-    protected List<CacheKey> getCacheKeys(Statement stat) {
+    public List<CacheKey> generateCacheKeys(Statement stat) {
         return new ArrayList<>() {{
             add(new GeoKey(geoId));
             add(new GeoAsParentKey(geoId));

@@ -3,6 +3,7 @@ package com.sports.cache.util;
 import com.sports.cache.data.DataFragment;
 import com.sports.cache.data.OutputData;
 import com.sports.cache.key.CacheDataKey;
+import com.sports.cache.key.CacheFragmentKey;
 import com.sports.db.execute.DatabaseExecutor;
 import com.sports.logic.async.ThreadUtil;
 import com.sports.logic.async.ThreadWorker;
@@ -38,13 +39,13 @@ public class DataFragmentUtil {
         ThreadUtil.executeAsync(Arrays.asList(threadWorkers), true, 20);
     }
 
-    public static <T extends OutputData> T getFilledOutputData(T outputData, CacheDataKey cacheDataKey) {
-        T cachedOutputData = CacheUtil.get(outputData.getCacheKey());
+    public static <T extends OutputData> T getFilledOutputData(T outputData, CacheFragmentKey cacheKey) {
+        T cachedOutputData = CacheUtil.get(outputData.getCacheDataKey());
 
         if (cachedOutputData == null) {
             new FilledOutputDataExecutor(outputData).execute();
             if (outputData.isValidOutput())
-                CacheUtil.setOutputData(outputData, cacheDataKey);
+                CacheUtil.setOutputData(outputData, cacheKey);
 
             return outputData;
         }

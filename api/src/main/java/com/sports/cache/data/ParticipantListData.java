@@ -61,7 +61,7 @@ public abstract class ParticipantListData extends OutputData {
             participantFragments.addAll(participants.stream().map(x ->
                     new ParticipantFragment(competitionId, seasonId, x.getId(), clientId, nestingLevelList, true)).toList());
 
-            DataFragmentUtil.fillDataFragments(participantFragments, getCacheKey());
+            DataFragmentUtil.fillDataFragments(participantFragments, getCacheDataKey());
         }
     }
 

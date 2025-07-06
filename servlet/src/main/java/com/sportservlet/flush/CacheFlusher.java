@@ -7,26 +7,25 @@ import com.sports.entity.key.ClientCompSeasonKey;
 import com.sports.entity.key.CompSeasonKey;
 import com.sports.entity.manager.ClientCompSeasonManager;
 import com.sports.entity.manager.ClientManager;
-import com.sports.logic.async.ThreadWorker;
 
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class CacheFlusher extends DatabaseExecutor implements ThreadWorker {
+public abstract class CacheFlusher extends DatabaseExecutor {
     private List<Integer> clientIdsWithPermission;
+    private final List<CacheKey> cacheKeys = new ArrayList<>();
 
-    protected abstract List<CacheKey> getCacheKeys(Statement stat) throws SQLException;
+    public abstract List<CacheKey> generateCacheKeys(Statement stat) throws SQLException;
 
     @Override
     public void doWork(Statement stat) throws SQLException {
-        getCacheKeys(stat).forEach(CacheKey::delete);
+        cacheKeys.addAll(generateCacheKeys(stat));
     }
 
-    @Override
-    public void doWork() {
-        execute();
+    public List<CacheKey> getCacheKeys() {
+        return cacheKeys;
     }
 
     List<CacheKey> replicateForClientsWithRights(ClientReplicator replicator, CompSeasonKey compSeasonKey, Statement stat)

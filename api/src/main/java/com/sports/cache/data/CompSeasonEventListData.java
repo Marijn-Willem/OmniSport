@@ -33,7 +33,7 @@ public class CompSeasonEventListData extends OutputData {
 	}
 
 	@Override
-	public CacheDataKey getCacheKey() {
+	public CacheDataKey getCacheDataKey() {
 		return new CompSeasonEventListKey(competitionId, seasonId, clientId);
 	}
 
@@ -50,7 +50,7 @@ public class CompSeasonEventListData extends OutputData {
 		compSeasonEventFragments.addAll(compSeasonEvents.stream().map(x -> new CompSeasonEventFragment(
 				compSeasonKey, x, clientId, DataFragmentUtil.getLevelForNestedList(nestingLevel))).toList());
 
-		DataFragmentUtil.fillDataFragments(compSeasonEventFragments, getCacheKey());
+		DataFragmentUtil.fillDataFragments(compSeasonEventFragments, getCacheDataKey());
 	}
 
 	@Override

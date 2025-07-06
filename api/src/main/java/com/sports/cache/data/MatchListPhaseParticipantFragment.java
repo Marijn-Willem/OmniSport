@@ -1,6 +1,6 @@
 package com.sports.cache.data;
 
-import com.sports.cache.key.CacheKey;
+import com.sports.cache.key.CacheFragmentKey;
 import com.sports.cache.key.MatchListPhaseParticipantKey;
 import com.sports.entity.H2HMatch;
 
@@ -16,7 +16,7 @@ public class MatchListPhaseParticipantFragment extends MatchListPhaseFragment {
     }
 
     @Override
-    public CacheKey getCacheKey() {
+    public CacheFragmentKey getCacheFragmentKey() {
         return new MatchListPhaseParticipantKey(competitionId, seasonId, compSeasonPhaseId, participantId);
     }
 }

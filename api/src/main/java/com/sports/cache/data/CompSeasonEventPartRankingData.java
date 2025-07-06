@@ -48,7 +48,7 @@ public class CompSeasonEventPartRankingData extends AlcifoPartRankingData<CompSe
     }
 
     @Override
-    public CacheDataKey getCacheKey() {
+    public CacheDataKey getCacheDataKey() {
         return new CompSeasonEventPartRankingKey(competitionId, seasonId, compSeasonEventId, compSeasonEventPartId, clientId);
     }
 }

@@ -1,6 +1,6 @@
 package com.sports.cache.data;
 
-import com.sports.cache.key.CacheKey;
+import com.sports.cache.key.CacheFragmentKey;
 import com.sports.cache.key.ClientAliasKey;
 import com.sports.entity.Alias;
 import com.sports.entity.key.AliasEntityIdKey;
@@ -21,7 +21,7 @@ public class ClientAliasFragment extends DataFragment {
     }
 
     @Override
-    public CacheKey getCacheKey() {
+    public CacheFragmentKey getCacheFragmentKey() {
         return new ClientAliasKey(clientId, aliasEntityIdKey);
     }
 

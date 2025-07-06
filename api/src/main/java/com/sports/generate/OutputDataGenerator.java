@@ -74,7 +74,7 @@ public class OutputDataGenerator {
         bw.newLine();
 
         GenerateUtil.appendWithNewLine("\t@Override", bw);
-        GenerateUtil.appendWithNewLine("\tpublic CacheDataKey getCacheKey() {", bw);
+        GenerateUtil.appendWithNewLine("\tpublic CacheDataKey getCacheDataKey() {", bw);
         bw.append("\t\treturn new ");
         bw.append(keyName);
         bw.append("(");

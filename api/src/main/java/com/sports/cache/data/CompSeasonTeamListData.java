@@ -31,7 +31,7 @@ public class CompSeasonTeamListData extends OutputData {
 	}
 
 	@Override
-	public CacheDataKey getCacheKey() {
+	public CacheDataKey getCacheDataKey() {
 		return new CompSeasonTeamListKey(competitionId, seasonId, clientId);
 	}
 
@@ -46,7 +46,7 @@ public class CompSeasonTeamListData extends OutputData {
 				new CompSeasonTeamWithPersonSportsFragment(competitionId, seasonId, x.getId(), clientId,
 						DataFragmentUtil.getLevelForNestedList(nestingLevel))).toList());
 
-		DataFragmentUtil.fillDataFragments(teamFragments, getCacheKey());
+		DataFragmentUtil.fillDataFragments(teamFragments, getCacheDataKey());
 	}
 
 	@Override

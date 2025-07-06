@@ -37,7 +37,7 @@ public class CompSeasonPhaseListData extends OutputData {
         compSeasonPhases.forEach(x -> compSeasonPhaseFragments.add(
                 new CompSeasonPhaseFragment(x, clientId, DataFragmentUtil.getLevelForNestedList(nestingLevel), true)));
 
-        DataFragmentUtil.fillDataFragments(compSeasonPhaseFragments, getCacheKey());
+        DataFragmentUtil.fillDataFragments(compSeasonPhaseFragments, getCacheDataKey());
     }
 
     @Override
@@ -46,7 +46,7 @@ public class CompSeasonPhaseListData extends OutputData {
     }
 
     @Override
-    public CacheDataKey getCacheKey() {
+    public CacheDataKey getCacheDataKey() {
         return new CompSeasonPhaseListKey(competitionId, seasonId, clientId);
     }
 

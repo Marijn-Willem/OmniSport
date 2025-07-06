@@ -11,7 +11,7 @@ public abstract class OutputData implements Serializable {
 
     public abstract void fill(Statement stat) throws SQLException;
     public abstract boolean isValidOutput();
-    public abstract CacheDataKey getCacheKey();
+    public abstract CacheDataKey getCacheDataKey();
     public abstract String toXML();
     public abstract String toJson();
     public abstract String toYaml();

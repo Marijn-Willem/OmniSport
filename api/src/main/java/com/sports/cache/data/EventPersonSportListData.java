@@ -34,7 +34,7 @@ public class EventPersonSportListData extends OutputData {
 	}
 
 	@Override
-	public CacheDataKey getCacheKey() {
+	public CacheDataKey getCacheDataKey() {
 		return new EventPersonSportListKey(competitionId, seasonId, compSeasonEventId, clientId);
 	}
 
@@ -53,7 +53,7 @@ public class EventPersonSportListData extends OutputData {
 				new EventPersonSportFragment(competitionId, seasonId, compSeasonEventId, x.getId(), clientId, nestingLevelList))
 				.toList());
 
-		DataFragmentUtil.fillDataFragments(eventPersonSportFragments, getCacheKey());
+		DataFragmentUtil.fillDataFragments(eventPersonSportFragments, getCacheDataKey());
 	}
 
 	@Override

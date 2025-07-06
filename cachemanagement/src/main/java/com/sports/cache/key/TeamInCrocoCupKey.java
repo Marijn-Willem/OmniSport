@@ -1,6 +1,6 @@
 package com.sports.cache.key;
 
-public class TeamInCrocoCupKey extends CacheKey {
+public class TeamInCrocoCupKey extends CacheFragmentKey {
     private final int teamId;
 
     public TeamInCrocoCupKey(int teamId) {

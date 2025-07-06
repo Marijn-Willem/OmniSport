@@ -1,6 +1,6 @@
 package com.sports.cache.data;
 
-import com.sports.cache.key.CacheKey;
+import com.sports.cache.key.CacheFragmentKey;
 import com.sports.cache.key.CompSeasonParticipantWithRankKey;
 import com.sports.cache.util.JsonUtil;
 import com.sports.cache.util.XmlUtil;
@@ -17,7 +17,7 @@ public class CompSeasonParticipantWithRankFragment extends CompSeasonParticipant
     }
 
     @Override
-    public CacheKey getCacheKey() {
+    public CacheFragmentKey getCacheFragmentKey() {
         return new CompSeasonParticipantWithRankKey(competitionId, seasonId, participantId);
     }
 

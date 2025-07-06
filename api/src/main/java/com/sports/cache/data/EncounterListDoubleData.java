@@ -15,7 +15,7 @@ public class EncounterListDoubleData extends EncounterListData {
 	}
 
 	@Override
-	public CacheDataKey getCacheKey() {
+	public CacheDataKey getCacheDataKey() {
 		return new EncounterListDoubleKey(participant1Id, participant2Id, clientId);
 	}
 }

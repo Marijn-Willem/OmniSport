@@ -15,7 +15,7 @@ public class EncounterListTeamData extends EncounterListData {
 	}
 
 	@Override
-	public CacheDataKey getCacheKey() {
+	public CacheDataKey getCacheDataKey() {
 		return new EncounterListTeamKey(participant1Id, participant2Id, clientId);
 	}
 }

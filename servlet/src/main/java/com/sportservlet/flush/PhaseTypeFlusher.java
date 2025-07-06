@@ -16,7 +16,7 @@ public class PhaseTypeFlusher extends CacheFlusher {
     }
 
     @Override
-    protected List<CacheKey> getCacheKeys(Statement stat) {
+    public List<CacheKey> generateCacheKeys(Statement stat) {
         return new ArrayList<>() {{
             add(new PhaseTypeKey(phaseTypeId));
             add(new PhaseTypeAsParentKey(phaseTypeId));

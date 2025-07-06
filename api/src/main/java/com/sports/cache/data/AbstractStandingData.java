@@ -48,7 +48,7 @@ public abstract class AbstractStandingData extends OutputData {
 
     boolean isDomesticUSA(Statement stat) throws SQLException {
         CompetitionFragment fragment = DataFragmentUtil.getFilledDataFragment(new CompetitionFragment(competitionId),
-                getCacheKey(), stat);
+                getCacheDataKey(), stat);
 
         return fragment.isDomestic() && fragment.getGeoId() == Geo.geoIdUSA;
     }

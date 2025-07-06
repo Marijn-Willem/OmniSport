@@ -34,7 +34,7 @@ public class CompSeasonEventPartListData extends OutputData {
 	}
 
 	@Override
-	public CacheDataKey getCacheKey() {
+	public CacheDataKey getCacheDataKey() {
 		return new CompSeasonEventPartListKey(competitionId, seasonId, compSeasonEventId, clientId);
 	}
 
@@ -52,7 +52,7 @@ public class CompSeasonEventPartListData extends OutputData {
 				new CompSeasonEventPartFragment(competitionId, seasonId, compSeasonEventId,
 						x.getCompSeasonEventPartId(), clientId, DataFragmentUtil.getLevelForNestedList(nestingLevel))).toList());
 
-		DataFragmentUtil.fillDataFragments(fragmentList, getCacheKey());
+		DataFragmentUtil.fillDataFragments(fragmentList, getCacheDataKey());
 	}
 
 	@Override

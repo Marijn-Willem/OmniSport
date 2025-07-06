@@ -41,7 +41,7 @@ public abstract class ClientEntityFilter<T extends DataFragment> {
         clientFragment = DataFragmentUtil.getFilledDataFragment(new ClientFragment(client), cacheDataKey, stat);
 
         if (!clientFragment.isAdmin())
-            clientCompSeasonData = DataFragmentUtil.getFilledOutputData(new ClientCompSeasonData(clientId), cacheDataKey);
+            clientCompSeasonData = DataFragmentUtil.getFilledOutputData(new ClientCompSeasonData(clientId), null);
     }
 
     private boolean processAllowedForNonAdmin(T element) {

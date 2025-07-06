@@ -15,7 +15,7 @@ public class CompSeasonKeyFlusher extends CacheFlusher {
     }
 
     @Override
-    protected List<CacheKey> getCacheKeys(Statement stat) {
+    public List<CacheKey> generateCacheKeys(Statement stat) {
         return Collections.singletonList(new com.sports.cache.key.CompSeasonKey(
                 compSeasonKey.getCompetitionId(), compSeasonKey.getSeasonId()));
     }

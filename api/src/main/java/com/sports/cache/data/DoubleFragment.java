@@ -1,6 +1,6 @@
 package com.sports.cache.data;
 
-import com.sports.cache.key.CacheKey;
+import com.sports.cache.key.CacheFragmentKey;
 import com.sports.cache.key.DoubleKey;
 import com.sports.cache.util.*;
 import com.sports.entity.Double;
@@ -32,7 +32,7 @@ public class DoubleFragment extends WritableFragment {
     }
 
     @Override
-    public CacheKey getCacheKey() {
+    public CacheFragmentKey getCacheFragmentKey() {
         return new DoubleKey(new CompSeasonDoubleKey(new CompSeasonKey(competitionId, seasonId), doubleId));
     }
 

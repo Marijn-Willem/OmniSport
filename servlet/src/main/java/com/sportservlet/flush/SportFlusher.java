@@ -15,7 +15,7 @@ public class SportFlusher extends CacheFlusher {
     }
 
     @Override
-    protected List<CacheKey> getCacheKeys(Statement stat) {
+    public List<CacheKey> generateCacheKeys(Statement stat) {
         return Collections.singletonList(new SportKey(sportId));
     }
 }

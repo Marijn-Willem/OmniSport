@@ -3,7 +3,7 @@ package com.sports.cache.key;
 import com.sports.entity.key.AliasEntityIdKey;
 import com.sports.logic.util.Util;
 
-public class ClientAliasKey extends CacheKey {
+public class ClientAliasKey extends CacheFragmentKey {
     private final int clientId;
     private final AliasEntityIdKey aliasEntityIdKey;
 

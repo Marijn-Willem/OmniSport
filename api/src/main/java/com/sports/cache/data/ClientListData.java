@@ -20,7 +20,7 @@ public class ClientListData extends OutputData {
     private final Set<Integer> adminIds = new HashSet<>();
 
     @Override
-    public CacheDataKey getCacheKey() {
+    public CacheDataKey getCacheDataKey() {
         return new ClientListKey();
     }
 
@@ -31,7 +31,7 @@ public class ClientListData extends OutputData {
 
         clientList.forEach(x -> clientsSorted.add(
                 new ClientFragment(x, DataFragmentUtil.getLevelForNestedList(nestingLevel), true)));
-        DataFragmentUtil.fillDataFragments(clientsSorted, getCacheKey());
+        DataFragmentUtil.fillDataFragments(clientsSorted, getCacheDataKey());
 
         clientsSorted.forEach(x -> {
             clientMap.put(x.getName(), x);

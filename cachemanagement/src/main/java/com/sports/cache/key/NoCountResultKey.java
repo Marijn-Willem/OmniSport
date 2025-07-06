@@ -1,6 +1,6 @@
 package com.sports.cache.key;
 
-public class NoCountResultKey extends CacheKey {
+public class NoCountResultKey extends CacheFragmentKey {
 	private final int noCountResultId;
 
 	public NoCountResultKey(int noCountResultId) {

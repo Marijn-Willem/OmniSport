@@ -105,7 +105,7 @@ public abstract class AlcifoPartRankingData<PK extends SuperKey> extends OutputD
                             sportDiscipline.getResultTypePrecisionId()))
             );
 
-            DataFragmentUtil.fillDataFragments(fragments, getCacheKey());
+            DataFragmentUtil.fillDataFragments(fragments, getCacheDataKey());
         }
     }
 

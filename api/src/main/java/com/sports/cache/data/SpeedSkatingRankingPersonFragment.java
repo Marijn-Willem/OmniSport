@@ -1,6 +1,6 @@
 package com.sports.cache.data;
 
-import com.sports.cache.key.CacheKey;
+import com.sports.cache.key.CacheFragmentKey;
 import com.sports.cache.key.SpeedSkatingRankingPersonKey;
 import com.sports.cache.util.DescribedEntityUtil;
 import com.sports.cache.util.JsonUtil;
@@ -43,7 +43,7 @@ public class SpeedSkatingRankingPersonFragment extends WritableFragment {
     }
 
     @Override
-    public CacheKey getCacheKey() {
+    public CacheFragmentKey getCacheFragmentKey() {
         return new SpeedSkatingRankingPersonKey(competitionId, seasonId, compSeasonEventId, compSeasonEventPartId, personSportId);
     }
 

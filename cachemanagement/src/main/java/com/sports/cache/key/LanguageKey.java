@@ -1,6 +1,6 @@
 package com.sports.cache.key;
 
-public class LanguageKey extends CacheKey {
+public class LanguageKey extends CacheFragmentKey {
 	private final int languageId;
 
 	public LanguageKey(int languageId) {

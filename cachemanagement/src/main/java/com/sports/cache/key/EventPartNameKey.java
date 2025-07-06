@@ -1,6 +1,6 @@
 package com.sports.cache.key;
 
-public class EventPartNameKey extends CacheKey {
+public class EventPartNameKey extends CacheFragmentKey {
 	private final int eventPartNameId;
 
 	public EventPartNameKey(int eventPartNameId) {

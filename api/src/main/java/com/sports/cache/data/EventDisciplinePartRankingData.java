@@ -22,7 +22,7 @@ public class EventDisciplinePartRankingData extends AlcifoPartRankingData<EventD
     }
 
     @Override
-    public CacheDataKey getCacheKey() {
+    public CacheDataKey getCacheDataKey() {
         return new EventDisciplinePartRankingKey(competitionId, seasonId, compSeasonEventId, compSeasonEventPartId,
                 eventDisciplinePartId, clientId);
     }

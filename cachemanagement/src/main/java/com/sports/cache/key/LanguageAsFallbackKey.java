@@ -1,6 +1,6 @@
 package com.sports.cache.key;
 
-public class LanguageAsFallbackKey extends CacheKey {
+public class LanguageAsFallbackKey extends CacheFragmentKey {
 	private final int languageId;
 
 	public LanguageAsFallbackKey(int languageId) {

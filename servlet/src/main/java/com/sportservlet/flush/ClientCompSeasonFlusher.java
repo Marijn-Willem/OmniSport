@@ -15,7 +15,7 @@ public class ClientCompSeasonFlusher extends CacheFlusher {
     }
 
     @Override
-    protected List<CacheKey> getCacheKeys(Statement stat) {
+    public List<CacheKey> generateCacheKeys(Statement stat) {
         return clientIds.stream().map(ClientCompSeasonKey::new).collect(Collectors.toList());
     }
 }

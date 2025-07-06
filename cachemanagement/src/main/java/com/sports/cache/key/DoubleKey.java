@@ -2,7 +2,7 @@ package com.sports.cache.key;
 
 import com.sports.entity.key.CompSeasonDoubleKey;
 
-public class DoubleKey extends CacheKey {
+public class DoubleKey extends CacheFragmentKey {
     private final CompSeasonDoubleKey compSeasonDoubleKey;
 
     public DoubleKey(CompSeasonDoubleKey compSeasonDoubleKey) {

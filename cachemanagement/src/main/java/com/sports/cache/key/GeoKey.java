@@ -1,6 +1,6 @@
 package com.sports.cache.key;
 
-public class GeoKey extends CacheKey {
+public class GeoKey extends CacheFragmentKey {
     private final int geoId;
 
     public GeoKey(int geoId) {

@@ -32,7 +32,7 @@ public class KnockoutRankingData extends OutputData {
 	}
 
 	@Override
-	public CacheDataKey getCacheKey() {
+	public CacheDataKey getCacheDataKey() {
 		return new KnockoutRankingKey(competitionId, seasonId, compSeasonPhaseId, clientId);
 	}
 
@@ -55,7 +55,7 @@ public class KnockoutRankingData extends OutputData {
 				new CompSeasonParticipantWithRankFragment(competitionId, seasonId, x, clientId,
 						DataFragmentUtil.getLevelForNestedList(nestingLevel))).toList());
 
-		DataFragmentUtil.fillDataFragments(participantFragments, getCacheKey());
+		DataFragmentUtil.fillDataFragments(participantFragments, getCacheDataKey());
 	}
 
 	@Override

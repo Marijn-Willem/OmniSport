@@ -45,7 +45,7 @@ public class MatchListParticipantData extends MatchListData {
 	}
 
 	@Override
-	public CacheDataKey getCacheKey() {
+	public CacheDataKey getCacheDataKey() {
 		return new MatchListParticipantKey(competitionId, seasonId, participantId, clientId);
 	}
 }

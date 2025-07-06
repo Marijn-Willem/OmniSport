@@ -1,6 +1,6 @@
 package com.sports.cache.data;
 
-import com.sports.cache.key.CacheKey;
+import com.sports.cache.key.CacheFragmentKey;
 import com.sports.cache.key.EntityInstanceCompSeasonKey;
 import com.sports.cache.util.DataFragmentUtil;
 import com.sports.entity.EntityInstance;
@@ -27,7 +27,7 @@ public class EntityInstanceCompSeasonFragment extends DataFragment {
     }
 
     @Override
-    public CacheKey getCacheKey() {
+    public CacheFragmentKey getCacheFragmentKey() {
         return new EntityInstanceCompSeasonKey(entityName, entityId, compSeasonKey);
     }
 

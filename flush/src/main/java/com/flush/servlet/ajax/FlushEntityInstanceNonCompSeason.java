@@ -1,6 +1,6 @@
 package com.flush.servlet.ajax;
 
-import com.sports.cache.key.CacheKey;
+import com.sports.cache.key.CacheFragmentKey;
 import com.sports.cache.key.EntityInstanceNonCompSeasonKey;
 import com.sports.entity.*;
 import com.sports.entity.manager.ClubManager;
@@ -14,7 +14,7 @@ import java.sql.Statement;
 
 public class FlushEntityInstanceNonCompSeason extends Flush {
     @Override
-    CacheKey getCacheKey(Statement stat, HttpServletRequest req) throws SQLException {
+    CacheFragmentKey getCacheKey(Statement stat, HttpServletRequest req) throws SQLException {
         String en = req.getParameter("en");
         String eas = req.getParameter("eas");
         Integer entityId = getEntityId(stat, en, eas);

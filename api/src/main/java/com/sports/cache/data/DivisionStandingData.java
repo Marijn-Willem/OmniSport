@@ -19,7 +19,7 @@ public class DivisionStandingData extends StandingData {
     }
 
     @Override
-    public CacheDataKey getCacheKey() {
+    public CacheDataKey getCacheDataKey() {
         return new DivisionStandingKey(competitionId, seasonId, compSeasonPhaseId, compDivisionId, clientId);
     }
 
@@ -37,7 +37,7 @@ public class DivisionStandingData extends StandingData {
                 )
             );
 
-            DataFragmentUtil.fillDataFragments(standingParticipants, getCacheKey());
+            DataFragmentUtil.fillDataFragments(standingParticipants, getCacheDataKey());
         }
     }
 }

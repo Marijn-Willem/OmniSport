@@ -32,15 +32,15 @@ public class SeasonListData extends OutputData {
     }
 
     @Override
-    public CacheDataKey getCacheKey() {
+    public CacheDataKey getCacheDataKey() {
         return new SeasonListKey(competitionId, clientId);
     }
 
     @Override
     public void fill(Statement stat) throws SQLException {
-        boolean isAdmin = DataFragmentUtil.getFilledOutputData(new ClientListData(), getCacheKey()).isAdmin(clientId);
+        boolean isAdmin = DataFragmentUtil.getFilledOutputData(new ClientListData(), null).isAdmin(clientId);
         ClientCompSeasonData ccsData = !isAdmin ? DataFragmentUtil.getFilledOutputData(
-                new ClientCompSeasonData(clientId), getCacheKey()) : null;
+                new ClientCompSeasonData(clientId), null) : null;
 
         Map<CompSeasonKey, CompSeason> csMap = new CompSeasonManager(stat)
                 .getCompSeasonMapForCompetition(competitionId)
@@ -59,7 +59,7 @@ public class SeasonListData extends OutputData {
             seasonFragments.add(new SeasonFragment(compSeason, nestingLevelList));
         });
 
-        DataFragmentUtil.fillDataFragments(seasonFragments, getCacheKey());
+        DataFragmentUtil.fillDataFragments(seasonFragments, getCacheDataKey());
     }
 
     @Override

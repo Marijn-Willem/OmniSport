@@ -28,14 +28,14 @@ public class CyclingRoadPersonResultsData extends OutputData {
 	}
 
 	@Override
-	public CacheDataKey getCacheKey() {
+	public CacheDataKey getCacheDataKey() {
 		return new CyclingRoadPersonResultsKey(personSportId, seasonId, clientId);
 	}
 
 	@Override
 	public void fill(Statement stat) throws SQLException {
 		List<EventPartPersonSport> eventPartPersonSports = new DbCalculation(stat).getPersonResultsInSeason(personSportId, seasonId);
-		ClientCyclingRoadPersonResultFilter filter = new ClientCyclingRoadPersonResultFilter(clientId, getCacheKey(), stat);
+		ClientCyclingRoadPersonResultFilter filter = new ClientCyclingRoadPersonResultFilter(clientId, getCacheDataKey(), stat);
 
 		cyclingRoadPersonResultFragmentList.addAll(
 			eventPartPersonSports.stream().map(x -> {
@@ -52,7 +52,7 @@ public class CyclingRoadPersonResultsData extends OutputData {
 				.toList()
 		);
 
-		DataFragmentUtil.fillDataFragments(cyclingRoadPersonResultFragmentList, getCacheKey());
+		DataFragmentUtil.fillDataFragments(cyclingRoadPersonResultFragmentList, getCacheDataKey());
 	}
 
 	@Override

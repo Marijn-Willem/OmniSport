@@ -38,7 +38,7 @@ public class SpeedSkatingTotalRankingData extends OutputData {
 	}
 
 	@Override
-	public CacheDataKey getCacheKey() {
+	public CacheDataKey getCacheDataKey() {
 		return new SpeedSkatingTotalRankingKey(competitionId, seasonId, compSeasonEventId, compSeasonEventPartId, clientId);
 	}
 
@@ -67,7 +67,7 @@ public class SpeedSkatingTotalRankingData extends OutputData {
 						new SpeedSkatingRankingPersonFragment(competitionId, seasonId, compSeasonEventId,
 								compSeasonEventPartId, x, clientId, nestingLevelList)).toList());
 
-				DataFragmentUtil.fillDataFragments(rankingPersonFragments, getCacheKey());
+				DataFragmentUtil.fillDataFragments(rankingPersonFragments, getCacheDataKey());
 			}
 		}
 	}

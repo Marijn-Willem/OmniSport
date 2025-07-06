@@ -24,7 +24,7 @@ public class CompetitionListData extends OutputData {
     }
 
     @Override
-    public CacheDataKey getCacheKey() {
+    public CacheDataKey getCacheDataKey() {
         return new CompetitionListKey(sportId, clientId);
     }
 
@@ -33,7 +33,7 @@ public class CompetitionListData extends OutputData {
         List<Competition> competitions = new CompetitionManager(stat).getCompetitionList(sportId);
         competitions.sort(new NamedEntityName());
 
-        ClientCompetitionFilter filter = new ClientCompetitionFilter(clientId, getCacheKey(), stat);
+        ClientCompetitionFilter filter = new ClientCompetitionFilter(clientId, getCacheDataKey(), stat);
 
         int nestingLevelList = DataFragmentUtil.getLevelForNestedList(nestingLevel);
 
@@ -42,7 +42,7 @@ public class CompetitionListData extends OutputData {
                 .filter(filter::isElementAllowed)
                 .forEach(competitionFragments::add);
 
-        DataFragmentUtil.fillDataFragments(competitionFragments, getCacheKey());
+        DataFragmentUtil.fillDataFragments(competitionFragments, getCacheDataKey());
     }
 
     @Override

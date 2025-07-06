@@ -23,7 +23,7 @@ public class CyclingRoadStageFlusher extends CacheFlusher {
     }
 
     @Override
-    protected List<CacheKey> getCacheKeys(Statement stat) throws SQLException {
+    public List<CacheKey> generateCacheKeys(Statement stat) throws SQLException {
         CompSeasonEventKey cseKey = compSeasonEventPartKey.getSuperKey();
         CompSeasonKey csKey = cseKey.getSuperKey();
 

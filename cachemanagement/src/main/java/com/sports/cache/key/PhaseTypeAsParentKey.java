@@ -1,6 +1,6 @@
 package com.sports.cache.key;
 
-public class PhaseTypeAsParentKey extends CacheKey {
+public class PhaseTypeAsParentKey extends CacheFragmentKey {
     private final int phaseTypeId;
 
     public PhaseTypeAsParentKey(int phaseTypeId) {

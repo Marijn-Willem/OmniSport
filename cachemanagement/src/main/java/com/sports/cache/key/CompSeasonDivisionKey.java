@@ -2,7 +2,7 @@ package com.sports.cache.key;
 
 import com.sports.logic.util.Util;
 
-public class CompSeasonDivisionKey extends CacheKey {
+public class CompSeasonDivisionKey extends CacheFragmentKey {
 	private final int competitionId;
 	private final int seasonId;
 	private final int compDivisionId;

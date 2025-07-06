@@ -14,7 +14,7 @@ public class CompSeasonPhaseStandingEvolutionData extends StandingEvolutionData 
 	}
 
 	@Override
-	public CacheDataKey getCacheKey() {
+	public CacheDataKey getCacheDataKey() {
 		return new CompSeasonPhaseStandingEvolutionKey(competitionId, seasonId, compSeasonPhaseId, clientId);
 	}
 
@@ -30,7 +30,7 @@ public class CompSeasonPhaseStandingEvolutionData extends StandingEvolutionData 
 						)
 					);
 
-			DataFragmentUtil.fillDataFragments(snapshotFragments, getCacheKey());
+			DataFragmentUtil.fillDataFragments(snapshotFragments, getCacheDataKey());
 		}
 	}
 }

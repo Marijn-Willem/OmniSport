@@ -18,7 +18,7 @@ public class DartsPremierLeagueStandingData extends StandingData {
 	}
 
 	@Override
-	public CacheDataKey getCacheKey() {
+	public CacheDataKey getCacheDataKey() {
 		return new DartsPremierLeagueStandingKey(seasonId, clientId);
 	}
 
@@ -33,6 +33,6 @@ public class DartsPremierLeagueStandingData extends StandingData {
 					new StandingParticipantFragment(compSeasonKey, x, clientId,
 							nestingLevelList, false)));
 
-		DataFragmentUtil.fillDataFragments(standingParticipants, getCacheKey());
+		DataFragmentUtil.fillDataFragments(standingParticipants, getCacheDataKey());
 	}
 }

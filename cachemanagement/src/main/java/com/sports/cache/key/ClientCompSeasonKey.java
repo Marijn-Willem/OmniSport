@@ -11,9 +11,4 @@ public class ClientCompSeasonKey extends CacheDataKey {
     public String getSpecificKeyPart() {
         return Integer.toString(clientId);
     }
-
-    @Override
-    public CacheKey getMetaKey() {
-        return new ClientCompSeasonMetaKey(clientId);
-    }
 }

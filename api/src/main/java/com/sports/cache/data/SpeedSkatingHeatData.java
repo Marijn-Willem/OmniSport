@@ -41,7 +41,7 @@ public class SpeedSkatingHeatData extends OutputData {
     }
 
     @Override
-    public CacheDataKey getCacheKey() {
+    public CacheDataKey getCacheDataKey() {
         return new SpeedSkatingHeatKey(competitionId, seasonId, compSeasonEventId, compSeasonEventPartId, heat, clientId);
     }
 
@@ -66,11 +66,11 @@ public class SpeedSkatingHeatData extends OutputData {
                 personSport1Fragment = DataFragmentUtil.getFilledDataFragment(new SpSkHeatPersonSportFragment(
                         competitionId, seasonId, compSeasonEventId, compSeasonEventPartId, heat,
                         eventPartPersonSports.get(0).getPersonSportId(), clientId, nestingLevelFragment
-                ), getCacheKey(), stat);
+                ), getCacheDataKey(), stat);
                 personSport2Fragment = DataFragmentUtil.getFilledDataFragment(new SpSkHeatPersonSportFragment(
                         competitionId, seasonId, compSeasonEventId, compSeasonEventPartId, heat,
                         eventPartPersonSports.get(1).getPersonSportId(), clientId, nestingLevelFragment
-                ), getCacheKey(), stat);
+                ), getCacheDataKey(), stat);
             }
         }
     }

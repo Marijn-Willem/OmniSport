@@ -16,7 +16,7 @@ public class EventPartLocationFlusher extends CacheFlusher {
     }
 
     @Override
-    protected List<CacheKey> getCacheKeys(Statement stat) throws SQLException {
+    public List<CacheKey> generateCacheKeys(Statement stat) throws SQLException {
         return Collections.singletonList(new com.sports.cache.key.EventPartLocationKey(
                 eventPartLocationKey.getSuperKey().getSuperKey().getSuperKey().getCompetitionId(),
                 eventPartLocationKey.getSuperKey().getSuperKey().getSuperKey().getSeasonId(),
