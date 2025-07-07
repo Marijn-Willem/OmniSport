@@ -25,7 +25,7 @@ public class Scraper {
     private static final Pattern patName = Pattern.compile("<a.*?><span.*?>(.*?)</span>\\s*(.*?)</a>");
     private static final Pattern patRank = Pattern.compile("<td>(\\d+)</td>");
     private static final Pattern patNoRes = Pattern.compile("<td>([a-zA-Z]{3})</td>");
-    private static final Pattern patTimeMain = Pattern.compile("<td class=\"time ar\"\\s*>\\s*([\\d:.]+)");
+    private static final Pattern patTime = Pattern.compile("<span\\sclass=\"hide\">([\\d:.]+)</span>");
 
     private static final int clientId = Client.clientIdProcyclingStats;
 
@@ -145,7 +145,6 @@ public class Scraper {
                                   Map<String, String> aliasNameMap, Map<String, Integer> ncrMap) {
         Matcher matRow = patTableRow.matcher(table);
         int millisLeader = 0;
-        int millisMainLast = 0;
         boolean isLeader = true;
 
         while (matRow.find()) {
@@ -153,26 +152,28 @@ public class Scraper {
             Matcher matName = patName.matcher(row);
             Matcher matRank = patRank.matcher(row);
             Matcher matNoRes = patNoRes.matcher(row);
-            Matcher matTimeMain = patTimeMain.matcher(row);
+            Matcher matTime = patTime.matcher(row);
 
             boolean isName = matName.find();
             String nameLast = isName ? matName.group(1) : null;
             String nameFirst = isName ? matName.group(2) : null;
             String rank = matRank.find() ? matRank.group(1) : null;
             String noRes = matNoRes.find() ? matNoRes.group(1) : null;
-            String timeMain = matTimeMain.find() ? matTimeMain.group(1) : null;
+            String time = matTime.find() ? matTime.group(1) : null;
 
-            if (timeMain != null) {
-                int millisMain = getMillisFromTimeString(timeMain);
+            int timeDiff = 0;
+
+            if (time != null) {
+                int timeInMillis = getMillisFromTimeString(time);
 
                 if (isLeader)
-                    millisLeader = millisMain;
+                    millisLeader = timeInMillis;
                 else
-                    millisMainLast = millisMain;
+                    timeDiff = timeInMillis;
             }
 
             if (nameLast != null && nameFirst != null) {
-                appendEntity(nameLast, nameFirst, rank, noRes, entityMap, aliasNameMap, millisLeader, millisMainLast, ncrMap);
+                appendEntity(nameLast, nameFirst, rank, noRes, entityMap, aliasNameMap, millisLeader, timeDiff, ncrMap);
                 isLeader = false;
             }
         }
@@ -180,7 +181,7 @@ public class Scraper {
 
     private void appendEntity(String nameLast, String nameFirst, String rank, String noRes,
                               Map<String, EventPartPersonSport> entityMap, Map<String, String> aliasNameMap,
-                              int millisLeader, int millisMainLast, Map<String, Integer> ncrMap) {
+                              int millisLeader, int timeDiff, Map<String, Integer> ncrMap) {
         EventPartPersonSport eventPartPersonSport = new EventPartPersonSport();
 
         if (rank != null)
@@ -189,7 +190,7 @@ public class Scraper {
         if (noRes != null)
             eventPartPersonSport.setNoCountResultId(ncrMap.get(noRes));
         else
-            eventPartPersonSport.setPoints(millisLeader + millisMainLast);
+            eventPartPersonSport.setPoints(millisLeader + timeDiff);
 
         String formattedName = formatName(nameLast, nameFirst);
         String key = aliasNameMap.getOrDefault(formattedName, formattedName);
