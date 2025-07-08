@@ -17,11 +17,6 @@
     <param-name>welcome-file</param-name>
     <param-value>SportList</param-value>
   </context-param>
-  
-  <context-param>
-    <param-name>MEM_GROUPID</param-name>
-    <param-value>omnisport</param-value>
-  </context-param>
 
   <servlet>
     <servlet-name>EntryServlet</servlet-name>

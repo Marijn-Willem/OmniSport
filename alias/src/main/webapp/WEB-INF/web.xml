@@ -14,11 +14,6 @@
     <param-value>EntityPortal</param-value>
   </context-param>
 
-  <context-param>
-    <param-name>MEM_GROUPID</param-name>
-    <param-value>omnisport</param-value>
-  </context-param>
-
   <welcome-file-list>
     <welcome-file>servlet</welcome-file>
   </welcome-file-list>

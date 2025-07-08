@@ -15,11 +15,6 @@
   </context-param>
 
   <context-param>
-    <param-name>MEM_GROUPID</param-name>
-    <param-value>omnisport</param-value>
-  </context-param>
-
-  <context-param>
     <param-name>fileDir</param-name>
     <param-value>Darts</param-value>
   </context-param>

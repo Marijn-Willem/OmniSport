@@ -18,11 +18,6 @@
     <param-value>EntityPortal</param-value>
   </context-param>
 
-  <context-param>
-    <param-name>MEM_GROUPID</param-name>
-    <param-value>omnisport</param-value>
-  </context-param>
-
   <servlet>
     <servlet-name>EntryServlet</servlet-name>
     <servlet-class>com.sportservlet.EntryServlet</servlet-class>
