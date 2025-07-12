@@ -3,6 +3,8 @@ package com.sports.entity;
 import com.sports.db.util.QueryUtil;
 
 public class SportDiscipline extends SuperKeyAliasable {
+    public static final int sportDisciplineIdCyclingRoadTimeTrial = -1;
+
     private String name;
     private int resultTypeId;
     private Integer resultTypePrecisionId;

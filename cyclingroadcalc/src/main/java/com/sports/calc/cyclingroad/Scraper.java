@@ -26,6 +26,7 @@ public class Scraper {
     private static final Pattern patRank = Pattern.compile("<td>(\\d+)</td>");
     private static final Pattern patNoRes = Pattern.compile("<td>([a-zA-Z]{3})</td>");
     private static final Pattern patTime = Pattern.compile("<span\\sclass=\"hide\">([\\d:.]+)</span>");
+    private static final Pattern patTimeTT = Pattern.compile("<td\\sclass=\"time\\sar\\s\"\\s>([\\d:.]+)");
 
     private static final int clientId = Client.clientIdProcyclingStats;
 
@@ -48,6 +49,7 @@ public class Scraper {
     private final CompSeasonEventPartKey compSeasonEventPartKey;
     private final Statement stat;
     private CompSeasonEvent compSeasonEvent;
+    private CompSeasonEventPart compSeasonEventPart;
     private boolean isSucceeded;
     private final List<String> newPersonNames = new ArrayList<>();
 
@@ -92,7 +94,9 @@ public class Scraper {
 
         Map<String, EventPartPersonSport> entityMap = new HashMap<>();
         Map<String, String> aliasNameMap = getAliasNameMap(stat);
-        processTableRows(inputTable, entityMap, aliasNameMap, ncrMap);
+        boolean isTimeTrial = getCompSeasonEventPart().getSportDisciplineId() ==
+                SportDiscipline.sportDisciplineIdCyclingRoadTimeTrial;
+        processTableRows(inputTable, entityMap, aliasNameMap, ncrMap, isTimeTrial);
 
         DbCalculation dbCalculation = new DbCalculation(stat);
 
@@ -142,7 +146,8 @@ public class Scraper {
     }
 
     private void processTableRows(String table, Map<String, EventPartPersonSport> entityMap,
-                                  Map<String, String> aliasNameMap, Map<String, Integer> ncrMap) {
+                                  Map<String, String> aliasNameMap, Map<String, Integer> ncrMap,
+                                  boolean isTimeTrial) {
         Matcher matRow = patTableRow.matcher(table);
         int millisLeader = 0;
         boolean isLeader = true;
@@ -152,7 +157,7 @@ public class Scraper {
             Matcher matName = patName.matcher(row);
             Matcher matRank = patRank.matcher(row);
             Matcher matNoRes = patNoRes.matcher(row);
-            Matcher matTime = patTime.matcher(row);
+            Matcher matTime = isTimeTrial ? patTimeTT.matcher(row) : patTime.matcher(row);
 
             boolean isName = matName.find();
             String nameLast = isName ? matName.group(1) : null;
@@ -262,6 +267,13 @@ public class Scraper {
             compSeasonEvent = new CompSeasonEventManager(stat).getEntityFromSuperKey(compSeasonEventPartKey.getSuperKey());
 
         return compSeasonEvent;
+    }
+
+    private CompSeasonEventPart getCompSeasonEventPart() throws SQLException {
+        if (compSeasonEventPart == null)
+            compSeasonEventPart = new CompSeasonEventPartManager(stat).getEntityFromSuperKey(compSeasonEventPartKey);
+
+        return compSeasonEventPart;
     }
 
     private int getMillisFromTimeString(String timeString) {
