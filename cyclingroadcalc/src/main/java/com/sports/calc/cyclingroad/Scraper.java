@@ -25,7 +25,7 @@ public class Scraper {
     private static final Pattern patName = Pattern.compile("<a.*?><span.*?>(.*?)</span>\\s*(.*?)</a>");
     private static final Pattern patRank = Pattern.compile("<td>(\\d+)</td>");
     private static final Pattern patNoRes = Pattern.compile("<td>([a-zA-Z]{3})</td>");
-    private static final Pattern patTime = Pattern.compile("<span\\sclass=\"hide\">([\\d:.]+)</span>");
+    private static final Pattern patTime = Pattern.compile("<span\\sclass=\"hide\">\\s*([\\d:.]+)</span>");
     private static final Pattern patTimeTT = Pattern.compile("<td\\sclass=\"time\\sar\\s\"\\s>([\\d:.]+)");
 
     private static final int clientId = Client.clientIdProcyclingStats;
