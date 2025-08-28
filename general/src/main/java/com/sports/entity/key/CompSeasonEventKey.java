@@ -28,7 +28,7 @@ public class CompSeasonEventKey extends SuperKey {
 
     @Override
     public String getWhereClause() {
-        return compSeasonKey.getWhereClause() + " AND compSeasonEventId = " + compSeasonEventId;
+        return compSeasonKey.getWhereClause() + " AND compseasoneventid = " + compSeasonEventId;
     }
 
     @Override

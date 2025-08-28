@@ -53,7 +53,7 @@ public abstract class ProcessInsertAlcifoPartParticipants<APPK extends SuperKey,
 
         String output;
 
-        if (!participants.isEmpty()) {
+        if (participants.isEmpty()) {
             if (specificCheckBeforeInsert(stat)) {
                 new DbCalculation(stat).insertPartParticipants(partKey, factory);
                 output = "Participants successfully inserted";
