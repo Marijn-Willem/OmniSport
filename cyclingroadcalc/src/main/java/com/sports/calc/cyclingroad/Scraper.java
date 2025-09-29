@@ -31,12 +31,14 @@ public class Scraper {
     private static final int clientId = Client.clientIdProcyclingStats;
 
     private static final List<String> infixes = new ArrayList<>() {{
+        add("da");
         add("de");
         add("den");
         add("der");
         add("des");
         add("del");
         add("dos");
+        add("do");
         add("du");
         add("la");
         add("le");
