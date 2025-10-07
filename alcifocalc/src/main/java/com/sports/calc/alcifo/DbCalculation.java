@@ -267,6 +267,20 @@ public record DbCalculation(Statement stat) {
         });
     }
 
+    public List<EventPersonSport> getEventPersonSportsWithDescription(CompSeasonEventKey compSeasonEventKey) throws SQLException {
+        List<EventPersonSport> epsList = new EventPersonSportManager(stat).getEventPersonSportList(compSeasonEventKey);
+
+        List<Integer> personSportIds = epsList.stream().map(EventPersonSport::getSpecificId).toList();
+        Map<Integer, PersonSport> personSportMap = new PersonSportManager(stat).getParticipantMap(personSportIds);
+
+        epsList.forEach(x -> {
+            if (personSportMap.containsKey(x.getSpecificId()))
+                x.setDescription(personSportMap.get(x.getSpecificId()).getDescription());
+        });
+
+        return epsList;
+    }
+
     public boolean isAlcifo(int competitionId) throws SQLException {
         Competition competition = new CompetitionManager(stat).getCompetition(competitionId);
         Sport sport = competition != null ? new SportManager(stat).getSport(competition.getSportId()) : null;
