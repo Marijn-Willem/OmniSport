@@ -16,6 +16,7 @@ public class CompSeasonEventPart extends SuperKeyEntity implements Orderable, De
     private Integer stage;
     private LocalDateTime date;
     private String externalSource;
+    private boolean isFinal;
 
     private int competitionId;
     private int seasonId;
@@ -32,7 +33,8 @@ public class CompSeasonEventPart extends SuperKeyEntity implements Orderable, De
                 String.valueOf(order),
                 QueryUtil.convertIntegerToDbValue(stage),
                 QueryUtil.convertDateTimeToDbString(date),
-                QueryUtil.convertStringToDbValue(externalSource)
+                QueryUtil.convertStringToDbValue(externalSource),
+                QueryUtil.convertBooleanToDbValue(isFinal)
         };
     }
 
@@ -90,6 +92,14 @@ public class CompSeasonEventPart extends SuperKeyEntity implements Orderable, De
 
     public void setExternalSource(String externalSource) {
         this.externalSource = externalSource;
+    }
+
+    public boolean isFinal() {
+        return isFinal;
+    }
+
+    public void setFinal(boolean aFinal) {
+        isFinal = aFinal;
     }
 
     public void setCompetitionId(int competitionId) {

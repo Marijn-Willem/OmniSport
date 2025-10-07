@@ -17,9 +17,10 @@ function getProcessUrl() {
     const epnid = getValueFromElementByName('epnid');
     const o = getValueFromElementByName('o');
     const st = getValueFromElementByName('st');
+    const fn = getValueFromCheckbox('fn');
 
     let params = 'cid=' + cid + '&sid=' + sid + '&cseid=' + cseid + '&csepid=' + csepid +
-        '&did=' + did + '&epnid=' + epnid + '&o=' + o + '&st=' + st;
+        '&did=' + did + '&epnid=' + epnid + '&o=' + o + '&st=' + st + '&fn=' + fn;
     params = getUpdateWithNonEmptyParameter(params, 'dt', 'dt');
     params = getUpdateWithNonEmptyParameter(params, 'es', 'es');
 

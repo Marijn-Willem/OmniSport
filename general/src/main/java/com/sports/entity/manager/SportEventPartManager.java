@@ -37,7 +37,8 @@ public class SportEventPartManager extends SuperKeyAliasableManager<SportEventPa
                 "sportdisciplineid",
                 "name",
                 "\"order\"",
-                "weight"
+                "weight",
+                "isfinal"
             };
     }
 
@@ -55,6 +56,7 @@ public class SportEventPartManager extends SuperKeyAliasableManager<SportEventPa
         sep.setOrder(rs.getInt("order"));
         sep.setSportEventPartId(rs.getInt("sporteventpartid"));
         sep.setWeight(QueryUtil.getIntegerFromResultSet(rs, "weight"));
+        sep.setFinal(rs.getBoolean("isfinal"));
 
         return sep;
     }

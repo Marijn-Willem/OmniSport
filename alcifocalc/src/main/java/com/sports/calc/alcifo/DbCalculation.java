@@ -62,6 +62,7 @@ public record DbCalculation(Statement stat) {
             csep.setSportId(sek.getSportId());
             csep.setSportDisciplineId(sportEventPart.getSportDisciplineId());
             csep.setOrder(sportEventPart.getOrder());
+            csep.setFinal(sportEventPart.isFinal());
 
             csepMap.put(csepKey, csep);
         }
