@@ -44,11 +44,13 @@ public class ProcessManageSportEventPart extends ProcessManageSuperKeyEntity<Spo
         String nm = req.getParameter("nm");
         int o = getIntValuedParameterValue(req, "o");
         Integer w = convertRequestParamToNonIdInteger(req, "w");
+        boolean fn = Boolean.parseBoolean(req.getParameter("fn"));
 
         entity.setSportDisciplineId(did);
         entity.setName(nm);
         entity.setOrder(o);
         entity.setWeight(w);
+        entity.setFinal(fn);
     }
 
     private SportEventKey getSportEventKey(HttpServletRequest req) {

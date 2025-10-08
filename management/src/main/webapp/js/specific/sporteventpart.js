@@ -19,7 +19,8 @@ function getProcessUrl() {
     const nm = getValueFromElementByName('nm');
     const o = getValueFromElementByName('o');
     const w = getValueFromElementByName('w');
+    const fn = getValueFromCheckbox('fn');
 
     return '/ProcessManageSportEventPart?spid=' + spid + '&eid=' + eid + '&epid=' + epid + '&did=' + did +
-        '&nm=' + nm + '&o=' + o + '&w=' + w;
+        '&nm=' + nm + '&o=' + o + '&w=' + w + '&fn=' + fn;
 }

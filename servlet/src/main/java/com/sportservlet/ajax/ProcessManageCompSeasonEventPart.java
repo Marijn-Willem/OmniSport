@@ -49,6 +49,7 @@ public class ProcessManageCompSeasonEventPart extends ProcessManageSuperKeyEntit
         Integer epnid = convertRequestParamToIdInteger(req, "epnid");
         int o = getIntValuedParameterValue(req, "o");
         Integer st = convertRequestParamToNonIdInteger(req, "st");
+        boolean fn = Boolean.parseBoolean(req.getParameter("fn"));
         LocalDateTime dt = convertRequestParameterToDatetime(req, "dt");
         String es = req.getParameter("es");
 
@@ -57,6 +58,7 @@ public class ProcessManageCompSeasonEventPart extends ProcessManageSuperKeyEntit
         entity.setEventPartNameId(epnid);
         entity.setOrder(o);
         entity.setStage(st);
+        entity.setFinal(fn);
         entity.setDate(dt);
         entity.setExternalSource(es);
     }

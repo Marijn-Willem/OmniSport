@@ -69,11 +69,15 @@ public class Scraper {
         if (inputTable != null) {
             processInputTable(inputTable);
 
+            CompSeasonEventKey compSeasonEventKey = compSeasonEventPartKey.getSuperKey();
+            com.sports.calc.cyclingroad.DbCalculation dbCalculation = new com.sports.calc.cyclingroad.DbCalculation(stat);
+
             int sportEventId = getCompSeasonEvent().getSportEventKey().getSportEventId();
 
             if (sportEventId == SportEvent.sportEventIdCyclingRoadStage)
-                new com.sports.calc.cyclingroad.DbCalculation(stat)
-                        .updateEventPersonSportsWithNoCountResult(compSeasonEventPartKey.getSuperKey());
+                dbCalculation.updateEventPersonSportsWithNoCountResult(compSeasonEventKey);
+            else if (getCompSeasonEventPart().isFinal())
+                dbCalculation.updateEventPersonSportsFromFinalEventPart(compSeasonEventKey);
         }
     }
 

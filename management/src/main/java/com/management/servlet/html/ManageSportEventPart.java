@@ -86,5 +86,6 @@ public class ManageSportEventPart extends ManageEntity {
         writeTextFieldWithLabel("Name", "nm", sep != null ? sep.getName() : null, w);
         writeNumericTextField("Order", "o", sep != null ? sep.getOrder() : null, w);
         writeNumericTextField("Weight", "w", sep != null ? sep.getWeight() : null, w);
+        writeCheckbox("Final", "fn", sep != null && sep.isFinal(), w);
     }
 }

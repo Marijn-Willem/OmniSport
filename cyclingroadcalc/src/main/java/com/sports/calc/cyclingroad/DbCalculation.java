@@ -9,10 +9,7 @@ import com.sports.logic.util.Util;
 
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public record DbCalculation(Statement stat) {
     public boolean setGeneralClassificationPointsForStage(CompSeasonKey compSeasonKey, int stage) throws SQLException {
@@ -57,6 +54,30 @@ public record DbCalculation(Statement stat) {
         });
 
         epsm.updateParticipantMap(eventPersonSportsToUpdate);
+    }
+
+    public void updateEventPersonSportsFromFinalEventPart(CompSeasonEventKey cseKey) throws SQLException {
+        List<CompSeasonEventPart> finalEventParts = new CompSeasonEventPartManager(stat)
+                .getCompSeasonEventPartsFromEvents(Collections.singletonList(cseKey))
+                .stream().filter(CompSeasonEventPart::isFinal).toList();
+
+        if (finalEventParts.size() == 1) {
+            CompSeasonEventPart finalEventPart = finalEventParts.get(0);
+            CompSeasonEventPartKey compSeasonEventPartKey = finalEventPart.getCompSeasonEventPartKey();
+
+            EventPersonSportManager epsm = new EventPersonSportManager(stat);
+            EventPartPersonSportManager eppsm = new EventPartPersonSportManager(stat);
+
+            Map<EventPersonSportKey, EventPersonSport> eventPersonSportMap = epsm.getParticipantMapInEvent(cseKey);
+
+            eppsm.getPartParticipantMap(Collections.singletonList(compSeasonEventPartKey)).forEach((k, v) -> {
+               EventPersonSport eventPersonSport = eventPersonSportMap.get(getEventPersonSportKey(k));
+
+               eventPersonSport.setRank(v.getRank());
+            });
+
+            epsm.updateParticipantMap(eventPersonSportMap);
+        }
     }
 
     public List<EventPartPersonSport> getPersonResultsInSeason(int personSportId, int seasonId) throws SQLException {

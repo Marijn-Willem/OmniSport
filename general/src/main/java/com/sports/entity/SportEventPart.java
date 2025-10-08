@@ -7,6 +7,7 @@ public class SportEventPart extends SuperKeyAliasable implements Orderable {
     private String name;
     private int order;
     private Integer weight;
+    private boolean isFinal;
 
     private int sportEventPartId;
 
@@ -16,7 +17,8 @@ public class SportEventPart extends SuperKeyAliasable implements Orderable {
                 String.valueOf(sportDisciplineId),
                 QueryUtil.convertStringToDbValue(name),
                 String.valueOf(order),
-                QueryUtil.convertIntegerToDbValue(weight)
+                QueryUtil.convertIntegerToDbValue(weight),
+                QueryUtil.convertBooleanToDbValue(isFinal)
             };
     }
 
@@ -48,19 +50,27 @@ public class SportEventPart extends SuperKeyAliasable implements Orderable {
         this.order = order;
     }
 
-    public int getSportEventPartId() {
-        return sportEventPartId;
-    }
-
-    public void setSportEventPartId(int sportEventPartId) {
-        this.sportEventPartId = sportEventPartId;
-    }
-
     public Integer getWeight() {
         return weight;
     }
 
     public void setWeight(Integer weight) {
         this.weight = weight;
+    }
+
+    public boolean isFinal() {
+        return isFinal;
+    }
+
+    public void setFinal(boolean aFinal) {
+        isFinal = aFinal;
+    }
+
+    public int getSportEventPartId() {
+        return sportEventPartId;
+    }
+
+    public void setSportEventPartId(int sportEventPartId) {
+        this.sportEventPartId = sportEventPartId;
     }
 }

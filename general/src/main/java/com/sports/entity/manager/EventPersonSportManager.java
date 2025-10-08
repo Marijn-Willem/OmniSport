@@ -59,6 +59,10 @@ public class EventPersonSportManager extends AlcifoParticipantManager<EventPerso
         delete(eventPersonSportKeys);
     }
 
+    public List<EventPersonSport> getEventPersonSportList(CompSeasonEventKey compSeasonEventKey) throws SQLException {
+        return getEntityList(compSeasonEventKey.getWhereClause());
+    }
+
     public Map<EventPersonSportKey, EventPersonSport> getEventPersonSportMap(int personSportId) throws SQLException {
         return getSuperKeyEntityMap("personsportid = " + personSportId);
     }
