@@ -7,9 +7,7 @@ import com.sports.entity.manager.*;
 
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public record DbCalculation(Statement stat) {
     public List<PersonSport> getTotalRanking(CompSeasonEventPartKey csepk) throws SQLException {
@@ -90,6 +88,37 @@ public record DbCalculation(Statement stat) {
         eventDisciplineParts.sort(new EventDisciplinePartOrder());
 
         return eventDisciplineParts;
+    }
+
+    public void setEventPersonSportRanks(CompSeasonEventKey compSeasonEventKey) throws SQLException {
+        List<CompSeasonEventPart> finalEventParts = new CompSeasonEventPartManager(stat)
+                .getCompSeasonEventPartsFromEvents(Collections.singletonList(compSeasonEventKey))
+                .stream().filter(CompSeasonEventPart::isFinal).toList();
+
+        if (finalEventParts.size() == 1) {
+            CompSeasonEventPart finalEventPart = finalEventParts.get(0);
+
+            EventPersonSportManager eventPersonSportManager = new EventPersonSportManager(stat);
+
+            Map<Integer, EventPersonSport> existingEventPersonSports = new HashMap<>() {{
+                eventPersonSportManager.getEventPersonSportList(compSeasonEventKey)
+                        .forEach(x -> put(x.getSpecificId(), x));
+            }};
+
+            Map<EventPersonSportKey, EventPersonSport> eventPersonsToUpdate = new HashMap<>();
+
+            getTotalRanking(finalEventPart.getCompSeasonEventPartKey()).forEach(x -> {
+               if (existingEventPersonSports.containsKey(x.getId())) {
+                   EventPersonSport eventPersonSport = existingEventPersonSports.get(x.getId());
+                   EventPersonSportKey epsKey = new EventPersonSportKey(compSeasonEventKey, x.getId());
+                   eventPersonSport.setRank(x.getRank());
+
+                   eventPersonsToUpdate.put(epsKey, eventPersonSport);
+               }
+            });
+
+            eventPersonSportManager.updateParticipantMap(eventPersonsToUpdate);
+        }
     }
 
     private void setRanks(List<PersonSport> personSports) {
