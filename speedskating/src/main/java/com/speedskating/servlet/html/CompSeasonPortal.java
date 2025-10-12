@@ -15,6 +15,7 @@ public class CompSeasonPortal extends com.sportservlet.html.CompSeasonPortal {
     }
 
     public void initSpecificProperties(HttpServletRequest req) {
+        jsSpecificList.add("compseason");
         cssList.add("styling");
     }
 }

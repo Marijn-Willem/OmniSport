@@ -1,13 +1,18 @@
 package com.sports.calc.speedskating;
 
+import com.sports.calc.alcifo.EventPersonSportRankFromFinalEventPartUpdater;
 import com.sports.entity.*;
-import com.sports.entity.comparator.*;
+import com.sports.entity.comparator.EventDisciplinePartOrder;
+import com.sports.entity.comparator.EventPartPersonPersonId;
+import com.sports.entity.comparator.ParticipantResPoints;
+import com.sports.entity.comparator.SportEventPartId;
 import com.sports.entity.key.*;
 import com.sports.entity.manager.*;
 
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -90,6 +95,23 @@ public record DbCalculation(Statement stat) {
         eventDisciplineParts.sort(new EventDisciplinePartOrder());
 
         return eventDisciplineParts;
+    }
+
+    public void setEventPersonSportRanks(CompSeasonEventKey compSeasonEventKey) throws SQLException {
+        new EventPersonSportRankFromFinalEventPartUpdater<PersonSport>(compSeasonEventKey, stat) {
+            @Override
+            public Map<EventPersonSportKey, PersonSport> getSourceMap(CompSeasonEventPartKey csepKey, Statement stat) throws SQLException {
+                return new HashMap<>() {{
+                    getTotalRanking(csepKey).forEach(x ->
+                            put(new EventPersonSportKey(compSeasonEventKey, x.getId()), x));
+                }};
+            }
+
+            @Override
+            public Integer getRank(PersonSport entity) {
+                return entity.getRank();
+            }
+        }.updateEventPersonSportRanks();
     }
 
     private void setRanks(List<PersonSport> personSports) {

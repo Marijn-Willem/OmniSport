@@ -2,7 +2,6 @@ package com.sportservlet.flush;
 
 import com.sports.cache.key.CacheKey;
 import com.sports.cache.key.CyclingRoadStageWinnersKey;
-import com.sports.cache.key.EventPersonSportRankingKey;
 import com.sports.entity.CompSeasonEvent;
 import com.sports.entity.CompSeasonEventPart;
 import com.sports.entity.SportEvent;
@@ -49,24 +48,6 @@ public class CyclingRoadStageFlusher extends CacheFlusher {
             return new CyclingRoadStageWinnersKey(
                     clientCompSeasonKey.getCompetitionId(),
                     clientCompSeasonKey.getSeasonId(),
-                    clientCompSeasonKey.getClientId()
-            );
-        }
-    }
-
-    private static class EventPersonSportRankingReplicator extends ClientReplicator {
-        private final int compSeasonEventId;
-
-        public EventPersonSportRankingReplicator(int compSeasonEventId) {
-            this.compSeasonEventId = compSeasonEventId;
-        }
-
-        @Override
-        CacheKey getCacheKeyForClientCompSeason(ClientCompSeasonKey clientCompSeasonKey) {
-            return new EventPersonSportRankingKey(
-                    clientCompSeasonKey.getCompetitionId(),
-                    clientCompSeasonKey.getSeasonId(),
-                    compSeasonEventId,
                     clientCompSeasonKey.getClientId()
             );
         }

@@ -28,3 +28,4 @@ com.sportservlet.ajax.EntityInstanceList
 com.sportservlet.ajax.ProcessInsertEntityInstance
 com.sportservlet.dispatch.PrepareProcessManageEntityInstance
 com.sportservlet.ajax.ProcessManagePersonInstance
+com.speedskating.servlet.ajax.ProcessCalculateEventPersonSportRanks

@@ -1,5 +1,6 @@
 package com.sports.calc.cyclingroad;
 
+import com.sports.calc.alcifo.EventPersonSportRankFromFinalEventPartUpdater;
 import com.sports.entity.*;
 import com.sports.entity.comparator.CompSeasonEventPartStage;
 import com.sports.entity.comparator.EventPartPersonSportEventDate;
@@ -57,27 +58,20 @@ public record DbCalculation(Statement stat) {
     }
 
     public void updateEventPersonSportsFromFinalEventPart(CompSeasonEventKey cseKey) throws SQLException {
-        List<CompSeasonEventPart> finalEventParts = new CompSeasonEventPartManager(stat)
-                .getCompSeasonEventPartsFromEvents(Collections.singletonList(cseKey))
-                .stream().filter(CompSeasonEventPart::isFinal).toList();
+        new EventPersonSportRankFromFinalEventPartUpdater<EventPartPersonSport>(cseKey, stat) {
+            @Override
+            public Map<EventPersonSportKey, EventPartPersonSport> getSourceMap(CompSeasonEventPartKey csepKey, Statement stat) throws SQLException {
+                return new HashMap<>() {{
+                    new EventPartPersonSportManager(stat).getPartParticipantMap(Collections.singletonList(csepKey)).forEach((k, v) ->
+                        put(getEventPersonSportKey(k), v));
+                }};
+            }
 
-        if (finalEventParts.size() == 1) {
-            CompSeasonEventPart finalEventPart = finalEventParts.get(0);
-            CompSeasonEventPartKey compSeasonEventPartKey = finalEventPart.getCompSeasonEventPartKey();
-
-            EventPersonSportManager epsm = new EventPersonSportManager(stat);
-            EventPartPersonSportManager eppsm = new EventPartPersonSportManager(stat);
-
-            Map<EventPersonSportKey, EventPersonSport> eventPersonSportMap = epsm.getParticipantMapInEvent(cseKey);
-
-            eppsm.getPartParticipantMap(Collections.singletonList(compSeasonEventPartKey)).forEach((k, v) -> {
-               EventPersonSport eventPersonSport = eventPersonSportMap.get(getEventPersonSportKey(k));
-
-               eventPersonSport.setRank(v.getRank());
-            });
-
-            epsm.updateParticipantMap(eventPersonSportMap);
-        }
+            @Override
+            public Integer getRank(EventPartPersonSport entity) {
+                return entity.getRank();
+            }
+        }.updateEventPersonSportRanks();
     }
 
     public List<EventPartPersonSport> getPersonResultsInSeason(int personSportId, int seasonId) throws SQLException {
