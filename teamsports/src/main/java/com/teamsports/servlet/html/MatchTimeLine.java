@@ -20,22 +20,32 @@ import java.sql.Statement;
 import java.util.*;
 
 public class MatchTimeLine extends SuperHtmlServlet {
+    private int matchId;
+    private TeamMatchKey teamMatchKey;
+    private TeamMatch teamMatch;
+
+    @Override
+    protected void init(Statement stat, HttpServletRequest req) throws SQLException {
+        matchId = getIntValuedParameterValue(req, "mid");
+        teamMatchKey = new TeamMatchKey(compSeasonKey, matchId);
+        teamMatch = new TeamMatchManager(stat).getMatches(Collections.singletonList(teamMatchKey)).get(0);
+    }
+
     void initSpecificProperties(HttpServletRequest req) {
 
     }
 
     @Override
     protected String getReturnPath(Statement stat, HttpServletRequest req) throws SQLException {
-        return "MatchOverview?" + compSeasonUrlParameters + "&pid=" + req.getParameter("pid");
+        String basicParameterString = compSeasonUrlParameters + "&pid=" + getIntValuedParameterValue(req, "pid");
+
+        return teamMatch.getParentMatchId() != null ?
+                "ParentMatchPortal?" + basicParameterString + "&pmid=" + teamMatch.getParentMatchId() :
+                "MatchOverview?" + basicParameterString;
     }
 
     protected void processHtmlBody(Statement stat, HttpServletRequest req, HttpServletResponse res)
             throws IOException, SQLException {
-        int matchId = getIntValuedParameterValue(req, "mid");
-
-        TeamMatchKey mk = new TeamMatchKey(compSeasonKey, matchId);
-
-        TeamMatch teamMatch = new TeamMatchManager(stat).getMatches(Collections.singletonList(mk)).get(0);
         Integer teamHomeId = teamMatch.getTeamHomeId();
         Integer teamAwayId = teamMatch.getTeamAwayId();
 
@@ -48,7 +58,7 @@ public class MatchTimeLine extends SuperHtmlServlet {
         }};
 
         Map<Integer, Team> teamMap = new TeamManager(stat).getTeamMap(teamIds);
-        List<TeamMatchAction> matchActions = new TeamMatchActionManager(stat).getMatchActionsMatch(mk);
+        List<TeamMatchAction> matchActions = new TeamMatchActionManager(stat).getMatchActionsMatch(teamMatchKey);
 
         matchActions.sort(new MatchActionMinute());
 

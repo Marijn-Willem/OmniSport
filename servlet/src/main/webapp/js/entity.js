@@ -97,7 +97,7 @@ function showCoordinatesInGoogleMaps(name) {
 }
 
 function convertNumericValToString(nVal) {
-    return nVal === -1 ? '-' : nVal.toString();
+    return isEmptyOrNull(nVal) || nVal === -1 ? '-' : nVal.toString();
 }
 
 function convertStringToNumericVal(sVal) {

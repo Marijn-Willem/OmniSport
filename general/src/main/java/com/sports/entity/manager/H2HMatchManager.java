@@ -43,7 +43,7 @@ public abstract class H2HMatchManager<S extends H2HMatchKey, T extends H2HMatch>
         return new String[]{getParticipant1IdColumn(), getParticipant2IdColumn(),
                 getScore1Column(), getScore2Column(),
                 getParticipant1NcrIdColumn(), getParticipant2NcrIdColumn(),
-                "finished", "compseasonphaseid", "knockoutorder", "\"date\""};
+                "finished", "compseasonphaseid", "knockoutorder", "\"date\"", "parentmatchid" };
     }
 
     void fillGenericPropertiesFromResultSet(T h2HMatch, ResultSet rs) throws SQLException {
@@ -57,6 +57,7 @@ public abstract class H2HMatchManager<S extends H2HMatchKey, T extends H2HMatch>
         h2HMatch.setCompSeasonPhaseId(rs.getInt("compseasonphaseid"));
         h2HMatch.setKnockoutOrder(QueryUtil.getIntegerFromResultSet(rs, "knockoutorder"));
         h2HMatch.setDate(QueryUtil.convertTimestampToDateTime(rs.getTimestamp("date")));
+        h2HMatch.setParentMatchId(QueryUtil.getIntegerFromResultSet(rs, "parentmatchid"));
         h2HMatch.setCompSeasonPhaseKey(new CompSeasonPhaseKey(((CompSeasonManager)getCachedSuperManager()).getSuperKeyFromResultSet(rs),
                 rs.getInt("compseasonphaseid")));
     }
@@ -65,24 +66,10 @@ public abstract class H2HMatchManager<S extends H2HMatchKey, T extends H2HMatch>
         super(stat);
     }
 
-    public T getInstanceFromKey(S key) throws SQLException {
-        String query = "SELECT " + getSelectColumnString() + " FROM " + getTableName() +
-                " WHERE " + key.getWhereClause();
-
-        ResultSet rs = stat.executeQuery(query);
-
-        if (rs.next())
-            return getInstanceFromResultSet(rs);
-
-        return null;
-    }
-
     public List<T> getH2HMatchList(CompSeasonKey csk, String whereClause)
             throws SQLException {
-        String query = getGenericQuery(csk.getWhereClause() +
+        return getEntityList(csk.getWhereClause() +
                 Util.getPrefixedStringOrEmptyString(whereClause, " AND "));
-
-        return getMatches(query);
     }
 
     public int getNewSpecId(CompSeasonKey csk) throws SQLException {
@@ -94,6 +81,14 @@ public abstract class H2HMatchManager<S extends H2HMatchKey, T extends H2HMatch>
         return getEntityListFromSuperKeys(compSeasonPhaseKeys);
     }
 
+    public List<T> getParentMatchesInCompSeasonPhase(CompSeasonPhaseKey compSeasonPhaseKey) throws SQLException {
+        return getEntityList(compSeasonPhaseKey.getWhereClause() + " AND parentmatchid IS NULL");
+    }
+
+    public List<T> getMatchesForParent(S parentMatchKey) throws SQLException {
+        return getEntityList(parentMatchKey.getWhereClauseParent());
+    }
+
     public void deleteMatchesFromCompSeasonPhases(List<CompSeasonPhaseKey> phaseKeys)
             throws SQLException {
         delete(phaseKeys);
@@ -101,14 +96,8 @@ public abstract class H2HMatchManager<S extends H2HMatchKey, T extends H2HMatch>
 
     public List<T> getNonFinishedH2HMatches(CompSeasonPhaseKey compSeasonPhaseKey)
             throws SQLException {
-        List<T> h2HMatches = new ArrayList<T>();
-
-        ResultSet rs = stat.executeQuery(getGenericQuery(compSeasonPhaseKey.getWhereClause() + " AND NOT(finished)"));
-
-        while (rs.next())
-            h2HMatches.add(getInstanceFromResultSet(rs));
-
-        return h2HMatches;
+        return getEntityList(compSeasonPhaseKey.getWhereClause() +
+                " AND finished = " + QueryUtil.convertBooleanToDbValue(false));
     }
 
     public void update(S h2HMatchKey, T match) throws SQLException {
@@ -119,12 +108,9 @@ public abstract class H2HMatchManager<S extends H2HMatchKey, T extends H2HMatch>
         super.updateEntityMap(matchMap);
     }
 
-    public void insertMatchMap(Map<S, T> matchMap) throws SQLException {
-        super.insert(matchMap);
-    }
-
     public List<T> getPlayedMatchesInCompSeasonPhase(CompSeasonPhaseKey cspk) throws SQLException {
-        return getMatches(getPlayedMatchQuery(cspk.getWhereClause()));
+        String whereClause = cspk.getWhereClause() + " AND " + getScore1Column() + " IS NOT NULL";
+        return getEntityList(whereClause);
     }
 
     public List<T> getMatchesInCompSeasonPhases(List<CompSeasonPhaseKey> phaseKeys) throws SQLException {
@@ -138,10 +124,6 @@ public abstract class H2HMatchManager<S extends H2HMatchKey, T extends H2HMatch>
                 getCompSeasonParticipantQuery(cspk, false);
 
         return getMatches(query);
-    }
-
-    public List<T> getMatchesForParticipants(List<CompSeasonParticipantKey> keyList) throws SQLException {
-        return getEntityListFromSuperKeys(keyList);
     }
 
     public List<T> getMatchesWithBothParticipants(Collection<CompSeasonKey> compSeasonKeys, int participant1Id, int participant2Id)
@@ -166,7 +148,7 @@ public abstract class H2HMatchManager<S extends H2HMatchKey, T extends H2HMatch>
 
     public Map<S, T> getMatchesForPhaseParticipants(
             List<? extends CompSeasonPhaseParticipantKey> keyList) throws SQLException {
-        Map<S, T> matchMap = new HashMap<S, T>();
+        Map<S, T> matchMap = new HashMap<>();
 
         if (!keyList.isEmpty())
             matchMap = getSuperKeyEntityMap("(" +
@@ -180,12 +162,8 @@ public abstract class H2HMatchManager<S extends H2HMatchKey, T extends H2HMatch>
         return getGenericQuery(getScore1Column() + " IS NOT NULL AND " + whereClauseSuppl);
     }
 
-    String getSelectColumnString() {
-        return getKeyColumnString() + ", " + Util.concatStrings(getValueColumns(), ", ");
-    }
-
     private List<T> getMatches(String query) throws SQLException {
-        List<T> playedTeamMatches = new ArrayList<T>();
+        List<T> playedTeamMatches = new ArrayList<>();
 
         ResultSet rs = stat.executeQuery(query);
 

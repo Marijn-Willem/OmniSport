@@ -22,51 +22,60 @@ import java.sql.Statement;
 import java.util.*;
 
 public class MatchInfo extends SuperHtmlServlet {
+    private CompSeasonParticipantFactory<? extends CompSeasonParticipantKey,
+            ? extends CompSeasonPhaseParticipantKey,
+            ? extends Participant,
+            ? extends SuperKeyEntity,
+            ? extends H2HMatchKey,
+            ? extends H2HMatch,
+            ? extends H2HMatchPartKey,
+            ? extends H2HMatchPart,
+            ? extends H2HMatchPartStatKey,
+            ? extends H2HMatchPartStat> factory;
+    private H2HObjectFactory<? extends CompSeasonParticipantKey,
+            ? extends CompSeasonPhaseParticipantKey,
+            ? extends Participant,
+            ? extends SuperKeyEntity,
+            ? extends H2HMatchKey,
+            ? extends H2HMatch,
+            ? extends H2HMatchPartKey,
+            ? extends H2HMatchPart,
+            ? extends H2HMatchPartStatKey,
+            ? extends H2HMatchPartStat> h2HObjectFactory;
+    private H2HMatch h2hMatch;
+
     public void initSpecificProperties(HttpServletRequest req) {
 
     }
 
     @Override
+    protected void init(Statement stat, HttpServletRequest req) throws SQLException {
+        int h2hMatchId = Integer.parseInt(req.getParameter("mid"));
+
+        Competition competition = new CompetitionManager(stat).getCompetition(competitionId);
+        factory = new com.sports.logic.calculation.DbCalculation(stat)
+                .getCompSeasonParticipantFactory(competition);
+        h2HObjectFactory = factory.getH2HObjectFactory();
+        h2hMatch = new com.sports.calc.h2hsports.DbCalculation(stat).retrieveH2HMatch(h2HObjectFactory, compSeasonKey, h2hMatchId);
+    }
+
+    @Override
     public String getReturnPath(Statement stat, HttpServletRequest req) {
-        return "MatchOverview?" + compSeasonUrlParameters + "&pid=" + req.getParameter("pid");
+        String basicParameterString = compSeasonUrlParameters + "&pid=" + getIntValuedParameterValue(req, "pid");
+
+        return h2hMatch.getParentMatchId() != null ?
+                "ParentMatchPortal?" + basicParameterString + "&pmid=" + h2hMatch.getParentMatchId() :
+                "MatchOverview?" + basicParameterString;
     }
 
     protected void processHtmlBody(Statement stat, HttpServletRequest req, HttpServletResponse res)
             throws IOException, SQLException {
-        int h2hMatchId = Integer.parseInt(req.getParameter("mid"));
-
-        Competition competition = new CompetitionManager(stat).getCompetition(competitionId);
-
-        CompSeasonParticipantFactory<? extends CompSeasonParticipantKey,
-                ? extends CompSeasonPhaseParticipantKey,
-                ? extends Participant,
-                ? extends SuperKeyEntity,
-                ? extends H2HMatchKey,
-                ? extends H2HMatch,
-                ? extends H2HMatchPartKey,
-                ? extends H2HMatchPart,
-                ? extends H2HMatchPartStatKey,
-                ? extends H2HMatchPartStat> factory = new com.sports.logic.calculation.DbCalculation(stat)
-                .getCompSeasonParticipantFactory(competition);
-        H2HObjectFactory<? extends CompSeasonParticipantKey,
-                ? extends CompSeasonPhaseParticipantKey,
-                ? extends Participant,
-                ? extends SuperKeyEntity,
-                ? extends H2HMatchKey,
-                ? extends H2HMatch,
-                ? extends H2HMatchPartKey,
-                ? extends H2HMatchPart,
-                ? extends H2HMatchPartStatKey,
-                ? extends H2HMatchPartStat> h2HObjectFactory = factory.getH2HObjectFactory();
-
-        H2HMatch h2hMatch = new com.sports.calc.h2hsports.DbCalculation(stat).retrieveH2HMatch(h2HObjectFactory, compSeasonKey, h2hMatchId);
-
         Writer w = res.getWriter();
 
         if (h2hMatch.isFinished() && h2hMatch.getParticipant1Id() != null && h2hMatch.getParticipant2Id() != null) {
             List<Integer> particIds = Arrays.asList(h2hMatch.getParticipant1Id(), h2hMatch.getParticipant2Id());
 
-            H2HMatchKey h2hMatchKey = h2HObjectFactory.getKey(compSeasonKey, h2hMatchId);
+            H2HMatchKey h2hMatchKey = h2HObjectFactory.getKey(compSeasonKey, h2hMatch.getSpecificId());
 
             Map<Integer, ? extends Participant> particMap = factory.getParticipantManager(stat).getParticipantMap(particIds);
             w.append("<table border=\"1\">\n");

@@ -102,6 +102,8 @@ public record DbCalculation(Statement stat) {
             ? extends H2HMatchPartStat> factory, Map<MK, M> matchMap)
             throws SQLException {
         if (!matchMap.isEmpty()) {
+            List<M> matchList = matchMap.values().stream().toList();
+
             H2HObjectFactory<? extends CompSeasonParticipantKey,
                     ? extends CompSeasonPhaseParticipantKey,
                     ? extends Participant,
@@ -114,31 +116,31 @@ public record DbCalculation(Statement stat) {
                     ? extends H2HMatchPartStat> h2HObjectFactory = factory.getH2HObjectFactory();
             H2HMatchManager<MK, M> h2hmm = h2HObjectFactory.getManager(stat);
 
-            Map<CompSeasonPhaseKey, Boolean> cspkMap = new HashMap<>();
+            CompSeasonPhaseManager cspm = new CompSeasonPhaseManager(stat);
 
-            for (Map.Entry<MK, M> me : matchMap.entrySet()) {
-                MK h2hmk = me.getKey();
-                M h2hm = me.getValue();
+            Map<CompSeasonPhaseKey, CompSeasonPhase> compSeasonPhaseMap = cspm.getCompSeasonPhaseMap(
+                    matchList.stream().map(H2HMatch::getCompSeasonPhaseKey).toList());
+            setHasKnockoutParent(compSeasonPhaseMap.values().stream().toList(), cspm);
 
+            for (M h2hm : matchList) {
                 h2hm.setFinished(true);
 
-                CompSeasonKey csk = new CompSeasonKey(h2hmk.getCompetitionId(), h2hmk.getSeasonId());
-                CompSeasonPhaseKey cspk = new CompSeasonPhaseKey(csk, h2hm.getCompSeasonPhaseId());
+                CompSeasonPhase csp = compSeasonPhaseMap.get(h2hm.getCompSeasonPhaseKey());
 
-                if (!cspkMap.containsKey(cspk))
-                    cspkMap.put(cspk, hasKnockoutParent(cspk));
-
-                if (cspkMap.get(cspk))
-                    processFinishH2HMatchKnockout(factory, h2hm, cspk);
+                if (h2hm.getParentMatchId() == null && csp.isHasKnockoutParent())
+                    processFinishH2HMatchKnockout(factory, h2hm, csp, cspm);
             }
 
             h2hmm.updateMatchMap(matchMap);
 
-            for (Map.Entry<CompSeasonPhaseKey, Boolean> me : cspkMap.entrySet())
-                if (me.getValue())
-                    processFinishCompSeasonPhase(h2hmm, me.getKey());
+            for (Map.Entry<CompSeasonPhaseKey, CompSeasonPhase> me : compSeasonPhaseMap.entrySet())
+                if (me.getValue().isHasKnockoutParent())
+                    processFinishCompSeasonPhase(h2hmm, me.getKey(), cspm);
 
-            updateElos(factory, matchMap.values());
+            List<M> nonParentMatches = matchList.stream().filter(x ->
+                    !isParent(x, compSeasonPhaseMap.get(x.getCompSeasonPhaseKey()))).toList();
+
+            updateElos(factory, nonParentMatches);
         }
     }
 
@@ -374,19 +376,22 @@ public record DbCalculation(Statement stat) {
         return ranking;
     }
 
-    private boolean hasKnockoutParent(CompSeasonPhaseKey cspk) throws SQLException {
-        CompSeasonPhaseManager cspm = new CompSeasonPhaseManager(stat);
-        CompSeasonPhase phase = cspm.getCompSeasonPhase(cspk);
+    private void setHasKnockoutParent(List<CompSeasonPhase> compSeasonPhases, CompSeasonPhaseManager cspm)
+            throws SQLException {
+        List<CompSeasonPhase> phasesWithParent = compSeasonPhases.stream()
+                .filter(x -> x.getParentPhaseKey() != null).toList();
 
-        if (phase.getParentPhaseId() != null) {
-            cspk = new CompSeasonPhaseKey(
-                    new CompSeasonKey(cspk.getCompetitionId(), cspk.getSeasonId()), phase.getParentPhaseId()
-            );
+        Map<CompSeasonPhaseKey, CompSeasonPhase> parentPhaseMap = cspm.getCompSeasonPhaseMap(
+            phasesWithParent.stream().map(CompSeasonPhase::getParentPhaseKey).collect(Collectors.toList())
+        );
 
-            return cspm.getCompSeasonPhase(cspk).isKnockoutParent();
-        }
+        phasesWithParent.forEach(x ->
+            x.setHasKnockoutParent(parentPhaseMap.get(x.getParentPhaseKey()).isKnockoutParent())
+        );
+    }
 
-        return false;
+    private boolean isParent(H2HMatch h2HMatch, CompSeasonPhase compSeasonPhase) {
+        return compSeasonPhase.isHasParentMatches() && h2HMatch.getParentMatchId() == null;
     }
 
     private <M extends H2HMatch> void processFinishH2HMatchKnockout(
@@ -399,13 +404,10 @@ public record DbCalculation(Statement stat) {
             ? extends H2HMatchPartKey,
             ? extends H2HMatchPart,
             ? extends H2HMatchPartStatKey,
-            ? extends H2HMatchPartStat> factory, M h2hm, CompSeasonPhaseKey cspk)
+            ? extends H2HMatchPartStat> factory, M h2hm, CompSeasonPhase csp, CompSeasonPhaseManager cspm)
             throws SQLException {
-        CompSeasonPhaseManager cspm = new CompSeasonPhaseManager(stat);
-        CompSeasonPhase csp = cspm.getCompSeasonPhase(cspk);
-
         List<CompSeasonPhase> compSeasonPhases = new com.sports.logic.calculation.DbCalculation(stat)
-                .getCompSeasonPhaseSiblings(cspk);
+                .getCompSeasonPhaseSiblings(csp.getCompSeasonPhaseKey());
         CompSeasonPhase nextPhase = getCompSeasonPhaseNextRound(compSeasonPhases, csp, cspm);
 
         if (nextPhase != null) {
@@ -429,7 +431,7 @@ public record DbCalculation(Statement stat) {
                         ? extends H2HMatchPartStatKey,
                         ? extends H2HMatchPartStat> h2HObjectFactory = factory.getH2HObjectFactory();
                 H2HMatchManager<? extends H2HMatchKey, ? extends H2HMatch> h2hmm = h2HObjectFactory.getManager(stat);
-                CompSeasonKey csk = cspk.getSuperKey();
+                CompSeasonKey csk = csp.getCompSeasonPhaseKey().getSuperKey();
 
                 List<? extends H2HMatch> h2hMatches = h2hmm.getH2HMatchList(csk, "compseasonphaseid = " +
                         h2hm.getCompSeasonPhaseId() + " AND knockoutorder = " + oppMatchKOOrder);
@@ -453,12 +455,13 @@ public record DbCalculation(Statement stat) {
         }
     }
 
-    private <MK extends H2HMatchKey, M extends H2HMatch> void processFinishCompSeasonPhase(H2HMatchManager<MK, M> mm, CompSeasonPhaseKey cspk)
+    private <MK extends H2HMatchKey, M extends H2HMatch> void processFinishCompSeasonPhase(H2HMatchManager<MK, M> mm,
+                                                                                           CompSeasonPhaseKey cspk,
+                                                                                           CompSeasonPhaseManager cspm)
             throws SQLException {
         List<M> h2HMatches = mm.getNonFinishedH2HMatches(cspk);
 
         if (h2HMatches.isEmpty()) {
-            CompSeasonPhaseManager cspm = new CompSeasonPhaseManager(stat);
             CompSeasonPhase csp = cspm.getCompSeasonPhase(cspk);
             CompSeasonPhase parentPhase = cspm.getCompSeasonPhase(new CompSeasonPhaseKey(cspk.getSuperKey(), csp.getParentPhaseId()));
 

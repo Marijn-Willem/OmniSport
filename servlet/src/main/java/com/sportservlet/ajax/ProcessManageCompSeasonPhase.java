@@ -30,6 +30,7 @@ public class ProcessManageCompSeasonPhase extends ProcessManageSuperKeyEntity<Co
         Integer ef = convertRequestParamToNonIdInteger(req, "ef");
         boolean ds = Boolean.parseBoolean(req.getParameter("ds"));
         int ptid = Integer.parseInt(req.getParameter("ptid"));
+        boolean pm = Boolean.parseBoolean(req.getParameter("pm"));
 
         entity.setParentPhaseId(ppid);
         entity.setRound(rn);
@@ -45,6 +46,7 @@ public class ProcessManageCompSeasonPhase extends ProcessManageSuperKeyEntity<Co
         entity.setExpandFactor(ef);
         entity.setHasDivisionStandings(ds);
         entity.setPhaseTypeId(ptid);
+        entity.setHasParentMatches(pm);
     }
 
     protected SuperKeySuperManager<CompSeasonPhaseKey, CompSeasonPhase> getSuperManager(Statement stat) {

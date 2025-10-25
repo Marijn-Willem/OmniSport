@@ -47,3 +47,5 @@ com.sportservlet.ajax.EntityInstanceList
 com.sportservlet.ajax.ProcessInsertEntityInstance
 com.sportservlet.dispatch.PrepareProcessManageEntityInstance
 com.sportservlet.ajax.ProcessManagePersonInstance
+com.h2hsports.servlet.html.ParentMatchPortal
+com.h2hsports.servlet.ajax.MatchesParentMatch

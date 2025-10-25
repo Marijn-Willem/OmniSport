@@ -1,7 +1,6 @@
 package com.darts.servlet.html;
 
 import com.sports.entity.PersonMatch;
-import com.sports.entity.key.PersonMatchKey;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
@@ -16,11 +15,7 @@ public class LiveMatch extends SuperHtmlServlet {
 
     @Override
     protected String getReturnPath(Statement stat, HttpServletRequest req) {
-        PersonMatchKey personMatchKey = (PersonMatchKey)req.getSession().getAttribute("pmk");
-        PersonMatch personMatch = (PersonMatch)req.getSession().getAttribute("pm");
-
-        return "MatchOverview?cid=" + personMatchKey.getCompetitionId() + "&sid=" + personMatchKey.getSeasonId() +
-                "&pid=" + personMatch.getCompSeasonPhaseId();
+        return getReturnPathForDispatchedMatchView(req);
     }
 
     protected void processHtmlBody(Statement stat, HttpServletRequest req, HttpServletResponse res) throws IOException {

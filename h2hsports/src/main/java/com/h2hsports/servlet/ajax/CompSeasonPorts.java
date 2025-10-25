@@ -29,6 +29,5 @@ public class CompSeasonPorts extends SuperResponseServlet {
         ServletUtil.writeGenericGoToButton("MatchOverview", compSeasonUrlParameters, "Match overview", w);
         ServletUtil.writeGenericGoToButton("CopyCompSeason", compSeasonUrlParameters, "Copy Competition Season", w);
         ServletUtil.writeGenericGoToButton("CompSeasonPhaseMain", compSeasonUrlParameters, "Manage Phases", w);
-        ServletUtil.writeGenericGoToButton("ManageH2HMatch", compSeasonUrlParameters + "&md=i", "Insert Match", w);
     }
 }

@@ -148,7 +148,7 @@ public abstract class SuperHtmlServlet extends SuperResponseServlet {
         w.append("</a><br/>\n");
     }
 
-    private void writeVarNameAndValue(String name, Integer value, Writer w) throws IOException {
+    protected void writeVarNameAndValue(String name, Integer value, Writer w) throws IOException {
         w.append("const ");
         w.append(name);
         w.append(" = ");

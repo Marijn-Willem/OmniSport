@@ -20,10 +20,12 @@ public class CompSeasonPhase extends SuperKeyEntity {
     private Integer expandFactor;
     private boolean hasDivisionStandings;
     private int phaseTypeId;
+    private boolean hasParentMatches;
 
     private CompSeasonPhaseKey compSeasonPhaseKey;
     private String description;
     private boolean canBeDeleted;
+    private boolean hasKnockoutParent;
 
     @Override
     public String[] getPropertiesInSQLStrings() {
@@ -41,7 +43,8 @@ public class CompSeasonPhase extends SuperKeyEntity {
                 QueryUtil.convertIntegerToDbValue(parentOrder),
                 QueryUtil.convertIntegerToDbValue(expandFactor),
                 QueryUtil.convertBooleanToDbValue(hasDivisionStandings),
-                "" + phaseTypeId
+                "" + phaseTypeId,
+                QueryUtil.convertBooleanToDbValue(hasParentMatches)
             };
     }
 
@@ -164,6 +167,14 @@ public class CompSeasonPhase extends SuperKeyEntity {
         this.phaseTypeId = phaseTypeId;
     }
 
+    public boolean isHasParentMatches() {
+        return hasParentMatches;
+    }
+
+    public void setHasParentMatches(boolean hasParentMatches) {
+        this.hasParentMatches = hasParentMatches;
+    }
+
     public CompSeasonPhaseKey getCompSeasonPhaseKey() {
         return compSeasonPhaseKey;
     }
@@ -186,5 +197,13 @@ public class CompSeasonPhase extends SuperKeyEntity {
 
     public void setCanBeDeleted(boolean canBeDeleted) {
         this.canBeDeleted = canBeDeleted;
+    }
+
+    public boolean isHasKnockoutParent() {
+        return hasKnockoutParent;
+    }
+
+    public void setHasKnockoutParent(boolean hasKnockoutParent) {
+        this.hasKnockoutParent = hasKnockoutParent;
     }
 }
