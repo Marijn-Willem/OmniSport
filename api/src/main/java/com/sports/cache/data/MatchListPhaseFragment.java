@@ -15,7 +15,9 @@ import com.sports.entity.manager.CompSeasonPhaseManager;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class MatchListPhaseFragment extends WritableFragment {
     final int competitionId;
@@ -24,7 +26,7 @@ public class MatchListPhaseFragment extends WritableFragment {
     final int clientId;
 
     private CompSeasonPhaseFragment compSeasonPhaseFragment;
-    private final List<H2HMatchFragment> h2HMatchFragments = new ArrayList<>();
+    private final List<H2HMatchWithChildrenFragment> h2HMatchFragments = new ArrayList<>();
 
     public MatchListPhaseFragment(int competitionId, int seasonId, int compSeasonPhaseId,
                                   List<H2HMatch> h2HMatches, int clientId, int nestingLevel) {
@@ -37,8 +39,8 @@ public class MatchListPhaseFragment extends WritableFragment {
 
         int nestingLevelList = DataFragmentUtil.getLevelForNestedList(nestingLevel);
 
-        h2HMatchFragments.addAll(h2HMatches.stream().map(x ->
-                new H2HMatchFragment(x, clientId, nestingLevelList)).toList());
+        Map<Integer, List<H2HMatch>> parentMatchMap = getParentMatchMap(h2HMatches);
+        h2HMatches.forEach(x -> addH2HMatchFragment(x, parentMatchMap, nestingLevelList));
     }
 
     @Override
@@ -74,5 +76,30 @@ public class MatchListPhaseFragment extends WritableFragment {
     public String toYaml() {
         return compSeasonPhaseFragment.toYaml() +
                 new YamlUtil(nestingLevel).getArray("matchList", h2HMatchFragments);
+    }
+
+    private Map<Integer, List<H2HMatch>> getParentMatchMap(List<H2HMatch> h2HMatches) {
+        return new HashMap<>() {{
+            h2HMatches.forEach(h2HMatch -> {
+               if (h2HMatch.getParentMatchId() != null) {
+                   int parentMatchId = h2HMatch.getParentMatchId();
+                   if (!this.containsKey(parentMatchId))
+                       put(parentMatchId, new ArrayList<>());
+
+                   get(parentMatchId).add(h2HMatch);
+               }
+            });
+        }};
+    }
+
+    private void addH2HMatchFragment(H2HMatch h2HMatch, Map<Integer, List<H2HMatch>> parentMatchMap, int nestingLevelList) {
+        if (h2HMatch.getParentMatchId() == null) {
+            List<H2HMatch> childMatches = new ArrayList<>();
+
+            if (parentMatchMap.containsKey(h2HMatch.getSpecificId()))
+                childMatches.addAll(parentMatchMap.get(h2HMatch.getSpecificId()));
+
+            h2HMatchFragments.add(new H2HMatchWithChildrenFragment(h2HMatch, childMatches, clientId, nestingLevelList));
+        }
     }
 }
