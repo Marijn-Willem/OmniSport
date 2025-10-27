@@ -82,66 +82,27 @@ public record DbCalculation(Statement stat) {
                 ? extends H2HMatchPart,
                 ? extends H2HMatchPartStatKey,
                 ? extends H2HMatchPartStat> h2HObjectFactory = factory.getH2HObjectFactory();
+        MK keyCast = h2HObjectFactory.castKey(h2hmk);
+        M matchCast = h2HObjectFactory.castMatch(h2hm);
 
-        Map<MK, M> matchMap = new HashMap<>();
-        matchMap.put(h2HObjectFactory.castKey(h2hmk), h2HObjectFactory.castMatch(h2hm));
+        H2HMatchManager<MK, M> h2hmm = h2HObjectFactory.getManager(stat);
 
-        processFinishH2HMatches(factory, matchMap);
-    }
+        CompSeasonPhaseManager cspm = new CompSeasonPhaseManager(stat);
+        CompSeasonPhase compSeasonPhase = cspm.getCompSeasonPhase(matchCast.getCompSeasonPhaseKey());
+        boolean hasKnockoutParent = hasKnockoutParent(compSeasonPhase, cspm);
 
-    public <MK extends H2HMatchKey, M extends H2HMatch> void processFinishH2HMatches(
-            CompSeasonParticipantFactory<? extends CompSeasonParticipantKey,
-            ? extends CompSeasonPhaseParticipantKey,
-            ? extends Participant,
-            ? extends SuperKeyEntity,
-            MK,
-            M,
-            ? extends H2HMatchPartKey,
-            ? extends H2HMatchPart,
-            ? extends H2HMatchPartStatKey,
-            ? extends H2HMatchPartStat> factory, Map<MK, M> matchMap)
-            throws SQLException {
-        if (!matchMap.isEmpty()) {
-            List<M> matchList = matchMap.values().stream().toList();
+        matchCast.setFinished(true);
 
-            H2HObjectFactory<? extends CompSeasonParticipantKey,
-                    ? extends CompSeasonPhaseParticipantKey,
-                    ? extends Participant,
-                    ? extends SuperKeyEntity,
-                    MK,
-                    M,
-                    ? extends H2HMatchPartKey,
-                    ? extends H2HMatchPart,
-                    ? extends H2HMatchPartStatKey,
-                    ? extends H2HMatchPartStat> h2HObjectFactory = factory.getH2HObjectFactory();
-            H2HMatchManager<MK, M> h2hmm = h2HObjectFactory.getManager(stat);
+        if (matchCast.getParentMatchId() == null && hasKnockoutParent)
+            processFinishH2HMatchKnockout(factory, h2HObjectFactory, matchCast, compSeasonPhase, cspm);
 
-            CompSeasonPhaseManager cspm = new CompSeasonPhaseManager(stat);
+        h2hmm.update(keyCast, matchCast);
 
-            Map<CompSeasonPhaseKey, CompSeasonPhase> compSeasonPhaseMap = cspm.getCompSeasonPhaseMap(
-                    matchList.stream().map(H2HMatch::getCompSeasonPhaseKey).toList());
-            setHasKnockoutParent(compSeasonPhaseMap.values().stream().toList(), cspm);
+        if (hasKnockoutParent)
+            processFinishCompSeasonPhase(h2hmm, compSeasonPhase.getCompSeasonPhaseKey(), cspm);
 
-            for (M h2hm : matchList) {
-                h2hm.setFinished(true);
-
-                CompSeasonPhase csp = compSeasonPhaseMap.get(h2hm.getCompSeasonPhaseKey());
-
-                if (h2hm.getParentMatchId() == null && csp.isHasKnockoutParent())
-                    processFinishH2HMatchKnockout(factory, h2hm, csp, cspm);
-            }
-
-            h2hmm.updateMatchMap(matchMap);
-
-            for (Map.Entry<CompSeasonPhaseKey, CompSeasonPhase> me : compSeasonPhaseMap.entrySet())
-                if (me.getValue().isHasKnockoutParent())
-                    processFinishCompSeasonPhase(h2hmm, me.getKey(), cspm);
-
-            List<M> nonParentMatches = matchList.stream().filter(x ->
-                    !isParent(x, compSeasonPhaseMap.get(x.getCompSeasonPhaseKey()))).toList();
-
-            updateElos(factory, nonParentMatches);
-        }
+        if (!isParent(matchCast, compSeasonPhase))
+            updateElos(factory, matchCast);
     }
 
     public <MK extends H2HMatchKey, M extends H2HMatch> void createKnockoutMatches(H2HObjectFactory<? extends CompSeasonParticipantKey,
@@ -376,35 +337,42 @@ public record DbCalculation(Statement stat) {
         return ranking;
     }
 
-    private void setHasKnockoutParent(List<CompSeasonPhase> compSeasonPhases, CompSeasonPhaseManager cspm)
+    private boolean hasKnockoutParent(CompSeasonPhase compSeasonPhase, CompSeasonPhaseManager cspm)
             throws SQLException {
-        List<CompSeasonPhase> phasesWithParent = compSeasonPhases.stream()
-                .filter(x -> x.getParentPhaseKey() != null).toList();
+        if (compSeasonPhase.getParentPhaseKey() != null) {
+            CompSeasonPhase parentPhase = cspm.getCompSeasonPhase(compSeasonPhase.getParentPhaseKey());
+            return parentPhase.isKnockoutParent();
+        }
 
-        Map<CompSeasonPhaseKey, CompSeasonPhase> parentPhaseMap = cspm.getCompSeasonPhaseMap(
-            phasesWithParent.stream().map(CompSeasonPhase::getParentPhaseKey).collect(Collectors.toList())
-        );
-
-        phasesWithParent.forEach(x ->
-            x.setHasKnockoutParent(parentPhaseMap.get(x.getParentPhaseKey()).isKnockoutParent())
-        );
+        return false;
     }
 
     private boolean isParent(H2HMatch h2HMatch, CompSeasonPhase compSeasonPhase) {
         return compSeasonPhase.isHasParentMatches() && h2HMatch.getParentMatchId() == null;
     }
 
-    private <M extends H2HMatch> void processFinishH2HMatchKnockout(
+    private <MK extends H2HMatchKey, M extends H2HMatch> void processFinishH2HMatchKnockout(
             CompSeasonParticipantFactory<? extends CompSeasonParticipantKey,
             ? extends CompSeasonPhaseParticipantKey,
             ? extends Participant,
             ? extends SuperKeyEntity,
-            ? extends H2HMatchKey,
+            MK,
             M,
             ? extends H2HMatchPartKey,
             ? extends H2HMatchPart,
             ? extends H2HMatchPartStatKey,
-            ? extends H2HMatchPartStat> factory, M h2hm, CompSeasonPhase csp, CompSeasonPhaseManager cspm)
+            ? extends H2HMatchPartStat> factory,
+            H2HObjectFactory<? extends CompSeasonParticipantKey,
+            ? extends CompSeasonPhaseParticipantKey,
+            ? extends Participant,
+            ? extends SuperKeyEntity,
+            MK,
+            M,
+            ? extends H2HMatchPartKey,
+            ? extends H2HMatchPart,
+            ? extends H2HMatchPartStatKey,
+            ? extends H2HMatchPartStat> h2HObjectFactory,
+            M h2hm, CompSeasonPhase csp, CompSeasonPhaseManager cspm)
             throws SQLException {
         List<CompSeasonPhase> compSeasonPhases = new com.sports.logic.calculation.DbCalculation(stat)
                 .getCompSeasonPhaseSiblings(csp.getCompSeasonPhaseKey());
@@ -420,20 +388,10 @@ public record DbCalculation(Statement stat) {
                 int knockoutOrder = h2hm.getKnockoutOrder();
                 int oppMatchKOOrder = knockoutOrder + (knockoutOrder % 2 == 0 ? -1 : 1);
 
-                H2HObjectFactory<? extends CompSeasonParticipantKey,
-                        ? extends CompSeasonPhaseParticipantKey,
-                        ? extends Participant,
-                        ? extends SuperKeyEntity,
-                        ? extends H2HMatchKey,
-                        M,
-                        ? extends H2HMatchPartKey,
-                        ? extends H2HMatchPart,
-                        ? extends H2HMatchPartStatKey,
-                        ? extends H2HMatchPartStat> h2HObjectFactory = factory.getH2HObjectFactory();
-                H2HMatchManager<? extends H2HMatchKey, ? extends H2HMatch> h2hmm = h2HObjectFactory.getManager(stat);
+                H2HMatchManager<MK, M> h2hmm = h2HObjectFactory.getManager(stat);
                 CompSeasonKey csk = csp.getCompSeasonPhaseKey().getSuperKey();
 
-                List<? extends H2HMatch> h2hMatches = h2hmm.getH2HMatchList(csk, "compseasonphaseid = " +
+                List<M> h2hMatches = h2hmm.getH2HMatchList(csk, "compseasonphaseid = " +
                         h2hm.getCompSeasonPhaseId() + " AND knockoutorder = " + oppMatchKOOrder);
                 M nextMatch = getH2HMatchNextRound(h2HObjectFactory, csk, h2hm);
 
@@ -492,37 +450,31 @@ public record DbCalculation(Statement stat) {
             ? extends H2HMatchPartKey,
             ? extends H2HMatchPart,
             ? extends H2HMatchPartStatKey,
-            ? extends H2HMatchPartStat> factory, Collection<? extends H2HMatch> h2HMatches) throws SQLException {
-        if (!h2HMatches.isEmpty()) {
-            ParticipantManager<? extends Participant> pm = factory.getParticipantManager(stat);
+            ? extends H2HMatchPartStat> factory, H2HMatch h2HMatch) throws SQLException {
+        ParticipantManager<? extends Participant> pm = factory.getParticipantManager(stat);
 
-            List<Integer> particIds = new ArrayList<>();
+        List<Integer> particIds = new ArrayList<>();
 
-            for (H2HMatch h2HMatch : h2HMatches) {
-                particIds.add(h2HMatch.getParticipant1Id());
-                particIds.add(h2HMatch.getParticipant2Id());
-            }
+        particIds.add(h2HMatch.getParticipant1Id());
+        particIds.add(h2HMatch.getParticipant2Id());
 
-            Map<Integer, ? extends Participant> participants = pm.getParticipantMap(particIds);
+        Map<Integer, ? extends Participant> participants = pm.getParticipantMap(particIds);
 
-            for (H2HMatch h2HMatch : h2HMatches) {
-                Participant p1 = participants.get(h2HMatch.getParticipant1Id());
-                Participant p2 = participants.get(h2HMatch.getParticipant2Id());
+        Participant p1 = participants.get(h2HMatch.getParticipant1Id());
+        Participant p2 = participants.get(h2HMatch.getParticipant2Id());
 
-                Integer score1 = h2HMatch.getScore1_1();
-                Integer score2 = h2HMatch.getScore1_2();
+        Integer score1 = h2HMatch.getScore1_1();
+        Integer score2 = h2HMatch.getScore1_2();
 
-                if (score1 != null && score2 != null) {
-                    double eloRes1 = score1 > score2 ? 1.0 : score1.equals(score2) ? 0.5 : 0.0;
-                    double eloRes2 = 1.0 - eloRes1;
+        if (score1 != null && score2 != null) {
+            double eloRes1 = score1 > score2 ? 1.0 : score1.equals(score2) ? 0.5 : 0.0;
+            double eloRes2 = 1.0 - eloRes1;
 
-                    p1.setElo(getNewElo(eloRes1, p1.getElo(), p1.getElo() - p2.getElo()));
-                    p2.setElo(getNewElo(eloRes2, p2.getElo(), p2.getElo() - p1.getElo()));
-                }
-            }
-
-            pm.updateParticipantMap(participants);
+            p1.setElo(getNewElo(eloRes1, p1.getElo(), p1.getElo() - p2.getElo()));
+            p2.setElo(getNewElo(eloRes2, p2.getElo(), p2.getElo() - p1.getElo()));
         }
+
+        pm.updateParticipantMap(participants);
     }
 
     private CompSeasonPhase getCompSeasonPhaseNextRound(List<CompSeasonPhase> compSeasonPhases,

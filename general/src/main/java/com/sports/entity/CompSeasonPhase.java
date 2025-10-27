@@ -25,7 +25,6 @@ public class CompSeasonPhase extends SuperKeyEntity {
     private CompSeasonPhaseKey compSeasonPhaseKey;
     private String description;
     private boolean canBeDeleted;
-    private boolean hasKnockoutParent;
 
     @Override
     public String[] getPropertiesInSQLStrings() {
@@ -197,13 +196,5 @@ public class CompSeasonPhase extends SuperKeyEntity {
 
     public void setCanBeDeleted(boolean canBeDeleted) {
         this.canBeDeleted = canBeDeleted;
-    }
-
-    public boolean isHasKnockoutParent() {
-        return hasKnockoutParent;
-    }
-
-    public void setHasKnockoutParent(boolean hasKnockoutParent) {
-        this.hasKnockoutParent = hasKnockoutParent;
     }
 }

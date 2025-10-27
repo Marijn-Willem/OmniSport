@@ -119,11 +119,6 @@ public class CompSeasonPhaseManager extends SuperKeySuperManager<CompSeasonPhase
         return getEntityListFromSuperKeys(compSeasonPhaseKeys);
     }
 
-    public Map<CompSeasonPhaseKey, CompSeasonPhase> getCompSeasonPhaseMap(Collection<CompSeasonPhaseKey> compSeasonPhaseKeys)
-            throws SQLException {
-        return getSuperKeyEntityMap(getConditionsKeyList(compSeasonPhaseKeys));
-    }
-
     public void updateCompSeasonPhase(CompSeasonPhaseKey key, CompSeasonPhase compSeasonPhase)
         throws SQLException {
         update(key, compSeasonPhase);
