@@ -40,6 +40,8 @@ public class DoublesMatch extends H2HMatch {
         return new CompSeasonPhaseDoubleManager(stat);
     }
 
+    void setSpecificId(int specificId) { doublesMatchId = specificId; }
+
     public int getSpecificId() {
         return doublesMatchId;
     }

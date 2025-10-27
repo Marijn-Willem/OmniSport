@@ -1,7 +1,6 @@
 package com.sports.entity.manager;
 
 import com.sports.entity.PersonMatch;
-import com.sports.entity.key.CompSeasonKey;
 import com.sports.entity.key.CompSeasonPhaseKey;
 import com.sports.entity.key.PersonMatchKey;
 
@@ -9,7 +8,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.List;
-import java.util.Map;
 
 public class PersonMatchManager extends H2HMatchManager<PersonMatchKey, PersonMatch> {
     public PersonMatchManager(Statement stat) {
@@ -50,12 +48,7 @@ public class PersonMatchManager extends H2HMatchManager<PersonMatchKey, PersonMa
 
     public PersonMatch getPersonMatch(PersonMatchKey pmk)
         throws SQLException {
-        return getInstanceFromKey(pmk);
-    }
-
-    public List<PersonMatch> getPersonMatchList(CompSeasonKey csk, String whereClause)
-            throws SQLException {
-        return getH2HMatchList(csk, whereClause);
+        return getEntityFromSuperKey(pmk);
     }
 
     public List<PersonMatch> getPersonMatchesFromCompSeasonPhases(List<CompSeasonPhaseKey> phaseKeys)
@@ -65,19 +58,6 @@ public class PersonMatchManager extends H2HMatchManager<PersonMatchKey, PersonMa
 
     public void updatePersonMatch(PersonMatchKey pmk, PersonMatch pm) throws SQLException {
         update(pmk, pm);
-    }
-
-    public List<PersonMatch> getPersonMatchList(CompSeasonKey csk) throws SQLException {
-        return getH2HMatchList(csk, null);
-    }
-
-    public void insertPersonMatch(PersonMatchKey pmk, PersonMatch pm)
-        throws SQLException {
-        insert(pmk, pm);
-    }
-
-    public void insertPersonMatchMap(Map<PersonMatchKey, PersonMatch> pmMap) throws SQLException {
-        insert(pmMap);
     }
 
     protected String getTableName() {

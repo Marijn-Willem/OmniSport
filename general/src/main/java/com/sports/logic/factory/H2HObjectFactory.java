@@ -7,6 +7,8 @@ import com.sports.logic.calculation.StandingProcessor;
 
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.List;
 
 public abstract class H2HObjectFactory<PK extends CompSeasonParticipantKey,
         PPK extends CompSeasonPhaseParticipantKey,
@@ -35,7 +37,14 @@ public abstract class H2HObjectFactory<PK extends CompSeasonParticipantKey,
     public abstract String getProcessManagePath();
 
     public M getInstance(Statement stat, CompSeasonKey compSeasonKey, int specifId) throws SQLException {
-        return getCachedManager(stat).getInstanceFromKey(getKey(compSeasonKey, specifId));
+        return getCachedManager(stat).getEntityFromSuperKey(getKey(compSeasonKey, specifId));
+    }
+
+    public ArrayList<M> getMatchesForParent(Statement stat, CompSeasonKey compSeasonKey, int specifId) throws SQLException {
+        MK parentKey = getKey(compSeasonKey, specifId);
+        List<M> matches = getCachedManager(stat).getMatchesForParent(parentKey);
+
+        return new ArrayList<>(matches.stream().map(this::castMatch).toList());
     }
 
     public void update(Statement stat, CompSeasonKey compSeasonKey, int specifId, H2HMatch h2hMatch) throws SQLException {

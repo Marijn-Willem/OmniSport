@@ -11,9 +11,11 @@ public abstract class H2HMatch extends SuperKeyEntity implements WithH2HMatchPar
     private int compSeasonPhaseId;
     private Integer knockoutOrder;
     private LocalDateTime date;
+    private Integer parentMatchId;
 
     private CompSeasonPhaseKey compSeasonPhaseKey;
 
+    abstract void setSpecificId(int specificId);
     public abstract int getSpecificId();
     abstract String[] getSpecificPropertiesInSQLStrings();
     abstract void copySpecific(H2HMatch other);
@@ -44,7 +46,8 @@ public abstract class H2HMatch extends SuperKeyEntity implements WithH2HMatchPar
                 QueryUtil.convertBooleanToDbValue(finished),
                 "" + compSeasonPhaseId,
                 QueryUtil.convertIntegerToDbValue(knockoutOrder),
-                QueryUtil.convertDateTimeToDbString(date)
+                QueryUtil.convertDateTimeToDbString(date),
+                QueryUtil.convertIntegerToDbValue(parentMatchId)
         };
 
         return Util.concatenateStringArrays(getSpecificPropertiesInSQLStrings(), generalProps);
@@ -100,6 +103,14 @@ public abstract class H2HMatch extends SuperKeyEntity implements WithH2HMatchPar
         this.date = date;
     }
 
+    public Integer getParentMatchId() {
+        return parentMatchId;
+    }
+
+    public void setParentMatchId(Integer parentMatchId) {
+        this.parentMatchId = parentMatchId;
+    }
+
     public CompSeasonPhaseKey getCompSeasonPhaseKey() {
         return compSeasonPhaseKey;
     }
@@ -109,6 +120,7 @@ public abstract class H2HMatch extends SuperKeyEntity implements WithH2HMatchPar
     }
 
     public void copy(H2HMatch other) {
+        other.setSpecificId(getSpecificId());
         other.setParticipant1Id(getParticipant1Id());
         other.setParticipant2Id(getParticipant2Id());
         other.setScore1_1(getScore1_1());
@@ -119,6 +131,8 @@ public abstract class H2HMatch extends SuperKeyEntity implements WithH2HMatchPar
         other.compSeasonPhaseId = compSeasonPhaseId;
         other.knockoutOrder = knockoutOrder;
         other.date = date;
+        other.parentMatchId = parentMatchId;
+        other.setCompSeasonPhaseKey(compSeasonPhaseKey);
 
         copySpecific(other);
     }

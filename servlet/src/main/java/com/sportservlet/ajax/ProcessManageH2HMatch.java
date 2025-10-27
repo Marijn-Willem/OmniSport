@@ -78,14 +78,17 @@ public abstract class ProcessManageH2HMatch<MK extends H2HMatchKey, M extends H2
         Integer p2s = convertRequestParamToNonIdInteger(req, "p2s");
         LocalDateTime dt = convertRequestParameterToDatetime(req, "dt");
         boolean p1st = Boolean.parseBoolean(req.getParameter("p1st"));
+        Integer pmid = convertRequestParamToIdInteger(req, "pmid");
 
         entity.setCompSeasonPhaseId(pid);
+        entity.setCompSeasonPhaseKey(new CompSeasonPhaseKey(compSeasonKey, pid));
         entity.setParticipant1Id(p1id);
         entity.setParticipant2Id(p2id);
         entity.setScore1_1(p1s);
         entity.setScore1_2(p2s);
         entity.setDate(dt);
         entity.setParticipant1Start(p1st);
+        entity.setParentMatchId(pmid);
     }
 
     @Override

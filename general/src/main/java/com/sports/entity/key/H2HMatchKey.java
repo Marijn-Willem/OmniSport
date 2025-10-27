@@ -1,8 +1,8 @@
 package com.sports.entity.key;
 
-public abstract class H2HMatchKey extends SuperKey {
-    private CompSeasonKey compSeasonKey;
-    private int specificId;
+public abstract class H2HMatchKey extends SuperKey implements EntityKeyWithParent {
+    private final CompSeasonKey compSeasonKey;
+    private final int specificId;
 
     public H2HMatchKey(CompSeasonKey compSeasonKey, int specificId) {
         this.compSeasonKey = compSeasonKey;
@@ -34,6 +34,11 @@ public abstract class H2HMatchKey extends SuperKey {
     @Override
     public CompSeasonKey getSuperKey() {
         return compSeasonKey;
+    }
+
+    @Override
+    public String getWhereClauseParent() {
+        return compSeasonKey.getWhereClause() + " AND parentmatchid = " + specificId;
     }
 
     abstract String getSpecificIdName();

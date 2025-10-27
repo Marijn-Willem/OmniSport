@@ -15,4 +15,7 @@ public class MatchesCompSeasonPhase extends com.sportservlet.ajax.MatchesCompSea
     protected String getManageMatchLink() {
         return "ManageH2HMatch";
     }
+
+    @Override
+    protected String getParentPortalLink() { return "ParentMatchPortal"; }
 }

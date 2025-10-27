@@ -51,3 +51,5 @@ com.teamsports.servlet.ajax.CompSeasonPhaseTeamCorrectionList
 com.teamsports.servlet.html.ManageCompSeasonPhaseTeamCorrection
 com.teamsports.servlet.ajax.ProcessManageCompSeasonPhaseTeamCorrection
 com.teamsports.servlet.html.CompSeasonPhaseTeamCorrectionPortal
+com.teamsports.servlet.html.ParentMatchPortal
+com.teamsports.servlet.ajax.MatchesParentMatch

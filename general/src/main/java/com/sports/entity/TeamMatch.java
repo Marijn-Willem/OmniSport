@@ -47,6 +47,8 @@ public class TeamMatch extends H2HMatch {
         return new CompSeasonPhaseTeamManager(stat);
     }
 
+    void setSpecificId(int specificId) { teamMatchId = specificId; }
+
     public int getSpecificId() {
         return teamMatchId;
     }

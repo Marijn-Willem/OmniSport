@@ -89,5 +89,6 @@ public abstract class ManageCompSeasonPhase extends ManageEntity {
         writeNumericTextField("Expand factor", "ef", csp != null ? csp.getExpandFactor() : null, w);
         writeCheckbox("Division standings", "ds", csp != null && csp.isHasDivisionStandings(), w);
         writeSelectWithLabel("Phase type", "ptid", ptIdMap, csp != null ? csp.getPhaseTypeId() : null, w);
+        writeCheckbox("Parent matches", "pm", csp != null && csp.isHasParentMatches(), w);
     }
 }

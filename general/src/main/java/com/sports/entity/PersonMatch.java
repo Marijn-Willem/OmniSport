@@ -58,6 +58,8 @@ public class PersonMatch extends H2HMatch {
         maxPersonMatchPart2Id++;
     }
 
+    void setSpecificId(int specificId) { personMatchId = specificId; }
+
     public int getSpecificId() {
         return personMatchId;
     }

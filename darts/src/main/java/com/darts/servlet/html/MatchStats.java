@@ -28,11 +28,7 @@ public class MatchStats extends SuperHtmlServlet {
 
     @Override
     protected String getReturnPath(Statement stat, HttpServletRequest req) {
-        PersonMatchKey pmk = (PersonMatchKey)req.getSession().getAttribute("pmk");
-        PersonMatch pm = (PersonMatch)req.getSession().getAttribute("pm");
-
-        return "MatchOverview?cid=" + pmk.getCompetitionId() + "&sid=" + pmk.getSeasonId() +
-                "&pid=" + pm.getCompSeasonPhaseId();
+        return getReturnPathForDispatchedMatchView(req);
     }
 
     protected void processHtmlBody(Statement stat, HttpServletRequest req, HttpServletResponse res)

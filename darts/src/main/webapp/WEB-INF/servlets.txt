@@ -23,3 +23,5 @@ com.darts.servlet.dispatch.PrepareMatchStats
 com.sportservlet.ajax.Standing
 com.darts.servlet.dispatch.PrepareLiveMatch
 com.darts.servlet.html.MatchOverview
+com.darts.servlet.html.ParentMatchPortal
+com.darts.servlet.ajax.MatchesParentMatch

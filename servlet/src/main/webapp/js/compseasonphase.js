@@ -21,11 +21,12 @@ function getProcessUrl() {
     const ef = getValueFromElementByName('ef');
     const ds = getValueFromCheckbox('ds');
     const ptid = getValueFromElementByName('ptid');
+    const pm = getValueFromCheckbox('pm');
 
     return '/ProcessManageCompSeasonPhase?cid=' + cid + '&sid=' + sid + '&pid=' + pid +
         '&ppid=' + ppid + '&rn=' + rn + '&bo1=' + bo1 + '&bo2=' + bo2 + '&bod=' + bod +
         '&fn=' + fn + '&sd=' + sd + '&ed=' + ed + '&st=' + st + '&kop=' + kop +
-        '&po=' + po + '&ef=' + ef + '&ds=' + ds + '&ptid=' + ptid;
+        '&po=' + po + '&ef=' + ef + '&ds=' + ds + '&ptid=' + ptid + '&pm=' + pm;
 }
 
 function checkInput() {
