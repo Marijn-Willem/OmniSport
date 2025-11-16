@@ -74,7 +74,7 @@ public class ManageTeam extends ManageEntity {
         w.append("<table id=\"tblEn\" border=\"1\">\n</table>\n");
         writeSelectWithLabel("Noc", "nid", getFullNocMap(stat), team != null ? team.getNocId() : null, w);
         writeSelectWithLabel("Sport", "spid", sportMap, spid, true, w);
-        writeSelectWithLabel("Gender", "gid", Gender.getGenderLinkedHashMap(), gid, true, w);
+        writeSelectWithLabel("Gender", "gid", Gender.genderLinkedHashMap, gid, true, w);
         writeSpanWithLabel("Elo", team != null ? Integer.toString(team.getElo()) : "", w);
         w.append("<input type=\"button\" onclick=\"setTeamDescription();\" value=\"Set team description\" /><br/>\n");
     }

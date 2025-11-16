@@ -45,7 +45,7 @@ public abstract class TeamSelectServlet extends SuperHtmlServlet implements Abst
         w.append("<select id=\"spid\" onchange=\"teamListLoader.loadElement();\">\n</select><br/>\n");
 
         w.append("<select id=\"gid\" onchange=\"teamListLoader.loadElement();\">\n");
-        LinkedHashMap<Integer, String> genderMap = Gender.getGenderLinkedHashMap();
+        LinkedHashMap<Integer, String> genderMap = Gender.genderLinkedHashMap;
         for (Map.Entry<Integer, String> me : genderMap.entrySet())
             ServletUtil.writeOption(me.getKey(), me.getValue(), w);
         w.append("</select><br/>\n");

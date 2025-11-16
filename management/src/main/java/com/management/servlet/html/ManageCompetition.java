@@ -73,7 +73,7 @@ public class ManageCompetition extends ManageEntity {
 
         writeTextFieldWithLabel("Name", "nm", competition != null ? competition.getName() : null, w);
         writeSportSelect(sportList, competition != null ? competition.getSportId() : null, w);
-        writeSelectWithLabel("Gender", "gid", Gender.getGenderLinkedHashMap(), competition != null ? competition.getGenderId() : null, w);
+        writeSelectWithLabel("Gender", "gid", Gender.genderLinkedHashMap, competition != null ? competition.getGenderId() : null, w);
         writeCheckbox("H2H Double", "dbl", competition != null && competition.isH2hDouble(), w);
         writeSelectWithLabel("Initial cup team", "cti", cupTeamInitMap, competition != null ? competition.getCupTeamInitId() : null, w);
         writeDateTimeField("Initial cup date", "cdi", competition != null ? competition.getCupDateInit() : null, w);
