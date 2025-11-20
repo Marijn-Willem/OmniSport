@@ -44,7 +44,7 @@ public class CompSeasonPhaseManager extends SuperKeySuperManager<CompSeasonPhase
             "expandfactor",
             "hasdivisionstandings",
             "phasetypeid",
-            "hasparentmatches"
+            "parentmatchtypeid"
         };
     }
 
@@ -67,7 +67,7 @@ public class CompSeasonPhaseManager extends SuperKeySuperManager<CompSeasonPhase
         compSeasonPhase.setExpandFactor(QueryUtil.getIntegerFromResultSet(rs, "expandfactor"));
         compSeasonPhase.setHasDivisionStandings(rs.getBoolean("hasdivisionstandings"));
         compSeasonPhase.setPhaseTypeId(rs.getInt("phasetypeid"));
-        compSeasonPhase.setHasParentMatches(rs.getBoolean("hasparentmatches"));
+        compSeasonPhase.setParentMatchTypeId(QueryUtil.getIntegerFromResultSet(rs, "parentmatchtypeid"));
 
         return compSeasonPhase;
     }

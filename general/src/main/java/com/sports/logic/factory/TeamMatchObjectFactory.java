@@ -24,11 +24,6 @@ public class TeamMatchObjectFactory extends H2HObjectFactory<CompSeasonTeamKey,
         H2HMatchPartStatKey,
         H2HMatchPartStat> {
     @Override
-    public H2HMatchManager<TeamMatchKey, TeamMatch> getManager(Statement stat) {
-        return new TeamMatchManager(stat);
-    }
-
-    @Override
     public TeamMatchKey getKey(CompSeasonKey compSeasonKey, int specifId) {
         return new TeamMatchKey(compSeasonKey, specifId);
     }
@@ -67,5 +62,10 @@ public class TeamMatchObjectFactory extends H2HObjectFactory<CompSeasonTeamKey,
     @Override
     public String getProcessManagePath() {
         return "ProcessManageTeamMatch";
+    }
+
+    @Override
+    H2HMatchManager<TeamMatchKey, TeamMatch> instantiateManager(Statement stat) {
+        return new TeamMatchManager(stat);
     }
 }

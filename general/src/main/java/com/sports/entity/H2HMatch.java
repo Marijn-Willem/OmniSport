@@ -19,6 +19,7 @@ public abstract class H2HMatch extends SuperKeyEntity implements WithH2HMatchPar
     public abstract int getSpecificId();
     abstract String[] getSpecificPropertiesInSQLStrings();
     abstract void copySpecific(H2HMatch other);
+    abstract void addScoresFromSpecific(H2HMatch matchFrom);
     public abstract void setParticipant1Id(Integer participant1id);
     public abstract Integer getParticipant1Id();
     public abstract void setParticipant2Id(Integer participant2id);
@@ -135,5 +136,24 @@ public abstract class H2HMatch extends SuperKeyEntity implements WithH2HMatchPar
         other.setCompSeasonPhaseKey(compSeasonPhaseKey);
 
         copySpecific(other);
+    }
+
+    public void addScoresFrom(H2HMatch matchFrom) {
+        if (isAllParticipantsDefined() && matchFrom.isAllParticipantsDefined()) {
+            Integer score1From = getParticipant1Id().equals(matchFrom.getParticipant1Id()) ? matchFrom.getScore1_1() : matchFrom.getScore1_2();
+            Integer score2From = getParticipant1Id().equals(matchFrom.getParticipant1Id()) ? matchFrom.getScore1_2() : matchFrom.getScore1_1();
+
+            if (score1From != null)
+                setScore1_1(Util.convertEmptyIntegerToZero(getScore1_1()) + score1From);
+
+            if (score2From != null)
+                setScore1_2(Util.convertEmptyIntegerToZero(getScore1_2()) + score2From);
+
+            addScoresFromSpecific(matchFrom);
+        }
+    }
+
+    private boolean isAllParticipantsDefined() {
+        return getParticipant1Id() != null && getParticipant2Id() != null;
     }
 }

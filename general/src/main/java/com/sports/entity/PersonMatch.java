@@ -34,6 +34,9 @@ public class PersonMatch extends H2HMatch {
         ((PersonMatch) other).person1Start = person1Start;
     }
 
+    @Override
+    void addScoresFromSpecific(H2HMatch matchFrom) { }
+
     public void increaseScore1Person1() {
         person1score++;
     }

@@ -7,6 +7,7 @@ public class ParentMatchType extends NamedIntEntity {
     public static final int parentMatchTypeIdSeries7 = -2;
 
     public static final LinkedHashMap<Integer, String> parentMatchTypeLinkedHashMap = new LinkedHashMap<>() {{
+        put(0, "-");
         put(parentMatchTypeIdAggregate, "Aggregate");
         put(parentMatchTypeIdSeries7, "Series 7");
     }};

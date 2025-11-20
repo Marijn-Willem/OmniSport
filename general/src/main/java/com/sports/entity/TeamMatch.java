@@ -4,6 +4,7 @@ import com.sports.db.util.QueryUtil;
 import com.sports.entity.key.CompSeasonKey;
 import com.sports.entity.key.TeamMatchKey;
 import com.sports.entity.manager.*;
+import com.sports.logic.util.Util;
 
 import java.sql.Statement;
 
@@ -33,6 +34,22 @@ public class TeamMatch extends H2HMatch {
     void copySpecific(H2HMatch other) {
         ((TeamMatch) other).scoreShootoutHome = this.scoreShootoutHome;
         ((TeamMatch) other).scoreShootoutAway = this.scoreShootoutAway;
+    }
+
+    @Override
+    void addScoresFromSpecific(H2HMatch matchFrom) {
+        TeamMatch matchFromCast = (TeamMatch) matchFrom;
+
+        Integer scoreShootoutHomeFrom = getParticipant1Id().equals(matchFromCast.getParticipant1Id()) ?
+                matchFromCast.getScoreShootoutHome() : matchFromCast.getScoreShootoutAway();
+        Integer scoreShootoutAwayFrom = getParticipant1Id().equals(matchFromCast.getParticipant1Id()) ?
+                matchFromCast.getScoreShootoutAway() : matchFromCast.getScoreShootoutHome();
+
+        if (scoreShootoutHomeFrom != null)
+            scoreShootoutHome = Util.convertEmptyIntegerToZero(scoreShootoutHome) + scoreShootoutHomeFrom;
+
+        if (scoreShootoutAwayFrom != null)
+            scoreShootoutAway = Util.convertEmptyIntegerToZero(scoreShootoutAway) + scoreShootoutAwayFrom;
     }
 
     public TeamMatchManager getManager(Statement stat) {

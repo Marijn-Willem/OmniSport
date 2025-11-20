@@ -28,6 +28,9 @@ public class DoublesMatch extends H2HMatch {
         ((DoublesMatch) other).double1Start = double1Start;
     }
 
+    @Override
+    void addScoresFromSpecific(H2HMatch matchFrom) { }
+
     public DoublesMatchManager getManager(Statement stat) {
         return new DoublesMatchManager(stat);
     }

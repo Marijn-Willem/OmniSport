@@ -89,16 +89,27 @@ public record DbCalculation(Statement stat) {
 
         CompSeasonPhaseManager cspm = new CompSeasonPhaseManager(stat);
         CompSeasonPhase compSeasonPhase = cspm.getCompSeasonPhase(matchCast.getCompSeasonPhaseKey());
-        boolean hasKnockoutParent = hasKnockoutParent(compSeasonPhase, cspm);
+        boolean hasKnockoutParentRelevance = matchCast.getParentMatchId() == null && hasKnockoutParent(compSeasonPhase, cspm);
 
         matchCast.setFinished(true);
 
-        if (matchCast.getParentMatchId() == null && hasKnockoutParent)
+        if (hasKnockoutParentRelevance)
             processFinishH2HMatchKnockout(factory, h2HObjectFactory, matchCast, compSeasonPhase, cspm);
 
         h2hmm.update(keyCast, matchCast);
 
-        if (hasKnockoutParent)
+        if (matchCast.getParentMatchId() != null) {
+            MK parentMatchKey = h2HObjectFactory.getKey(matchCast.getCompSeasonPhaseKey().getSuperKey(),
+                    matchCast.getParentMatchId());
+            M parentMatch = h2hmm.getEntityFromSuperKey(parentMatchKey);
+
+            processFinishParentMatch(h2hmm, parentMatchKey, parentMatch, compSeasonPhase);
+
+            if (parentMatch.isFinished())
+                processFinishH2HMatch(factory, parentMatchKey, parentMatch);
+        }
+
+        if (hasKnockoutParentRelevance)
             processFinishCompSeasonPhase(h2hmm, compSeasonPhase.getCompSeasonPhaseKey(), cspm);
 
         if (!isParent(matchCast, compSeasonPhase))
@@ -413,6 +424,16 @@ public record DbCalculation(Statement stat) {
         }
     }
 
+    private <MK extends H2HMatchKey, M extends H2HMatch> void processFinishParentMatch(H2HMatchManager<MK, M> mm,
+                                                                                       MK parentMatchKey,
+                                                                                       M parentMatch,
+                                                                                       CompSeasonPhase compSeasonPhase) throws SQLException {
+        if (compSeasonPhase.getParentMatchTypeId() == ParentMatchType.parentMatchTypeIdAggregate)
+            new ParentMatchAggregateFinisher<>(mm, parentMatchKey, parentMatch).finishParentMatch();
+        else if (compSeasonPhase.getParentMatchTypeId() == ParentMatchType.parentMatchTypeIdSeries7)
+            new ParentMatchSeries7Finisher<>(mm, parentMatchKey, parentMatch).finishParentMatch();
+    }
+
     private <MK extends H2HMatchKey, M extends H2HMatch> void processFinishCompSeasonPhase(H2HMatchManager<MK, M> mm,
                                                                                            CompSeasonPhaseKey cspk,
                                                                                            CompSeasonPhaseManager cspm)
@@ -591,5 +612,96 @@ public record DbCalculation(Statement stat) {
             firstPower2 *= 2;
 
         return rankWinner + firstPower2;
+    }
+
+    private static abstract class ParentMatchFinisher<MK extends H2HMatchKey, M extends H2HMatch> {
+        private final H2HMatchManager<MK, M> matchManager;
+        private final MK parentMatchKey;
+        private final M parentMatch;
+
+        abstract boolean shouldFinishParentMatch(List<M> childMatches);
+        abstract void prepareFinishParentMatch(List<M> childMatches, M parentMatch);
+
+        public ParentMatchFinisher(H2HMatchManager<MK, M> matchManager, MK parentMatchKey, M parentMatch) {
+            this.matchManager = matchManager;
+            this.parentMatchKey = parentMatchKey;
+            this.parentMatch = parentMatch;
+        }
+
+        public void finishParentMatch() throws SQLException {
+            List<M> childMatches = matchManager.getMatchesForParent(parentMatchKey);
+
+            if (shouldFinishParentMatch(childMatches)) {
+                prepareFinishParentMatch(childMatches, parentMatch);
+                parentMatch.setFinished(true);
+            }
+        }
+    }
+
+    private static class ParentMatchAggregateFinisher<MK extends H2HMatchKey, M extends H2HMatch> extends ParentMatchFinisher<MK, M> {
+        public ParentMatchAggregateFinisher(H2HMatchManager<MK, M> matchManager, MK parentMatchKey, M parentMatch) {
+            super(matchManager, parentMatchKey, parentMatch);
+        }
+
+        @Override
+        boolean shouldFinishParentMatch(List<M> childMatches) {
+            return childMatches.size() == 2 && childMatches.stream().allMatch(M::isFinished);
+        }
+
+        @Override
+        void prepareFinishParentMatch(List<M> childMatches, M parentMatch) {
+            for (M childMatch : childMatches)
+                parentMatch.addScoresFrom(childMatch);
+        }
+    }
+
+    private static class ParentMatchSeries7Finisher<MK extends H2HMatchKey, M extends H2HMatch> extends ParentMatchFinisher<MK, M> {
+        private Map<Integer, Integer> participantWinsMap;
+
+        public ParentMatchSeries7Finisher(H2HMatchManager<MK, M> matchManager, MK parentMatchKey, M parentMatch) {
+            super(matchManager, parentMatchKey, parentMatch);
+        }
+
+        @Override
+        boolean shouldFinishParentMatch(List<M> childMatches) {
+            Map<Integer, Integer> participantsWinMap = getParticipantWinsMap(childMatches);
+
+            return participantsWinMap.size() == 2 && participantsWinMap.containsValue(4);
+        }
+
+        @Override
+        void prepareFinishParentMatch(List<M> childMatches, M parentMatch) {
+            getParticipantWinsMap(childMatches).forEach((k, v) -> {
+                if (k.equals(parentMatch.getParticipant1Id()))
+                    parentMatch.setScore1_1(v);
+                else if (k.equals(parentMatch.getParticipant2Id()))
+                    parentMatch.setScore1_2(v);
+            });
+        }
+
+        private Map<Integer, Integer> getParticipantWinsMap(List<M> childMatches) {
+            if (participantWinsMap == null) {
+                participantWinsMap = new HashMap<>() {{
+                    childMatches.forEach(x -> {
+                        Integer participant1Id = x.getParticipant1Id();
+                        Integer participant2Id = x.getParticipant2Id();
+
+                        if (x.isFinished() && participant1Id != null && participant2Id != null) {
+                            int winnerId = x.getWinnerId();
+
+                            if (!containsKey(participant1Id))
+                                put(participant1Id, 0);
+
+                            if (!containsKey(participant2Id))
+                                put(participant2Id, 0);
+
+                            put(winnerId, get(winnerId) + 1);
+                        }
+                    });
+                }};
+            }
+
+            return participantWinsMap;
+        }
     }
 }

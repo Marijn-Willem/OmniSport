@@ -2,6 +2,7 @@ package com.sportservlet.html;
 
 import com.sports.calc.h2hsports.DbCalculation;
 import com.sports.entity.CompSeasonPhase;
+import com.sports.entity.ParentMatchType;
 import com.sports.entity.PhaseType;
 import com.sports.entity.comparator.CompSeasonPhaseParentOrder;
 import com.sports.entity.comparator.NamedEntityName;
@@ -89,6 +90,7 @@ public abstract class ManageCompSeasonPhase extends ManageEntity {
         writeNumericTextField("Expand factor", "ef", csp != null ? csp.getExpandFactor() : null, w);
         writeCheckbox("Division standings", "ds", csp != null && csp.isHasDivisionStandings(), w);
         writeSelectWithLabel("Phase type", "ptid", ptIdMap, csp != null ? csp.getPhaseTypeId() : null, w);
-        writeCheckbox("Parent matches", "pm", csp != null && csp.isHasParentMatches(), w);
+        writeSelectWithLabel("Parent match type", "pmtid", ParentMatchType.parentMatchTypeLinkedHashMap,
+                csp != null ? csp.getParentMatchTypeId() : null, w);
     }
 }

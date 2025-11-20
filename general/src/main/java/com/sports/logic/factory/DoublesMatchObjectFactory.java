@@ -20,11 +20,6 @@ public class DoublesMatchObjectFactory extends H2HObjectFactory<CompSeasonDouble
         DoublesMatchPartStatKey,
         DoublesMatchPartStat> {
     @Override
-    public H2HMatchManager<DoublesMatchKey, DoublesMatch> getManager(Statement stat) {
-        return new DoublesMatchManager(stat);
-    }
-
-    @Override
     public DoublesMatchKey getKey(CompSeasonKey compSeasonKey, int specifId) {
         return new DoublesMatchKey(compSeasonKey, specifId);
     }
@@ -47,5 +42,10 @@ public class DoublesMatchObjectFactory extends H2HObjectFactory<CompSeasonDouble
     @Override
     public String getProcessManagePath() {
         return "ProcessManageDoublesMatch";
+    }
+
+    @Override
+    H2HMatchManager<DoublesMatchKey, DoublesMatch> instantiateManager(Statement stat) {
+        return new DoublesMatchManager(stat);
     }
 }

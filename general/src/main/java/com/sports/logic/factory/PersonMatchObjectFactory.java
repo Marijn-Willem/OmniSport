@@ -20,11 +20,6 @@ public class PersonMatchObjectFactory extends H2HObjectFactory<CompSeasonPersonS
         PersonMatchPartStatKey,
         PersonMatchPartStat> {
     @Override
-    public H2HMatchManager<PersonMatchKey, PersonMatch> getManager(Statement stat) {
-        return new PersonMatchManager(stat);
-    }
-
-    @Override
     public PersonMatchKey getKey(CompSeasonKey compSeasonKey, int specifId) {
         return new PersonMatchKey(compSeasonKey, specifId);
     }
@@ -56,5 +51,10 @@ public class PersonMatchObjectFactory extends H2HObjectFactory<CompSeasonPersonS
     @Override
     public String getProcessManagePath() {
         return "ProcessManagePersonMatch";
+    }
+
+    @Override
+    H2HMatchManager<PersonMatchKey, PersonMatch> instantiateManager(Statement stat) {
+        return new PersonMatchManager(stat);
     }
 }
