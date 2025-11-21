@@ -3,6 +3,7 @@ package com.sports.cache.util;
 import com.sports.cache.data.WritableFragment;
 import com.sports.db.type.Point;
 import com.sports.entity.Gender;
+import com.sports.entity.ParentMatchType;
 import com.sports.logic.util.Util;
 
 import java.time.LocalDateTime;
@@ -39,10 +40,18 @@ public class XmlUtil {
     }
 
     public static String getGenderXML(int genderId) {
-        return "<gender>" +
+        return encloseContent("gender",
                 getTag("id", genderId) +
-                getTag("name", Gender.getGenderNameFromId(genderId)) +
-                "</gender>";
+                getTag("name", Gender.getGenderNameFromId(genderId)));
+    }
+
+    public static String getParentMatchTypeXML(Integer parentMatchTypeId) {
+        if (parentMatchTypeId != null)
+            return encloseContent("parentMatchType",
+                    getTag("id", parentMatchTypeId) +
+                    getTag("name", ParentMatchType.getParentMatchTypeNameFromId(parentMatchTypeId)));
+
+        return getEmptyTag("parentMatchType");
     }
 
     public static String getEmptyTag(String name) {

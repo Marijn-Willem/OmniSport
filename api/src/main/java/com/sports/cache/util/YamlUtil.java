@@ -3,6 +3,7 @@ package com.sports.cache.util;
 import com.sports.cache.data.WritableFragment;
 import com.sports.db.type.Point;
 import com.sports.entity.Gender;
+import com.sports.entity.ParentMatchType;
 import com.sports.logic.util.Util;
 
 import java.time.LocalDateTime;
@@ -113,6 +114,18 @@ public class YamlUtil {
         return getEntryHeader("gender") +
                 yamlUtilNested.getEntry("id", genderId) +
                 yamlUtilNested.getEntry("name", Gender.getGenderNameFromId(genderId));
+    }
+
+    public String getParentMatchTypeYaml(Integer parentMatchTypeId) {
+        if (parentMatchTypeId != null) {
+            YamlUtil yamlUtilNested = new YamlUtil(DataFragmentUtil.getLevelForNestedFragment(nestingLevel));
+
+            return getEntryHeader("parentMatchType") +
+                    yamlUtilNested.getEntry("id", parentMatchTypeId) +
+                    yamlUtilNested.getEntry("name", ParentMatchType.getParentMatchTypeNameFromId(parentMatchTypeId));
+        }
+
+        return getEmptyEntry("parentMatchType", false);
     }
 
     public String getEntryHeader(String entryName) {

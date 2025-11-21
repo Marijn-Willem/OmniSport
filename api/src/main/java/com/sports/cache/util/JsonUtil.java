@@ -3,6 +3,7 @@ package com.sports.cache.util;
 import com.sports.cache.data.WritableFragment;
 import com.sports.db.type.Point;
 import com.sports.entity.Gender;
+import com.sports.entity.ParentMatchType;
 import com.sports.logic.util.Util;
 
 import java.time.LocalDateTime;
@@ -78,6 +79,15 @@ public class JsonUtil {
                 getEntry("id", genderId) + "," +
                         getEntry("name", Gender.getGenderNameFromId(genderId))
         );
+    }
+
+    public static String getParentMatchTypeJson(Integer parentMatchTypeId) {
+        if (parentMatchTypeId != null)
+            return encloseContent("parentMatchType",
+                    getEntry("id", parentMatchTypeId) + "," +
+                    getEntry("name", ParentMatchType.getParentMatchTypeNameFromId(parentMatchTypeId)));
+
+        return getEmptyEntry("parentMatchType");
     }
 
     public static String encloseContent(String name, String content) {

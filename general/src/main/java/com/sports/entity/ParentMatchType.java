@@ -29,4 +29,8 @@ public class ParentMatchType extends NamedIntEntity {
 
     @Override
     public void setName(String name) {}
+
+    public static String getParentMatchTypeNameFromId(int parentMatchTypeId) {
+        return parentMatchTypeLinkedHashMap.get(parentMatchTypeId);
+    }
 }

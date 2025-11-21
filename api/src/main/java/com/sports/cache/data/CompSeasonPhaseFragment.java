@@ -29,7 +29,7 @@ public class CompSeasonPhaseFragment extends WritableFragment {
     private final Integer bestOf2;
     private final Integer bestOfDec;
     private final PhaseTypeFragment phaseTypeFragment;
-    private final boolean hasParentMatches;
+    private final Integer parentMatchTypeId;
 
     public CompSeasonPhaseFragment(CompSeasonPhase compSeasonPhase, int clientId, int nestingLevel, boolean isInList) {
         super(nestingLevel, isInList);
@@ -53,7 +53,7 @@ public class CompSeasonPhaseFragment extends WritableFragment {
         bestOfDec = compSeasonPhase.getBestOfDec();
         phaseTypeFragment = new PhaseTypeFragment(compSeasonPhase.getPhaseTypeId(), clientId,
                 DataFragmentUtil.getLevelForNestedFragment(nestingLevel));
-        hasParentMatches = compSeasonPhase.isHasParentMatches();
+        parentMatchTypeId = compSeasonPhase.getParentMatchTypeId();
     }
 
     @Override
@@ -81,7 +81,7 @@ public class CompSeasonPhaseFragment extends WritableFragment {
                 XmlUtil.getTag("bestOf2", bestOf2) +
                 XmlUtil.getTag("bestOfDec", bestOfDec) +
                 XmlUtil.getFragmentAsTag("phaseType", phaseTypeFragment) +
-                XmlUtil.getTag("hasParentMatches", hasParentMatches);
+                XmlUtil.getParentMatchTypeXML(parentMatchTypeId);
     }
 
     @Override
@@ -99,7 +99,7 @@ public class CompSeasonPhaseFragment extends WritableFragment {
                 JsonUtil.getEntry("bestOf2", bestOf2) + "," +
                 JsonUtil.getEntry("bestOfDec", bestOfDec) + "," +
                 JsonUtil.getFragmentAsEntry("phaseType", phaseTypeFragment) + "," +
-                JsonUtil.getEntry("hasParentMatches", hasParentMatches);
+                JsonUtil.getParentMatchTypeJson(parentMatchTypeId);
     }
 
     @Override
@@ -119,6 +119,6 @@ public class CompSeasonPhaseFragment extends WritableFragment {
                 yamlUtil.getEntry("bestOf2", bestOf2) +
                 yamlUtil.getEntry("bestOfDec", bestOfDec) +
                 yamlUtil.getFragmentAsEntry("phaseType", phaseTypeFragment) +
-                yamlUtil.getEntry("hasParentMatches", hasParentMatches);
+                yamlUtil.getParentMatchTypeYaml(parentMatchTypeId);
     }
 }

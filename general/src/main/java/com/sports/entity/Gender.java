@@ -9,10 +9,10 @@ public class Gender extends IntEntity {
     public static final int genderIdOpen = -4;
 
     public static final LinkedHashMap<Integer, String> genderLinkedHashMap = new LinkedHashMap<>() {{
-        put(genderIdMale, getGenderNameFromId(genderIdMale));
-        put(genderIdFemale, getGenderNameFromId(genderIdFemale));
-        put(genderIdMixed, getGenderNameFromId(genderIdMixed));
-        put(genderIdOpen, getGenderNameFromId(genderIdOpen));
+        put(genderIdMale, "Male");
+        put(genderIdFemale, "Female");
+        put(genderIdMixed, "Mixed");
+        put(genderIdOpen, "Open");
     }};
 
     @Override
@@ -25,12 +25,6 @@ public class Gender extends IntEntity {
     }
 
     public static String getGenderNameFromId(int id) {
-        return switch (id) {
-            case genderIdMale -> "Male";
-            case genderIdFemale -> "Female";
-            case genderIdMixed -> "Mixed";
-            case genderIdOpen -> "Open";
-            default -> null;
-        };
+        return genderLinkedHashMap.get(id);
     }
 }

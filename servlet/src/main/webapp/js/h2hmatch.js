@@ -21,7 +21,7 @@ function checkInput() {
     const dt = getValueFromElementByName('dt');
 
     const checkDateRange = () => {
-        if (dt !== '') {
+        if (dt !== '-') {
             const date = convertStringToDate(dt);
             return (dts == null || date >= convertStringToDate(dts)) && (dte == null || date <= convertStringToDate(dte));
         }

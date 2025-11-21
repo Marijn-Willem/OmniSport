@@ -60,9 +60,11 @@ public abstract class MatchesCompSeasonPhase extends MatchList {
     private void writeMatchRowWithParentPortalLink(H2HMatch h2HMatch,
                                                    Map<Integer, ? extends Participant> particMap,
                                                    Writer w) throws IOException {
-        String line = "<tr>" + getMatchParticipantInfo(h2HMatch, particMap) + "<td>" +
-            getAnchor(h2HMatch, getParentPortalLink(), "Manage Parent", null, "pmid") +
-                "</td></tr>";
+        String line = "<tr>" + getMatchParticipantInfo(h2HMatch, particMap) + "<td>";
+        line += getAnchor(h2HMatch, getManageMatchLink(), "ManageMatch", "md=u");
+        line += "</td><td>";
+        line += getAnchor(h2HMatch, getParentPortalLink(), "Manage Parent", null, "pmid");
+        line += "</td></tr>";
 
         w.append(line);
     }
