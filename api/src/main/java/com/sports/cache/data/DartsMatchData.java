@@ -26,7 +26,7 @@ public class DartsMatchData extends OutputData {
     private final int seasonId;
     private final int personMatchId;
     private final Integer clientId;
-    private final int nestingLevelNested = DataFragmentUtil.getLevelForNestedFragment(nestingLevel);
+    private final int nestingLevelNested = YamlUtil.getLevelForNestedFragment(nestingLevel);
 
     private boolean isValidOutput;
     private PersonSportFragment personSport1;
@@ -68,14 +68,14 @@ public class DartsMatchData extends OutputData {
                 person1Start = personMatch.isPerson1Start();
                 matchStats = DataFragmentUtil.getFilledDataFragment(
                         new DartsMatchStatsFragment(competitionId, seasonId, personMatchId,
-                                DataFragmentUtil.getLevelForNestedFragment(nestingLevelNested)), getCacheDataKey(), stat);
+                                YamlUtil.getLevelForNestedFragment(nestingLevelNested)), getCacheDataKey(), stat);
 
                 List<PersonMatchPart> sets = new PersonMatchPartManager(stat).getPersonMatchPartsWithoutParent(personMatchKey);
                 sets.sort(new PersonMatchPartId());
 
                 sets.forEach(x -> setStats.add(
                                 new DartsSetStatsFragment(competitionId, seasonId, personMatchId, x.getPersonMatchPartId(),
-                                        DataFragmentUtil.getLevelForNestedList(nestingLevelNested))
+                                        YamlUtil.getLevelForNestedList(nestingLevelNested))
                         )
                 );
 
@@ -134,7 +134,7 @@ public class DartsMatchData extends OutputData {
         if (personSportId != null) {
             PersonSportFragment personSportFragment = new PersonSportFragment(
                     personMatchKey.getCompetitionId(), personMatchKey.getSeasonId(), personSportId, clientId,
-                    DataFragmentUtil.getLevelForNestedFragment(nestingLevelNested), false);
+                    YamlUtil.getLevelForNestedFragment(nestingLevelNested), false);
 
             return DataFragmentUtil.getFilledDataFragment(personSportFragment, getCacheDataKey(), stat);
         }

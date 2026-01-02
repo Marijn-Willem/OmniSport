@@ -29,7 +29,7 @@ public class MatchListCompSeasonFragment extends WritableFragment {
         this.competitionId = competitionId;
         this.seasonId = seasonId;
 
-        int nestingLevelList = DataFragmentUtil.getLevelForNestedList(nestingLevel);
+        int nestingLevelList = YamlUtil.getLevelForNestedList(nestingLevel);
 
         phaseMatchMap.forEach((k, v) -> matchListPhaseFragmentList.add(
                 new MatchListPhaseFragment(competitionId, seasonId, k, v, clientId, nestingLevelList))

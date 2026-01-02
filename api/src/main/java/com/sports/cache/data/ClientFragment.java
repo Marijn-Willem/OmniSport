@@ -43,7 +43,7 @@ public class ClientFragment extends WritableFragment {
     void fill(Statement stat) throws SQLException {
         if (languageId != null)
             languageFragment = DataFragmentUtil.getFilledDataFragment(
-                    new LanguageFragment(languageId, DataFragmentUtil.getLevelForNestedFragment(nestingLevel)),
+                    new LanguageFragment(languageId, YamlUtil.getLevelForNestedFragment(nestingLevel)),
                     getCacheDataKey(), stat);
     }
 

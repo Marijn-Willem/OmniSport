@@ -30,7 +30,7 @@ public class CompSeasonTeamWithDivisionFragment extends CompSeasonParticipantFra
         if (compSeasonTeam != null && compSeasonTeam.getCompDivisionId() != null)
             compDivisionFragment = DataFragmentUtil.getFilledDataFragment(
                     new CompDivisionFragment(competitionId, compSeasonTeam.getCompDivisionId(),
-                            DataFragmentUtil.getLevelForNestedFragment(nestingLevel), false), getCacheDataKey(), stat);
+                            YamlUtil.getLevelForNestedFragment(nestingLevel), false), getCacheDataKey(), stat);
     }
 
     @Override

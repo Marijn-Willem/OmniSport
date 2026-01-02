@@ -43,7 +43,7 @@ public class EventPersonSportFragment extends WritableFragment {
 
     @Override
     void fill(Statement stat) throws SQLException {
-        int nestingLevelFragment = DataFragmentUtil.getLevelForNestedFragment(nestingLevel);
+        int nestingLevelFragment = YamlUtil.getLevelForNestedFragment(nestingLevel);
 
         personSportFragment = DataFragmentUtil.getFilledDataFragment(
                 new PersonSportFragment(competitionId, seasonId, personSportId, clientId, nestingLevelFragment, false),

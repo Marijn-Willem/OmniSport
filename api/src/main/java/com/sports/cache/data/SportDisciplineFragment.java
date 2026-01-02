@@ -41,7 +41,7 @@ public class SportDisciplineFragment extends WritableFragment {
                 .getAliasableAsClientSpecificString(sportDiscipline, sdKey);
 
         resultTypeFragment = DataFragmentUtil.getFilledDataFragment(new ResultTypeFragment(
-                sportDiscipline.getResultTypeId(), DataFragmentUtil.getLevelForNestedFragment(nestingLevel)),
+                sportDiscipline.getResultTypeId(), YamlUtil.getLevelForNestedFragment(nestingLevel)),
                 getCacheDataKey(), stat);
     }
 

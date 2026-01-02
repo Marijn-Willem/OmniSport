@@ -1,6 +1,5 @@
 package com.sports.cache.data;
 
-import com.sports.cache.util.DataFragmentUtil;
 import com.sports.cache.util.XmlUtil;
 import com.sports.cache.util.YamlUtil;
 import com.sports.calc.darts.stat.StatObject;
@@ -18,7 +17,7 @@ public abstract class DartsStatsFragment extends WritableFragment {
     }
 
     protected void fillStatOutputFromStatObject(StatObject statObject) {
-        int nestingLevelNested = DataFragmentUtil.getLevelForNestedFragment(nestingLevel);
+        int nestingLevelNested = YamlUtil.getLevelForNestedFragment(nestingLevel);
 
         person1XML = statObject.getPerson1StatsXmlTags();
         person2XML = statObject.getPerson2StatsXmlTags();

@@ -114,10 +114,10 @@ public abstract class AlcifoPartRankingData<PK extends SuperKey> extends OutputD
         if (participant instanceof PersonSport)
             return new EventPartPersonSportFragment(competitionId, seasonId, compSeasonEventId, compSeasonEventPartId,
                     (PersonSport) participant, resultTypeId, resultTypePrecisionId, clientId,
-                    DataFragmentUtil.getLevelForNestedList(nestingLevel), true);
+                    YamlUtil.getLevelForNestedList(nestingLevel), true);
         else
             return new EventPartTeamFragment(competitionId, seasonId, compSeasonEventId, compSeasonEventPartId,
                     (Team) participant, resultTypeId, resultTypePrecisionId, clientId,
-                    DataFragmentUtil.getLevelForNestedList(nestingLevel), true);
+                    YamlUtil.getLevelForNestedList(nestingLevel), true);
     }
 }

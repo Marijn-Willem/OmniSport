@@ -56,7 +56,7 @@ public abstract class ParticipantListData extends OutputData {
             List<? extends Participant> participants = factory.getParticipantManager(stat).getParticipantList(participantIds);
             participants.sort(new DescribedEntityDescription());
 
-            int nestingLevelList = DataFragmentUtil.getLevelForNestedList(nestingLevel);
+            int nestingLevelList = YamlUtil.getLevelForNestedList(nestingLevel);
 
             participantFragments.addAll(participants.stream().map(x ->
                     new ParticipantFragment(competitionId, seasonId, x.getId(), clientId, nestingLevelList, true)).toList());

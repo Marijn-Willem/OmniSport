@@ -55,7 +55,7 @@ public class EventPartLocationFragment extends WritableFragment {
 
         EventPartLocation eventPartLocation = new EventPartLocationManager(stat).getEntityFromSuperKey(eplKey);
 
-        int nestingLevelFragment = DataFragmentUtil.getLevelForNestedFragment(nestingLevel);
+        int nestingLevelFragment = YamlUtil.getLevelForNestedFragment(nestingLevel);
 
         if (eventPartLocation.getGeoId() != null)
             geoFragment = DataFragmentUtil.getFilledDataFragment(new GeoFragment(eventPartLocation.getGeoId(),

@@ -1,6 +1,7 @@
 package com.sports.cache.data;
 
 import com.sports.cache.util.DataFragmentUtil;
+import com.sports.cache.util.YamlUtil;
 import com.sports.entity.CompDivision;
 import com.sports.entity.CompSeasonPhase;
 import com.sports.entity.Geo;
@@ -18,7 +19,7 @@ public abstract class AbstractStandingData extends OutputData {
     final int seasonId;
     final int compSeasonPhaseId;
     final Integer clientId;
-    final int nestingLevelList = DataFragmentUtil.getLevelForNestedList(nestingLevel);
+    final int nestingLevelList = YamlUtil.getLevelForNestedList(nestingLevel);
 
     public AbstractStandingData(int competitionId, int seasonId, int compSeasonPhaseId, Integer clientId) {
         this.competitionId = competitionId;

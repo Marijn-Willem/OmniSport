@@ -69,7 +69,7 @@ public class CyclingRoadPersonResultFragment extends WritableFragment {
 
         if (noCountResultId != null)
             noCountResultFragment = DataFragmentUtil.getFilledDataFragment(new NoCountResultFragment(noCountResultId,
-                            DataFragmentUtil.getLevelForNestedFragment(nestingLevel)), getCacheDataKey(), stat);
+                            YamlUtil.getLevelForNestedFragment(nestingLevel)), getCacheDataKey(), stat);
     }
 
     @Override

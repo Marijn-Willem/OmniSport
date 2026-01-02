@@ -17,7 +17,7 @@ public class H2HMatchWithChildrenFragment extends H2HMatchFragment {
     public H2HMatchWithChildrenFragment(H2HMatch h2HMatch, List<H2HMatch> childMatches, int clientId, int nestingLevel) {
         super(h2HMatch, clientId, nestingLevel);
 
-        int nestingLevelList = DataFragmentUtil.getLevelForNestedList(nestingLevel);
+        int nestingLevelList = YamlUtil.getLevelForNestedList(nestingLevel);
 
         childMatches.forEach(childMatch ->
                 childMatchFragments.add(new H2HMatchFragment(childMatch, clientId, nestingLevelList)));

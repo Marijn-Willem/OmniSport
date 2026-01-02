@@ -39,7 +39,7 @@ public class GeoAsParentFragment extends WritableFragment {
 
         name = geo.getName();
         geoTypeFragment = DataFragmentUtil.getFilledDataFragment(
-                new GeoTypeFragment(geo.getGeoTypeId(), DataFragmentUtil.getLevelForNestedFragment(nestingLevel)),
+                new GeoTypeFragment(geo.getGeoTypeId(), YamlUtil.getLevelForNestedFragment(nestingLevel)),
                 getCacheDataKey(), stat);
         coordinates = geo.getCoordinates();
 

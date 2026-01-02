@@ -48,7 +48,7 @@ public class CompSeasonEventListData extends OutputData {
 		compSeasonEvents.sort(new CompSeasonEventNameGenderId());
 
 		compSeasonEventFragments.addAll(compSeasonEvents.stream().map(x -> new CompSeasonEventFragment(
-				compSeasonKey, x, clientId, DataFragmentUtil.getLevelForNestedList(nestingLevel))).toList());
+				compSeasonKey, x, clientId, YamlUtil.getLevelForNestedList(nestingLevel))).toList());
 
 		DataFragmentUtil.fillDataFragments(compSeasonEventFragments, getCacheDataKey());
 	}

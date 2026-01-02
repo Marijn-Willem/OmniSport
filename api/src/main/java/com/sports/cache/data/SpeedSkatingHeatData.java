@@ -26,7 +26,7 @@ public class SpeedSkatingHeatData extends OutputData {
     private final int compSeasonEventPartId;
     private final int heat;
     private final Integer clientId;
-    private final int nestingLevelNested = DataFragmentUtil.getLevelForNestedFragment(nestingLevel);
+    private final int nestingLevelNested = YamlUtil.getLevelForNestedFragment(nestingLevel);
 
     private SpSkHeatPersonSportFragment personSport1Fragment;
     private SpSkHeatPersonSportFragment personSport2Fragment;
@@ -61,7 +61,7 @@ public class SpeedSkatingHeatData extends OutputData {
             eventPartPersonSports.sort(new EventPartPersonPersonId());
 
             if (eventPartPersonSports.size() == 2) {
-                int nestingLevelFragment = DataFragmentUtil.getLevelForNestedFragment(nestingLevelNested);
+                int nestingLevelFragment = YamlUtil.getLevelForNestedFragment(nestingLevelNested);
 
                 personSport1Fragment = DataFragmentUtil.getFilledDataFragment(new SpSkHeatPersonSportFragment(
                         competitionId, seasonId, compSeasonEventId, compSeasonEventPartId, heat,

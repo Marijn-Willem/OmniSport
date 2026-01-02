@@ -65,8 +65,8 @@ public class CompSeasonEventPartFragment extends WritableFragment {
         stage = compSeasonEventPart.getStage();
         date = compSeasonEventPart.getDate();
 
-        int nestingLevelFragment = DataFragmentUtil.getLevelForNestedFragment(nestingLevel);
-        int nestingLevelList = DataFragmentUtil.getLevelForNestedList(nestingLevel);
+        int nestingLevelFragment = YamlUtil.getLevelForNestedFragment(nestingLevel);
+        int nestingLevelList = YamlUtil.getLevelForNestedList(nestingLevel);
 
         int sportId = new CompetitionManager(stat).getCompetition(competitionId).getSportId();
         sportDisciplineFragment = DataFragmentUtil.getFilledDataFragment(

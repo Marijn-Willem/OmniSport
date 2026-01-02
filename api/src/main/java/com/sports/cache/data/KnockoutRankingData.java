@@ -53,7 +53,7 @@ public class KnockoutRankingData extends OutputData {
 
 		participantFragments.addAll(new DbCalculation(stat).getKnockoutPhaseRanking(cspKey, factory).stream().map(x ->
 				new CompSeasonParticipantWithRankFragment(competitionId, seasonId, x, clientId,
-						DataFragmentUtil.getLevelForNestedList(nestingLevel))).toList());
+						YamlUtil.getLevelForNestedList(nestingLevel))).toList());
 
 		DataFragmentUtil.fillDataFragments(participantFragments, getCacheDataKey());
 	}

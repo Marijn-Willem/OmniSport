@@ -44,7 +44,7 @@ public class CompSeasonEventFragment extends WritableFragment {
     @Override
     void fill(Statement stat) throws SQLException {
         sportEventFragment = DataFragmentUtil.getFilledDataFragment(new SportEventFragment(sportId, sportEventId, clientId,
-                        DataFragmentUtil.getLevelForNestedFragment(nestingLevel)), getCacheDataKey(), stat);
+                        YamlUtil.getLevelForNestedFragment(nestingLevel)), getCacheDataKey(), stat);
     }
 
     @Override

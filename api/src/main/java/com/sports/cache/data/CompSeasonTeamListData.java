@@ -44,7 +44,7 @@ public class CompSeasonTeamListData extends OutputData {
 
 		teamFragments.addAll(teamList.stream().map(x ->
 				new CompSeasonTeamWithPersonSportsFragment(competitionId, seasonId, x.getId(), clientId,
-						DataFragmentUtil.getLevelForNestedList(nestingLevel))).toList());
+						YamlUtil.getLevelForNestedList(nestingLevel))).toList());
 
 		DataFragmentUtil.fillDataFragments(teamFragments, getCacheDataKey());
 	}

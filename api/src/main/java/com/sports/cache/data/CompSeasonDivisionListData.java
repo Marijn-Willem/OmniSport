@@ -40,7 +40,7 @@ public class CompSeasonDivisionListData extends OutputData {
 
 		compDivisionFragments.addAll(sortedCompDivisions.stream()
 				.map(x -> new CompSeasonDivisionFragment(competitionId, seasonId, x.getCompDivisionId(), clientId,
-						DataFragmentUtil.getLevelForNestedList(nestingLevel))).toList());
+						YamlUtil.getLevelForNestedList(nestingLevel))).toList());
 
 		DataFragmentUtil.fillDataFragments(compDivisionFragments, getCacheDataKey());
 	}

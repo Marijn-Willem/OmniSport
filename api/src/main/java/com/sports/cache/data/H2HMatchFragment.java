@@ -36,7 +36,7 @@ public class H2HMatchFragment extends WritableFragment {
         seasonId = h2HMatch.getCompSeasonPhaseKey().getSeasonId();
         matchId = h2HMatch.getSpecificId();
         this.clientId = clientId;
-        nestingLevelFragment = DataFragmentUtil.getLevelForNestedFragment(nestingLevel);
+        nestingLevelFragment = YamlUtil.getLevelForNestedFragment(nestingLevel);
 
         participant1Fragment = getParticipantFragment(h2HMatch.getParticipant1Id());
         participant2Fragment = getParticipantFragment(h2HMatch.getParticipant2Id());

@@ -45,7 +45,7 @@ public class EventPersonSportForRankingFragment extends WritableFragment {
         rank = eventPersonSport.getRank();
         personSportFragment = DataFragmentUtil.getFilledDataFragment(new PersonSportFragment(
                 competitionId, seasonId, personSportId, clientId,
-                DataFragmentUtil.getLevelForNestedFragment(nestingLevel), false),
+                YamlUtil.getLevelForNestedFragment(nestingLevel), false),
                 getCacheDataKey(), stat);
     }
 

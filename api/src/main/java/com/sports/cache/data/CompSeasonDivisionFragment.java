@@ -48,7 +48,7 @@ public class CompSeasonDivisionFragment extends CompDivisionFragment {
 
         teamFragments.addAll(teams.stream().map(x ->
                 new CompSeasonParticipantFragment(competitionId, seasonId, x.getId(), clientId,
-                        DataFragmentUtil.getLevelForNestedList(nestingLevel), true)).toList());
+                        YamlUtil.getLevelForNestedList(nestingLevel), true)).toList());
 
         DataFragmentUtil.fillDataFragments(teamFragments, getCacheDataKey());
     }

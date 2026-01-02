@@ -30,7 +30,7 @@ public class ClientListData extends OutputData {
         clientList.sort(new NamedEntityName());
 
         clientList.forEach(x -> clientsSorted.add(
-                new ClientFragment(x, DataFragmentUtil.getLevelForNestedList(nestingLevel), true)));
+                new ClientFragment(x, YamlUtil.getLevelForNestedList(nestingLevel), true)));
         DataFragmentUtil.fillDataFragments(clientsSorted, getCacheDataKey());
 
         clientsSorted.forEach(x -> {

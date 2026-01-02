@@ -81,7 +81,7 @@ public class SpSkHeatPersonSportFragment extends WritableFragment {
             EventDisciplinePart eventDisciplinePart = eventDisciplineParts.get(i);
             DisciplinePartPersonSport disciplinePartPersonSport = disciplinePartPersonSports.get(i);
 
-            int nestedLevelList = DataFragmentUtil.getLevelForNestedList(nestingLevel);
+            int nestedLevelList = YamlUtil.getLevelForNestedList(nestingLevel);
 
             disciplinePartFragments.add(new DisciplinePartFragment(Sport.sportIdSpeedSkating,
                     eventDisciplinePart.getSportDisciplineId(), eventDisciplinePart.getDisciplinePartId(), clientId,
@@ -133,7 +133,7 @@ public class SpSkHeatPersonSportFragment extends WritableFragment {
         StringBuilder sb = new StringBuilder(personSportFragment.toYaml());
         sb.append(new YamlUtil(nestingLevel).getEntryHeader("laps"));
 
-        YamlUtil yamlUtilLap = new YamlUtil(DataFragmentUtil.getLevelForNestedList(nestingLevel));
+        YamlUtil yamlUtilLap = new YamlUtil(YamlUtil.getLevelForNestedList(nestingLevel));
 
         for (int i = 0; i < disciplinePartFragments.size(); i++)
             sb.append(getLapYaml(i, yamlUtilLap));

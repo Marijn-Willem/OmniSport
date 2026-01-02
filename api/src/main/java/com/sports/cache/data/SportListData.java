@@ -33,7 +33,7 @@ public class SportListData extends OutputData {
 
         ClientSportFilter filter = new ClientSportFilter(clientId, getCacheDataKey(), stat);
         sportList.stream()
-                .map(x -> new SportFragment(x.getId(), clientId, DataFragmentUtil.getLevelForNestedList(nestingLevel), true))
+                .map(x -> new SportFragment(x.getId(), clientId, YamlUtil.getLevelForNestedList(nestingLevel), true))
                 .filter(filter::isElementAllowed)
                 .forEach(sportFragments::add);
 

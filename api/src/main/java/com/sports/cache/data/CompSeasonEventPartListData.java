@@ -50,7 +50,7 @@ public class CompSeasonEventPartListData extends OutputData {
 
 		fragmentList.addAll(compSeasonEventParts.stream().map(x ->
 				new CompSeasonEventPartFragment(competitionId, seasonId, compSeasonEventId,
-						x.getCompSeasonEventPartId(), clientId, DataFragmentUtil.getLevelForNestedList(nestingLevel))).toList());
+						x.getCompSeasonEventPartId(), clientId, YamlUtil.getLevelForNestedList(nestingLevel))).toList());
 
 		DataFragmentUtil.fillDataFragments(fragmentList, getCacheDataKey());
 	}

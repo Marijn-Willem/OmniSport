@@ -27,7 +27,7 @@ public class GeoFragment extends GeoAsParentFragment {
         super.fill(stat);
         if (parentGeoId != null)
             parentGeo = DataFragmentUtil.getFilledDataFragment(
-                    new GeoAsParentFragment(parentGeoId, DataFragmentUtil.getLevelForNestedFragment(nestingLevel)),
+                    new GeoAsParentFragment(parentGeoId, YamlUtil.getLevelForNestedFragment(nestingLevel)),
                     getCacheDataKey(), stat);
     }
 

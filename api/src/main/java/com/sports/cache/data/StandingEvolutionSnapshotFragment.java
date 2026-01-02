@@ -35,7 +35,7 @@ public class StandingEvolutionSnapshotFragment extends WritableFragment {
         date = standingContext.date();
 
         CompSeasonKey compSeasonKey = new CompSeasonKey(competitionId, seasonId);
-        int nestingLevelList = DataFragmentUtil.getLevelForNestedList(nestingLevel);
+        int nestingLevelList = YamlUtil.getLevelForNestedList(nestingLevel);
         standingParticipantFragments.addAll(standingContext.standing().stream().map(x ->
                 new StandingParticipantFragment(compSeasonKey, x, clientId, nestingLevelList, isDomesticUSA)).toList());
     }

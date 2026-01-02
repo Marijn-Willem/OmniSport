@@ -47,7 +47,7 @@ public class EventPersonSportListData extends OutputData {
 		List<PersonSport> personSports = new PersonSportManager(stat).getParticipantList(personSportIds);
 		personSports.sort(new DescribedEntityDescription());
 
-		int nestingLevelList = DataFragmentUtil.getLevelForNestedList(nestingLevel);
+		int nestingLevelList = YamlUtil.getLevelForNestedList(nestingLevel);
 
 		eventPersonSportFragments.addAll(personSports.stream().map(x ->
 				new EventPersonSportFragment(competitionId, seasonId, compSeasonEventId, x.getId(), clientId, nestingLevelList))

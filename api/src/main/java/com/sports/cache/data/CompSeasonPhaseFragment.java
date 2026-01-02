@@ -52,7 +52,7 @@ public class CompSeasonPhaseFragment extends WritableFragment {
         bestOf2 = compSeasonPhase.getBestOf2();
         bestOfDec = compSeasonPhase.getBestOfDec();
         phaseTypeFragment = new PhaseTypeFragment(compSeasonPhase.getPhaseTypeId(), clientId,
-                DataFragmentUtil.getLevelForNestedFragment(nestingLevel));
+                YamlUtil.getLevelForNestedFragment(nestingLevel));
         parentMatchTypeId = compSeasonPhase.getParentMatchTypeId();
     }
 

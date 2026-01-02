@@ -35,7 +35,7 @@ public class CompSeasonPhaseListData extends OutputData {
         new DbCalculation(stat).setPhaseDescriptionsFromTypes(compSeasonPhases);
         compSeasonPhases.sort(new CompSeasonPhaseRoundDescription());
         compSeasonPhases.forEach(x -> compSeasonPhaseFragments.add(
-                new CompSeasonPhaseFragment(x, clientId, DataFragmentUtil.getLevelForNestedList(nestingLevel), true)));
+                new CompSeasonPhaseFragment(x, clientId, YamlUtil.getLevelForNestedList(nestingLevel), true)));
 
         DataFragmentUtil.fillDataFragments(compSeasonPhaseFragments, getCacheDataKey());
     }

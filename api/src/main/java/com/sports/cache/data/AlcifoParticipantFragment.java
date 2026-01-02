@@ -48,7 +48,7 @@ public abstract class AlcifoParticipantFragment extends WritableFragment {
         description = getDescription(stat);
         if (noCountResultId != null)
             noCountResultFragment = DataFragmentUtil.getFilledDataFragment(new NoCountResultFragment(noCountResultId,
-                            DataFragmentUtil.getLevelForNestedFragment(nestingLevel)), getCacheDataKey(), stat);
+                            YamlUtil.getLevelForNestedFragment(nestingLevel)), getCacheDataKey(), stat);
     }
 
     @Override

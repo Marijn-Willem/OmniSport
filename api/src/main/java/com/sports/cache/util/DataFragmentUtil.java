@@ -51,14 +51,6 @@ public class DataFragmentUtil {
         return cachedOutputData;
     }
 
-    public static int getLevelForNestedFragment(int nestingLevel) {
-        return YamlUtil.getLevelForNestedFragment(nestingLevel);
-    }
-
-    public static int getLevelForNestedList(int nestingLevel) {
-        return YamlUtil.getLevelForNestedList(nestingLevel);
-    }
-
     private static class FilledOutputDataExecutor extends DatabaseExecutor {
         private final OutputData outputData;
 

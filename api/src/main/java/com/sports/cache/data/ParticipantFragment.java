@@ -53,7 +53,7 @@ public class ParticipantFragment extends WritableFragment {
                 ? extends H2HMatchPartStat> factory =
                 new DbCalculation(stat).getCompSeasonParticipantFactory(competitionId);
 
-        int nestingLevelNested = DataFragmentUtil.getLevelForNestedFragment(nestingLevel);
+        int nestingLevelNested = YamlUtil.getLevelForNestedFragment(nestingLevel);
 
         switch (factory.getParticipantType()) {
             case PERSON_SPORT -> personSportFragment = DataFragmentUtil.getFilledDataFragment(

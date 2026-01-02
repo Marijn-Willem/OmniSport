@@ -51,7 +51,7 @@ public class CompetitionFragment extends WritableFragment {
 
        if (geoId != null)
            geoFragment = DataFragmentUtil.getFilledDataFragment(new GeoFragment(geoId,
-                           DataFragmentUtil.getLevelForNestedFragment(nestingLevel)), getCacheDataKey(), stat);
+                           YamlUtil.getLevelForNestedFragment(nestingLevel)), getCacheDataKey(), stat);
     }
 
     @Override

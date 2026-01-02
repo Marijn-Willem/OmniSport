@@ -46,7 +46,7 @@ public class MatchListData extends OutputData {
 	MatchListPhaseFragment getMatchListPhaseFragment(int competitionId, int seasonId, int compSeasonPhaseId,
 													 List<H2HMatch> h2HMatches) {
 		return new MatchListPhaseFragment(competitionId, seasonId, compSeasonPhaseId, h2HMatches, clientId,
-				DataFragmentUtil.getLevelForNestedList(nestingLevel));
+				YamlUtil.getLevelForNestedList(nestingLevel));
 	}
 
 	public MatchListData(int competitionId, int seasonId, Integer clientId) {

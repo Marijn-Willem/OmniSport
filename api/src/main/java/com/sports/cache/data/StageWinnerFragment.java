@@ -57,7 +57,7 @@ public class StageWinnerFragment extends WritableFragment {
                 new DbCalculation(stat).getCompSeasonParticipantFactory(new CompSeasonEventKey(new CompSeasonKey(competitionId, seasonId),
                         compSeasonEventId));
 
-        int nestingLevelNested = DataFragmentUtil.getLevelForNestedFragment(nestingLevel);
+        int nestingLevelNested = YamlUtil.getLevelForNestedFragment(nestingLevel);
 
         switch (factory.getParticipantType()) {
             case PERSON_SPORT ->

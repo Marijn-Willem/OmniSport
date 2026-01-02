@@ -21,8 +21,7 @@ public class YamlUtil {
         this.nestingLevel = nestingLevel;
         prefixStartListItem = Util.padCharacter("- ", ' ', nestingLevel);
         prefixDefault = Util.padCharacter("", ' ', nestingLevel);
-        emptyArrayMarker = Util.padCharacter("- ", ' ',
-                DataFragmentUtil.getLevelForNestedList(nestingLevel));
+        emptyArrayMarker = Util.padCharacter("- ", ' ', getLevelForNestedList(nestingLevel));
     }
 
     public static int getLevelForNestedFragment(int nestingLevel) {
@@ -116,7 +115,7 @@ public class YamlUtil {
     }
 
     public String getGenderYaml(int genderId) {
-        YamlUtil yamlUtilNested = new YamlUtil(DataFragmentUtil.getLevelForNestedFragment(nestingLevel));
+        YamlUtil yamlUtilNested = new YamlUtil(getLevelForNestedFragment(nestingLevel));
 
         return getEntryHeader("gender") +
                 yamlUtilNested.getEntry("id", genderId) +
@@ -125,7 +124,7 @@ public class YamlUtil {
 
     public String getParentMatchTypeYaml(Integer parentMatchTypeId) {
         if (parentMatchTypeId != null) {
-            YamlUtil yamlUtilNested = new YamlUtil(DataFragmentUtil.getLevelForNestedFragment(nestingLevel));
+            YamlUtil yamlUtilNested = new YamlUtil(getLevelForNestedFragment(nestingLevel));
 
             return getEntryHeader("parentMatchType") +
                     yamlUtilNested.getEntry("id", parentMatchTypeId) +

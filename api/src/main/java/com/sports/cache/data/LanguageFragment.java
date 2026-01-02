@@ -23,7 +23,7 @@ public class LanguageFragment extends LanguageAsFallbackFragment {
         if (fallBackLanguageId != null)
             languageAsFallbackFragment = DataFragmentUtil.getFilledDataFragment(
                     new LanguageAsFallbackFragment(fallBackLanguageId,
-                            DataFragmentUtil.getLevelForNestedFragment(nestingLevel)), getCacheDataKey(), stat);
+                            YamlUtil.getLevelForNestedFragment(nestingLevel)), getCacheDataKey(), stat);
     }
 
     @Override

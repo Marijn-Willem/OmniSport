@@ -57,7 +57,7 @@ public abstract class EncounterListData extends OutputData {
             LinkedHashMap<Integer, List<H2HMatch>> cspMatchMap = getCompSeasonPhaseMatchMap(h2HMatches, compSeasonPhases);
 
             MatchListCompSeasonFragment fragment = new MatchListCompSeasonFragment(x.getCompetitionId(), x.getSeasonId(),
-                    clientId, cspMatchMap, DataFragmentUtil.getLevelForNestedList(nestingLevel));
+                    clientId, cspMatchMap, YamlUtil.getLevelForNestedList(nestingLevel));
 
             if (filter.isElementAllowed(fragment))
                 matchListCompSeasonFragmentList.add(fragment);

@@ -35,7 +35,7 @@ public class CompetitionListData extends OutputData {
 
         ClientCompetitionFilter filter = new ClientCompetitionFilter(clientId, getCacheDataKey(), stat);
 
-        int nestingLevelList = DataFragmentUtil.getLevelForNestedList(nestingLevel);
+        int nestingLevelList = YamlUtil.getLevelForNestedList(nestingLevel);
 
         competitions.stream()
                 .map(x -> new CompetitionFragment(x.getId(), nestingLevelList))

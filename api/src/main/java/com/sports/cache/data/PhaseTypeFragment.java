@@ -29,7 +29,7 @@ public class PhaseTypeFragment extends PhaseTypeAsParentFragment {
         if (parentId != null)
             parentPhaseType = DataFragmentUtil.getFilledDataFragment(
                     new PhaseTypeAsParentFragment(parentId, clientId,
-                            DataFragmentUtil.getLevelForNestedFragment(nestingLevel)), getCacheDataKey(), stat);
+                            YamlUtil.getLevelForNestedFragment(nestingLevel)), getCacheDataKey(), stat);
     }
 
     @Override

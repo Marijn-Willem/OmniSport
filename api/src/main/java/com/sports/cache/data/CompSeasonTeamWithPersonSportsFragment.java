@@ -39,7 +39,7 @@ public class CompSeasonTeamWithPersonSportsFragment extends CompSeasonParticipan
         List<PersonSport> personSports = new PersonSportManager(stat).getParticipantList(personSportIds);
         personSports.sort(new DescribedEntityDescription());
 
-        int nestingLevelList = DataFragmentUtil.getLevelForNestedList(nestingLevel);
+        int nestingLevelList = YamlUtil.getLevelForNestedList(nestingLevel);
 
         personSportFragments.addAll(personSports.stream().map(x ->
                 new PersonSportFragment(competitionId, seasonId, x.getId(), clientId, nestingLevelList, true)).toList());

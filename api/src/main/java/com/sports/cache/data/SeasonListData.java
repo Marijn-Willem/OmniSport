@@ -51,7 +51,7 @@ public class SeasonListData extends OutputData {
         List<Season> seasons = new SeasonManager(stat).getSeasonList(seasonIds);
         seasons.sort(new OrderableOrder());
 
-        int nestingLevelList = DataFragmentUtil.getLevelForNestedList(nestingLevel);
+        int nestingLevelList = YamlUtil.getLevelForNestedList(nestingLevel);
 
         seasons.forEach(x -> {
             CompSeason compSeason = csMap.get(new CompSeasonKey(competitionId, x.getId()));

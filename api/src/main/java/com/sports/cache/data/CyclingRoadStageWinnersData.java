@@ -133,7 +133,7 @@ public class CyclingRoadStageWinnersData extends OutputData {
 			T partParticipant = partParticipantMap.get(csepKey);
 
 			if (partParticipant != null) {
-				int nestingLevelList = DataFragmentUtil.getLevelForNestedList(nestingLevel);
+				int nestingLevelList = YamlUtil.getLevelForNestedList(nestingLevel);
 
 				stageWinnerFragments.add(new StageWinnerFragment(competitionId, seasonId,
 						cseKey.getCompSeasonEventId(), partParticipant.getParticipantId(),

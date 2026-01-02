@@ -39,7 +39,7 @@ public class EventPersonSportRankingData extends OutputData {
 
 	@Override
 	public void fill(Statement stat) throws SQLException {
-        int nestingLevelList = DataFragmentUtil.getLevelForNestedList(nestingLevel);
+        int nestingLevelList = YamlUtil.getLevelForNestedList(nestingLevel);
 
         CompSeasonEventKey cseKey = new CompSeasonEventKey(new CompSeasonKey(competitionId, seasonId), compSeasonEventId);
 

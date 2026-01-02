@@ -37,7 +37,7 @@ public class MatchListPhaseFragment extends WritableFragment {
         this.compSeasonPhaseId = compSeasonPhaseId;
         this.clientId = clientId;
 
-        int nestingLevelList = DataFragmentUtil.getLevelForNestedList(nestingLevel);
+        int nestingLevelList = YamlUtil.getLevelForNestedList(nestingLevel);
 
         Map<Integer, List<H2HMatch>> parentMatchMap = getParentMatchMap(h2HMatches);
         h2HMatches.forEach(x -> addH2HMatchFragment(x, parentMatchMap, nestingLevelList));

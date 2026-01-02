@@ -46,7 +46,7 @@ public class CyclingRoadPersonResultsData extends OutputData {
 					return new CyclingRoadPersonResultFragment(
 							compSeasonKey.getCompetitionId(), compSeasonKey.getSeasonId(), cseKey.getCompSeasonEventId(),
 							csepKey.getCompSeasonEventPartId(), personSportId, x.getRank(), x.getNoCountResultId(),
-							x.getEventDate(), clientId, DataFragmentUtil.getLevelForNestedList(nestingLevel));
+							x.getEventDate(), clientId, YamlUtil.getLevelForNestedList(nestingLevel));
 				})
 				.filter(filter::isElementAllowed)
 				.toList()

@@ -59,7 +59,7 @@ public class SpeedSkatingTotalRankingData extends OutputData {
 				CompSeasonEventPartKey compSeasonEventPartKey = new CompSeasonEventPartKey(compSeasonEventKey,
 						compSeasonEventPartId);
 
-				int nestingLevelList = DataFragmentUtil.getLevelForNestedList(nestingLevel);
+				int nestingLevelList = YamlUtil.getLevelForNestedList(nestingLevel);
 
 				List<PersonSport> ranking = new DbCalculation(stat).getTotalRanking(compSeasonEventPartKey);
 

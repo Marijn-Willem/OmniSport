@@ -42,7 +42,7 @@ public class DoubleFragment extends WritableFragment {
         CompSeasonDoubleKey compSeasonDoubleKey = new CompSeasonDoubleKey(compSeasonKey, doubleId);
         Double dbl = new DoubleManager(stat).getDouble(compSeasonDoubleKey.getDoubleId());
 
-        int nestingLevelFragment = DataFragmentUtil.getLevelForNestedFragment(nestingLevel);
+        int nestingLevelFragment = YamlUtil.getLevelForNestedFragment(nestingLevel);
 
         personSport1Fragment = DataFragmentUtil.getFilledDataFragment(
                 new PersonSportFragment(competitionId, seasonId, dbl.getPersonSport1Id(), clientId, nestingLevelFragment, false),

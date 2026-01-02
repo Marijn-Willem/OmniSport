@@ -17,7 +17,7 @@ import java.util.List;
 public class CrocoCupData extends OutputData {
     private final int competitionId;
     private final Integer clientId;
-    private final int nestingLevelNested = DataFragmentUtil.getLevelForNestedFragment(nestingLevel);
+    private final int nestingLevelNested = YamlUtil.getLevelForNestedFragment(nestingLevel);
 
     private TeamInCrocoCupFragment holder;
     private final List<TeamInCrocoCupFragment> standing = new ArrayList<>();
@@ -35,8 +35,8 @@ public class CrocoCupData extends OutputData {
     @Override
     public void fill(Statement stat) throws SQLException {
         List<Team> cupStanding = new DbCalculation(stat).getCrocoCupStanding(competitionId);
-        int nestingLevelFragment = DataFragmentUtil.getLevelForNestedFragment(nestingLevelNested);
-        int nestingLevelList = DataFragmentUtil.getLevelForNestedList(nestingLevelNested);
+        int nestingLevelFragment = YamlUtil.getLevelForNestedFragment(nestingLevelNested);
+        int nestingLevelList = YamlUtil.getLevelForNestedList(nestingLevelNested);
 
         cupStanding.forEach(x -> {
             TeamInCrocoCupFragment standingFragment = new TeamInCrocoCupFragment(x, clientId, true,
