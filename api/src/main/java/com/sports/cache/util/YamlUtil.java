@@ -10,6 +10,8 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 public class YamlUtil {
+    private static final int nestingLevelOffset = 2;
+
     private final int nestingLevel;
     private final String prefixStartListItem;
     private final String prefixDefault;
@@ -21,6 +23,14 @@ public class YamlUtil {
         prefixDefault = Util.padCharacter("", ' ', nestingLevel);
         emptyArrayMarker = Util.padCharacter("- ", ' ',
                 DataFragmentUtil.getLevelForNestedList(nestingLevel));
+    }
+
+    public static int getLevelForNestedFragment(int nestingLevel) {
+        return nestingLevel + nestingLevelOffset;
+    }
+
+    public static int getLevelForNestedList(int nestingLevel) {
+        return nestingLevel + 2 * nestingLevelOffset;
     }
 
     public String getEntry(String name, String value, boolean isStartListItem) {
@@ -80,16 +90,13 @@ public class YamlUtil {
     }
 
     public <T extends WritableFragment> String getArray(String name, List<T> fragments) {
-        StringBuilder sb = new StringBuilder(getEntryHeader(name));
+        return getArrayFromRawStrings(name, fragments.stream().map(WritableFragment::toYaml).toList());
+    }
 
-        if (fragments.isEmpty()) {
-            sb.append(emptyArrayMarker);
-            sb.append("\n");
-        }
-        else
-            fragments.forEach(fragment -> sb.append(fragment.toYaml()));
-
-        return sb.toString();
+    public String getArrayFromCacheList(List<CacheListObject> cacheList) {
+        YamlUtil yamlUtilList = new YamlUtil(getLevelForNestedList(nestingLevel));
+        return getArrayFromRawStrings("cacheList",
+                cacheList.stream().map(x -> getEntryFromCacheListObject(x, yamlUtilList)).toList());
     }
 
     public String getFragmentAsEntry(String entryName, WritableFragment fragment, boolean isStartListItem) {
@@ -143,5 +150,24 @@ public class YamlUtil {
     private String formatEntry(String line, boolean isStartListItem) {
         String prefix = isStartListItem ? prefixStartListItem : prefixDefault;
         return prefix + line + "\n";
+    }
+
+    private String getArrayFromRawStrings(String name, List<String> entries) {
+        StringBuilder sb = new StringBuilder(getEntryHeader(name));
+
+        if (entries.isEmpty()) {
+            sb.append(emptyArrayMarker);
+            sb.append("\n");
+        }
+        else
+            entries.forEach(sb::append);
+
+        return sb.toString();
+    }
+
+    private String getEntryFromCacheListObject(CacheListObject cacheListObject, YamlUtil yamlUtilList) {
+        return yamlUtilList.getEntry("key", cacheListObject.key(), true) +
+                yamlUtilList.getEntry("created", cacheListObject.timeCreated()) +
+                yamlUtilList.getEntry("lastRetrieved", cacheListObject.timeLastRetrieved());
     }
 }

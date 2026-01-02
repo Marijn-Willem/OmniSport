@@ -59,19 +59,12 @@ public class JsonUtil {
     }
 
     public static <T extends WritableFragment> String getArray(String entryName, List<T> fragments) {
-        StringBuilder sb = new StringBuilder("\"" + entryName + "\": [");
+        return getArrayFromRawStrings(entryName, fragments.stream().map(JsonUtil::getFragmentAsEntry).toList());
+    }
 
-        for (int i = 0; i < fragments.size() - 1; i++) {
-            sb.append(getFragmentAsEntry(fragments.get(i)));
-            sb.append(",");
-        }
-
-        if (!fragments.isEmpty())
-            sb.append(getFragmentAsEntry(fragments.get(fragments.size() - 1)));
-
-        sb.append("]");
-
-        return sb.toString();
+    public static String getArrayFromCacheList(List<CacheListObject> cacheList) {
+        return getArrayFromRawStrings("cacheList",
+                cacheList.stream().map(JsonUtil::getEntryFromCacheListObject).toList());
     }
 
     public static String getGenderJson(int genderId) {
@@ -100,5 +93,27 @@ public class JsonUtil {
 
     private static String getFragmentAsEntry(WritableFragment fragment) {
         return "{" + fragment.toJson() + "}";
+    }
+
+    private static String getArrayFromRawStrings(String entryName, List<String> entries) {
+        StringBuilder sb = new StringBuilder("\"" + entryName + "\": [");
+
+        for (int i = 0; i < entries.size() - 1; i++) {
+            sb.append(entries.get(i));
+            sb.append(",");
+        }
+
+        if (!entries.isEmpty())
+            sb.append(entries.get(entries.size() - 1));
+
+        sb.append("]");
+
+        return sb.toString();
+    }
+
+    private static String getEntryFromCacheListObject(CacheListObject cacheListObject) {
+        return "{" + getEntry("key", cacheListObject.key()) + "," +
+                getEntry("created", cacheListObject.timeCreated()) + "," +
+                getEntry("lastRetrieved", cacheListObject.timeLastRetrieved()) + "}";
     }
 }

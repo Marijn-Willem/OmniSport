@@ -1,11 +1,14 @@
 package com.sports.rest;
 
 import com.sports.cache.data.OutputData;
+import com.sports.cache.util.CacheListObject;
+import com.sports.cache.util.CacheUtil;
 import com.sports.cache.util.DataFragmentUtil;
 import com.sports.entity.key.CompSeasonKey;
 import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
+import java.util.List;
 
 public abstract class OutputCreator {
     private final Integer clientId;
@@ -13,6 +16,8 @@ public abstract class OutputCreator {
     private CompSeasonKey compSeasonKey;
 
     protected abstract String createOutputFromOutputData(OutputData outputData);
+
+    protected abstract String createOutputFromCacheList(List<CacheListObject> cacheList);
 
     public OutputCreator(Integer clientId, HttpServletResponse response) {
         this.clientId = clientId;
@@ -32,6 +37,13 @@ public abstract class OutputCreator {
         return createOutputWithPermission(outputData, clientId != null && RestClientUtil.clientIsAdmin(clientId));
     }
 
+    public String createOutputForCacheList() throws IOException {
+        if (clientId != null && RestClientUtil.clientIsAdmin(clientId))
+            return createOutputFromCacheList(CacheUtil.getCacheList());
+
+        return sendError(HttpServletResponse.SC_UNAUTHORIZED);
+    }
+
     private String createOutputWithPermission(OutputData outputData, boolean permissionCheck) throws IOException {
         int errorCode = HttpServletResponse.SC_UNAUTHORIZED;
 
@@ -44,6 +56,10 @@ public abstract class OutputCreator {
                 errorCode = HttpServletResponse.SC_NOT_FOUND;
         }
 
+        return sendError(errorCode);
+    }
+
+    private String sendError(int errorCode) throws IOException {
         response.sendError(errorCode);
         return null;
     }

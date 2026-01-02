@@ -1,9 +1,13 @@
 package com.sports.rest.yaml;
 
 import com.sports.cache.data.OutputData;
+import com.sports.cache.util.CacheListObject;
+import com.sports.cache.util.YamlUtil;
 import com.sports.entity.key.CompSeasonKey;
 import com.sports.rest.OutputCreator;
 import jakarta.servlet.http.HttpServletResponse;
+
+import java.util.List;
 
 public class YamlOutputCreator extends OutputCreator {
     public YamlOutputCreator(Integer clientId, HttpServletResponse response) {
@@ -16,4 +20,9 @@ public class YamlOutputCreator extends OutputCreator {
 
     @Override
     protected String createOutputFromOutputData(OutputData outputData) { return outputData.toYaml(); }
+
+    @Override
+    protected String createOutputFromCacheList(List<CacheListObject> cacheList) {
+        return new YamlUtil(0).getArrayFromCacheList(cacheList);
+    }
 }

@@ -69,14 +69,13 @@ public class XmlUtil {
     public static <T extends WritableFragment> String getTopLevelXmlList(String listTagName,
                                                                          String elementTagName,
                                                                          List<T> fragments) {
-        StringBuilder sb = new StringBuilder(getOpeningTag(listTagName));
+        return getTopLevelXmlListFromStringTags(listTagName, elementTagName,
+                fragments.stream().map(WritableFragment::toXML).toList());
+    }
 
-        for (T fragment : fragments)
-            sb.append(encloseContent(elementTagName, fragment.toXML()));
-
-        sb.append(getClosingTag(listTagName));
-
-        return sb.toString();
+    public static String getTopLevelXmlListFromCacheList(List<CacheListObject> cacheList) {
+        return getTopLevelXmlListFromStringTags("cacheList", "cacheItem",
+                cacheList.stream().map(XmlUtil::getTagFromCacheListObject).toList());
     }
 
     public static <T extends WritableFragment> String getEnclosedXmlList(String listTagName,
@@ -111,5 +110,24 @@ public class XmlUtil {
 
     private static String getClosingTag(String name) {
         return "</" + name + ">";
+    }
+
+    private static String getTopLevelXmlListFromStringTags(String listTagName,
+                                                          String elementTagName,
+                                                          List<String> tags) {
+        StringBuilder sb = new StringBuilder(getOpeningTag(listTagName));
+
+        for (String tag : tags)
+            sb.append(encloseContent(elementTagName, tag));
+
+        sb.append(getClosingTag(listTagName));
+
+        return sb.toString();
+    }
+
+    private static String getTagFromCacheListObject(CacheListObject cacheListObject) {
+        return getTag("key", cacheListObject.key()) +
+                getTag("created", cacheListObject.timeCreated()) +
+                getTag("lastRetrieved", cacheListObject.timeLastRetrieved());
     }
 }

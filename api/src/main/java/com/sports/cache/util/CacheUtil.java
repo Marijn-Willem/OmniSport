@@ -4,12 +4,15 @@ import com.sports.cache.data.OutputData;
 import com.sports.cache.key.CacheDataKey;
 import com.sports.cache.key.CacheFragmentKey;
 import com.sports.cache.key.CacheKey;
+import com.sports.logic.async.ThreadUtil;
+import com.sports.logic.async.ThreadWorker;
 import org.mapdb.DB;
 import org.mapdb.DBMaker;
 import org.mapdb.HTreeMap;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.io.Serializable;
+import java.time.LocalDateTime;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 
 public class CacheUtil {
@@ -54,6 +57,13 @@ public class CacheUtil {
         deleteFromCache(stringRepresentation);
     }
 
+    public static List<CacheListObject> getCacheList() {
+        CacheListExecutor executor = new CacheListExecutor();
+        executor.execute();
+
+        return executor.getCacheList();
+    }
+
     private static <T> T get(String stringRepresentation) {
         GetFromCacheExecutor<T> cacheExecutor = new GetFromCacheExecutor<>(stringRepresentation);
         cacheExecutor.execute();
@@ -69,7 +79,7 @@ public class CacheUtil {
         new DeleteFromCacheExecutor(stringRepresentation).execute();
     }
 
-    private static class PutInCacheExecutor<T> extends CacheExecutor {
+    private static class PutInCacheExecutor<T> extends CacheExecutor<T> {
         private final CacheKey cacheKey;
         private final T value;
 
@@ -79,12 +89,12 @@ public class CacheUtil {
         }
 
         @Override
-        void action(HTreeMap<String, Object> cache) {
-            cache.put(cacheKey.getStringRepresentation(), value);
+        void action(HTreeMap<String, CacheObject<T>> cache) {
+            cache.put(cacheKey.getStringRepresentation(), new CacheObject<>(value));
         }
     }
 
-    private static class GetFromCacheExecutor<T> extends CacheExecutor {
+    private static class GetFromCacheExecutor<T> extends CacheExecutor<T> {
         private final String stringRepresentation;
         private T value;
 
@@ -93,16 +103,30 @@ public class CacheUtil {
         }
 
         @Override
-        void action(HTreeMap<String, Object> cache) {
-            value = (T)cache.get(stringRepresentation);
+        void action(HTreeMap<String, CacheObject<T>> cache) {
+            CacheObject<T> cacheObject = cache.get(stringRepresentation);
+
+            if (cacheObject != null) {
+                value = cacheObject.dataObject;
+                updateTimeLastRetrieved(cache, cacheObject);
+            }
         }
 
         public T getValue() {
             return value;
         }
+
+        private void updateTimeLastRetrieved(HTreeMap<String, CacheObject<T>> cache, CacheObject<T> cacheObject) {
+            ThreadWorker tw = () -> {
+                cacheObject.timeLastRetrieved = LocalDateTime.now();
+                cache.put(stringRepresentation, cacheObject);
+            };
+
+            ThreadUtil.executeAsync(Collections.singletonList(tw), false, 1);
+        }
     }
 
-    private static class DeleteFromCacheExecutor extends CacheExecutor {
+    private static class DeleteFromCacheExecutor extends CacheExecutor<Object> {
         private final String stringRepresentation;
 
         public DeleteFromCacheExecutor(String stringRepresentation) {
@@ -110,19 +134,51 @@ public class CacheUtil {
         }
 
         @Override
-        void action(HTreeMap<String, Object> cache) {
+        void action(HTreeMap<String, CacheObject<Object>> cache) {
             cache.remove(stringRepresentation);
         }
     }
 
-    private abstract static class CacheExecutor {
-        abstract void action(HTreeMap<String, Object> cache);
+    private static class CacheListExecutor extends CacheExecutor<Object> {
+        private final List<CacheListObject> cacheList = new ArrayList<>();
+
+        @Override
+        void action(HTreeMap<String, CacheObject<Object>> cache) {
+            cache.forEach((key, value) -> cacheList.add(getCacheListObject(key, value)));
+            cacheList.sort(new CacheListObjectComparator());
+        }
+
+        public List<CacheListObject> getCacheList() {
+            return cacheList;
+        }
+
+        private CacheListObject getCacheListObject(String key, CacheObject<Object> cacheObject) {
+            return new CacheListObject(key, cacheObject.timeCreated, cacheObject.timeLastRetrieved);
+        }
+    }
+
+    private abstract static class CacheExecutor<T> {
+        abstract void action(HTreeMap<String, CacheObject<T>> cache);
         void execute() {
-            HTreeMap<String, Object> cache = (HTreeMap<String, Object>)db.hashMap("")
+            HTreeMap<String, CacheObject<T>> cache = (HTreeMap<String, CacheObject<T>>)db.hashMap("")
                     .expireAfterCreate(cacheDurationSeconds, TimeUnit.SECONDS)
                     .createOrOpen();
 
             action(cache);
+        }
+    }
+
+    private static class CacheObject<T> implements Serializable {
+        private final T dataObject;
+        private final LocalDateTime timeCreated;
+        private LocalDateTime timeLastRetrieved;
+
+        public CacheObject(T dataObject) {
+            this.dataObject = dataObject;
+
+            LocalDateTime now = LocalDateTime.now();
+            timeCreated = now;
+            timeLastRetrieved = now;
         }
     }
 }
