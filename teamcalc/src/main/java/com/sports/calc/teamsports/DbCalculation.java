@@ -273,44 +273,31 @@ public record DbCalculation(Statement stat) {
 
         TeamMatchActionManager tmam = new TeamMatchActionManager(stat);
 
-        int[] indices = getNextIndices(teamMatches, importItems, 0, 0, comparator);
+        int tmIndX = 0;
         int actionId = 0;
 
-        if (indices[0] > -1)
-            actionId = tmam.getNewTeamMatchActionId(teamMatches.get(indices[0]).getTeamMatchKey());
+        for (MatchActionImportItem importItem : importItems) {
+            int lastCompare = 0;
 
-        while (indices[0] > -1 && indices[1] > -1) {
-            TeamMatch teamMatch = teamMatches.get(indices[0]);
-            MatchActionImportItem importItem = importItems.get(indices[1]);
-
-            for (int i = 0; i < importItem.getNr(); i++) {
-                TeamMatchAction teamMatchAction = new TeamMatchAction();
-                teamMatchAction.setActionTypeId(ActionType.nameIdMap.get(importItem.getActionType()));
-                teamMatchAction.setTeamId(teamMap.get(importItem.getTeam()).getId());
-
-                matchActionMap.put(new TeamMatchActionKey(teamMatch.getTeamMatchKey(), actionId++), teamMatchAction);
+            while (tmIndX < teamMatches.size() && (lastCompare = comparator.compare(teamMatches.get(tmIndX), importItem)) < 0) {
+                tmIndX++;
+                actionId = 0;
             }
 
-            int[] newIndices = getNextIndices(teamMatches, importItems, indices[0], indices[1] + 1, comparator);
-            if (newIndices[0] > -1 && newIndices[0] != indices[0])
-                actionId = tmam.getNewTeamMatchActionId(teamMatches.get(newIndices[0]).getTeamMatchKey());
+            if (tmIndX < teamMatches.size() && lastCompare == 0) {
+                TeamMatch teamMatch = teamMatches.get(tmIndX);
+                if (actionId == 0)
+                    actionId = tmam.getNewTeamMatchActionId(teamMatch.getTeamMatchKey());
 
-            indices = newIndices;
+                for (int i = 0; i < importItem.getNr(); i++) {
+                    TeamMatchAction teamMatchAction = new TeamMatchAction();
+                    teamMatchAction.setActionTypeId(ActionType.nameIdMap.get(importItem.getActionType()));
+                    teamMatchAction.setTeamId(teamMap.get(importItem.getTeam()).getId());
+
+                    matchActionMap.put(new TeamMatchActionKey(teamMatch.getTeamMatchKey(), actionId++), teamMatchAction);
+                }
+            }
         }
-    }
-
-    private int[] getNextIndices(List<? extends WithH2HMatchParticipantsDate> list1,
-                                 List<? extends WithH2HMatchParticipantsDate> list2,
-                                 int indX1, int indX2, Comparator<WithH2HMatchParticipantsDate> comparator) {
-        while (indX1 < list1.size() && indX2 < list2.size() &&
-                comparator.compare(list1.get(indX1), list2.get(indX2)) < 0)
-            indX1++;
-
-        while (indX1 < list1.size() && indX2 < list2.size() &&
-                comparator.compare(list2.get(indX2), list1.get(indX1)) < 0)
-            indX2++;
-
-        return new int[]{indX1 < list1.size() ? indX1 : -1, indX2 < list2.size() ? indX2 : -1};
     }
 
     private static class MatchActionImportItem implements WithH2HMatchParticipantsDate {
