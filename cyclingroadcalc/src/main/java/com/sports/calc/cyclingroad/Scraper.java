@@ -28,8 +28,6 @@ public class Scraper {
     private static final Pattern patTime = Pattern.compile("<span\\sclass=\"hide\">\\s*([\\d:.]+)</span>");
     private static final Pattern patTimeTT = Pattern.compile("<td\\sclass=\"time\\sar\\s\"\\s>([\\d:.]+)");
 
-    private static final int clientId = Client.clientIdProcyclingStats;
-
     private static final List<String> infixes = new ArrayList<>() {{
         add("da");
         add("de");
@@ -253,7 +251,7 @@ public class Scraper {
 
     private Map<String, String> getAliasNameMap(Statement stat) throws SQLException {
         Map<String, Integer> nameIdMap = new HashMap<>() {{
-            new AliasManager(stat).getAliasListClient(clientId).forEach(x -> {
+            new AliasManager(stat).getAliasListClient(Client.clientIdProcyclingStats).forEach(x -> {
                 if (x.getAliasEntityId() == AliasEntity.aliasEntityIdPersonInstance) {
                     int personId = Integer.parseInt(x.getEntityId().split("_")[0]);
                     put(x.getAlias(), personId);

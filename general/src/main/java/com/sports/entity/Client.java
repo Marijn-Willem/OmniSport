@@ -3,7 +3,7 @@ package com.sports.entity;
 import com.sports.db.util.QueryUtil;
 
 public class Client extends IntEntity implements NamedEntity {
-    public static final int clientIdProcyclingStats = 7;
+    public static final int clientIdProcyclingStats = -1;
 
     private String name;
     private String passWord;
