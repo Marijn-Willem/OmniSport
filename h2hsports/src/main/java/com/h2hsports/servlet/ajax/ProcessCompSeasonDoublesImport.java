@@ -1,15 +1,16 @@
 package com.h2hsports.servlet.ajax;
 
 import com.sports.entity.CompSeasonPhase;
-import com.sports.entity.Competition;
 import com.sports.entity.DoublesMatch;
-import com.sports.entity.Gender;
 import com.sports.entity.comparator.H2HMatchKnockoutOrderDate;
 import com.sports.entity.key.CompSeasonDoubleKey;
 import com.sports.entity.key.CompSeasonPhaseDoubleKey;
 import com.sports.entity.key.CompSeasonPhaseKey;
 import com.sports.entity.key.DoublesMatchKey;
-import com.sports.entity.manager.*;
+import com.sports.entity.manager.CompSeasonDoubleManager;
+import com.sports.entity.manager.CompSeasonPhaseDoubleManager;
+import com.sports.entity.manager.CompSeasonPhaseManager;
+import com.sports.entity.manager.DoublesMatchManager;
 import com.sports.logic.calculation.DbCalculation;
 import com.sports.logic.util.Util;
 import com.sportservlet.SuperResponseServlet;
@@ -76,7 +77,7 @@ public class ProcessCompSeasonDoublesImport extends SuperResponseServlet {
 
             w.append("Doubles successfully imported");
 
-            processNewDoubles(stat, doubles, w);
+            processNewDoubles(doubles, w);
 
             req.removeAttribute("names");
         }
@@ -111,8 +112,7 @@ public class ProcessCompSeasonDoublesImport extends SuperResponseServlet {
         dmm.updateMatchMap(matchMap);
     }
 
-    private void processNewDoubles(Statement stat, List<com.sports.entity.Double> doubles, Writer w)
-            throws SQLException, IOException {
+    private void processNewDoubles(List<com.sports.entity.Double> doubles, Writer w) throws IOException {
         List<com.sports.entity.Double> newDoubles = new ArrayList<>();
 
         for (com.sports.entity.Double dbl : doubles)
@@ -120,15 +120,8 @@ public class ProcessCompSeasonDoublesImport extends SuperResponseServlet {
                 newDoubles.add(dbl);
 
         if (!newDoubles.isEmpty()) {
-            Competition comp = new CompetitionManager(stat).getCompetition(competitionId);
-
             w.append("<div>The following doubles are newly created,</div>\n");
-            w.append("<div>between brackets the newly created persons</div>\n");
-
-            if (comp.getGenderId() == Gender.genderIdMixed)
-                w.append("<div>Pay attention: persons may be created with mixed gender id</div>\n");
-
-            w.append("<br/>\n");
+            w.append("<div>between brackets the newly created persons</div>\n<br/>\n");
 
             for (com.sports.entity.Double newDbl : newDoubles) {
                 List<String> newPersonNames = new ArrayList<>();

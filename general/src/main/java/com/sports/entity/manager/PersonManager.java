@@ -94,10 +94,6 @@ public class PersonManager extends InstanceEntityManager<Person, PersonInstanceK
         return getEntityMapFromIds(ids);
     }
 
-    public List<Person> getPersonList(List<Integer> ids) throws SQLException {
-        return getEntityListFromIds(ids);
-    }
-
     public List<Person> getPersonListNameLike(String name) throws SQLException {
         return getEntityListNameLike(name);
     }

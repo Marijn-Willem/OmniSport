@@ -1,4 +1,4 @@
-FROM gradle:8.6-jdk21 AS GRADLE_IMAGE
+FROM gradle:9.3.0-jdk21 AS GRADLE_IMAGE
 
 COPY / /tmp/
 

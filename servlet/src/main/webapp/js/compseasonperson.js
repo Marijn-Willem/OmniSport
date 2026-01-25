@@ -6,4 +6,3 @@ function processImport(cid, sid) {
         return '/ProcessCompSeasonPersonImport?cid=' + cid + '&sid=' + sid;
     }, null).loadElement();
 }
-

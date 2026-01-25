@@ -31,7 +31,7 @@ public record DbCalculation(Statement stat) {
         if (competition.isH2hDouble())
             return new CompSeasonDoubleFactory();
 
-        Sport sport = new SportManager(stat).getTeamSportsList(Collections.singletonList(competition.getSportId())).get(0);
+        Sport sport = new SportManager(stat).getTeamSportsList(Collections.singletonList(competition.getSportId())).getFirst();
 
         return Calculation.getCompSeasonParticipantFactory(competition, sport);
     }
@@ -90,59 +90,6 @@ public record DbCalculation(Statement stat) {
         return getPersonNameMapWithNewPersonsForGender(names, cse.getGenderId());
     }
 
-    public Map<String, Double> getDoubleMapWithNewDoubles(List<String[]> namePairs, int competitionId) throws SQLException {
-        List<String> personNames = new ArrayList<>();
-
-        for (String[] namePair : namePairs) {
-            personNames.add(namePair[0]);
-            personNames.add(namePair[1]);
-        }
-
-        Map<String, Person> personNameMap = getPersonNameMapWithNewPersons(personNames, competitionId);
-        Map<String, PersonSport> descrPersonSportMap = getDescrPersonSportMap(new ArrayList<>(personNameMap.values()), competitionId);
-
-        Map<Integer, Person> personMap = new HashMap<>() {{
-            personNameMap.forEach((k, v) -> put(v.getId(), v));
-        }};
-
-        Map<Integer, PersonSport> personSportMap = new HashMap<>();
-        Map<Integer, Integer> personIdPersonSportIdMap = new HashMap<>();
-
-        descrPersonSportMap.forEach((k, v) -> {
-            personSportMap.put(v.getId(), v);
-            personIdPersonSportIdMap.put(v.getPersonId(), v.getId());
-        });
-
-        PersonManager pm = new PersonManager(stat);
-
-        for (int i = 0; i < personNames.size(); i += 2) {
-            Person p1 = personNameMap.get(personNames.get(i));
-            Person p2 = personNameMap.get(personNames.get(i + 1));
-
-            if (p1.isNewlyCreated())
-                updatePersonFromDoublePartner(pm, p1, p2);
-
-            if (p2.isNewlyCreated())
-                updatePersonFromDoublePartner(pm, p2, p1);
-        }
-
-        Calculation.setGenderIdsOnPersonSports(personSportMap.values(), personMap);
-
-        List<DoublePersonSport1PersonSport2Key> keys = new ArrayList<>();
-
-        for (int i = 0; i < personNames.size(); i += 2) {
-            Person p1 = personNameMap.get(personNames.get(i));
-            Person p2 = personNameMap.get(personNames.get(i + 1));
-
-            int personSport1Id = personIdPersonSportIdMap.get(p1.getId());
-            int personSport2Id = personIdPersonSportIdMap.get(p2.getId());
-
-            keys.add(getDoubleKey(personSport1Id, personSport2Id, personSportMap));
-        }
-
-        return getDoubleNameMapFromKeys(keys, personSportMap, personMap);
-    }
-
     public List<Double> getDoubleListWithNewDoubles(List<String[]> namePairs, int competitionId)
             throws SQLException {
         List<Double> doubles = new ArrayList<>();
@@ -187,11 +134,11 @@ public record DbCalculation(Statement stat) {
         String name;
 
         assert !personSports.isEmpty();
-        sport = getSport(sportList, personSports.get(0).getSportId());
+        sport = getSport(sportList, personSports.getFirst().getSportId());
         assert sport != null;
         name = baseName + " (" + sport.getName() + ")";
         person.setName(name);
-        personSports.get(0).setDescription(name);
+        personSports.getFirst().setDescription(name);
 
         for (int i = 1; i < personSports.size(); i++) {
             PersonSport personSport = personSports.get(i);
@@ -252,7 +199,7 @@ public record DbCalculation(Statement stat) {
 
                 List<Geo> geoList = gm.getGeosByUniqueFields(name, geoType.getId(), parentGeoIds);
                 if (geoList.size() == 1)
-                    result = geoList.get(0);
+                    result = geoList.getFirst();
             }
         }
 
@@ -526,11 +473,57 @@ public record DbCalculation(Statement stat) {
         return getPersonNameMapWithNewPersonsForGender(names, comp.getGenderId());
     }
 
-    private void updatePersonFromDoublePartner(PersonManager pm, Person p, Person dblPrt) throws SQLException {
-        if (p.getGenderId() == Gender.genderIdMixed && dblPrt.getGenderId() != Gender.genderIdMixed) {
-            p.setGenderId(dblPrt.getGenderId() == Gender.genderIdMale ? Gender.genderIdFemale : Gender.genderIdMale);
-            pm.update(p.getId(), p);
+    private Map<String, Double> getDoubleMapWithNewDoubles(List<String[]> namePairs, int competitionId) throws SQLException {
+        List<String> personNames = new ArrayList<>();
+
+        for (String[] namePair : namePairs) {
+            personNames.add(namePair[0]);
+            personNames.add(namePair[1]);
         }
+
+        Map<String, Person> personNameMap = getPersonNameMapWithNewPersons(personNames, competitionId);
+        Map<String, PersonSport> descrPersonSportMap = getDescrPersonSportMap(new ArrayList<>(personNameMap.values()), competitionId);
+
+        Map<Integer, Person> personMap = new HashMap<>() {{
+            personNameMap.forEach((k, v) -> put(v.getId(), v));
+        }};
+
+        Map<Integer, PersonSport> personSportMap = new HashMap<>();
+        Map<Integer, Integer> personIdPersonSportIdMap = new HashMap<>();
+
+        descrPersonSportMap.forEach((k, v) -> {
+            personSportMap.put(v.getId(), v);
+            personIdPersonSportIdMap.put(v.getPersonId(), v.getId());
+        });
+
+        PersonManager pm = new PersonManager(stat);
+
+        for (int i = 0; i < personNames.size(); i ++) {
+            Person p = personNameMap.get(personNames.get(i));
+
+            if (p.getGenderId() == Gender.genderIdMixed) {
+                int targetGenderId = (i % 2) == 0 ? Gender.genderIdFemale : Gender.genderIdMale;
+                p.setGenderId(targetGenderId);
+
+                pm.update(p.getId(), p);
+            }
+        }
+
+        Calculation.setGenderIdsOnPersonSports(personSportMap.values(), personMap);
+
+        List<DoublePersonSport1PersonSport2Key> keys = new ArrayList<>();
+
+        for (int i = 0; i < personNames.size(); i += 2) {
+            Person p1 = personNameMap.get(personNames.get(i));
+            Person p2 = personNameMap.get(personNames.get(i + 1));
+
+            int personSport1Id = personIdPersonSportIdMap.get(p1.getId());
+            int personSport2Id = personIdPersonSportIdMap.get(p2.getId());
+
+            keys.add(getDoubleKey(personSport1Id, personSport2Id, personSportMap));
+        }
+
+        return getDoubleNameMapFromKeys(keys, personSportMap, personMap);
     }
 
     private Map<String, Double> getDoubleNameMapFromKeys(List<DoublePersonSport1PersonSport2Key> keys,
