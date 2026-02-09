@@ -82,7 +82,7 @@ public class SpeedSkatingHeatData extends OutputData {
 
     @Override
     public String toXML() {
-        return XmlUtil.encloseContent("heat",
+        return XmlUtil.encloseTopLevelContent("heat",
                 XmlUtil.getFragmentAsTag("personSport1", personSport1Fragment) +
                         XmlUtil.getFragmentAsTag("personSport2", personSport2Fragment)
         );

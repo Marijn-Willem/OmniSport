@@ -98,6 +98,10 @@ public class XmlUtil {
         return "<" + name + ">" + content + getClosingTag(name);
     }
 
+    public static String encloseTopLevelContent(String name, String content) {
+        return getOpeningTag(name) + content + getClosingTag(name);
+    }
+
     private static String getFilledTag(String name, String value) {
         return encloseContent(name, escapeXml(value));
     }
