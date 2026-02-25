@@ -112,13 +112,7 @@ public abstract class MatchList extends SuperResponseServlet {
                 value + "</a>";
     }
 
-    private String getTd(Integer particId, Map<Integer, ? extends Participant> particMap, boolean isWinner) {
-        String text = particId != null ? particMap.get(particId).getDescription() : "-";
-
-        return "<td" + (isWinner ? " class=\"matchWinner\"" : "") + ">" + text + "</td>";
-    }
-
-    private String getScoreString(Statement stat, H2HMatch h2HMatch) throws SQLException {
+    String getScoreString(Statement stat, H2HMatch h2HMatch) throws SQLException {
         if (h2HMatch.getParticipant1NcrId() != null)
             return getNoCountResultMap(stat).get(h2HMatch.getParticipant1NcrId());
 
@@ -127,5 +121,11 @@ public abstract class MatchList extends SuperResponseServlet {
 
         return Util.concatStringsWithDelimiter(Util.convertIntegerToString(h2HMatch.getScore1_1()),
                 Util.convertIntegerToString(h2HMatch.getScore1_2()), " - ");
+    }
+
+    private String getTd(Integer particId, Map<Integer, ? extends Participant> particMap, boolean isWinner) {
+        String text = particId != null ? particMap.get(particId).getDescription() : "-";
+
+        return "<td" + (isWinner ? " class=\"matchWinner\"" : "") + ">" + text + "</td>";
     }
 }

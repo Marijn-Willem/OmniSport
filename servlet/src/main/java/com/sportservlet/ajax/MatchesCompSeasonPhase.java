@@ -31,7 +31,7 @@ public abstract class MatchesCompSeasonPhase extends MatchList {
     @Override
     void writeMatchRow(Statement stat, H2HMatch h2HMatch, Map<Integer, ? extends Participant> particMap, Writer w) throws SQLException, IOException {
         if (compSeasonPhase.isHasParentMatches())
-            writeMatchRowWithParentPortalLink(h2HMatch, particMap, w);
+            writeMatchRowWithParentPortalLink(stat, h2HMatch, particMap, w);
         else
             writeMatchRowWithLinks(stat, h2HMatch, particMap, w);
     }
@@ -57,10 +57,13 @@ public abstract class MatchesCompSeasonPhase extends MatchList {
                 h2HMatchManager.getH2HMatchesFromCompSeasonPhases(Collections.singletonList(compSeasonPhaseKey));
     }
 
-    private void writeMatchRowWithParentPortalLink(H2HMatch h2HMatch,
+    private void writeMatchRowWithParentPortalLink(Statement stat,
+                                                   H2HMatch h2HMatch,
                                                    Map<Integer, ? extends Participant> particMap,
-                                                   Writer w) throws IOException {
+                                                   Writer w) throws SQLException, IOException {
         String line = "<tr>" + getMatchParticipantInfo(h2HMatch, particMap) + "<td>";
+        line += getScoreString(stat, h2HMatch);
+        line += "</td><td>";
         line += getAnchor(h2HMatch, getManageMatchLink(), "ManageMatch", "md=u");
         line += "</td><td>";
         line += getAnchor(h2HMatch, getParentPortalLink(), "Manage Parent", null, "pmid");
