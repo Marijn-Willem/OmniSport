@@ -1,4 +1,4 @@
-const genderIdOpen = 4;
+const genderIdOpen = -4;
 
 function loadCompetitionList() {
     new ElementLoader('selCid', function() { return '/CompetitionList'; }, function () {
