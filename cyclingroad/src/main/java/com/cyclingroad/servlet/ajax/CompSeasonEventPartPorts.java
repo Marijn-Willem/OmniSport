@@ -51,8 +51,7 @@ public class CompSeasonEventPartPorts extends SuperResponseServlet {
             w.append("<input type=\"button\" onclick=\"setGeneralClassificationPoints();\" ");
             w.append("value=\"Calculate general classification times\" /><br/>\n");
         }
-        if (cse.getExternalSource() != null)
-            w.append("<input type=\"button\" onclick=\"scrape();\" value=\"Scrape\" /><br/>\n");
+        w.append("<input type=\"button\" onclick=\"scrape();\" value=\"Scrape\" /><br/>\n");
         w.append("<div id=\"divIns\"></div>\n");
     }
 }

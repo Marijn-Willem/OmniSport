@@ -16,7 +16,7 @@ public abstract class SuperResponseServlet extends SuperServlet {
     private Map<Integer, String> noCountResultMap;
 
     @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    protected void doMethod(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         resourcePath = req.getContextPath();
         path = resourcePath + "/servlet";
         noCountResultMap = null;
@@ -24,7 +24,7 @@ public abstract class SuperResponseServlet extends SuperServlet {
         resp.setContentType("text/html;charset=UTF-8");
         resp.getWriter().append("<!DOCTYPE html>\n");
 
-        super.doGet(req, resp);
+        super.doMethod(req, resp);
 
         resp.getWriter().flush();
     }

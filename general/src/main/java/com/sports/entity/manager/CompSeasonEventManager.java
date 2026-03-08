@@ -29,7 +29,7 @@ public class CompSeasonEventManager extends SuperKeySuperManager<CompSeasonEvent
 
     @Override
     String[] getValueColumns() {
-        return new String[] { "sportid", "sporteventid", "genderid", "externalsource" };
+        return new String[] { "sportid", "sporteventid", "genderid" };
     }
 
     @Override
@@ -40,7 +40,6 @@ public class CompSeasonEventManager extends SuperKeySuperManager<CompSeasonEvent
         compSeasonEvent.setSportId(rs.getInt("sportid"));
         compSeasonEvent.setSportEventId(rs.getInt("sporteventid"));
         compSeasonEvent.setGenderId(rs.getInt("genderid"));
-        compSeasonEvent.setExternalSource(rs.getString("externalsource"));
 
         return compSeasonEvent;
     }

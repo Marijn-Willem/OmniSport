@@ -35,7 +35,6 @@ public class CompSeasonEventPartManager extends SuperKeySuperManager<CompSeasonE
                 "\"order\"",
                 "stage",
                 "\"date\"",
-                "externalsource",
                 "isfinal"
         };
     }
@@ -54,7 +53,6 @@ public class CompSeasonEventPartManager extends SuperKeySuperManager<CompSeasonE
         compSeasonEventPart.setOrder(rs.getInt("order"));
         compSeasonEventPart.setStage(QueryUtil.getIntegerFromResultSet(rs, "stage"));
         compSeasonEventPart.setDate(QueryUtil.convertTimestampToDateTime(rs.getTimestamp("date")));
-        compSeasonEventPart.setExternalSource(rs.getString("externalsource"));
         compSeasonEventPart.setFinal(rs.getBoolean("isfinal"));
 
         return compSeasonEventPart;

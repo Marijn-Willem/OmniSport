@@ -15,6 +15,7 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.URI;
@@ -39,6 +40,15 @@ public abstract class SuperServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        doMethod(req, resp);
+    }
+
+    @Override
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        doMethod(req, resp);
+    }
+
+    protected void doMethod(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         setCommonParameters(req);
 
         new RequestHandler(req, resp).execute();
@@ -61,6 +71,18 @@ public abstract class SuperServlet extends HttpServlet {
         int csepid = getIntValuedParameterValue(req, "csepid");
 
         return new CompSeasonEventPartKey(getCompSeasonEventKey(req), csepid);
+    }
+
+    protected String getBody(HttpServletRequest req) throws IOException {
+        StringBuilder sb = new StringBuilder();
+
+        BufferedReader br = req.getReader();
+        String line;
+
+        while ((line = br.readLine()) != null)
+            sb.append(line);
+
+        return sb.toString();
     }
 
     protected void applyCacheDelete(CacheKey cacheKey) throws URISyntaxException, IOException {

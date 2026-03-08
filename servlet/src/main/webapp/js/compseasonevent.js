@@ -6,7 +6,6 @@ function getProcessUrl() {
     let params = 'cid=' + cid + '&sid=' + sid + '&cseid=' + cseid;
     params = getUpdateWithNonEmptyParameter(params, 'seid', 'seid');
     params = getUpdateWithNonEmptyParameter(params, 'gid', 'gid');
-    params = getUpdateWithNonEmptyParameter(params, 'es', 'es');
 
     return '/ProcessManageCompSeasonEvent?' + params;
 }

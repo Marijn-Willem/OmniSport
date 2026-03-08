@@ -20,8 +20,8 @@ public abstract class SuperDispatchServlet extends SuperServlet {
     protected abstract void process(Statement stat, HttpServletRequest req) throws SQLException;
 
     @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        super.doGet(req, resp);
+    protected void doMethod(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        super.doMethod(req, resp);
         req.getRequestDispatcher(dispatchURL).forward(req, resp);
     }
 }

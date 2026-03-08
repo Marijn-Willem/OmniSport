@@ -22,7 +22,6 @@ function getProcessUrl() {
     let params = 'cid=' + cid + '&sid=' + sid + '&cseid=' + cseid + '&csepid=' + csepid +
         '&did=' + did + '&epnid=' + epnid + '&o=' + o + '&st=' + st + '&fn=' + fn;
     params = getUpdateWithNonEmptyParameter(params, 'dt', 'dt');
-    params = getUpdateWithNonEmptyParameter(params, 'es', 'es');
 
     return '/ProcessManageCompSeasonEventPart?' + params;
 }

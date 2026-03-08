@@ -61,6 +61,5 @@ public abstract class ManageCompSeasonEvent extends ManageEntity {
 
         writeSelectWithLabel("Sport event", "seid", sportsEventMap, cse != null ? cse.getSportEventKey().getSportEventId() : null, w);
         writeSelectWithLabel("Gender", "gid", Gender.genderLinkedHashMap, cse != null ? cse.getGenderId() : null, w);
-        writeTextFieldWithLabel("External source", "es", cse != null ? cse.getExternalSource() : null, w);
     }
 }

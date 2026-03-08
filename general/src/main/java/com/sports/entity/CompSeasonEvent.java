@@ -1,13 +1,11 @@
 package com.sports.entity;
 
-import com.sports.db.util.QueryUtil;
 import com.sports.entity.key.SportEventKey;
 
 public class CompSeasonEvent extends SuperKeyEntity {
     private int sportId;
     private int sportEventId;
     private int genderId;
-    private String externalSource;
 
     private int compSeasonEventId;
     private String sportEventName;
@@ -17,8 +15,7 @@ public class CompSeasonEvent extends SuperKeyEntity {
         return new String[] {
                 String.valueOf(sportId),
                 String.valueOf(sportEventId),
-                String.valueOf(genderId),
-                QueryUtil.convertStringToDbValue(externalSource)
+                String.valueOf(genderId)
         };
     }
 
@@ -40,14 +37,6 @@ public class CompSeasonEvent extends SuperKeyEntity {
 
     public void setGenderId(int genderId) {
         this.genderId = genderId;
-    }
-
-    public String getExternalSource() {
-        return externalSource;
-    }
-
-    public void setExternalSource(String externalSource) {
-        this.externalSource = externalSource;
     }
 
     public int getCompSeasonEventId() {

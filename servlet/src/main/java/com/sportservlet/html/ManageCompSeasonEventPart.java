@@ -76,7 +76,6 @@ public abstract class ManageCompSeasonEventPart extends ManageEntity {
         writeNumericTextField("Stage", "st", csep != null ? csep.getStage() : null, hasFixedParts, w);
         writeCheckbox("Final", "fn", csep != null && csep.isFinal(), hasFixedParts, w);
         writeDateTimeField("Date", "dt", csep != null ? csep.getDate() : null, w);
-        writeTextFieldWithLabel("External source", "es", csep != null ? csep.getExternalSource() : null, w);
     }
 
     protected String getUpdateId(HttpServletRequest req) {

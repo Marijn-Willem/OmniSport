@@ -51,7 +51,6 @@ public class ProcessManageCompSeasonEventPart extends ProcessManageSuperKeyEntit
         Integer st = convertRequestParamToNonIdInteger(req, "st");
         boolean fn = Boolean.parseBoolean(req.getParameter("fn"));
         LocalDateTime dt = convertRequestParameterToDatetime(req, "dt");
-        String es = req.getParameter("es");
 
         entity.setSportId(compSeasonEvent.getSportEventKey().getSportId());
         entity.setSportDisciplineId(did);
@@ -60,6 +59,5 @@ public class ProcessManageCompSeasonEventPart extends ProcessManageSuperKeyEntit
         entity.setStage(st);
         entity.setFinal(fn);
         entity.setDate(dt);
-        entity.setExternalSource(es);
     }
 }

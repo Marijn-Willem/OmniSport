@@ -1,6 +1,6 @@
 let rowOnMove = null;
 
-function ElementLoader(elId, getUrl, callBack) {
+function ElementLoader(elId, getUrl, callBack, body = null) {
     this.loadElement = function () {
         const url = getUrl();
 
@@ -16,8 +16,14 @@ function ElementLoader(elId, getUrl, callBack) {
                 }
             };
 
-            xHttp.open("GET", path + url, true);
-            xHttp.send();
+            if (body !== null) {
+                xHttp.open("POST", path + url, true);
+                xHttp.send(body);
+            }
+            else {
+                xHttp.open("GET", path + url, true);
+                xHttp.send();
+            }
         }
     }
 }

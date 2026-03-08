@@ -3,16 +3,9 @@ package com.sports.calc.cyclingroad;
 import com.sports.entity.*;
 import com.sports.entity.key.*;
 import com.sports.entity.manager.*;
-import com.sports.logic.async.ThreadUtil;
-import com.sports.logic.async.ThreadWorker;
 import com.sports.logic.calculation.DbCalculation;
 import com.sports.logic.util.Util;
 
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.net.URI;
-import java.net.URLConnection;
-import java.nio.charset.StandardCharsets;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.*;
@@ -21,6 +14,7 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 public class Scraper {
+    private static final Pattern patTable = Pattern.compile("<table.*?>(.*?)</table>");
     private static final Pattern patTableRow = Pattern.compile("<tr.*?</tr>");
     private static final Pattern patName = Pattern.compile("<a.*?><span.*?>(.*?)</span>\\s*(.*?)</a>");
     private static final Pattern patRank = Pattern.compile("<td>(\\d+)</td>");
@@ -45,7 +39,7 @@ public class Scraper {
         add("delle");
     }};
 
-    private final String url;
+    private final String htmlSource;
     private final CompSeasonEventPartKey compSeasonEventPartKey;
     private final Statement stat;
     private CompSeasonEvent compSeasonEvent;
@@ -53,16 +47,14 @@ public class Scraper {
     private boolean isSucceeded;
     private final List<String> newPersonNames = new ArrayList<>();
 
-    public Scraper(String url, CompSeasonEventPartKey compSeasonEventPartKey, Statement stat) {
-        this.url = url;
+    public Scraper(String htmlSource, CompSeasonEventPartKey compSeasonEventPartKey, Statement stat) {
+        this.htmlSource = htmlSource;
         this.compSeasonEventPartKey = compSeasonEventPartKey;
         this.stat = stat;
     }
 
     public void scrape() throws SQLException {
-        UrlScraper scraper = new UrlScraper(getTableNr());
-        ThreadUtil.executeAsync(Collections.singletonList(scraper), true, 1);
-        String inputTable = scraper.getInputTable();
+        String inputTable = getInputTable();
 
         if (inputTable != null) {
             processInputTable(inputTable);
@@ -85,12 +77,6 @@ public class Scraper {
 
     public List<String> getNewPersonNames() {
         return newPersonNames;
-    }
-
-    private int getTableNr() throws SQLException {
-        int sportEventId = getCompSeasonEvent().getSportEventKey().getSportEventId();
-
-        return sportEventId == SportEvent.sportEventIdCyclingRoadGeneral ? 2 : 1;
     }
 
     private void processInputTable(String inputTable) throws SQLException {
@@ -287,48 +273,25 @@ public class Scraper {
         return Util.getMillisFromHMSString(hmsString);
     }
 
-    private class UrlScraper implements ThreadWorker {
-        private static final Pattern patTableOpen = Pattern.compile("<table.*>");
-        private static final Pattern patTableClose = Pattern.compile("</table>");
+    private String getInputTable() throws SQLException {
+        String result = null;
 
-        private final int tableNr;
+        Matcher mat = patTable.matcher(htmlSource);
+        int tableNr = getTableNr();
+        int currentTable = 0;
 
-        public UrlScraper(int tableNr) {
-            this.tableNr = tableNr;
-        }
+        while (currentTable < tableNr-1 && mat.find())
+            currentTable++;
 
-        private String inputTable;
+        if (currentTable == tableNr-1 && mat.find())
+            result = mat.group(1);
 
-        @Override
-        public void doWork() throws Exception {
-            URLConnection conn = new URI(url).toURL().openConnection();
-            BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream(), StandardCharsets.UTF_8));
+        return result;
+    }
 
-            int tableCount = 0;
-            StringBuilder currentTable = null;
+    private int getTableNr() throws SQLException {
+        int sportEventId = getCompSeasonEvent().getSportEventKey().getSportEventId();
 
-            while (tableCount < tableNr) {
-                String line = br.readLine();
-                Matcher matOpen = patTableOpen.matcher(line);
-                Matcher matClose = patTableClose.matcher(line);
-
-                if (matOpen.find() && tableCount == tableNr - 1)
-                    currentTable = new StringBuilder();
-                else if (matClose.find())
-                    tableCount++;
-
-                if (currentTable != null)
-                    currentTable.append(line);
-            }
-
-            if (tableCount == tableNr && currentTable != null)
-                inputTable = currentTable.toString();
-            else
-                throw new RuntimeException("Table not fully read");
-        }
-
-        public String getInputTable() {
-            return inputTable;
-        }
+        return sportEventId == SportEvent.sportEventIdCyclingRoadGeneral ? 2 : 1;
     }
 }

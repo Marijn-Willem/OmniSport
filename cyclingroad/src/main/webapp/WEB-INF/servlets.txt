@@ -43,7 +43,8 @@ com.sportservlet.ajax.ProcessInsertEventParticipantsFromCompSeason
 com.sportservlet.ajax.PersonSearchList
 com.sportservlet.ajax.TeamListBySportGender
 com.cyclingroad.servlet.ajax.ProcessManageEventPartPersonSports
-com.cyclingroad.servlet.ajax.Scrape
+com.cyclingroad.servlet.html.Scrape
+com.cyclingroad.servlet.ajax.ProcessScrape
 com.cyclingroad.servlet.html.EntityInstancePortalPerson
 com.sportservlet.dispatch.PrepareManageEntityInstance
 com.cyclingroad.servlet.html.ManagePersonInstance

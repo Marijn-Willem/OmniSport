@@ -22,12 +22,10 @@ public class ProcessManageCompSeasonEvent extends ProcessManageSuperKeyEntity<Co
         int spid = new CompetitionManager(stat).getCompetition(competitionId).getSportId();
         int seid = getIntValuedParameterValue(req, "seid");
         int gid = getIntValuedParameterValue(req, "gid");
-        String es = req.getParameter("es");
 
         entity.setSportId(spid);
         entity.setSportEventId(seid);
         entity.setGenderId(gid);
-        entity.setExternalSource(es);
     }
 
     @Override

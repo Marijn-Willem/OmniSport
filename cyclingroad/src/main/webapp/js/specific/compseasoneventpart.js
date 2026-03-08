@@ -7,10 +7,6 @@ const insertEventPartParticipantsLoader = new ElementLoader('divIns', function (
     return getUrlWithParameters(url);
 }, null);
 
-const scrapeLoader = new ElementLoader('divIns', function () {
-    return getUrlWithParameters('Scrape');
-}, null);
-
 function setGeneralClassificationPoints() {
     setGeneralClassificationPointsLoader.loadElement();
 }
@@ -20,12 +16,20 @@ function insertEventPartParticipants() {
 }
 
 function scrape() {
-    scrapeLoader.loadElement();
+    const urlParameters = getUrlParameters();
+
+    if (!isEmptyOrNull(urlParameters))
+        goToUrl('Scrape', urlParameters);
 }
 
 function getUrlWithParameters(url) {
+    const urlParameters = getUrlParameters();
+
+    return !isEmptyOrNull(urlParameters) ? '/' + url + '?' + urlParameters : null;
+}
+
+function getUrlParameters() {
     const csepid = document.getElementById('csepid').value;
 
-    return !isEmptyOrNull(csepid) ? '/' + url + '?cid=' + cid + '&sid=' + sid + '&cseid=' + cseid +
-        '&csepid=' + csepid : null;
+    return !isEmptyOrNull(csepid) ? 'cid=' + cid + '&sid=' + sid + '&cseid=' + cseid + '&csepid=' + csepid : null;
 }
