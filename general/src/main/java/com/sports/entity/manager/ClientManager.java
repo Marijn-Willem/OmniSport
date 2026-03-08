@@ -6,7 +6,6 @@ import com.sports.entity.Client;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.ArrayList;
 import java.util.List;
 
 public class ClientManager extends IntSuperManager<Client> {
@@ -42,19 +41,6 @@ public class ClientManager extends IntSuperManager<Client> {
     }
 
     public List<Client> getAdminClients() throws SQLException {
-        return getEntityList("isadmin");
-    }
-
-    public Client getClient(String name) throws SQLException {
-        return getEntity("name = \"" + name + "\"");
-    }
-
-    public List<Client> getClientsFromLanguageIds(List<Integer> languageIds) throws SQLException {
-        List<Client> clients = new ArrayList<>();
-
-        if (languageIds.size() > 0)
-            clients = getEntityList("languageid IN (" + getCommaSepIntList(languageIds) + ")");
-
-        return clients;
+        return getEntityList("isadmin = " + QueryUtil.convertBooleanToDbValue(true));
     }
 }
