@@ -1,14 +1,14 @@
 package com.teamsports.servlet.ajax;
 
-import com.sports.logic.calculation.DbCalculation;
+import com.sports.entity.CompSeasonPhase;
 import com.sports.entity.Team;
 import com.sports.entity.TeamMatch;
-import com.sports.entity.key.CompSeasonPhaseKey;
 import com.sports.entity.key.CompSeasonPhaseTeamKey;
 import com.sports.entity.manager.TeamMatchManager;
-
+import com.sports.logic.calculation.DbCalculation;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+
 import java.io.IOException;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -20,8 +20,11 @@ import java.util.Map;
 public class MatchListTeam extends MatchList {
     private int teamId;
 
-    protected List<TeamMatch> getMatchList(TeamMatchManager mm, CompSeasonPhaseKey cspk) throws SQLException {
-        return mm.getPlayedMatchesCompSeasonPhaseTeam(Collections.singletonList(new CompSeasonPhaseTeamKey(cspk, teamId)));
+    @Override
+    protected List<TeamMatch> getMatchList(TeamMatchManager mm, CompSeasonPhase csp) throws SQLException {
+        CompSeasonPhaseTeamKey csptk = new CompSeasonPhaseTeamKey(csp.getCompSeasonPhaseKey(), teamId);
+
+        return mm.getPlayedMatchesCompSeasonPhaseTeam(Collections.singletonList(csptk));
     }
 
     @Override
