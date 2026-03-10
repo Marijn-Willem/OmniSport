@@ -1,11 +1,11 @@
-FROM gradle:9.3.0-jdk21 AS GRADLE_IMAGE
+FROM gradle:9.4.0-jdk25 AS GRADLE_IMAGE
 
 COPY / /tmp/
 
 WORKDIR /tmp/
 RUN gradle war
 
-FROM tomcat:11.0.0-jdk21
+FROM tomcat:11.0.18-jdk25
 
 COPY --from=GRADLE_IMAGE /tmp/alcifosports/build/libs/alcifosports.war $CATALINA_HOME/webapps/alcifosports.war
 COPY --from=GRADLE_IMAGE /tmp/alias/build/libs/alias.war $CATALINA_HOME/webapps/alias.war
