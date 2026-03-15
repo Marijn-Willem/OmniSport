@@ -69,17 +69,32 @@ public class CacheUtil {
     }
 
     public static List<CacheListObject> getCacheList() {
-        CacheListExecutor executor = new CacheListExecutor();
-        executor.execute();
+        List<CacheListObject> cacheList = new ArrayList<>();
 
-        return executor.getCacheList();
+        apiCache.forEach(entry -> {
+            CacheObject<Object> cacheObject = (CacheObject<Object>) entry.getValue();
+
+            cacheList.add(
+                new CacheListObject(entry.getKey(), cacheObject.timeCreated, cacheObject.timeLastRetrieved)
+            );
+        });
+
+        cacheList.sort(new CacheListObjectComparator());
+
+        return cacheList;
     }
 
     private static <T> T get(String stringRepresentation) {
-        GetFromCacheExecutor<T> cacheExecutor = new GetFromCacheExecutor<>(stringRepresentation);
-        cacheExecutor.execute();
+        T value = null;
 
-        return cacheExecutor.getValue();
+        CacheObject<T> cacheObject = (CacheObject<T>) apiCache.get(stringRepresentation);
+
+        if (cacheObject != null) {
+            value = cacheObject.dataObject;
+            updateTimeLastRetrieved(stringRepresentation, cacheObject);
+        }
+
+        return value;
     }
 
     private static <T> void putInCache(CacheKey cacheKey, T value) {
@@ -90,54 +105,13 @@ public class CacheUtil {
         apiCache.remove(stringRepresentation);
     }
 
-    private static class GetFromCacheExecutor<T> {
-        private final String stringRepresentation;
-        private T value;
+    private static void updateTimeLastRetrieved(String stringRepresentation, CacheObject<?> cacheObject) {
+        ThreadWorker tw = () -> {
+            cacheObject.timeLastRetrieved = LocalDateTime.now();
+            apiCache.put(stringRepresentation, cacheObject);
+        };
 
-        public GetFromCacheExecutor(String stringRepresentation) {
-            this.stringRepresentation = stringRepresentation;
-        }
-
-        private void execute() {
-            CacheObject<T> cacheObject = (CacheObject<T>) apiCache.get(stringRepresentation);
-
-            if (cacheObject != null) {
-                value = cacheObject.dataObject;
-                updateTimeLastRetrieved(cacheObject);
-            }
-        }
-
-        public T getValue() {
-            return value;
-        }
-
-        private void updateTimeLastRetrieved(CacheObject<T> cacheObject) {
-            ThreadWorker tw = () -> {
-                cacheObject.timeLastRetrieved = LocalDateTime.now();
-                apiCache.put(stringRepresentation, cacheObject);
-            };
-
-            ThreadUtil.executeAsync(Collections.singletonList(tw), false, 1);
-        }
-    }
-
-    private static class CacheListExecutor {
-        private final List<CacheListObject> cacheList = new ArrayList<>();
-
-        private void execute() {
-            apiCache.forEach(entry -> cacheList.add(
-                getCacheListObject(entry.getKey(), (CacheObject<Object>) entry.getValue())
-            ));
-            cacheList.sort(new CacheListObjectComparator());
-        }
-
-        public List<CacheListObject> getCacheList() {
-            return cacheList;
-        }
-
-        private CacheListObject getCacheListObject(String key, CacheObject<Object> cacheObject) {
-            return new CacheListObject(key, cacheObject.timeCreated, cacheObject.timeLastRetrieved);
-        }
+        ThreadUtil.executeAsync(Collections.singletonList(tw), false, 1);
     }
 
     private static class CacheObject<T> implements Serializable {
