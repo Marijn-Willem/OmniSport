@@ -14,7 +14,7 @@ public class CacheKeyGenerateUtil {
     }
 
     private static void createCacheKeyFile(List<String> lineGroup, String superClass) throws IOException {
-        String className = lineGroup.get(0) + "Key";
+        String className = lineGroup.getFirst() + "Key";
         File file = GenerateUtil.createFile("cachemanagement", "cache\\key\\" + className + ".java");
 
         BufferedWriter bw = new BufferedWriter(new FileWriter(file));

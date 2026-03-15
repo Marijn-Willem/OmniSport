@@ -6,22 +6,33 @@ import com.sports.cache.key.CacheFragmentKey;
 import com.sports.cache.key.CacheKey;
 import com.sports.logic.async.ThreadUtil;
 import com.sports.logic.async.ThreadWorker;
-import org.mapdb.DB;
-import org.mapdb.DBMaker;
-import org.mapdb.HTreeMap;
+import org.ehcache.Cache;
+import org.ehcache.CacheManager;
+import org.ehcache.config.Configuration;
+import org.ehcache.config.builders.CacheManagerBuilder;
+import org.ehcache.xml.XmlConfiguration;
 
 import java.io.Serializable;
+import java.net.URL;
 import java.time.LocalDateTime;
 import java.util.*;
-import java.util.concurrent.TimeUnit;
 
 public class CacheUtil {
-    private static final int cacheDurationSeconds = 1800;
+    private static CacheManager cacheManager;
+    private static Cache<String, Serializable> apiCache;
 
-    private static final DB db = DBMaker.memoryDB().make();
+    public static void init() {
+        URL url = CacheUtil.class.getResource("/cache-config.xml");
+        assert url != null;
+
+        Configuration xmlConfig = new XmlConfiguration(url);
+        cacheManager = CacheManagerBuilder.newCacheManager(xmlConfig);
+        cacheManager.init();
+        apiCache = cacheManager.getCache("apicache", String.class, Serializable.class);
+    }
 
     public static void close() {
-        db.close();
+        cacheManager.close();
     }
 
     public static void setOutputData(OutputData outputData, CacheFragmentKey cacheKey) {
@@ -72,29 +83,14 @@ public class CacheUtil {
     }
 
     private static <T> void putInCache(CacheKey cacheKey, T value) {
-        new PutInCacheExecutor<>(cacheKey, value).execute();
+        apiCache.put(cacheKey.getStringRepresentation(), new CacheObject<>(value));
     }
 
     private static void deleteFromCache(String stringRepresentation) {
-        new DeleteFromCacheExecutor(stringRepresentation).execute();
+        apiCache.remove(stringRepresentation);
     }
 
-    private static class PutInCacheExecutor<T> extends CacheExecutor<T> {
-        private final CacheKey cacheKey;
-        private final T value;
-
-        public PutInCacheExecutor(CacheKey cacheKey, T value) {
-            this.cacheKey = cacheKey;
-            this.value = value;
-        }
-
-        @Override
-        void action(HTreeMap<String, CacheObject<T>> cache) {
-            cache.put(cacheKey.getStringRepresentation(), new CacheObject<>(value));
-        }
-    }
-
-    private static class GetFromCacheExecutor<T> extends CacheExecutor<T> {
+    private static class GetFromCacheExecutor<T> {
         private final String stringRepresentation;
         private T value;
 
@@ -102,13 +98,12 @@ public class CacheUtil {
             this.stringRepresentation = stringRepresentation;
         }
 
-        @Override
-        void action(HTreeMap<String, CacheObject<T>> cache) {
-            CacheObject<T> cacheObject = cache.get(stringRepresentation);
+        private void execute() {
+            CacheObject<T> cacheObject = (CacheObject<T>) apiCache.get(stringRepresentation);
 
             if (cacheObject != null) {
                 value = cacheObject.dataObject;
-                updateTimeLastRetrieved(cache, cacheObject);
+                updateTimeLastRetrieved(cacheObject);
             }
         }
 
@@ -116,35 +111,23 @@ public class CacheUtil {
             return value;
         }
 
-        private void updateTimeLastRetrieved(HTreeMap<String, CacheObject<T>> cache, CacheObject<T> cacheObject) {
+        private void updateTimeLastRetrieved(CacheObject<T> cacheObject) {
             ThreadWorker tw = () -> {
                 cacheObject.timeLastRetrieved = LocalDateTime.now();
-                cache.put(stringRepresentation, cacheObject);
+                apiCache.put(stringRepresentation, cacheObject);
             };
 
             ThreadUtil.executeAsync(Collections.singletonList(tw), false, 1);
         }
     }
 
-    private static class DeleteFromCacheExecutor extends CacheExecutor<Object> {
-        private final String stringRepresentation;
-
-        public DeleteFromCacheExecutor(String stringRepresentation) {
-            this.stringRepresentation = stringRepresentation;
-        }
-
-        @Override
-        void action(HTreeMap<String, CacheObject<Object>> cache) {
-            cache.remove(stringRepresentation);
-        }
-    }
-
-    private static class CacheListExecutor extends CacheExecutor<Object> {
+    private static class CacheListExecutor {
         private final List<CacheListObject> cacheList = new ArrayList<>();
 
-        @Override
-        void action(HTreeMap<String, CacheObject<Object>> cache) {
-            cache.forEach((key, value) -> cacheList.add(getCacheListObject(key, value)));
+        private void execute() {
+            apiCache.forEach(entry -> cacheList.add(
+                getCacheListObject(entry.getKey(), (CacheObject<Object>) entry.getValue())
+            ));
             cacheList.sort(new CacheListObjectComparator());
         }
 
@@ -154,17 +137,6 @@ public class CacheUtil {
 
         private CacheListObject getCacheListObject(String key, CacheObject<Object> cacheObject) {
             return new CacheListObject(key, cacheObject.timeCreated, cacheObject.timeLastRetrieved);
-        }
-    }
-
-    private abstract static class CacheExecutor<T> {
-        abstract void action(HTreeMap<String, CacheObject<T>> cache);
-        void execute() {
-            HTreeMap<String, CacheObject<T>> cache = (HTreeMap<String, CacheObject<T>>)db.hashMap("")
-                    .expireAfterCreate(cacheDurationSeconds, TimeUnit.SECONDS)
-                    .createOrOpen();
-
-            action(cache);
         }
     }
 

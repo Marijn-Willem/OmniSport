@@ -7,7 +7,7 @@ dependencies {
     implementation 'org.glassfish.jersey.containers:jersey-container-servlet:4.0.0'
     implementation 'org.glassfish.jersey.inject:jersey-hk2:4.0.0'
     implementation 'jakarta.xml.bind:jakarta.xml.bind-api:4.0.4'
-    implementation 'org.mapdb:mapdb:3.1.0'
+    implementation 'org.ehcache:ehcache:3.11.1'
 	implementation project(':teamcalc')
 	implementation project(':cyclingroadcalc')
 	implementation project(':dartscalc')

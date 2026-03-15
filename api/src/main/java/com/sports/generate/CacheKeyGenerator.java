@@ -3,7 +3,7 @@ package com.sports.generate;
 import java.io.IOException;
 
 public class CacheKeyGenerator {
-    public static void main(String[] args) throws IOException {
+    static void main() throws IOException {
         CacheKeyGenerateUtil.createCacheKeyFiles(GenerateUtil.getLineGroups("CacheKeyTemplate"),
                 "CacheFragmentKey");
     }

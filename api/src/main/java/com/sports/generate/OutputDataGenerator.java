@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class OutputDataGenerator {
-    public static void main(String[] args) throws IOException {
+    static void main() throws IOException {
         List<List<String>> lineGroups = GenerateUtil.getLineGroups("OutputDataTemplate");
         List<List<String>> lineGroupsExpanded = lineGroups.stream().map(x -> new ArrayList<String>() {{
             addAll(x);
@@ -38,8 +38,8 @@ public class OutputDataGenerator {
     }
 
     private static void createOutputData(List<String> lineGroup) throws IOException {
-        String className = lineGroup.get(0) + "Data";
-        String keyName = lineGroup.get(0) + "Key";
+        String className = lineGroup.getFirst() + "Data";
+        String keyName = lineGroup.getFirst() + "Key";
         File file = GenerateUtil.createFile("api", "cache\\data\\" + className + ".java");
 
         BufferedWriter bw = new BufferedWriter(new FileWriter(file));
@@ -111,7 +111,7 @@ public class OutputDataGenerator {
 
     private static void createRestFile(List<String> lineGroup, String dir, String mediaType)
             throws IOException {
-        String outputName = lineGroup.get(0);
+        String outputName = lineGroup.getFirst();
 
         File file = GenerateUtil.createFile("api", "rest\\" + dir + "\\" + outputName + ".java");
 
@@ -136,7 +136,7 @@ public class OutputDataGenerator {
         bw.append("@Path(\"");
         bw.append(dir);
         bw.append("/");
-        bw.append(lineGroup.get(0).toLowerCase());
+        bw.append(lineGroup.getFirst().toLowerCase());
 
         for (int i = 1; i < lineGroup.size(); i++) {
             bw.append("/{");

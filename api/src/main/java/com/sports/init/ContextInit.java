@@ -5,6 +5,12 @@ import jakarta.servlet.ServletContextEvent;
 
 public class ContextInit extends com.sports.web.init.ContextInit {
     @Override
+    public void contextInitialized(ServletContextEvent servletContextEvent) {
+        super.contextInitialized(servletContextEvent);
+        CacheUtil.init();
+    }
+
+    @Override
     public void contextDestroyed(ServletContextEvent servletContextEvent) {
         super.contextDestroyed(servletContextEvent);
         CacheUtil.close();
