@@ -205,9 +205,13 @@ public class Scraper {
         }
 
         for (int i = 0; i < nameLastSplit.length; i++) {
-            sb.append(formatNamePart(nameLastSplit[i]));
-            if (i < nameLastSplit.length - 1)
-                sb.append(" ");
+            String namePart = nameLastSplit[i];
+
+            if (!"".equals(namePart)) {
+                sb.append(formatNamePart(namePart));
+                if (i < nameLastSplit.length - 1)
+                    sb.append(" ");
+            }
         }
 
         return sb.toString();
