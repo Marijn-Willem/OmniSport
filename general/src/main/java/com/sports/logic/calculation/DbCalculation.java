@@ -395,6 +395,7 @@ public record DbCalculation(Statement stat) {
                 CompSeasonEventKey newEventKey = new CompSeasonEventKey(newCsk, compSeasonEventId);
                 CompSeasonEventPartKey newEventPartKey = new CompSeasonEventPartKey(newEventKey, compSeasonEventPart.getCompSeasonEventPartId());
 
+                compSeasonEventPart.setDate(null);
                 put(newEventPartKey, compSeasonEventPart);
             });
         }};
@@ -402,7 +403,7 @@ public record DbCalculation(Statement stat) {
         Map<CompSeasonEventKey, CompSeasonEvent> newEventMap = new HashMap<>() {{
             compSeasonEventMap.forEach((k, v) -> {
                 CompSeasonEventKey newKey = new CompSeasonEventKey(newCsk, k.getCompSeasonEventId());
-                put(newKey, new CompSeasonEvent());
+                put(newKey, v);
             });
         }};
 

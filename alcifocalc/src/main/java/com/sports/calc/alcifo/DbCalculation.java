@@ -208,8 +208,8 @@ public record DbCalculation(Statement stat) {
         setRanksAndPoints(factory, partKey, participants, pPartMap);
         participants.sort(new ParticipantRank());
 
-        if (!participants.isEmpty() && participants.get(0).getPoints() != null && se != null)
-            setPointsBehind(participants, participants.get(0).getPoints(), se.isPointsSortAsc());
+        if (!participants.isEmpty() && participants.getFirst().getPoints() != null && se != null)
+            setPointsBehind(participants, participants.getFirst().getPoints(), se.isPointsSortAsc());
 
         return participants;
     }
@@ -357,8 +357,8 @@ public record DbCalculation(Statement stat) {
         Map<Integer, List<CompSeasonEventPartKey>> inverseMap = new HashMap<>();
 
         eventPartLocationMap.forEach((k, v) -> {
-            if (v.size() == 1 && v.get(0).getGeoId() != null) {
-                int geoId = v.get(0).getGeoId();
+            if (v.size() == 1 && v.getFirst().getGeoId() != null) {
+                int geoId = v.getFirst().getGeoId();
                 if (!inverseMap.containsKey(geoId))
                     inverseMap.put(geoId, new ArrayList<>());
 
