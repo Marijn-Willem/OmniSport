@@ -45,9 +45,15 @@ public class TestClass {
                 "AND phasetypeid IN (2, 3, 4, 108) " +
                 "AND parentmatchtypeid IS NULL");
 
+        statU.execute("UPDATE compseasonphase SET parentmatchtypeid = -1, modified = NOW() " +
+                "WHERE competitionid IN (10, 11) " +
+                "AND phasetypeid IN (1, 2) " +
+                "AND parentmatchtypeid IS NULL");
+
         statU.execute("UPDATE compseasonphase SET parentmatchtypeid = -2, modified = NOW() " +
                 "WHERE competitionid = 45 " +
-                "AND phasetypeid IN (34, 35, 36, 37)");
+                "AND phasetypeid IN (34, 35, 36, 37) " +
+                "AND parentmatchtypeid IS NULL");
     }
 
     private static ResultSet getPhasesWithParentMatches() throws SQLException {
@@ -79,7 +85,7 @@ public class TestClass {
         if (isBasketball)
             updateParentMatchScoresBb(statQPhase, competitionId, seasonId, phaseId);
         else
-            updateParentMatchScoresFb(competitionId, seasonId, phaseId);
+            updateParentMatchScoresFbAndRb(competitionId, seasonId, phaseId);
     }
 
     private static void insertParentMatch(int competitionId, int seasonId, int phaseId,
@@ -98,7 +104,7 @@ public class TestClass {
                 " AND tm.date IS NOT NULL AND tmp.date IS NULL");
     }
 
-    private static void updateParentMatchScoresFb(int competitionId, int seasonId, int phaseId) throws SQLException {
+    private static void updateParentMatchScoresFbAndRb(int competitionId, int seasonId, int phaseId) throws SQLException {
         statU.execute("UPDATE teammatch tm SET scorehome = tm2.scorehome + tm1.scoreaway, " +
                 "scoreaway = tm2.scoreaway + tm1.scorehome, " +
                 "scoreshootouthome = tm2.scoreshootouthome, " +
