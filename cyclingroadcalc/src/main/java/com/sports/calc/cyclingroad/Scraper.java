@@ -36,6 +36,7 @@ public class Scraper {
         add("le");
         add("van");
         add("von");
+        add("vanden");
         add("delle");
     }};
 

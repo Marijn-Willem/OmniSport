@@ -2,6 +2,7 @@ package com.management.servlet.html;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+
 import java.io.IOException;
 import java.io.Writer;
 import java.sql.Statement;
@@ -15,6 +16,11 @@ public class PhaseTypePortal extends SuperHtmlServlet {
     @Override
     protected void writeBodyTag(Writer w) throws IOException {
         w.append("<body onload=\"initPortal();\">\n");
+    }
+
+    @Override
+    protected void processScriptTag(Statement stat, HttpServletRequest req, Writer w) throws IOException {
+        writeInitStateVarInScriptTag("ptid", req, w);
     }
 
     @Override

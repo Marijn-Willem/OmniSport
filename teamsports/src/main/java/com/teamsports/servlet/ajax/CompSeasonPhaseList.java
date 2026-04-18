@@ -3,7 +3,6 @@ package com.teamsports.servlet.ajax;
 import com.sports.entity.CompDivision;
 import com.sports.entity.CompSeasonPhase;
 import com.sports.entity.comparator.CompSeasonPhaseRoundDescription;
-import com.sports.entity.key.CompSeasonPhaseKey;
 import com.sports.entity.manager.CompSeasonPhaseManager;
 import com.sports.logic.util.Util;
 import com.sportservlet.SuperResponseServlet;
@@ -14,10 +13,7 @@ import java.io.IOException;
 import java.io.Writer;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public class CompSeasonPhaseList extends SuperResponseServlet {
     protected void processBody(Statement stat, HttpServletRequest req, HttpServletResponse resp)
@@ -26,7 +22,6 @@ public class CompSeasonPhaseList extends SuperResponseServlet {
         CompSeasonPhaseManager cspm = new CompSeasonPhaseManager(stat);
         List<CompSeasonPhase> compSeasonPhases = cspm.getCompSeasonPhases(compSeasonKey);
         List<CompDivision> compDivisions = new com.sports.calc.teamsports.DbCalculation(stat).getSortedCompDivisions(compSeasonKey);
-        Map<CompSeasonPhaseKey, CompSeasonPhase> parentPhaseMap = getParentPhaseMap(cspm, compSeasonPhases);
 
         new com.sports.calc.h2hsports.DbCalculation(stat).setPhaseDescriptionsFromTypes(compSeasonPhases);
         compSeasonPhases.sort(new CompSeasonPhaseRoundDescription());
@@ -35,35 +30,12 @@ public class CompSeasonPhaseList extends SuperResponseServlet {
 
         for (CompSeasonPhase compSeasonPhase : compSeasonPhases)
             if (showDivisions)
-                writeOptions(compSeasonPhase, parentPhaseMap, compDivisions, w);
+                writeOptions(compSeasonPhase, compDivisions, w);
             else
-                writeOptions(compSeasonPhase, parentPhaseMap, w);
+                writeOptions(compSeasonPhase, w);
     }
 
-    private Map<CompSeasonPhaseKey, CompSeasonPhase> getParentPhaseMap(CompSeasonPhaseManager cspm,
-                                                                       List<CompSeasonPhase> compSeasonPhases)
-        throws SQLException {
-        List<CompSeasonPhaseKey> parentKeys = new ArrayList<>() {{
-            compSeasonPhases.forEach(x -> {
-                if (x.getParentPhaseKey() != null)
-                    add(x.getParentPhaseKey());
-            });
-        }};
-
-        List<CompSeasonPhase> parentPhases = cspm.getCompSeasonPhases(parentKeys);
-
-        return new HashMap<>() {{
-            parentPhases.forEach(x -> put(x.getCompSeasonPhaseKey(), x));
-        }};
-    }
-
-    private boolean isKnockout(CompSeasonPhase csp, Map<CompSeasonPhaseKey, CompSeasonPhase> parentPhaseMap) {
-        return csp.isKnockoutParent() ||
-                (csp.getParentPhaseKey() != null && parentPhaseMap.get(csp.getParentPhaseKey()).isKnockoutParent());
-    }
-
-    private void writeOptions(CompSeasonPhase csp, Map<CompSeasonPhaseKey, CompSeasonPhase> parentPhaseMap,
-                              List<CompDivision> divisionList, Writer w) throws IOException {
+    private void writeOptions(CompSeasonPhase csp, List<CompDivision> divisionList, Writer w) throws IOException {
         if (csp.isHasDivisionStandings())
             for (CompDivision division : divisionList) {
                 String value = Util.concatStringsWithDelimiter(
@@ -75,12 +47,12 @@ public class CompSeasonPhaseList extends SuperResponseServlet {
                 writeOption("stand", value, name, w);
             }
         else
-            writeOptions(csp, parentPhaseMap, w);
+            writeOptions(csp, w);
     }
 
-    private void writeOptions(CompSeasonPhase csp, Map<CompSeasonPhaseKey, CompSeasonPhase> parentPhaseMap, Writer w)
+    private void writeOptions(CompSeasonPhase csp, Writer w)
             throws IOException {
-        writeOption(getCssClass(csp, parentPhaseMap), "" + csp.getCompSeasonPhaseKey().getCompSeasonPhaseId(),
+        writeOption(getCssClass(csp), "" + csp.getCompSeasonPhaseKey().getCompSeasonPhaseId(),
                 csp.getDescription(), w);
     }
 
@@ -94,7 +66,7 @@ public class CompSeasonPhaseList extends SuperResponseServlet {
         w.append("</option>\n");
     }
 
-    private String getCssClass(CompSeasonPhase csp, Map<CompSeasonPhaseKey, CompSeasonPhase> parentPhaseMap) {
+    private String getCssClass(CompSeasonPhase csp) {
         String cssClass = "";
 
         if (csp.isHasStanding())
@@ -102,7 +74,7 @@ public class CompSeasonPhaseList extends SuperResponseServlet {
         else
             cssClass += "noStand";
 
-        if (isKnockout(csp, parentPhaseMap))
+        if (csp.isKnockoutParent())
             cssClass += " ko";
 
         return cssClass;

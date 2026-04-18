@@ -135,7 +135,7 @@ public class CompSeasonPhaseManager extends SuperKeySuperManager<CompSeasonPhase
     public CompSeasonPhase getCompSeasonPhaseForRound(CompSeasonKey csk, int round) throws SQLException {
         List<CompSeasonPhase> compSeasonPhases = getCompSeasonPhases(csk, "round = " + round);
 
-        return compSeasonPhases.size() == 1 ? compSeasonPhases.get(0) : null;
+        return compSeasonPhases.size() == 1 ? compSeasonPhases.getFirst() : null;
     }
 
     public void insertCompSeasonPhases(List<CompSeasonPhase> compSeasonPhases) throws SQLException {

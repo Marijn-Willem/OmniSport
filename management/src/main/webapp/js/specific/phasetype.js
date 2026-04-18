@@ -1,6 +1,8 @@
 const phaseTypeListLoader = new ElementLoader('ptid', function () {
     return '/PhaseTypeList';
-}, null);
+}, function () {
+    setElementValueFromInitStateVar('ptid', ptid);
+});
 
 function getProcessUrl() {
     const ptid = getValueFromElementByName('inpUpd');

@@ -40,6 +40,6 @@ public class CompSeasonPhasePortal extends SuperHtmlServlet {
         w.append("<input type=\"button\" onclick=\"goToManageCompSeasonPhase();\" value=\"Manage Phase\" /><br/>\n");
         w.append("<input type=\"button\" onclick=\"goToAddCompSeasonPhase();\" value=\"Add Phase\" /><br/>\n");
         w.append("<input id=\"btnPt\" type=\"button\" onclick=\"goToManageCompSeasonPhaseTeams();\" value=\"Manage Teams in Phase\" /><br/>\n");
-        w.append("<input type=\"button\" onclick=\"goToManageKnockout();\" value=\"Manage Knockout\" /><br/>\n");
+        w.append("<input id=\"btnKo\" type=\"button\" onclick=\"goToManageKnockout();\" value=\"Manage Knockout\" /><br/>\n");
     }
 }

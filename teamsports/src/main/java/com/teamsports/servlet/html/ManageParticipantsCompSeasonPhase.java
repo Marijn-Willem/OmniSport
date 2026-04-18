@@ -7,7 +7,7 @@ import java.sql.Statement;
 public class ManageParticipantsCompSeasonPhase extends com.sportservlet.html.ManageParticipantsCompSeasonPhase {
     @Override
     public String getReturnPath(Statement stat, HttpServletRequest req) throws SQLException {
-        return "KnockoutMain?" + compSeasonUrlParameters;
+        return "KnockoutMain?" + compSeasonUrlParameters + "&pid=" + getIntValuedParameterValue(req, "pid");
     }
 
     @Override

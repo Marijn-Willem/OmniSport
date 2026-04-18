@@ -1,10 +1,3 @@
-const compSeasonPhaseListLoader = new ElementLoader('selPid', function () {
-    return '/CompSeasonPhaseList?cid=' + cid + '&sid=' + sid + '&sd=false';
-}, function() {
-    setElementValueFromInitStateVar('selPid', pid);
-    if (postProcessPhaseListLoad) postProcessPhaseListLoad();
-});
-
 function getProcessUrl() {
     const pid = getValueFromElementByName('inpUpd');
     const ppid = getValueFromElementByName('ppid');
@@ -39,10 +32,6 @@ function deletePhase(refreshUrl, phaseId) {
     }, function () {
         goToUrl(refreshUrl, 'cid=' + cid + '&sid=' + sid);
     }).loadElement();
-}
-
-function initCompSeasonPhaseList() {
-    compSeasonPhaseListLoader.loadElement();
 }
 
 function goToManageCompSeasonPhase() {

@@ -33,7 +33,7 @@ public abstract class KnockoutMain extends SuperHtmlServlet implements AbstractH
         List<CompSeasonPhase> compSeasonPhases = cspm.getKnockoutCompSeasonPhases(compSeasonKey);
         new com.sports.calc.h2hsports.DbCalculation(stat).setPhaseDescriptionsFromTypes(compSeasonPhases);
 
-        if (compSeasonPhases.size() > 0) {
+        if (!compSeasonPhases.isEmpty()) {
             Writer w = res.getWriter();
 
             w.append("<div>\n<select id=\"pid\">\n");
