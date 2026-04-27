@@ -51,17 +51,20 @@ public abstract class MatchList extends SuperResponseServlet {
         if (teamMap != null && teamMatchList != null) {
             teamMatchList.sort(new MatchDate());
 
-            writeMatchTable(teamMatchList, cspk, teamMap, resp.getWriter());
+            writeMatchTable(teamMatchList, csp, teamMap, resp.getWriter());
         }
     }
 
-    private void writeMatchTable(List<TeamMatch> matchesSorted, CompSeasonPhaseKey compSeasonPhaseKey,
+    private void writeMatchTable(List<TeamMatch> matchesSorted, CompSeasonPhase compSeasonPhase,
                                  Map<Integer, Team> teamMap, Writer w) throws IOException {
         String rule = "<tr><th>Home</th><th>Away</th><th colspan=\"2\">Score</th><th>Date</th></tr>\n";
         w.append(rule);
 
         for (TeamMatch teamMatch : matchesSorted) {
-            String onClick = " onclick=\"goToMatchTimeLine(" + compSeasonPhaseKey.getSepValues(", ") +
+            String onClick = "";
+
+            if (!compSeasonPhase.isHasParentMatches())
+                onClick = " onclick=\"goToMatchTimeLine(" + compSeasonPhase.getCompSeasonPhaseKey().getSepValues(", ") +
                     ", " + teamMatch.getTeamMatchId() + ")\"";
 
             rule = "<tr" + onClick + ">" +

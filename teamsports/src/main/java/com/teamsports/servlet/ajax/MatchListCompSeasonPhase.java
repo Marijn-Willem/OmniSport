@@ -15,7 +15,7 @@ public class MatchListCompSeasonPhase extends MatchList {
         return new ArrayList<>() {{
             mm.getPlayedMatchesInCompSeasonPhase(csp.getCompSeasonPhaseKey())
                     .forEach(x -> {
-                        if (!csp.isHasParentMatches() || x.getParentMatchId() != null)
+                        if (!csp.isHasParentMatches() || x.getParentMatchId() == null)
                             add(x);
                     });
         }};
