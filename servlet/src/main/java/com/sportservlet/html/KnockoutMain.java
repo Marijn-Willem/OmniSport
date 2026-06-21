@@ -39,9 +39,14 @@ public abstract class KnockoutMain extends SuperHtmlServlet implements AbstractH
             w.append("<div>\n<select id=\"pid\">\n");
 
             for (CompSeasonPhase compSeasonPhase : compSeasonPhases) {
-                String line = "<option value=\"" +
-                        compSeasonPhase.getCompSeasonPhaseKey().getCompSeasonPhaseId() + "\">" +
-                        compSeasonPhase.getDescription() + "</option>\n";
+                int pid = compSeasonPhase.getCompSeasonPhaseKey().getCompSeasonPhaseId();
+
+                String line = "<option value=\"" + pid + "\"";
+
+                if (("" + pid).equals(req.getParameter("pid")))
+                    line += " selected";
+
+                line += ">" + compSeasonPhase.getDescription() + "</option>\n";
 
                 w.append(line);
             }

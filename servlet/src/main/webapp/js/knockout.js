@@ -11,12 +11,8 @@ const createKnockoutMatchesLoader = new ElementLoader('div_res', function () {
 }, null);
 
 function goToManagePhaseParticipants() {
-    goToURLWithPhaseId('ManageParticipantsCompSeasonPhase');
-}
-
-function goToURLWithPhaseId(url) {
     const pid = document.getElementById('pid').value;
 
     if (pid !== null)
-        window.location.href = path + '/' + url + '?cid=' + cid + '&sid=' + sid + '&pid=' + pid;
+        goToUrl('ManageParticipantsCompSeasonPhase', 'cid=' + cid + '&sid=' + sid + '&pid=' + pid);
 }

@@ -27,6 +27,11 @@ public abstract class ManageParticipantsCompSeasonPhase extends SuperHtmlServlet
     }
 
     @Override
+    protected String getReturnPath(Statement stat, HttpServletRequest req) throws SQLException {
+        return "KnockoutMain?" + compSeasonUrlParameters + "&pid=" + getIntValuedParameterValue(req, "pid");
+    }
+
+    @Override
     protected void processScriptTag(Statement stat, HttpServletRequest req, Writer w) throws IOException {
         writeCompSeasonPhaseVarsInScriptTag(req, w);
     }
