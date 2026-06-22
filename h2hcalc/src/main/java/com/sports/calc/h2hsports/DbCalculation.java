@@ -177,7 +177,7 @@ public record DbCalculation(Statement stat) {
      */
     public void setCanBeDeleted(List<CompSeasonPhase> compSeasonPhases) throws SQLException {
         if (!compSeasonPhases.isEmpty()) {
-            CompSeasonKey csk = compSeasonPhases.get(0).getCompSeasonPhaseKey().getSuperKey();
+            CompSeasonKey csk = compSeasonPhases.getFirst().getCompSeasonPhaseKey().getSuperKey();
 
             List<CompSeasonPhaseKey> keys = new ArrayList<>();
             Set<CompSeasonPhaseKey> keySet = new HashSet<>();
@@ -247,7 +247,7 @@ public record DbCalculation(Statement stat) {
                         " AND knockoutorder = " + nextKnockoutOrder);
 
                 if (h2hMatches.size() == 1)
-                    return h2hMatches.get(0);
+                    return h2hMatches.getFirst();
             }
         }
 
@@ -407,7 +407,7 @@ public record DbCalculation(Statement stat) {
                 M nextMatch = getH2HMatchNextRound(h2HObjectFactory, csk, h2hm);
 
                 if (h2hMatches.size() == 1 && nextMatch != null) {
-                    H2HMatch oppH2HMatch = h2hMatches.get(0);
+                    H2HMatch oppH2HMatch = h2hMatches.getFirst();
 
                     H2HMatch h2hMatch1 = knockoutOrder % 2 == 0 ? oppH2HMatch : h2hm;
                     H2HMatch h2hMatch2 = knockoutOrder % 2 == 0 ? h2hm : oppH2HMatch;
@@ -503,11 +503,12 @@ public record DbCalculation(Statement stat) {
                                                         CompSeasonPhaseManager cspm) throws SQLException {
         CompSeasonPhase nextPhase = null;
 
-        for (CompSeasonPhase compSeasonPhase : compSeasonPhases)
-            if (compSeasonPhase.getRound() == cspRef.getRound() + 1) {
+        for (CompSeasonPhase compSeasonPhase : compSeasonPhases) {
+            Integer round = compSeasonPhase.getRound();
+
+            if (round > cspRef.getRound() && (nextPhase == null || round < nextPhase.getRound()))
                 nextPhase = compSeasonPhase;
-                break;
-            }
+        }
 
         if (nextPhase == null) {
             // Find the first round of the next knockout parent phase
@@ -563,7 +564,7 @@ public record DbCalculation(Statement stat) {
         if (!compSeasonPhases.isEmpty()) {
             setPhaseDescriptionsFromTypes(compSeasonPhases);
             compSeasonPhases.sort(new CompSeasonPhaseRoundDescription());
-            return compSeasonPhases.get(0);
+            return compSeasonPhases.getFirst();
         }
 
         return null;
@@ -572,7 +573,7 @@ public record DbCalculation(Statement stat) {
     private void processKnockoutPhaseRanks(List<? extends H2HMatch> h2HMatches,
                                            Map<Integer, List< H2HMatch>> h2HMatchMap,
                                            Map<Integer, ? extends Participant> participantMap) {
-        H2HMatch lastMatch = h2HMatches.get(h2HMatches.size() - 1);
+        H2HMatch lastMatch = h2HMatches.getLast();
         int rank1Id = lastMatch.getWinnerId();
         int rank2Id = lastMatch.getParticipant1Id() == rank1Id ? lastMatch.getParticipant2Id() : lastMatch.getParticipant1Id();
 

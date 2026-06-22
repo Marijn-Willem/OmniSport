@@ -10,6 +10,7 @@ import com.sports.entity.manager.ParticipantManager;
 import com.sports.logic.factory.CompSeasonParticipantFactory;
 import com.sports.logic.factory.H2HObjectFactory;
 
+import com.sports.logic.util.Util;
 import com.sportservlet.util.ServletUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -100,7 +101,7 @@ public class AddMatchScore extends SuperHtmlServlet {
 
         CompSeasonPhase csp = new CompSeasonPhaseManager(stat).getCompSeasonPhase(compSeasonPhaseKey);
 
-        for (int i = 0; i < csp.getBestOf1(); i++)
+        for (int i = 0; i < Util.convertEmptyIntegerToZero(csp.getBestOf1()); i++)
             w.append(getInputRow("scr_s" + (i + 1), "Set " + (i + 1), true));
 
         w.append(getInputRow("ncr", "NCR", true));
