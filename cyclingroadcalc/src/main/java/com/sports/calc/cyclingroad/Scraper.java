@@ -43,6 +43,8 @@ public class Scraper {
     private final String htmlSource;
     private final CompSeasonEventPartKey compSeasonEventPartKey;
     private final Statement stat;
+    private final CompSeasonEventManager compSeasonEventManager;
+    private final CompSeasonEventPartManager compSeasonEventPartManager;
     private CompSeasonEvent compSeasonEvent;
     private CompSeasonEventPart compSeasonEventPart;
     private boolean isSucceeded;
@@ -52,6 +54,9 @@ public class Scraper {
         this.htmlSource = htmlSource;
         this.compSeasonEventPartKey = compSeasonEventPartKey;
         this.stat = stat;
+
+        compSeasonEventManager = new CompSeasonEventManager(stat);
+        compSeasonEventPartManager = new CompSeasonEventPartManager(stat);
     }
 
     public void scrape() throws SQLException {
@@ -259,14 +264,14 @@ public class Scraper {
 
     private CompSeasonEvent getCompSeasonEvent() throws SQLException {
         if (compSeasonEvent == null)
-            compSeasonEvent = new CompSeasonEventManager(stat).getEntityFromSuperKey(compSeasonEventPartKey.getSuperKey());
+            compSeasonEvent = compSeasonEventManager.getEntityFromSuperKey(compSeasonEventPartKey.getSuperKey());
 
         return compSeasonEvent;
     }
 
     private CompSeasonEventPart getCompSeasonEventPart() throws SQLException {
         if (compSeasonEventPart == null)
-            compSeasonEventPart = new CompSeasonEventPartManager(stat).getEntityFromSuperKey(compSeasonEventPartKey);
+            compSeasonEventPart = compSeasonEventPartManager.getEntityFromSuperKey(compSeasonEventPartKey);
 
         return compSeasonEventPart;
     }
@@ -281,15 +286,18 @@ public class Scraper {
     private String getInputTable() throws SQLException {
         String result = null;
 
-        Matcher mat = patTable.matcher(htmlSource);
         int tableNr = getTableNr();
-        int currentTable = 0;
 
-        while (currentTable < tableNr-1 && mat.find())
-            currentTable++;
+        if (tableNr > 0) {
+            Matcher mat = patTable.matcher(htmlSource);
+            int currentTable = 0;
 
-        if (currentTable == tableNr-1 && mat.find())
-            result = mat.group(1);
+            while (currentTable < tableNr - 1 && mat.find())
+                currentTable++;
+
+            if (currentTable == tableNr - 1 && mat.find())
+                result = mat.group(1);
+        }
 
         return result;
     }
@@ -297,6 +305,50 @@ public class Scraper {
     private int getTableNr() throws SQLException {
         int sportEventId = getCompSeasonEvent().getSportEventKey().getSportEventId();
 
-        return sportEventId == SportEvent.sportEventIdCyclingRoadGeneral ? 2 : 1;
+        return sportEventId == SportEvent.sportEventIdCyclingRoadGeneral ? getTableNrGeneral() : 1;
+    }
+
+    private int getTableNrGeneral() throws SQLException {
+        CompSeasonKey compSeasonKey = compSeasonEventPartKey.getSuperKey().getSuperKey();
+
+        List<SportEventKey> keyList = new ArrayList<>() {{
+            add(new SportEventKey(Sport.sportIdCyclingRoad, SportEvent.sportEventIdCyclingRoadStage));
+            add(new SportEventKey(Sport.sportIdCyclingRoad, SportEvent.sportEventIdCyclingRoadStageTeam));
+        }};
+
+        List<CompSeasonEvent> compSeasonEvents = compSeasonEventManager.getCompSeasonEventsBySportEvents(
+                compSeasonKey, keyList);
+        List<CompSeasonEventKey> compSeasonEventKeys = compSeasonEvents.stream().map(x ->
+                new CompSeasonEventKey(compSeasonKey, x.getCompSeasonEventId())).toList();
+
+        int stage = getCompSeasonEventPart().getStage();
+
+        List<CompSeasonEventPart> compSeasonEventParts = compSeasonEventPartManager.getCompSeasonEventPartsAtStage(compSeasonEventKeys, stage);
+
+        if (compSeasonEventParts.size() == 1) {
+            CompSeasonEventPart compSeasonEventPart = compSeasonEventParts.getFirst();
+            CompSeasonEvent eventStage = null;
+
+            for (CompSeasonEvent compSeasonEvent : compSeasonEvents)
+                if (compSeasonEvent.getCompSeasonEventId() == compSeasonEventPart.getCompSeasonEventId()) {
+                    eventStage = compSeasonEvent;
+                    break;
+                }
+
+            if (eventStage != null)
+                switch (eventStage.getSportEventKey().getSportEventId()) {
+                    case SportEvent.sportEventIdCyclingRoadStageTeam -> {
+                        CompSeasonEventKey cseKey = new CompSeasonEventKey(compSeasonKey, eventStage.getCompSeasonEventId());
+                        return new EventTeamManager(stat).getParticipantIdsInEvent(cseKey).size() + 1;
+                    }
+                    case SportEvent.sportEventIdCyclingRoadStage -> {
+                        return 2;
+                    }
+                    default -> {}
+                }
+
+        }
+
+        return 0;
     }
 }

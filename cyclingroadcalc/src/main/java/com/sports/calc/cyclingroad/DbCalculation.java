@@ -45,7 +45,7 @@ public record DbCalculation(Statement stat) {
 
         Map<EventPersonSportKey, EventPersonSport> eventPersonSportsToUpdate = new HashMap<>();
 
-        eventPartsWithNoCountResult.forEach((k, v) -> {
+        eventPartsWithNoCountResult.forEach((k, _) -> {
             EventPersonSportKey epsKey = getEventPersonSportKey(k);
             EventPersonSport eps = eventPersonSportMap.get(epsKey);
             if (eps.getNoCountResultId() == null) {
@@ -248,12 +248,12 @@ public record DbCalculation(Statement stat) {
         });
 
         CompSeasonEventPartStage comparator = new CompSeasonEventPartStage();
-        gcPartMap.forEach((k, v) -> v.sort(comparator));
+        gcPartMap.forEach((_, v) -> v.sort(comparator));
 
         return new HashMap<>() {{
             singleAndStageParts.forEach(x -> put(x.getCompSeasonEventPartKey(), x));
-            gcPartMap.forEach((k, v) -> {
-                CompSeasonEventPart csePart = v.get(v.size() - 1);
+            gcPartMap.forEach((_, v) -> {
+                CompSeasonEventPart csePart = v.getLast();
                 put(csePart.getCompSeasonEventPartKey(), csePart);
             });
         }};

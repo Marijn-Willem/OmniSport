@@ -86,6 +86,10 @@ public class CompSeasonEventPartManager extends SuperKeySuperManager<CompSeasonE
         return getEntityListFromSuperKeys(csekList);
     }
 
+    public List<CompSeasonEventPart> getCompSeasonEventPartsAtStage(List<CompSeasonEventKey> cseKeys, int stage) throws SQLException {
+        return getEntityList("(" + getConditionsKeyList(cseKeys) + ") AND stage = " + stage);
+    }
+
     public List<CompSeasonEventPart> getCompSeasonEventPartsToStage(List<CompSeasonEventKey> cseKeys, int stage) throws SQLException {
         return getEntityList("(" + getConditionsKeyList(cseKeys) + ") AND stage <= " + stage);
     }

@@ -100,6 +100,10 @@ public class CompSeasonEventPart extends SuperKeyEntity implements Orderable, De
         this.seasonId = seasonId;
     }
 
+    public int getCompSeasonEventId() {
+        return compSeasonEventId;
+    }
+
     public void setCompSeasonEventId(int compSeasonEventId) {
         this.compSeasonEventId = compSeasonEventId;
     }
