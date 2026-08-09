@@ -9,7 +9,7 @@ dependencies {
 
 tasks.register('copyJavascript', Copy) {
     from layout.projectDirectory.file('../servlet/src/main/webapp/js')
-    into layout.projectDirectory.file('src/main/webapp/js')
+    into layout.projectDirectory.file('src/main/webapp/js/generic')
 }
 
 war {

@@ -50,7 +50,7 @@ public abstract class SuperHtmlServlet extends SuperResponseServlet {
         String line;
 
         for (String js : jsList) {
-            line = "<script type=\"text/javascript\" src=\"" + resourcePath + "/js/" + js + ".js\"></script>\n";
+            line = "<script type=\"text/javascript\" src=\"" + resourcePath + "/js/generic/" + js + ".js\"></script>\n";
             w.append(line);
         }
 
