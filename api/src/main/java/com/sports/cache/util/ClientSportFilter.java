@@ -31,8 +31,8 @@ public class ClientSportFilter extends ClientEntityFilter<SportFragment> {
             compSeasonFragments.forEach(x -> add(x.getCompetitionId()));
         }};
 
-        List<CompetitionFragment> competitionFragments = competitionIds.stream().map(
-                CompetitionFragment::new).collect(Collectors.toList());
+        List<CompetitionFragment> competitionFragments = competitionIds.stream().map(id ->
+                new CompetitionFragment(id, clientId)).collect(Collectors.toList());
 
         DataFragmentUtil.fillDataFragments(competitionFragments, cacheDataKey);
 

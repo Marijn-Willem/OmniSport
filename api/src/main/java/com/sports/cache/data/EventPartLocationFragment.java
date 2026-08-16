@@ -22,13 +22,15 @@ public class EventPartLocationFragment extends WritableFragment {
     private final int compSeasonEventId;
     private final int compSeasonEventPartId;
     private final int eventPartLocationId;
+    private final int clientId;
 
     private GeoFragment geoFragment;
     private Point coordinates;
     private LocationRoleFragment locationRoleFragment;
 
     public EventPartLocationFragment(int competitionId, int seasonId, int compSeasonEventId,
-                                     int compSeasonEventPartId, int eventPartLocationId, int nestingLevel) {
+                                     int compSeasonEventPartId, int eventPartLocationId,
+                                     int clientId, int nestingLevel) {
         super(nestingLevel, true);
 
         this.competitionId = competitionId;
@@ -36,6 +38,7 @@ public class EventPartLocationFragment extends WritableFragment {
         this.compSeasonEventId = compSeasonEventId;
         this.compSeasonEventPartId = compSeasonEventPartId;
         this.eventPartLocationId = eventPartLocationId;
+        this.clientId = clientId;
     }
 
     @Override
@@ -59,7 +62,7 @@ public class EventPartLocationFragment extends WritableFragment {
 
         if (eventPartLocation.getGeoId() != null)
             geoFragment = DataFragmentUtil.getFilledDataFragment(new GeoFragment(eventPartLocation.getGeoId(),
-                            nestingLevelFragment), getCacheDataKey(), stat);
+                            competitionId, seasonId, clientId, nestingLevelFragment), getCacheDataKey(), stat);
 
         coordinates = eventPartLocation.getCoordinates();
         locationRoleFragment = DataFragmentUtil.getFilledDataFragment(

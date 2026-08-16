@@ -2,10 +2,7 @@ package com.sports.cache.data;
 
 import com.sports.cache.key.CacheFragmentKey;
 import com.sports.cache.key.CompetitionKey;
-import com.sports.cache.util.DataFragmentUtil;
-import com.sports.cache.util.JsonUtil;
-import com.sports.cache.util.XmlUtil;
-import com.sports.cache.util.YamlUtil;
+import com.sports.cache.util.*;
 import com.sports.entity.Competition;
 import com.sports.entity.manager.CompetitionManager;
 
@@ -14,6 +11,7 @@ import java.sql.Statement;
 
 public class CompetitionFragment extends WritableFragment {
     private final int competitionId;
+    private final int clientId;
 
     private String name;
     private int genderId;
@@ -24,12 +22,13 @@ public class CompetitionFragment extends WritableFragment {
     private Integer geoId;
     private int sportId;
 
-    public CompetitionFragment(int competitionId) {
-        this(competitionId, 0);
+    public CompetitionFragment(int competitionId, int clientId) {
+        this(competitionId, clientId, 0);
     }
 
-    public CompetitionFragment(int competitionId, int nestingLevel) {
+    public CompetitionFragment(int competitionId, int clientId, int nestingLevel) {
         super(nestingLevel, true);
+        this.clientId = clientId;
         this.competitionId = competitionId;
     }
 
@@ -42,7 +41,7 @@ public class CompetitionFragment extends WritableFragment {
     void fill(Statement stat) throws SQLException {
        Competition competition = new CompetitionManager(stat).getCompetition(competitionId);
 
-       name = competition.getName();
+       name = new AliasUtil(clientId, getCacheDataKey(), stat).getAliasableAsClientSpecificString(competition);
        genderId = competition.getGenderId();
        h2hDouble = competition.isH2hDouble();
        isDomestic = competition.isDomestic();
@@ -50,7 +49,7 @@ public class CompetitionFragment extends WritableFragment {
        sportId = competition.getSportId();
 
        if (geoId != null)
-           geoFragment = DataFragmentUtil.getFilledDataFragment(new GeoFragment(geoId,
+           geoFragment = DataFragmentUtil.getFilledDataFragment(new GeoFragment(geoId, clientId,
                            YamlUtil.getLevelForNestedFragment(nestingLevel)), getCacheDataKey(), stat);
     }
 

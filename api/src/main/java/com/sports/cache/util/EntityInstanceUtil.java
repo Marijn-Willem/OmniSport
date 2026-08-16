@@ -13,6 +13,10 @@ import java.sql.SQLException;
 import java.sql.Statement;
 
 public record EntityInstanceUtil(int clientId, CacheDataKey cacheDataKey, Statement stat) {
+    public String getGeoString(int geoId) throws SQLException {
+        return getEntityInstanceString("Geo", geoId);
+    }
+
     public String getGeoString(int geoId, CompSeasonKey compSeasonKey) throws SQLException {
         return getEntityInstanceString("Geo", geoId, compSeasonKey);
     }

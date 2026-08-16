@@ -13,8 +13,12 @@ import java.sql.Statement;
 public class GeoFragment extends GeoAsParentFragment {
     private GeoAsParentFragment parentGeo;
 
-    public GeoFragment(int geoId, int nestingLevel) {
-        super(geoId, nestingLevel);
+    public GeoFragment(int geoId, int clientId, int nestingLevel) {
+        super(geoId, clientId, nestingLevel);
+    }
+
+    public GeoFragment(int geoId, int competitionId, int seasonId, int clientId, int nestingLevel) {
+        super(geoId, competitionId, seasonId, clientId, nestingLevel);
     }
 
     @Override
@@ -25,10 +29,17 @@ public class GeoFragment extends GeoAsParentFragment {
     @Override
     void fill(Statement stat) throws SQLException {
         super.fill(stat);
-        if (parentGeoId != null)
-            parentGeo = DataFragmentUtil.getFilledDataFragment(
-                    new GeoAsParentFragment(parentGeoId, YamlUtil.getLevelForNestedFragment(nestingLevel)),
-                    getCacheDataKey(), stat);
+        if (parentGeoId != null) {
+            GeoAsParentFragment geoAsParentFragment;
+            int nestingLevelFragment = YamlUtil.getLevelForNestedFragment(nestingLevel);
+
+            if (competitionId != null && seasonId != null)
+                geoAsParentFragment = new GeoAsParentFragment(parentGeoId, competitionId, seasonId, clientId, nestingLevelFragment);
+            else
+                geoAsParentFragment = new GeoAsParentFragment(parentGeoId, clientId, nestingLevelFragment);
+
+            parentGeo = DataFragmentUtil.getFilledDataFragment(geoAsParentFragment, getCacheDataKey(), stat);
+        }
     }
 
     @Override

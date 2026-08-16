@@ -103,8 +103,8 @@ public record DescribedEntityUtil(int clientId, CacheDataKey cacheDataKey, State
         List<EventPartLocation> eventPartLocations = new EventPartLocationManager(stat)
                 .getEventPartLocations(compSeasonEventPartKey);
 
-        if (eventPartLocations.size() == 1 && eventPartLocations.get(0).getGeoId() != null) {
-            int geoId = eventPartLocations.get(0).getGeoId();
+        if (eventPartLocations.size() == 1 && eventPartLocations.getFirst().getGeoId() != null) {
+            int geoId = eventPartLocations.getFirst().getGeoId();
             CompSeasonKey compSeasonKey = compSeasonEventPartKey.getSuperKey().getSuperKey();
 
             return entityInstanceUtil.getGeoString(geoId, compSeasonKey);

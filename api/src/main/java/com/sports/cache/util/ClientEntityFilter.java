@@ -11,7 +11,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 
 public abstract class ClientEntityFilter<T extends DataFragment> {
-    private final int clientId;
+    final int clientId;
     final CacheDataKey cacheDataKey;
     private final Statement stat;
 

@@ -81,7 +81,7 @@ public class CompSeasonEventPartFragment extends WritableFragment {
         eventPartLocationFragments.addAll(
                 new EventPartLocationManager(stat).getEventPartLocations(compSeasonEventPartKey).stream().map(x ->
                 new EventPartLocationFragment(competitionId, seasonId, compSeasonEventId, compSeasonEventPartId,
-                        x.getEventPartLocationId(), nestingLevelList)).toList());
+                        x.getEventPartLocationId(), clientId, nestingLevelList)).toList());
 
         DataFragmentUtil.fillDataFragments(eventPartLocationFragments, getCacheDataKey());
     }
