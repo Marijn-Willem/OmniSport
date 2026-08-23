@@ -1,9 +1,8 @@
 /.github
 /.idea
 /.gradle
-/gradle
 /*/build
-gradlew
+/*/src/main/webapp/js/generic
 gradlew.bat
 .gitignore
 Dockerfile
