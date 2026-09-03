@@ -38,7 +38,7 @@ public class CompetitionListData extends OutputData {
         int nestingLevelList = YamlUtil.getLevelForNestedList(nestingLevel);
 
         competitions.stream()
-                .map(x -> new CompetitionFragment(x.getId(), nestingLevelList))
+                .map(x -> new CompetitionFragment(x.getId(), clientId, nestingLevelList))
                 .filter(filter::isElementAllowed)
                 .forEach(competitionFragments::add);
 
