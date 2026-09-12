@@ -42,12 +42,10 @@ public class ProcessManageTeamMatchAction extends ProcessManageSuperKeyEntity<Te
     protected void processEntityFromRequest(Statement stat, HttpServletRequest req) {
         int at = getIntValuedParameterValue(req, "at");
         int tid = getIntValuedParameterValue(req, "tid");
-        Integer m = convertRequestParamToNonIdInteger(req, "m");
-        Integer mpid = convertRequestParamToIdInteger(req, "mpid");
+        int cnt = getIntValuedParameterValue(req, "cnt");
 
         entity.setActionTypeId(at);
         entity.setTeamId(tid);
-        entity.setMinute(m);
-        entity.setTeamMatchPartId(mpid);
+        entity.setCount(cnt);
     }
 }

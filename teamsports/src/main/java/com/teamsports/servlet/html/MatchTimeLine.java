@@ -4,20 +4,22 @@ import com.sports.entity.ActionType;
 import com.sports.entity.Team;
 import com.sports.entity.TeamMatch;
 import com.sports.entity.TeamMatchAction;
-import com.sports.entity.comparator.MatchActionMinute;
 import com.sports.entity.key.TeamMatchKey;
 import com.sports.entity.manager.TeamManager;
 import com.sports.entity.manager.TeamMatchActionManager;
 import com.sports.entity.manager.TeamMatchManager;
 import com.sports.logic.util.Util;
-
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+
 import java.io.IOException;
 import java.io.Writer;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
 
 public class MatchTimeLine extends SuperHtmlServlet {
     private int matchId;
@@ -28,7 +30,7 @@ public class MatchTimeLine extends SuperHtmlServlet {
     protected void init(Statement stat, HttpServletRequest req) throws SQLException {
         matchId = getIntValuedParameterValue(req, "mid");
         teamMatchKey = new TeamMatchKey(compSeasonKey, matchId);
-        teamMatch = new TeamMatchManager(stat).getMatches(Collections.singletonList(teamMatchKey)).get(0);
+        teamMatch = new TeamMatchManager(stat).getMatches(Collections.singletonList(teamMatchKey)).getFirst();
     }
 
     void initSpecificProperties(HttpServletRequest req) {
@@ -60,24 +62,21 @@ public class MatchTimeLine extends SuperHtmlServlet {
         Map<Integer, Team> teamMap = new TeamManager(stat).getTeamMap(teamIds);
         List<TeamMatchAction> matchActions = new TeamMatchActionManager(stat).getMatchActionsMatch(teamMatchKey);
 
-        matchActions.sort(new MatchActionMinute());
-
         Writer w = res.getWriter();
 
         String rule = "<table border=\"1\">\n<tr><th>" + getTeamDescription(teamHomeId, teamMap) +
-                "</th><th>Minute</th><th>" + getTeamDescription(teamAwayId, teamMap) + "</th></tr>\n";
+                "</th><th>Count</th><th>" + getTeamDescription(teamAwayId, teamMap) + "</th></tr>\n";
 
         w.append(rule);
 
         for (TeamMatchAction matchAction : matchActions) {
-            String text = ActionType.getNameFromId(matchAction.getActionTypeId());
+            String actionText = ActionType.getNameFromId(matchAction.getActionTypeId());
+            int count = matchAction.getCount();
 
             if (teamMatch.getTeamHomeId() == matchAction.getTeamId())
-                rule = "<tr><td>" + text + "</td><td>" +
-                        Util.convertIntegerToString(matchAction.getMinute()) + "</td><td/><tr/>\n";
+                rule = "<tr><td>" + actionText + "</td><td>" + count + "</td><td/><tr/>\n";
             else
-                rule = "<tr><td/><td>" + Util.convertIntegerToString(matchAction.getMinute()) +
-                        "</td><td>" + text + "</td></tr>\n";
+                rule = "<tr><td/><td>" + count + "</td><td>" + actionText + "</td></tr>\n";
 
             w.append(rule);
         }

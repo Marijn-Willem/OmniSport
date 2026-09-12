@@ -77,7 +77,7 @@ public class ManageGeo extends ManageEntity {
         writeTextFieldWithOnKeypress("Parent Geo", "pgn", parentGeo != null ? parentGeo.getOutputString() : null,
                 "handleChangePgn()", w);
         w.append("<table id=\"tblGn\" border=\"1\">\n</table>\n");
-        writeGeoSpatialField("Coordinates", "coo", geo != null ? geo.getCoordinates() : null, w);
+        writeGeoSpatialField(geo != null ? geo.getCoordinates() : null, w);
     }
 
     protected String getUpdateId(HttpServletRequest req) {

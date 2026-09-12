@@ -263,23 +263,15 @@ public abstract class ManageEntity extends SuperHtmlServlet implements AbstractH
         w.append("\" /></span><br/>\n");
     }
 
-    protected void writeGeoSpatialField(String label, String name, Point point, Writer w) throws IOException {
-        w.append("<span>");
-        w.append(label);
-        w.append(": <input type=\"text\" name=\"");
-        w.append(name);
-        w.append("_1\" value=\"");
+    protected void writeGeoSpatialField(Point point, Writer w) throws IOException {
+        w.append("<span>Coordinates: <input type=\"text\" name=\"coo_1\" value=\"");
         if (point != null)
             w.append(Double.toString(point.x()));
-        w.append("\" /><input type=\"text\" name=\"");
-        w.append(name);
-        w.append("_2\" value=\"");
+        w.append("\" /><input type=\"text\" name=\"coo_2\" value=\"");
         if (point != null)
             w.append(Double.toString(point.y()));
         w.append("\" />");
-        w.append("<input type=\"button\" onclick=\"showCoordinatesInGoogleMaps('");
-        w.append(name);
-        w.append("');\" value=\"View\" />");
+        w.append("<input type=\"button\" onclick=\"showCoordinatesInGoogleMaps();\" value=\"View\" />");
         w.append("</span><br/>\n");
     }
 

@@ -7,25 +7,21 @@ const importActionElementLoader = new ElementLoader('resp', function () {
 function getProcessUrl() {
     const at = getValueFromElementByName('at');
     const tid = getValueFromElementByName('tid');
-    const m = getValueFromElementByName('m');
-    const mpid = getValueFromElementByName('mpid');
+    const cnt = getValueFromElementByName('cnt');
 
     return '/ProcessManageTeamMatchAction?cid=' + cid + '&sid=' + sid + '&mid=' + mid + '&at=' + at +
-        '&tid=' + tid + '&m=' + m + '&mpid=' + mpid;
+        '&tid=' + tid + '&cnt=' + cnt;
 }
 
 function checkInput() {
-    if (md !== 'i') {
-        alert('Only insert allowed!');
-        return false;
-    }
+    return doCheckAndAlert(md === 'i', 'Only insert allowed!') &&
+        doCheckAndAlert(!isEmptyOrNull(getValueFromElementByName('tid')), 'Team is mandatory!') &&
+        doCheckAndAlert(isCountValid(), 'Count must at least be 1');
+}
 
-    if (isEmptyOrNull(getValueFromElementByName('tid'))) {
-        alert('Team is mandatory!');
-        return false;
-    }
-
-    return true;
+function isCountValid() {
+    const cnt = getValueFromElementByName('cnt');
+    return cnt !== '-' && cnt !== '0';
 }
 
 function processImport() {

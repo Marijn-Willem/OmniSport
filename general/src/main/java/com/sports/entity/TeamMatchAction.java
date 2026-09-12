@@ -1,12 +1,9 @@
 package com.sports.entity;
 
-import com.sports.db.util.QueryUtil;
-
 public class TeamMatchAction extends SuperKeyEntity {
     private int actionTypeId;
-    private Integer minute;
-    private Integer teamMatchPartId;
     private int teamId;
+    private int count;
 
     private int teamMatchId;
     private int matchSort;
@@ -15,9 +12,8 @@ public class TeamMatchAction extends SuperKeyEntity {
     public String[] getPropertiesInSQLStrings() {
         return new String[] {
                 "" + actionTypeId,
-                QueryUtil.convertIntegerToDbValue(minute),
-                QueryUtil.convertIntegerToDbValue(teamMatchPartId),
-                "" + teamId
+                "" + teamId,
+                "" + count
             };
     }
 
@@ -29,28 +25,20 @@ public class TeamMatchAction extends SuperKeyEntity {
         this.actionTypeId = actionTypeId;
     }
 
-    public Integer getMinute() {
-        return minute;
-    }
-
-    public void setMinute(Integer minute) {
-        this.minute = minute;
-    }
-
-    public Integer getTeamMatchPartId() {
-        return teamMatchPartId;
-    }
-
-    public void setTeamMatchPartId(Integer teamMatchPartId) {
-        this.teamMatchPartId = teamMatchPartId;
-    }
-
     public int getTeamId() {
         return teamId;
     }
 
     public void setTeamId(int teamId) {
         this.teamId = teamId;
+    }
+
+    public int getCount() {
+        return count;
+    }
+
+    public void setCount(int count) {
+        this.count = count;
     }
 
     public int getTeamMatchId() {

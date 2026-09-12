@@ -3,17 +3,14 @@ package com.teamsports.servlet.html;
 import com.sports.entity.ActionType;
 import com.sports.entity.Team;
 import com.sports.entity.TeamMatch;
-import com.sports.entity.TeamMatchPart;
 import com.sports.entity.comparator.DescribedEntityDescription;
-import com.sports.entity.comparator.TeamMatchPartName;
 import com.sports.entity.key.TeamMatchKey;
 import com.sports.entity.manager.TeamManager;
 import com.sports.entity.manager.TeamMatchManager;
-import com.sports.entity.manager.TeamMatchPartManager;
 import com.sportservlet.html.ManageEntity;
-
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+
 import java.io.IOException;
 import java.io.Writer;
 import java.sql.SQLException;
@@ -61,7 +58,6 @@ public class ManageTeamMatchAction extends ManageEntity {
 
         TeamMatchManager tmm = new TeamMatchManager(stat);
         TeamManager tm = new TeamManager(stat);
-        TeamMatchPartManager tmpm = new TeamMatchPartManager(stat);
 
         TeamMatch teamMatch = tmm.getEntityFromSuperKey(teamMatchKey);
         List<Integer> teamIds = new ArrayList<>() {{
@@ -78,19 +74,11 @@ public class ManageTeamMatchAction extends ManageEntity {
             teams.forEach(x -> put(x.getId(), x.getDescription()));
         }};
 
-        List<TeamMatchPart> teamMatchParts = tmpm.getTeamMatchParts(teamMatchKey);
-        teamMatchParts.sort(new TeamMatchPartName());
-        LinkedHashMap<Integer, String> matchPartMap = new LinkedHashMap<>() {{
-            put(0, "-");
-            teamMatchParts.forEach(x -> put(x.getTeamMatchPartId(), x.getName()));
-        }};
-
         Writer w = res.getWriter();
 
         writeSelectWithLabel("Action Type", "at", actionTypeMap, null, w);
         writeSelectWithLabel("Team", "tid", teamMap, null, false, w);
-        writeNumericTextField("Minute", "m", null, w);
-        writeSelectWithLabel("Match part", "mpid", matchPartMap, null, w);
+        writeNumericTextField("Count", "cnt", 1, w);
     }
 
     @Override

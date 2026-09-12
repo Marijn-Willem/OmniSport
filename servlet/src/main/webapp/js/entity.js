@@ -39,9 +39,9 @@ function validateNumericTextFieldNonNull(name) {
     return doCheckAndAlert(convertStringToNumericVal(curVal) !== 0, 'Input must be numeric');
 }
 
-function validatePoint(name) {
-    const x = document.getElementsByName(name + '_1')[0].value;
-    const y = document.getElementsByName(name + '_2')[0].value;
+function validatePoint() {
+    const x = document.getElementsByName('coo_1')[0].value;
+    const y = document.getElementsByName('coo_2')[0].value;
 
     return (isEmptyOrNull(x) && isEmptyOrNull(y)) || (doCheckAndAlert(!isEmptyOrNull(x) && !isEmptyOrNull(y),
             'Both point coordinates must be filled') &&
@@ -88,11 +88,11 @@ function getUpdateLoader(getProcessUrl) {
     });
 }
 
-function showCoordinatesInGoogleMaps(name) {
-    const x = document.getElementsByName(name + '_1')[0].value;
-    const y = document.getElementsByName(name + '_2')[0].value;
+function showCoordinatesInGoogleMaps() {
+    const x = document.getElementsByName('coo_1')[0].value;
+    const y = document.getElementsByName('coo_2')[0].value;
 
-    if ((!isEmptyOrNull(x) || !isEmptyOrNull(y)) && validatePoint(name))
+    if ((!isEmptyOrNull(x) || !isEmptyOrNull(y)) && validatePoint())
         window.open(googleMapsUrl + '@' + x + ',' + y + ',17z');
 }
 

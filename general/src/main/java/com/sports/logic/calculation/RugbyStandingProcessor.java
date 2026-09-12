@@ -92,9 +92,9 @@ public class RugbyStandingProcessor extends TeamStandingProcessor {
             TeamMatch curMatch = h2HMatches.get(curTeamMatchAction.getMatchSort());
 
             if (curMatch.getParticipant1Id() == curTeamMatchAction.getTeamId())
-                triesHome++;
+                triesHome += curTeamMatchAction.getCount();
             else
-                triesAway++;
+                triesAway += curTeamMatchAction.getCount();
 
             prevTeamMatchAction = curTeamMatchAction;
             curMatchActionIndX++;

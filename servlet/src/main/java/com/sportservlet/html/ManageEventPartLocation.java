@@ -58,7 +58,7 @@ public abstract class ManageEventPartLocation extends ManageEntity {
 
         writeTextFieldWithOnKeypress("Geo", "gn", geo != null ? geo.getOutputString() : null, "handleChangeGn()", w);
         w.append("<table id=\"tblGn\" border=\"1\">\n</table>\n");
-        writeGeoSpatialField("Coordinates", "coo", eventPartLocation != null ? eventPartLocation.getCoordinates() : null, w);
+        writeGeoSpatialField(eventPartLocation != null ? eventPartLocation.getCoordinates() : null, w);
         writeSelectWithLabel("Location role", "lrid", getLocationRoleMap(stat),
                 eventPartLocation != null ? eventPartLocation.getLocationRoleId() : null, w);
     }
