@@ -12,7 +12,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.List;
 
-public class SportList extends SuperHtmlServlet {
+public class SportOverview extends SuperHtmlServlet {
     @Override
     public void initSpecificProperties(HttpServletRequest req) {
 
@@ -38,7 +38,10 @@ public class SportList extends SuperHtmlServlet {
         w.append("<br/>\n");
         w.append("<a href=\"");
         w.append(path);
-        w.append("/PersonSearch\">Manage Persons</a>");
-        w.append("<br/>\n</div>\n");
+        w.append("/PersonSearch\">Manage Persons</a><br/>\n");
+        w.append("<a href=\"");
+        w.append(path);
+        w.append("/ManageTeams\">Manage Teams</a><br/>\n");
+        w.append("</div>\n");
     }
 }

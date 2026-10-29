@@ -12,6 +12,6 @@ public class PersonSearch extends com.sportservlet.html.PersonSearch {
 
     @Override
     protected String getReturnPath(Statement stat, HttpServletRequest req) {
-        return "SportList";
+        return "SportOverview";
     }
 }

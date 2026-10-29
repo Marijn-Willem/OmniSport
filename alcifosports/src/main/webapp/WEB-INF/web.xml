@@ -15,7 +15,7 @@
 
   <context-param>
     <param-name>welcome-file</param-name>
-    <param-value>SportList</param-value>
+    <param-value>SportOverview</param-value>
   </context-param>
 
   <servlet>

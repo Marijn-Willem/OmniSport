@@ -13,6 +13,7 @@ public class CompSeasonEventPortal extends SuperHtmlServlet {
     @Override
     public void initSpecificProperties(HttpServletRequest req) {
         jsList.add("compseasonevent");
+        jsSpecificList.add("compseasonevent");
     }
 
     @Override
@@ -44,5 +45,7 @@ public class CompSeasonEventPortal extends SuperHtmlServlet {
         w.append("onclick=\"goToManageCompSeasonEvent();\" /><br/>\n");
         w.append("<input type=\"button\" value=\"Go to Event Parts\" ");
         w.append("onclick=\"goToCompSeasonEventPartPortal();\" /><br/>\n");
+        w.append("<input type=\"button\" value=\"Import Participants\" ");
+        w.append("onclick=\"goToPrepareEventParticipantImport();\" /><br/>\n");
     }
 }
