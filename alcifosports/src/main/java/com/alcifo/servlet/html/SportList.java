@@ -35,6 +35,10 @@ public class SportList extends SuperHtmlServlet {
             w.append(line);
         }
 
-        w.append("</div>\n");
+        w.append("<br/>\n");
+        w.append("<a href=\"");
+        w.append(path);
+        w.append("/PersonSearch\">Manage Persons</a>");
+        w.append("<br/>\n</div>\n");
     }
 }
