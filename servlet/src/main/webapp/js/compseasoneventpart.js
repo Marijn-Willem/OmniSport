@@ -11,6 +11,13 @@ const compSeasonEventPartPortsLoader = new ElementLoader('divPorts', function ()
         '/CompSeasonEventPartPorts?cid=' + cid + '&sid=' + sid + '&cseid=' + cseid + '&csepid=' + csepid : null;
 }, null);
 
+const insertEventPartParticipantsLoader = new ElementLoader('divIns', function () {
+    const url = isTeam ? 'ProcessInsertEventPartTeams' : 'ProcessInsertEventPartPersonSports';
+    const urlParameters = getUrlParameters();
+
+    return !isEmptyOrNull(urlParameters) ? '/' + url + '?' + urlParameters : null;
+}, null);
+
 function getProcessUrl() {
     const csepid = getValueFromElementByName('inpUpd');
     const did = getValueFromElementByName('did');
@@ -51,8 +58,18 @@ function goToEventPartLocationPortal() {
     goToCompSeasonEventPartPort('EventPartLocationPortal');
 }
 
+function insertEventPartParticipants() {
+    insertEventPartParticipantsLoader.loadElement();
+}
+
 function goToCompSeasonEventPartPort(port) {
+    const urlParameters = getUrlParameters();
+    if (!isEmptyOrNull(urlParameters))
+        goToUrl(port, urlParameters);
+}
+
+function getUrlParameters() {
     const csepid = document.getElementById('csepid').value;
-    if (!isEmptyOrNull(csepid))
-        goToUrl(port, 'cid=' + cid + '&sid=' + sid + '&cseid=' + cseid + '&csepid=' + csepid);
+
+    return !isEmptyOrNull(csepid) ? 'cid=' + cid + '&sid=' + sid + '&cseid=' + cseid + '&csepid=' + csepid : null;
 }

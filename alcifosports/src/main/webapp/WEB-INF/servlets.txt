@@ -41,7 +41,7 @@ com.sportservlet.ajax.ProcessManagePersonInstance
 com.alcifo.servlet.html.ManagePerson
 com.sportservlet.ajax.ProcessManagePerson
 com.alcifo.servlet.html.ManageTeams
-com.sportservlet.ajax.SportList
+com.alcifo.servlet.ajax.SportList
 com.sportservlet.ajax.TeamListBySportGender
 com.sportservlet.ajax.AddTeamNamesToSession
 com.alcifo.servlet.dispatch.PrepareEventParticipantImport
@@ -49,3 +49,9 @@ com.alcifo.servlet.html.EventPersonImport
 com.alcifo.servlet.html.EventTeamImport
 com.sportservlet.ajax.ProcessEventPersonImport
 com.sportservlet.ajax.ProcessEventTeamImport
+com.sportservlet.ajax.ProcessInsertEventPartPersonSports
+com.sportservlet.ajax.ProcessInsertEventPartTeams
+com.alcifo.servlet.html.ManageEventPartPersonSports
+com.alcifo.servlet.html.ManageEventPartTeams
+com.sportservlet.ajax.ProcessManageEventPartPersonSports
+com.sportservlet.ajax.ProcessManageEventPartTeams

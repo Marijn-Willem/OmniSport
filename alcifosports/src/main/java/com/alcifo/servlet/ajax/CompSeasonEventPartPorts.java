@@ -1,6 +1,5 @@
 package com.alcifo.servlet.ajax;
 
-import com.sportservlet.SuperResponseServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
@@ -8,7 +7,7 @@ import java.io.IOException;
 import java.io.Writer;
 import java.sql.Statement;
 
-public class CompSeasonEventPartPorts extends SuperResponseServlet {
+public class CompSeasonEventPartPorts extends com.sportservlet.ajax.CompSeasonEventPartPorts {
     @Override
     protected void processBody(Statement stat, HttpServletRequest req, HttpServletResponse resp)
             throws IOException {
@@ -20,5 +19,8 @@ public class CompSeasonEventPartPorts extends SuperResponseServlet {
         w.append("onclick=\"goToEventDisciplinePartPortal();\" /><br/>\n");
         w.append("<input type=\"button\" value=\"Manage Locations in Event Part\" ");
         w.append("onclick=\"goToEventPartLocationPortal();\" /><br/>\n");
+        writeManageParticipantButton(w);
+        writeInsertParticipantButton(w);
+        w.append("<div id=\"divIns\"></div>\n");
     }
 }

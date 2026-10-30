@@ -88,7 +88,7 @@ public abstract class ManageAlcifoPartParticipants<P extends Participant, PK ext
         w.append("<table class=\"alcifo_part\" id=\"tblPt\">\n");
         w.append("<tr><th>Rank</th><th>Name</th><th>Points</th><th>NoCountResult</th></tr>\n");
         for (P participant : participants)
-            writeTableRow(participant, sd.getResultTypeId(), stat, w);
+            writeTableRow(participant, sd.getResultTypeId(), sd.getResultTypePrecisionId(), stat, w);
         w.append("</table>\n");
 
         w.append("<table class=\"alcifo_part button_container\">\n");
@@ -99,7 +99,7 @@ public abstract class ManageAlcifoPartParticipants<P extends Participant, PK ext
         w.append("<tr><td><input type=\"button\" onclick=\"fillPoints();\" value=\"Fill points\" /></td>");
         w.append("<td><input type=\"button\" onclick=\"fillNoCountResults();\" value=\"Fill NoCount Results\" /></td><td/><tr/>\n");
         w.append("<tr>");
-        if (sd.getResultTypeId() == ResultType.resultTypeIdTime)
+        if (sd.getResultTypeId() == ResultType.resultTypeIdTime && sd.getResultTypePrecisionId() == null)
             w.append("<td><input id=\"btnMd\" type=\"button\" onclick=\"switchMode();\" value=\"Set relative\" /></td>");
         else
             w.append("<td><input id=\"btnMd\" type=\"hidden\" /></td>");
@@ -110,9 +110,10 @@ public abstract class ManageAlcifoPartParticipants<P extends Participant, PK ext
         w.append("<div id=\"divPt\"></div>\n");
     }
 
-    private void writeTableRow(P participant, int resultType, Statement stat, Writer w)
+    private void writeTableRow(P participant, int resultType, Integer resultTypePrecisionId, Statement stat, Writer w)
             throws SQLException, IOException {
-        String pointsString = participant.getPoints() != null ? formatPoints(participant.getPoints(), resultType) : "";
+        String pointsString = participant.getPoints() != null ?
+                formatPoints(participant.getPoints(), resultType, resultTypePrecisionId) : "";
 
         w.append("<tr ptid=\"");
         w.append(Integer.toString(participant.getId()));
@@ -127,9 +128,10 @@ public abstract class ManageAlcifoPartParticipants<P extends Participant, PK ext
         w.append("\" /></td></tr>\n");
     }
 
-    private String formatPoints(int points, int resultType) {
+    private String formatPoints(int points, int resultType, Integer resultTypePrecisionId) {
         if (resultType == ResultType.resultTypeIdTime)
-            return Util.getHMSStringFromMillis(points);
+            return resultTypePrecisionId != null ?
+                    Util.getTimeStringFromMillis(points, resultTypePrecisionId) : Util.getHMSStringFromMillis(points);
 
         return Integer.toString(points);
     }
