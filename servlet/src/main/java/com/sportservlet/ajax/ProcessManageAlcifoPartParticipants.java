@@ -64,7 +64,7 @@ public abstract class ProcessManageAlcifoPartParticipants<PK extends SuperKey, A
         Map<String, Integer> ncrMap = new NoCountResultManager(stat).getNameIdMap();
 
         List<APP> partParticipants = Arrays.stream(personSportData)
-                .map(pd -> getParticipant(pd, sd.getResultTypeId(), ncrMap, factory))
+                .map(pd -> getParticipant(pd, sd.getResultTypeId(), sd.getResultTypePrecisionId(), ncrMap, factory))
                 .collect(Collectors.toList());
 
         new DbCalculation(stat).updatePartParticipants(partKey, partParticipants, factory);
@@ -73,31 +73,34 @@ public abstract class ProcessManageAlcifoPartParticipants<PK extends SuperKey, A
         resp.getWriter().append("Participants updated");
     }
 
-    private APP getParticipant(String data, int resultTypeId, Map<String, Integer> ncrMap,
-                                                 AlcifoPartParticipantFactory<? extends CompSeasonParticipantKey,
-                                                         ? extends SuperKeyEntity,
-                                                         ? extends Participant,
-                                                         ? extends AlcifoParticipantKey,
-                                                         ? extends AlcifoParticipant,
-                                                         ? extends SuperKey,
-                                                         PK,
-                                                         APP,
-                                                         ? extends SuperKey,
-                                                         ? extends AlcifoPartParticipant> factory) {
+    private APP getParticipant(String data, int resultTypeId, Integer resultTypePrecisionId, Map<String, Integer> ncrMap,
+                               AlcifoPartParticipantFactory<? extends CompSeasonParticipantKey,
+                                       ? extends SuperKeyEntity,
+                                       ? extends Participant,
+                                       ? extends AlcifoParticipantKey,
+                                       ? extends AlcifoParticipant,
+                                       ? extends SuperKey,
+                                       PK,
+                                       APP,
+                                       ? extends SuperKey,
+                                       ? extends AlcifoPartParticipant> factory) {
         String[] dataSplit = data.split("\\|");
         APP partParticipant = factory.getInstance();
         partParticipant.setParticipantId(Integer.parseInt(dataSplit[0]));
 
         partParticipant.setRank(dataSplit.length > 1 ? Util.convertStringToInteger(dataSplit[1]) : null);
-        partParticipant.setPoints(dataSplit.length > 2 ? getPoints(dataSplit[2], resultTypeId) : null);
+        partParticipant.setPoints(dataSplit.length > 2 ?
+                getPoints(dataSplit[2], resultTypeId, resultTypePrecisionId) : null);
         partParticipant.setNoCountResultId(dataSplit.length > 3 ? ncrMap.get(dataSplit[3]) : null);
 
         return partParticipant;
     }
 
-    private Integer getPoints(String pointsData, int resultTypeId) {
+    private Integer getPoints(String pointsData, int resultTypeId, Integer resultTypePrecisionId) {
         if (!Util.isEmptyString(pointsData) && resultTypeId == ResultType.resultTypeIdTime)
-            return Util.getMillisFromHMSString(pointsData);
+            return resultTypePrecisionId != null ?
+                    Util.getMillisFromTimeString(pointsData, resultTypePrecisionId) :
+                    Util.getMillisFromHMSString(pointsData);
 
         return Util.convertStringToInteger(pointsData);
     }

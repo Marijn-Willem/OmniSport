@@ -5,6 +5,7 @@ import com.sports.db.util.QueryUtil;
 public class ResultTypePrecision extends SuperKeyEntity implements NamedEntity {
     public static final int resultTypePrecisionIdTimeCentiseconds = -1;
     public static final int resultTypePrecisionIdTimeMilliseconds = -2;
+    public static final int resultTypePrecisionIdTimeSeconds = -3;
 
     private String name;
 

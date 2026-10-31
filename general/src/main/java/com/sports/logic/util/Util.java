@@ -113,6 +113,24 @@ public class Util {
                 padZeroesToString(String.valueOf(hundredths));
     }
 
+    public static int getMillisFromTimeString(String timeStr, int resultTypePrecisionId) {
+        String[] parts = timeStr.split(":");
+        String[] partsSubMinute = parts[2].split("\\.");
+
+        int hours = Integer.parseInt(parts[0]);
+        int minutes = Integer.parseInt(parts[1]);
+        int seconds = Integer.parseInt(partsSubMinute[0]);
+        int subSeconds = partsSubMinute.length > 1 ? Integer.parseInt(partsSubMinute[1]) : 0;
+        int millis = 0;
+
+        if (resultTypePrecisionId == ResultTypePrecision.resultTypePrecisionIdTimeCentiseconds)
+            millis = 10 * subSeconds;
+        else if (resultTypePrecisionId == ResultTypePrecision.resultTypePrecisionIdTimeMilliseconds)
+            millis = subSeconds;
+
+        return 3600000 * hours + 60000 * minutes + 1000 * seconds + millis;
+    }
+
     public static int getMillisFromTimeString(String timeStr) {
         String[] parts = timeStr.split(":");
 

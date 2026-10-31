@@ -99,7 +99,8 @@ public abstract class ManageAlcifoPartParticipants<P extends Participant, PK ext
         w.append("<tr><td><input type=\"button\" onclick=\"fillPoints();\" value=\"Fill points\" /></td>");
         w.append("<td><input type=\"button\" onclick=\"fillNoCountResults();\" value=\"Fill NoCount Results\" /></td><td/><tr/>\n");
         w.append("<tr>");
-        if (sd.getResultTypeId() == ResultType.resultTypeIdTime && sd.getResultTypePrecisionId() == null)
+        if (sd.getResultTypeId() == ResultType.resultTypeIdTime &&
+                Integer.valueOf(ResultTypePrecision.resultTypePrecisionIdTimeSeconds).equals(sd.getResultTypePrecisionId()))
             w.append("<td><input id=\"btnMd\" type=\"button\" onclick=\"switchMode();\" value=\"Set relative\" /></td>");
         else
             w.append("<td><input id=\"btnMd\" type=\"hidden\" /></td>");
