@@ -19,8 +19,16 @@ public class EntryServlet extends HttpServlet {
 
     private static final Map<String, HttpServlet> servletMap = new HashMap<>();
 
+    private int contextPathLengthWelcome;
+    private int contextPathLengthServlet;
+
     @Override
     public void init() {
+        String contextPath = getServletContext().getContextPath();
+
+        contextPathLengthWelcome = (contextPath + "/").length();
+        contextPathLengthServlet = (contextPath + "/servlet/").length();
+
         try {
             InputStream is = getServletContext().getResourceAsStream(servletsLocation);
             BufferedReader br = new BufferedReader(new InputStreamReader(is));
@@ -57,10 +65,10 @@ public class EntryServlet extends HttpServlet {
 
         String servletPath;
 
-        if (uri.equals(req.getContextPath() + "/"))
+        if (uri.length() == contextPathLengthWelcome)
             servletPath = getServletContext().getInitParameter("welcome-file");
         else
-            servletPath = uri.substring((req.getContextPath() + "/servlet/").length());
+            servletPath = uri.substring(contextPathLengthServlet);
 
         servletMap.get(servletPath).service(req, resp);
     }
