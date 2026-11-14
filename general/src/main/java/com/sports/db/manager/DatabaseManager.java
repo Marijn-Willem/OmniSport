@@ -15,6 +15,7 @@ public class DatabaseManager {
         properties = new Properties();
         properties.setProperty("user", dbUser);
         properties.setProperty("password", dbPwd);
+        QueryUtil.setDbSpecificProperties(properties);
 
         DatabaseManager.dbName = dbName;
     }

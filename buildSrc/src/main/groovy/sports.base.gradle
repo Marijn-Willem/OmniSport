@@ -7,8 +7,8 @@ repositories {
 }
 
 dependencies {
-    implementation 'org.postgresql:postgresql:42.7.8'
-    implementation 'com.microsoft.sqlserver:mssql-jdbc:9.4.0.jre16'
+    implementation 'org.postgresql:postgresql:42.7.14'
+    implementation 'com.microsoft.sqlserver:mssql-jdbc:13.6.2.jre11'
 }
 
 group = 'sports'

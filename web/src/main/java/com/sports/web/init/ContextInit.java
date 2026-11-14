@@ -16,16 +16,16 @@ public class ContextInit implements ServletContextListener {
 
         ApiUtil.setApiConfiguration(apiUrl, apiClient, apiPw);
 
+        String dbType = System.getenv( "OMNISPORT_DBTYPE");
+
+        if (dbType != null)
+            QueryUtil.setDbType(dbType);
+
         String dbUser = System.getenv( "OMNISPORT_DBUSER");
         String dbName = System.getenv( "OMNISPORT_DBCONN");
         String dbPwd = System.getenv( "OMNISPORT_DBPW");
 
         DatabaseManager.setProperties(dbName, dbUser, dbPwd);
-
-        String dbType = System.getenv( "OMNISPORT_DBTYPE");
-
-        if (dbType != null)
-            QueryUtil.setDbType(dbType);
 
         try {
             Class.forName(QueryUtil.getDriverName()).getDeclaredConstructor().newInstance();

@@ -10,6 +10,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
+import java.util.Properties;
 
 public class QueryUtil {
     private static DatabaseType dbType = DatabaseType.POSTGRES;
@@ -33,6 +34,11 @@ public class QueryUtil {
             return "jdbc:sqlserver";
 
         return "jdbc:postgresql";
+    }
+
+    public static void setDbSpecificProperties(Properties properties) {
+        if (dbType == DatabaseType.SQLSERVER)
+            properties.setProperty("trustServerCertificate", "true");
     }
 
     public static String getDbCurrentTime() {
